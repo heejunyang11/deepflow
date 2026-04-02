@@ -11,8 +11,38 @@ listing:
 page-layout: full
 title-block-banner: true
 ---
-
-地下水・地化学・水文学の研究ノウハウから日常の雑談まで。  
-コードと科学で水の世界を探求するサイトです。
+```{=html}
+<div style="text-align:center; padding: 0.5rem 0 2rem;">
+  <div style="display:inline-block; font-size:18px; padding:4px 16px;
+    border-radius:999px; border:1px solid rgba(56,189,248,0.3);
+    color:#BAE6FD; margin-bottom:16px; letter-spacing:0.08em;">
+    SCIENCE · CODE · INSIGHT
+  </div>
+  <div style="width:48px; height:3px; background:#38BDF8;
+    margin:0 auto 20px; border-radius:2px;"></div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
+      background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2);
+      color:#7DD3FC;">Groundwater</span>
+    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
+      background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2);
+      color:#7DD3FC;">Geochemistry</span>
+    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
+      background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2);
+      color:#7DD3FC;">Hydrology</span>
+    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
+      background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2);
+      color:#7DD3FC;">AI & Python</span>
+    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
+      background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2);
+      color:#7DD3FC;">MODFLOW</span>
+    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
+      background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2);
+      color:#7DD3FC;">PHREEQC</span>
+  </div>
+</div>
+```
+地下水・地球化学・水文学の研究ノウハウ（Series）から英語勉強（Bible）まで。  
+科学・コード・多様な観点で、水の世界を探求するサイトです。
 
 ---

@@ -1,0 +1,118 @@
+---
+title: "Today's Bible"
+---
+
+今日の聖句を読んで、英単語を学びましょう。AIでさらに深掘りもできます。
+```{=html}
+<div id="bible-widget">
+
+<div style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+  <p style="font-size: 12px; color: gray; margin: 0 0 8px;">📖 今日の聖句</p>
+  <p id="verse-text" style="font-size: 20px; font-style: italic; line-height: 1.8; margin: 0 0 8px;"></p>
+  <p id="verse-ref" style="font-size: 13px; color: gray; margin: 0;"></p>
+</div>
+
+<p style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">📚 単語解説</p>
+<div id="word-list" style="margin-bottom: 1.5rem;"></div>
+
+<p style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">🤖 AIでさらに深掘り</p>
+<p style="font-size: 13px; color: gray; margin-bottom: 12px;">
+  AIチャットを使うともっと詳しい解説・例文・背景知識が得られます。
+</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+  <a id="claude-link" href="" target="_blank">
+    <button style="background: #d97706; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;">
+      Claudeで聞く →
+    </button>
+  </a>
+  <a id="chatgpt-link" href="" target="_blank">
+    <button style="background: #10a37f; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;">
+      ChatGPTで聞く →
+    </button>
+  </a>
+</div>
+
+</div>
+
+<script>
+const verses = [
+  {
+    text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
+    ref: "John 3:16",
+    words: [
+      { en: "loved", phonetic: "/lʌvd/", ja: "愛した", note: "loveの過去形。深い愛情を示す" },
+      { en: "gave", phonetic: "/ɡeɪv/", ja: "与えた", note: "giveの過去形。惜しみなく与える" },
+      { en: "believes", phonetic: "/bɪˈliːvz/", ja: "信じる", note: "信頼・信仰を持つという意味" },
+      { en: "perish", phonetic: "/ˈpɛrɪʃ/", ja: "滅びる", note: "死ぬ・消滅するという意味" },
+      { en: "eternal", phonetic: "/ɪˈtɜːrnəl/", ja: "永遠の", note: "時間的な終わりがないさま" }
+    ]
+  },
+  {
+    text: "The Lord is my shepherd; I shall not want.",
+    ref: "Psalm 23:1",
+    words: [
+      { en: "Lord", phonetic: "/lɔːrd/", ja: "主・神", note: "神や支配者を指す敬称" },
+      { en: "shepherd", phonetic: "/ˈʃɛpərd/", ja: "羊飼い", note: "羊を世話し導く人。転じて導き手" },
+      { en: "shall", phonetic: "/ʃæl/", ja: "〜するだろう", note: "未来・強い意志を表す助動詞" },
+      { en: "want", phonetic: "/wɒnt/", ja: "欠乏する", note: "ここでは「不足する」の意味" }
+    ]
+  },
+  {
+    text: "Trust in the Lord with all your heart and lean not on your own understanding.",
+    ref: "Proverbs 3:5",
+    words: [
+      { en: "trust", phonetic: "/trʌst/", ja: "信頼する", note: "完全に頼ること" },
+      { en: "lean", phonetic: "/liːn/", ja: "頼る", note: "物理的に傾く→依存するの意" },
+      { en: "understanding", phonetic: "/ˌʌndəˈstændɪŋ/", ja: "理解・知恵", note: "物事を理解する力・判断力" },
+      { en: "heart", phonetic: "/hɑːrt/", ja: "心・魂", note: "感情や意志の中心を表す" }
+    ]
+  },
+  {
+    text: "I can do all things through Christ who strengthens me.",
+    ref: "Philippians 4:13",
+    words: [
+      { en: "strengthens", phonetic: "/ˈstrɛŋθənz/", ja: "強くする", note: "力・勇気を与えるという意味" },
+      { en: "through", phonetic: "/θruː/", ja: "〜を通して", note: "手段・媒介を表す前置詞" },
+      { en: "Christ", phonetic: "/kraɪst/", ja: "キリスト", note: "「油注がれた者」を意味するギリシャ語" }
+    ]
+  },
+  {
+    text: "Be still, and know that I am God.",
+    ref: "Psalm 46:10",
+    words: [
+      { en: "still", phonetic: "/stɪl/", ja: "静かに・じっとして", note: "動かない・穏やかなさま" },
+      { en: "know", phonetic: "/noʊ/", ja: "知る・悟る", note: "深く理解・認識するという意味" }
+    ]
+  }
+];
+
+function getTodayVerse() {
+  const day = new Date().getDate();
+  return verses[day % verses.length];
+}
+
+const v = getTodayVerse();
+
+document.getElementById('verse-text').textContent = '"' + v.text + '"';
+document.getElementById('verse-ref').textContent = '— ' + v.ref;
+
+document.getElementById('word-list').innerHTML = v.words.map(w => `
+  <div style="border: 1px solid var(--bs-border-color); border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; gap: 16px; flex-wrap: wrap;">
+    <div style="min-width: 120px;">
+      <span style="font-size: 16px; font-weight: bold;">${w.en}</span>
+      <span style="font-size: 12px; color: gray; margin-left: 6px;">${w.phonetic}</span>
+    </div>
+    <div>
+      <span style="font-size: 15px; color: #1d4ed8; font-weight: 500;">${w.ja}</span>
+      <span style="font-size: 13px; color: gray; margin-left: 8px;">${w.note}</span>
+    </div>
+  </div>
+`).join('');
+
+const prompt = encodeURIComponent(
+  `以下の英語聖句の単語・文法・背景を日本語で詳しく解説してください。\n\n"${v.text}"\n（${v.ref}）`
+);
+document.getElementById('claude-link').href = 'https://claude.ai/new?q=' + prompt;
+document.getElementById('chatgpt-link').href = 'https://chatgpt.com/?q=' + prompt;
+</script>
+```

@@ -1,0 +1,41 @@
+---
+title: "Series"
+---
+
+地下水・地化学・AI・コラムの4つのシリーズで発信しています。
+
+:::  {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+### 🌊 Groundwater Series
+MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
+
+**記事一覧**
+
+- [地下水流動解析入門：MODFLOWとFloPyの基本](/posts/groundwater-intro/)
+
+[もっと見る →](/index.qmd){.btn .btn-outline-primary}
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### ⚗️ Geochemistry Series
+PHREEQCとPythonで水質・地化学反応をモデリングする。
+
+[記事を見る →](/index.qmd){.btn .btn-outline-primary}
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### 🤖 AI & Python Series
+機械学習とAIツールを研究に活用するための実践ガイド。
+
+[記事を見る →](/index.qmd){.btn .btn-outline-primary}
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### 💬 Column Series
+研究者・フリーランスとしての日常や思いをゆるく発信。
+
+[記事を見る →](/index.qmd){.btn .btn-outline-primary}
+:::
+
+:::

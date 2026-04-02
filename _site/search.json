@@ -1,17 +1,17 @@
 [
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
+    "objectID": "series.html",
+    "href": "series.html",
+    "title": "Series",
     "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+    "text": "地下水・地化学・AI・コラムの4つのシリーズで発信しています。\n\n\n🌊 Groundwater Series\nMODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。\n記事一覧\n\n地下水流動解析入門：MODFLOWとFloPyの基本\n\nもっと見る →\n\n\n⚗️ Geochemistry Series\nPHREEQCとPythonで水質・地化学反応をモデリングする。\n記事を見る →\n\n\n🤖 AI & Python Series\n機械学習とAIツールを研究に活用するための実践ガイド。\n記事を見る →\n\n\n💬 Column Series\n研究者・フリーランスとしての日常や思いをゆるく発信。\n記事を見る →"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "DeepFlow",
     "section": "",
-    "text": "地下水・地化学・水文学の研究ノウハウから日常の雑談まで。\nコードと科学で水の世界を探求するサイトです。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n地下水流動解析入門：MODFLOWとFloPyの基本\n\n\n\ngroundwater\n\nMODFLOW\n\nPython\n\n\n\n地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門\n\n\n\n\n\nApr 2, 2026\n\n\nDeepFlow\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 2, 2026\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nMar 30, 2026\n\n\nTristan O’Malley\n\n\n\n\n\nNo matching items"
+    "text": "SCIENCE · CODE · INSIGHT\n  \n  \n  \n    Groundwater\n    Geochemistry\n    Hydrology\n    AI & Python\n    MODFLOW\n    PHREEQC\n  \n\n地下水・地球化学・水文学の研究ノウハウ（Series）から英語勉強（Bible）まで。\n科学・コード・多様な観点で、水の世界を探求するサイトです。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n地下水流動解析入門：MODFLOWとFloPyの基本\n\n\n\ngroundwater\n\nMODFLOW\n\nPython\n\n\n\n地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門\n\n\n\n\n\nApr 2, 2026\n\n\nDeepFlow\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
@@ -21,11 +21,11 @@
     "text": "日本語한국어English\n\n\n\nプロフィール\n地下水流動解析・地化学モデリング・水文学を専門とする研究者・フリーランス。\nAI・機械学習を研究ツールとして活用し、自然界の水の動きをコードで解き明かすことを追求している。\n\n\n専門分野\n\n🌊 地下水流動解析（MODFLOW / FloPy）\n⚗️ 地化学モデリング（PHREEQC）\n💧 水文学\n🤖 AI・機械学習の研究応用\n\n\n\nスキル・ツール\nPython · GitHub · MODFLOW · PHREEQC · AI Tools\n\n\n言語\n日本語 · 한국어 · English\n\n\n\n\n\n프로필\n지하수 유동 해석・지구화학 모델링・수문학을 전문으로 하는 연구자 겸 프리랜서.\nAI・머신러닝을 연구 도구로 활용하여 자연계의 물의 움직임을 코드로 규명하는 것을 추구한다.\n\n\n전문 분야\n\n🌊 지하수 유동 해석（MODFLOW / FloPy）\n⚗️ 지구화학 모델링（PHREEQC）\n💧 수문학\n🤖 AI・머신러닝의 연구 응용\n\n\n\n스킬・툴\nPython · GitHub · MODFLOW · PHREEQC · AI Tools\n\n\n언어\n日本語 · 한국어 · English\n\n\n\n\n\nProfile\nResearcher and freelance specialist in groundwater flow analysis,\ngeochemical modeling, and hydrology.\nPassionate about decoding the movement of water in nature through code and AI.\n\n\nExpertise\n\n🌊 Groundwater Flow Analysis（MODFLOW / FloPy）\n⚗️ Geochemical Modeling（PHREEQC）\n💧 Hydrology\n🤖 AI & Machine Learning for Research\n\n\n\nSkills & Tools\nPython · GitHub · MODFLOW · PHREEQC · AI Tools\n\n\nLanguages\n日本語 · 한국어 · English"
   },
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "objectID": "bible.html",
+    "href": "bible.html",
+    "title": "Today’s Bible",
     "section": "",
-    "text": "This is a post with executable code."
+    "text": "今日の聖句を読んで、英単語を学びましょう。AIでさらに深掘りもできます。\n\n\n\n  📖 今日の聖句\n  \n  \n\n\n📚 単語解説\n\n\n🤖 AIでさらに深掘り\n\n  AIチャットを使うともっと詳しい解説・例文・背景知識が得られます。\n\n\n  \n    \n      Claudeで聞く →\n    \n  \n  \n    \n      ChatGPTで聞く →"
   },
   {
     "objectID": "posts/Groundwater-intro/index.html",
