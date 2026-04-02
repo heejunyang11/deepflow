@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "DeepFlow"
+  description: "Science beneath the surface"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+    right:
+      - icon: github
+        href: https://github.com/あなたのGitHubID
+  page-footer:
+    center: "© 2026 DeepFlow · Science beneath the surface"
+
+format:
+  html:
+    theme: darkly
+    highlight-style: dracula
+    code-fold: true
+    toc: true

@@ -1,0 +1,18 @@
+---
+title: "DeepFlow"
+subtitle: "Science beneath the surface"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---
+
+地下水・地化学・水文学の研究ノウハウから日常の雑談まで。  
+コードと科学で水の世界を探求するサイトです。
+
+---

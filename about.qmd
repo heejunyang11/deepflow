@@ -1,0 +1,69 @@
+---
+title: "About"
+---
+
+::: {.panel-tabset}
+
+## 日本語
+
+### プロフィール
+
+地下水流動解析・地化学モデリング・水文学を専門とする研究者・フリーランス。  
+AI・機械学習を研究ツールとして活用し、自然界の水の動きをコードで解き明かすことを追求している。
+
+### 専門分野
+- 🌊 地下水流動解析（MODFLOW / FloPy）
+- ⚗️ 地化学モデリング（PHREEQC）
+- 💧 水文学
+- 🤖 AI・機械学習の研究応用
+
+### スキル・ツール
+Python · GitHub · MODFLOW · PHREEQC · AI Tools
+
+### 言語
+日本語 · 한국어 · English
+
+---
+
+## 한국어
+
+### 프로필
+
+지하수 유동 해석・지구화학 모델링・수문학을 전문으로 하는 연구자 겸 프리랜서.  
+AI・머신러닝을 연구 도구로 활용하여 자연계의 물의 움직임을 코드로 규명하는 것을 추구한다.
+
+### 전문 분야
+- 🌊 지하수 유동 해석（MODFLOW / FloPy）
+- ⚗️ 지구화학 모델링（PHREEQC）
+- 💧 수문학
+- 🤖 AI・머신러닝의 연구 응용
+
+### 스킬・툴
+Python · GitHub · MODFLOW · PHREEQC · AI Tools
+
+### 언어
+日本語 · 한국어 · English
+
+---
+
+## English
+
+### Profile
+
+Researcher and freelance specialist in groundwater flow analysis,  
+geochemical modeling, and hydrology.  
+Passionate about decoding the movement of water in nature through code and AI.
+
+### Expertise
+- 🌊 Groundwater Flow Analysis（MODFLOW / FloPy）
+- ⚗️ Geochemical Modeling（PHREEQC）
+- 💧 Hydrology
+- 🤖 AI & Machine Learning for Research
+
+### Skills & Tools
+Python · GitHub · MODFLOW · PHREEQC · AI Tools
+
+### Languages
+日本語 · 한국어 · English
+
+:::

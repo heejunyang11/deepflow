@@ -1,0 +1,49 @@
+---
+title: "地下水流動解析入門：MODFLOWとFloPyの基本"
+date: "2026-04-02"
+author: "DeepFlow"
+categories: [groundwater, MODFLOW, Python]
+description: "地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門"
+image: "image.png"
+---
+
+## はじめに
+
+地下水流動解析とは、地下の水がどのように動いているかを
+数値モデルで再現する技術です。
+
+代表的なソフトウェアとして **MODFLOW**（米国地質調査所開発）があり、
+Pythonライブラリ **FloPy** を使うことでコードからモデルを操作できます。
+
+## MODFLOWとは
+
+- 米国地質調査所（USGS）が開発した地下水流動モデル
+- 世界中の研究・実務で使われている標準ツール
+- FloPyを使えばPythonから完全に操作可能
+
+## 簡単なコード例
+```python
+import flopy
+
+# モデル作成
+mf = flopy.modflow.Modflow('tutorial', exe_name='mflow')
+
+# グリッド設定
+dis = flopy.modflow.ModflowDis(
+    mf, 
+    nlay=1,   # 層数
+    nrow=10,  # 行数
+    ncol=10,  # 列数
+    delr=100, # 列方向の格子幅（m）
+    delc=100  # 行方向の格子幅（m）
+)
+
+print("モデル作成完了！")
+```
+
+## まとめ
+
+FloPyを使うことで、地下水流動モデルの構築から
+結果の可視化まですべてPythonで完結できます。
+
+次回は境界条件の設定について解説します。
