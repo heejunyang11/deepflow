@@ -86,12 +86,6 @@ pip install phreeqpy
 pip install numpy matplotlib
 ```
 
-::: {.callout-important}
-## MODFLOW 6実行ファイルについて
-
-`flopy` はPythonラッパーであり、実際の計算には **MODFLOW 6の実行ファイル**（`mf6.exe`）が必要。[USGS公式サイト](https://water.usgs.gov/water-resources/software/MODFLOW-6/)からダウンロードし、作業ディレクトリに配置すること。
-:::
-
 ::: {.callout-tip}
 ## PHREEQCデータベースについて
 
