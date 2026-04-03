@@ -109,10 +109,5 @@ document.getElementById('word-list').innerHTML = v.words.map(w => `
   </div>
 `).join('');
 
-const prompt = encodeURIComponent(
-  `以下の英語聖句の単語・文法・背景を日本語で詳しく解説してください。\n\n"${v.text}"\n（${v.ref}）`
-);
-document.getElementById('claude-link').href = 'https://claude.ai/new?q=' + prompt;
-document.getElementById('chatgpt-link').href = 'https://chatgpt.com/?q=' + prompt;
 </script>
 ```

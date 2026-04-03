@@ -11,8 +11,8 @@ website:
         text: Home
       - href: series.qmd
         text: Series
-      - href: bible.qmd
-        text: Bible
+      - href: english.qmd
+        text: English
       - href: about.qmd
         text: About
     right:
