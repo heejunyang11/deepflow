@@ -1,0 +1,464 @@
+---
+title: "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編"
+date: 2026-04-02
+categories: [groundwater, python, modflow, geochemistry, simulation, visualization]
+series: "熱水地球化学シミュレーション"
+description: "カップリングシミュレーションで得られたデータを読み解く。破過曲線・鉱物量の空間プロファイル・飽和指数をmatplotlibで可視化し、入口と出口で何が起きているかを解析する。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## 数字を「見える化」する意味
+
+第2回でカップリングループを動かし、`results` 辞書にデータが蓄積された。しかし数値の羅列だけでは、カラムの中で何が起きているかは見えてこない。
+
+> 地球化学シミュレーションの醍醐味は、**反応フロントがカラムを移動する様子**を時空間でとらえることだ。
+
+今回は以下の3種類の可視化を実装する：
+
+| 可視化 | 横軸 | 縦軸 | 何がわかるか |
+|---|---|---|---|
+| **破過曲線** | 時間 [h] | pH・濃度 | 入口 vs 出口の反応の「遅れ」 |
+| **空間プロファイル** | セル位置 [m] | 鉱物量変化 | どこで溶解・沈殿が進んでいるか |
+| **飽和指数（SI）** | 時間 [h] | SI値 | 溶解か沈殿かの判定 |
+
+---
+
+## 観測ポイントの設計
+
+### 入口 vs 出口
+
+カラムの2点を重点的に観測する：
+
+```
+入口 [Cell 1]                        出口 [Cell 15]
+    │                                     │
+    ▼                                     ▼
+新鮮な熱水が                        岩石と24時間
+岩石に接触する                       反応した後の流体
+「反応最前線」                       「反応済み流体」
+```
+
+この2点を比較することで、**反応の空間的な進行**と**時間的な遅れ（ラグ）**が明確になる。
+
+### SELECTED_OUTPUT の解釈
+
+第2回で設定した `SELECTED_OUTPUT` の出力列を整理しておく：
+
+```python
+# SELECTED_OUTPUT が出力する列（インデックスは 0 始まり）
+# [0] sim_time  : シミュレーション時刻 [s]
+# [1] cell_no   : セル番号
+# [2] pH        : pH
+# [3] Na+       : Na+ 濃度 [mol/kgw]
+# [4] Ca+2      : Ca²⁺ 濃度 [mol/kgw]
+# [5] K+        : K⁺ 濃度 [mol/kgw]
+# [6] Si(OH)4   : Si 濃度 [mol/kgw]
+# [7] SI_Calcite: 方解石の飽和指数
+# [8] SI_Quartz : 石英の飽和指数
+# [9] Calcite   : 方解石の残存鉱物量 [mol]
+```
+
+---
+
+## データの整形
+
+可視化の前に、`iph.get_selected_output_array()` の生データを扱いやすい形に整形する。
+
+```python
+import numpy as np
+import pandas as pd
+
+def parse_selected_output(iph, N: int) -> pd.DataFrame:
+    """
+    PHREEQC の SELECTED_OUTPUT を DataFrame に変換する。
+
+    Returns
+    -------
+    df : 列 = [time_h, cell, pH, Na, Ca, K, Si, SI_Calcite, SI_Quartz, mol_Calcite]
+    """
+    raw = iph.get_selected_output_array()
+
+    # ヘッダー行を除いたデータ部分を取得
+    data = np.array(raw[1:], dtype=float)
+
+    df = pd.DataFrame(data, columns=[
+        "time_s", "cell", "pH",
+        "Na", "Ca", "K", "Si",
+        "SI_Calcite", "SI_Quartz",
+        "mol_Calcite",
+    ])
+
+    # 時間を秒から時間に変換
+    df["time_h"] = df["time_s"] / 3600.0
+
+    return df
+
+
+# --- 実行 ---
+df = parse_selected_output(iph, N)
+
+# 入口・出口のデータを分離
+df_in  = df[df["cell"] == 1].copy()    # Cell 1：入口
+df_out = df[df["cell"] == N].copy()    # Cell N：出口
+
+print(f"データ行数：{len(df)}")
+print(df.head())
+```
+
+---
+
+## 可視化 1：破過曲線（pH の時間変化）
+
+**破過曲線（Breakthrough Curve）**は、出口での濃度や pH が時間とともにどう変化するかを示す。入口と出口を重ねることで「反応の遅れ」が一目でわかる。
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+# --- スタイル設定（DeepFlow ダークテーマ） ---
+plt.style.use("dark_background")
+ACCENT_BLUE  = "#4FC3F7"
+ACCENT_AMBER = "#FFB74D"
+GRID_COLOR   = "#2a2a3e"
+BG_COLOR     = "#0d1117"
+
+fig, ax = plt.subplots(figsize=(10, 5), facecolor=BG_COLOR)
+ax.set_facecolor(BG_COLOR)
+
+# 入口 pH
+ax.plot(
+    df_in["time_h"], df_in["pH"],
+    color=ACCENT_BLUE, linewidth=2.0,
+    label="Cell 1（入口）", zorder=3,
+)
+
+# 出口 pH
+ax.plot(
+    df_out["time_h"], df_out["pH"],
+    color=ACCENT_AMBER, linewidth=2.0,
+    linestyle="--",
+    label=f"Cell {N}（出口）", zorder=3,
+)
+
+# 初期 pH の参照線
+ax.axhline(7.0, color="white", linewidth=0.8, linestyle=":", alpha=0.4,
+           label="初期 pH = 7.0")
+
+# 装飾
+ax.set_xlabel("時間 [h]", fontsize=12, color="white")
+ax.set_ylabel("pH [-]", fontsize=12, color="white")
+ax.set_title("破過曲線：pH の時間変化（入口 vs 出口）",
+             fontsize=14, color="white", pad=15)
+ax.legend(fontsize=11, framealpha=0.3)
+ax.grid(True, color=GRID_COLOR, linewidth=0.8, zorder=0)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(4))
+
+plt.tight_layout()
+plt.savefig("breakthrough_pH.png", dpi=150, bbox_inches="tight",
+            facecolor=BG_COLOR)
+plt.show()
+print("✓ breakthrough_pH.png を保存しました")
+```
+
+### 読み方のポイント
+
+破過曲線から読み取るべき情報は2つある：
+
+**① 定常状態への到達時刻**
+出口の pH が安定する時刻 = 反応フロントがカラム全体を通過した時刻。セル数・流速・反応速度によって変わる。
+
+**② 入口と出口の pH 差（$\Delta$pH）**
+この差が大きいほど、カラム内で活発な反応（溶解・沈殿）が起きていることを示す。方解石溶解が進む場合、出口では pH が上昇する傾向がある。
+
+---
+
+## 可視化 2：鉱物量の空間プロファイル
+
+各セルの方解石残存量を空間方向にプロットすることで、**どこで溶解が最も進んでいるか**が見える。
+
+```python
+def plot_mineral_profile(df: pd.DataFrame, times_h: list, N: int,
+                          dx: float, m0: float):
+    """
+    指定した時刻スナップショットごとに、
+    方解石量の空間プロファイルを描画する。
+
+    Parameters
+    ----------
+    times_h : 描画したい時刻のリスト [h]
+    m0      : 初期鉱物量 [mol]（参照線用）
+    """
+    fig, ax = plt.subplots(figsize=(10, 5), facecolor=BG_COLOR)
+    ax.set_facecolor(BG_COLOR)
+
+    # カラーマップ：時間の経過を青→赤で表現
+    cmap   = plt.cm.coolwarm
+    colors = [cmap(i / (len(times_h) - 1)) for i in range(len(times_h))]
+
+    x_positions = np.arange(1, N + 1) * dx - dx / 2  # セル中心位置 [m]
+
+    for t_h, color in zip(times_h, colors):
+        # 最も近い時刻のデータを抽出
+        t_s   = t_h * 3600
+        df_t  = df.groupby("cell").apply(
+            lambda g: g.iloc[(g["time_s"] - t_s).abs().argsort().iloc[0]]
+        ).reset_index(drop=True)
+
+        ax.plot(
+            x_positions, df_t["mol_Calcite"],
+            color=color, linewidth=1.8,
+            label=f"t = {t_h:.0f} h",
+            marker="o", markersize=4,
+        )
+
+    # 初期鉱物量の参照線
+    ax.axhline(m0, color="white", linewidth=0.8, linestyle=":",
+               alpha=0.5, label=f"初期値 m₀ = {m0:.3f} mol")
+
+    ax.set_xlabel("カラム位置 [m]", fontsize=12, color="white")
+    ax.set_ylabel("方解石残存量 [mol]", fontsize=12, color="white")
+    ax.set_title("方解石量の空間プロファイル（時間スナップショット）",
+                 fontsize=14, color="white", pad=15)
+    ax.legend(fontsize=10, framealpha=0.3, loc="upper right")
+    ax.grid(True, color=GRID_COLOR, linewidth=0.8)
+
+    plt.tight_layout()
+    plt.savefig("mineral_profile.png", dpi=150, bbox_inches="tight",
+                facecolor=BG_COLOR)
+    plt.show()
+    print("✓ mineral_profile.png を保存しました")
+
+
+# 4, 8, 12, 16, 20, 24 時間のスナップショットを描画
+plot_mineral_profile(df, times_h=[4, 8, 12, 16, 20, 24],
+                     N=N, dx=dx, m0=0.010)
+```
+
+### 読み方のポイント
+
+プロファイルの形状は3つのパターンに分類できる：
+
+```
+パターン A：前進型溶解フロント
+  mol  ▲
+       │███████████████╲____
+       │                入口側から溶解が進む
+       └──────────────────▶ 位置
+
+パターン B：均一溶解
+  mol  ▲
+       │╲_______________
+       │ 全体が均等に減少
+       └──────────────────▶ 位置
+
+パターン C：出口側優先溶解
+  mol  ▲
+       │____╲███████████
+       │       流体が十分反応してから溶解
+       └──────────────────▶ 位置
+```
+
+どのパターンが現れるかは、**流速・反応速度・カラム長**のバランスで決まる。
+
+---
+
+## 可視化 3：飽和指数（SI）の時間変化
+
+飽和指数（Saturation Index）は鉱物の溶解・沈殿傾向を示す指標だ：
+
+$$
+SI = \log_{10} \frac{IAP}{K_{sp}}
+$$
+
+| SI 値 | 意味 |
+|---|---|
+| $SI < 0$ | 不飽和 → **溶解**が進む |
+| $SI = 0$ | 平衡状態 |
+| $SI > 0$ | 過飽和 → **沈殿**が進む |
+
+```python
+def plot_saturation_index(df_in: pd.DataFrame, df_out: pd.DataFrame,
+                           mineral: str = "Calcite"):
+    """
+    入口・出口の飽和指数（SI）の時間変化を描画する。
+    """
+    si_col = f"SI_{mineral}"
+
+    fig, ax = plt.subplots(figsize=(10, 5), facecolor=BG_COLOR)
+    ax.set_facecolor(BG_COLOR)
+
+    # SI プロット
+    ax.plot(df_in["time_h"],  df_in[si_col],
+            color=ACCENT_BLUE,  linewidth=2.0, label="Cell 1（入口）")
+    ax.plot(df_out["time_h"], df_out[si_col],
+            color=ACCENT_AMBER, linewidth=2.0, linestyle="--",
+            label=f"Cell {N}（出口）")
+
+    # SI = 0 の参照線（平衡）
+    ax.axhline(0, color="white", linewidth=1.2, linestyle="-", alpha=0.6,
+               label="SI = 0（平衡）")
+
+    # 溶解・沈殿ゾーンの塗り分け
+    y_min, y_max = ax.get_ylim()
+    ax.fill_between(df_in["time_h"], y_min, 0,
+                    alpha=0.08, color=ACCENT_BLUE, label="溶解ゾーン（SI < 0）")
+    ax.fill_between(df_in["time_h"], 0, y_max,
+                    alpha=0.08, color=ACCENT_AMBER, label="沈殿ゾーン（SI > 0）")
+
+    # テキスト注釈
+    ax.text(0.5, -0.3, "← 溶解", color=ACCENT_BLUE,
+            fontsize=10, alpha=0.8)
+    ax.text(0.5,  0.3, "← 沈殿", color=ACCENT_AMBER,
+            fontsize=10, alpha=0.8)
+
+    ax.set_xlabel("時間 [h]", fontsize=12, color="white")
+    ax.set_ylabel(f"飽和指数 SI ({mineral}) [-]", fontsize=12, color="white")
+    ax.set_title(f"{mineral} の飽和指数（SI）時間変化",
+                 fontsize=14, color="white", pad=15)
+    ax.legend(fontsize=10, framealpha=0.3)
+    ax.grid(True, color=GRID_COLOR, linewidth=0.8)
+
+    plt.tight_layout()
+    plt.savefig(f"SI_{mineral}.png", dpi=150, bbox_inches="tight",
+                facecolor=BG_COLOR)
+    plt.show()
+    print(f"✓ SI_{mineral}.png を保存しました")
+
+
+plot_saturation_index(df_in, df_out, mineral="Calcite")
+```
+
+---
+
+## 4グラフを一枚にまとめる
+
+個別プロットに加え、論文・レポート向けに4パネルをまとめた図を作ると便利だ。
+
+```python
+def plot_summary_panel(df_in, df_out, df, N, dx, m0):
+    """
+    pH破過曲線・Ca濃度・SI・鉱物量プロファイルを
+    2×2 パネルにまとめて描画する。
+    """
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10), facecolor=BG_COLOR)
+    fig.suptitle(
+        "熱水カラム実験：24時間シミュレーション結果サマリー\n"
+        "（150℃ / 100 atm / MODFLOW 6 + PHREEQC カップリング）",
+        fontsize=13, color="white", y=1.01,
+    )
+
+    for ax in axes.flat:
+        ax.set_facecolor(BG_COLOR)
+        ax.grid(True, color=GRID_COLOR, linewidth=0.7)
+
+    # --- パネル [0,0]：pH 破過曲線 ---
+    ax = axes[0, 0]
+    ax.plot(df_in["time_h"],  df_in["pH"],
+            color=ACCENT_BLUE,  lw=2, label="入口")
+    ax.plot(df_out["time_h"], df_out["pH"],
+            color=ACCENT_AMBER, lw=2, ls="--", label="出口")
+    ax.axhline(7.0, color="white", lw=0.7, ls=":", alpha=0.4)
+    ax.set_xlabel("時間 [h]"); ax.set_ylabel("pH")
+    ax.set_title("破過曲線（pH）", color="white")
+    ax.legend(fontsize=9)
+
+    # --- パネル [0,1]：Ca²⁺ 濃度 ---
+    ax = axes[0, 1]
+    ax.plot(df_in["time_h"],  df_in["Ca"] * 1e3,
+            color=ACCENT_BLUE,  lw=2, label="入口")
+    ax.plot(df_out["time_h"], df_out["Ca"] * 1e3,
+            color=ACCENT_AMBER, lw=2, ls="--", label="出口")
+    ax.set_xlabel("時間 [h]"); ax.set_ylabel("Ca²⁺ [mmol/kgw]")
+    ax.set_title("Ca²⁺ 濃度の時間変化", color="white")
+    ax.legend(fontsize=9)
+
+    # --- パネル [1,0]：方解石 SI ---
+    ax = axes[1, 0]
+    ax.plot(df_in["time_h"],  df_in["SI_Calcite"],
+            color=ACCENT_BLUE,  lw=2, label="入口")
+    ax.plot(df_out["time_h"], df_out["SI_Calcite"],
+            color=ACCENT_AMBER, lw=2, ls="--", label="出口")
+    ax.axhline(0, color="white", lw=1.0, ls="-", alpha=0.6)
+    ax.set_xlabel("時間 [h]"); ax.set_ylabel("SI（方解石）")
+    ax.set_title("飽和指数（Calcite）", color="white")
+    ax.legend(fontsize=9)
+
+    # --- パネル [1,1]：最終時刻の鉱物量プロファイル ---
+    ax = axes[1, 1]
+    x_pos = np.arange(1, N + 1) * dx - dx / 2
+    df_final = df[df["time_h"] == df["time_h"].max()]
+    ax.bar(x_pos, df_final.groupby("cell")["mol_Calcite"].mean(),
+           width=dx * 0.8, color=ACCENT_BLUE, alpha=0.7)
+    ax.axhline(m0, color=ACCENT_AMBER, lw=1.2, ls="--",
+               label=f"初期値 m₀ = {m0:.3f} mol")
+    ax.set_xlabel("カラム位置 [m]"); ax.set_ylabel("方解石量 [mol]")
+    ax.set_title("最終時刻（t = 24h）の鉱物量分布", color="white")
+    ax.legend(fontsize=9)
+
+    plt.tight_layout()
+    plt.savefig("summary_panel.png", dpi=150, bbox_inches="tight",
+                facecolor=BG_COLOR)
+    plt.show()
+    print("✓ summary_panel.png を保存しました")
+
+
+plot_summary_panel(df_in, df_out, df, N=N, dx=dx, m0=0.010)
+```
+
+---
+
+## 結果の読み方：3つの着眼点
+
+シミュレーション結果を解釈するとき、以下の順序で確認すると整理しやすい。
+
+### ① 定常状態に達しているか？
+
+破過曲線の出口 pH が時間とともに変化し続けているなら、24時間では足りない。`total_time` を延長するか、流速を上げてカラム通過時間を短縮する。
+
+### ② 入口と出口の差は物理的に妥当か？
+
+方解石が溶解すると Ca²⁺ が放出され、pH は上昇する傾向がある。**入口 pH < 出口 pH** かつ **入口 SI < 出口 SI** なら、溶解反応が正しく計算されている。逆の場合は KINETICS の `parm` や `m0` を見直す。
+
+### ③ 数値的なアーティファクトはないか？
+
+pH が急激に振動したり、濃度が負になったりする場合は数値不安定の兆候だ。`step_divide` を大きくするか、`dt`（時間刻み）を小さくして対処する。
+
+---
+
+## 次回予告：応用・考察編
+
+第3回では生データを視覚化する手法を網羅した。
+
+第4回（最終回）では：
+
+- **パラメータ感度解析**：透水係数・反応速度・温度を変えたときの結果の変化
+- **本手法の限界**：何が省略されているか（熱伝導・拡散・不均質性）
+- **実際の研究への応用**：地熱貯留層・CCS・鉱山廃水処理への展開
+
+シリーズ全体の総括として、「次に何をすべきか」の道標を示す。
+
+---
+
+## まとめ：今回実装したこと
+
+| 可視化 | 関数 | 出力ファイル |
+|---|---|---|
+| pH 破過曲線 | `ax.plot()` | `breakthrough_pH.png` |
+| 鉱物量空間プロファイル | `plot_mineral_profile()` | `mineral_profile.png` |
+| 飽和指数（SI） | `plot_saturation_index()` | `SI_Calcite.png` |
+| 4パネルサマリー | `plot_summary_panel()` | `summary_panel.png` |
+
+---
+
+*このシリーズの他の記事：*
+
+- [#1 モデル設計編](../flopy-phreeqc-part1/)
+- [#2 実装編（カップリングの核心）](../flopy-phreeqc-part2/)
+- **#3 解析・可視化編**（本記事）
+- [#4 応用・考察編](../flopy-phreeqc-part4/)  ← 近日公開

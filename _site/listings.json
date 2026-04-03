@@ -3,6 +3,10 @@
     "listing": "/index.html",
     "items": [
       "/posts/flopy-phreeqc-part1/index.html",
+      "/posts/flopy-phreeqc-part2/index.html",
+      "/posts/flopy-phreeqc-part3/index.html",
+      "/posts/flopy-phreeqc-part4/index.html",
+      "/posts/groundwater-darcy/index.html",
       "/posts/Groundwater-intro/index.html"
     ]
   }

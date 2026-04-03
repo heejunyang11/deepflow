@@ -1,0 +1,363 @@
+---
+title: "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）"
+date: 2026-04-02
+categories: [groundwater, python, modflow, geochemistry, simulation, sensitivity]
+series: "熱水地球化学シミュレーション"
+description: "シリーズ最終回。パラメータ感度解析で「何が結果を支配するか」を明らかにし、本手法の限界と現実の地球科学問題への応用可能性を考察する。地熱貯留層・CCS・鉱山廃水処理への展開も見据える。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## シリーズを振り返る
+
+4回にわたるシリーズで、1次元カラムの熱水地球化学シミュレーションをゼロから構築した。
+
+| 回 | テーマ | 核心 |
+|---|---|---|
+| [#1](../flopy-phreeqc-part1/) | モデル設計 | なぜカップリングが必要か・カラムの離散化 |
+| [#2](../flopy-phreeqc-part2/) | 実装 | Darcy流速の受け渡し・Courant条件・KINETICS |
+| [#3](../flopy-phreeqc-part3/) | 可視化 | 破過曲線・空間プロファイル・SI |
+| **#4（本回）** | **応用・考察** | **感度解析・限界・現実問題への展開** |
+
+最終回では「モデルをより深く理解する」ことに集中する。コードを動かすだけでなく、**結果がどのパラメータに敏感で、何が省略されているか**を把握することが、研究への応用に不可欠だ。
+
+---
+
+## パラメータ感度解析
+
+### なぜ感度解析が必要か
+
+シミュレーションには必ず不確実性を持つ入力パラメータがある。感度解析とは、**あるパラメータを変化させたとき、出力（pH・鉱物量など）がどれだけ変わるか**を系統的に調べることだ。
+
+> 感度が高いパラメータ = フィールド観測・実験で優先的に決定すべき値
+
+本シリーズのモデルでは、以下の3パラメータが特に重要だ：
+
+| パラメータ | 記号 | 基準値 | 調査範囲 |
+|---|---|---|---|
+| 透水係数 | $K$ | $1.0 \times 10^{-5}$ m/s | $10^{-6}$ 〜 $10^{-4}$ |
+| 比表面積（KINETICS） | `parm` | 100 cm²/mol | 10 〜 1000 |
+| 温度 | $T$ | 150 ℃ | 100 〜 200 |
+
+### 感度解析の実装
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from itertools import product
+
+# --- 基準パラメータ ---
+BASE_PARAMS = {
+    "K":    1.0e-5,   # 透水係数 [m/s]
+    "parm": 100.0,    # 比表面積 [cm²/mol]
+    "temp": 150.0,    # 温度 [℃]
+}
+
+# --- 変化範囲（基準値に対する倍率） ---
+FACTORS = [0.1, 0.5, 1.0, 2.0, 10.0]
+
+def run_sensitivity(param_name: str, factors: list,
+                    base_params: dict) -> dict:
+    """
+    1パラメータを変化させ、24h後の出口 pH を記録する。
+
+    Returns
+    -------
+    {"values": [...], "pH_out_24h": [...]}
+    """
+    results = {"values": [], "pH_out_24h": []}
+
+    for f in factors:
+        params = base_params.copy()
+        params[param_name] = base_params[param_name] * f
+
+        # --- ここで実際のシミュレーションを呼び出す ---
+        # （第1〜3回のコードを関数化してまとめた run_full_sim() を想定）
+        pH_final = run_full_sim(
+            K=params["K"],
+            parm=params["parm"],
+            temp=params["temp"],
+        )
+
+        results["values"].append(params[param_name])
+        results["pH_out_24h"].append(pH_final)
+
+    return results
+
+
+def plot_sensitivity(sens_results: dict, param_label: str,
+                     base_val: float):
+    """
+    感度解析の結果を折れ線グラフで表示する。
+    """
+    BG_COLOR   = "#0d1117"
+    ACCENT     = "#4FC3F7"
+    GRID_COLOR = "#2a2a3e"
+
+    fig, ax = plt.subplots(figsize=(8, 5), facecolor=BG_COLOR)
+    ax.set_facecolor(BG_COLOR)
+
+    ax.plot(sens_results["values"], sens_results["pH_out_24h"],
+            color=ACCENT, linewidth=2.2,
+            marker="o", markersize=7, zorder=3)
+
+    # 基準値の縦線
+    ax.axvline(base_val, color="white", linewidth=1.0,
+               linestyle="--", alpha=0.5, label=f"基準値 = {base_val}")
+
+    ax.set_xscale("log")
+    ax.set_xlabel(param_label, fontsize=12, color="white")
+    ax.set_ylabel("出口 pH（t = 24 h）", fontsize=12, color="white")
+    ax.set_title(f"感度解析：{param_label} vs 出口 pH",
+                 fontsize=13, color="white", pad=12)
+    ax.legend(fontsize=10, framealpha=0.3)
+    ax.grid(True, color=GRID_COLOR, linewidth=0.8)
+
+    plt.tight_layout()
+    plt.savefig(f"sensitivity_{param_label}.png", dpi=150,
+                bbox_inches="tight", facecolor=BG_COLOR)
+    plt.show()
+
+
+# --- 各パラメータの感度解析を実行 ---
+for key, label in [("K", "透水係数 K [m/s]"),
+                    ("parm", "比表面積 parm [cm²/mol]"),
+                    ("temp", "温度 T [℃]")]:
+    res = run_sensitivity(key, FACTORS, BASE_PARAMS)
+    plot_sensitivity(res, label, BASE_PARAMS[key])
+```
+
+### 感度解析の結果：何が支配的か
+
+典型的な熱水カラム実験では、以下の傾向が現れる：
+
+```
+感度の大きさ（概念図）
+
+高  ▲
+    │  ██ 比表面積 (parm)
+    │  ██
+    │  ██ ██ 温度 (temp)
+    │        ██
+    │           ██ 透水係数 (K)
+低  └─────────────────────────▶
+```
+
+**比表面積（`parm`）が最も感度が高い**ことが多い。これは鉱物と流体の接触面積が反応速度を直接支配するためだ。一方、透水係数は流速を通じて間接的に影響するが、Courant条件で時間刻みが自動調整されるため、影響は相対的に小さい。
+
+::: {.callout-important}
+## フィールド適用への示唆
+
+感度が高いパラメータほど、現地計測や室内実験で精度よく決定する必要がある。比表面積は岩石試料の BET 測定（ガス吸着法）で、温度は坑井検層で決定するのが現実的だ。
+:::
+
+---
+
+## 本手法の限界
+
+正直に限界を把握することは、モデルを適切に使う上で最も重要なことだ。本シリーズのモデルには4つの主要な省略がある。
+
+### 省略 1：熱輸送の無視
+
+本モデルでは温度を**一定値（150℃）**として固定した。現実の熱水系では、流体の流入によって温度場が変化し、それが反応速度・溶解度・粘性に影響する。
+
+**改善方向**：MODFLOWの **GWE（Groundwater Energy Transport）パッケージ** と組み合わせることで、熱・流動・反応の3連成シミュレーションが可能になる。
+
+### 省略 2：分散・拡散の無視
+
+第2回で解説したように、本モデルは**移流のみ**（完全上流差分）を考慮し、水力学的分散と分子拡散を省略している。
+
+$$
+\frac{\partial C}{\partial t} = \underbrace{-v \frac{\partial C}{\partial x}}_{\text{移流（実装済み）}}
++ \underbrace{D_L \frac{\partial^2 C}{\partial x^2}}_{\text{分散（省略）}}
++ \underbrace{R}_{\text{反応（実装済み）}}
+$$
+
+低流速・長距離のシミュレーションでは分散の影響が無視できなくなる。PHREEQCのTRANSPORTブロックには `-dispersivity` オプションがあり、縦分散長を指定できる。
+
+### 省略 3：不均質性の簡略化
+
+本モデルでは透水係数 $K$ を全セルで均一とした（均質・等方）。実際の地層は強い不均質性を持ち、高透水ゾーンに流れが集中する**チャネリング**が地球化学反応の分布を大きく変える。
+
+### 省略 4：複数鉱物系の単純化
+
+本シリーズでは方解石（Calcite）1種のみを扱った。熱水系では石英（Quartz）、長石類、粘土鉱物などが同時に反応し、相互に影響し合う。複数鉱物の同時反応は PHREEQCで対応可能だが、パラメータの不確実性が増大する。
+
+---
+
+## 現実問題への応用
+
+本手法は基礎的な1次元検証モデルだが、以下の応用分野への展開が現実的だ。
+
+### 応用 1：地熱貯留層のスケーリング予測
+
+```
+問題：地熱発電の坑井内・生産配管での鉱物スケール（方解石・シリカ）
+↓
+本手法の応用：
+  - 貯留層温度・圧力条件での SI 計算
+  - 生産水が地表に向かって冷却・減圧する過程での沈殿挙動
+  - スケール抑制剤の投入タイミング最適化
+```
+
+拡張に必要な追加要素：
+
+```python
+# 圧力変化に伴う CO₂ 脱ガスのモデル化（例）
+degas_script = """
+GAS_PHASE 1
+    -fixed_pressure
+    -pressure  {p_atm}
+    CO2(g)  {co2_partial_pressure}
+"""
+```
+
+### 応用 2：CCS（地中CO₂貯留）の鉱物トラッピング
+
+CO₂ を地中に圧入すると、溶解した CO₂ が岩石と反応して炭酸塩鉱物として固定される（**鉱物トラッピング**）。
+
+```
+CO₂(aq) + Ca²⁺ → CaCO₃（方解石）+ 2H⁺
+```
+
+本手法を拡張することで、**CO₂ 圧入から鉱物固定完了までの時間スケール**を評価できる。PHREEQCの `EQUILIBRIUM_PHASES` に CO₂(g) を加えるだけで対応可能だ。
+
+### 応用 3：酸性鉱山廃水（AMD）の中和シミュレーション
+
+廃鉱山から流出する酸性水（pH 2〜4）が石灰岩層を通過するときの中和過程は、本シリーズのモデルと本質的に同じ構造だ。温度条件を常温（25℃）に変え、`phreeqc.dat` データベースに切り替えるだけで対応できる。
+
+```python
+# AMD 向けの設定変更例
+solution_amd = """
+SOLUTION 1  酸性鉱山廃水
+    temp     25
+    pressure 1
+    pH       2.5
+    Fe       5.0e-3   # 溶存鉄（高濃度）
+    SO4      1.0e-2   # 硫酸イオン
+    Al       2.0e-3
+    units    mol/kgw
+"""
+```
+
+---
+
+## モデル拡張のロードマップ
+
+本シリーズのモデルを出発点として、段階的に複雑さを増す拡張パスを示す。
+
+```
+Level 0（本シリーズ）
+  1D カラム・均質・単一鉱物・等温・移流のみ
+         │
+         ▼
+Level 1：物理的拡張
+  + 分散・拡散（dispersivity）
+  + 温度変化（GWE パッケージ）
+         │
+         ▼
+Level 2：地球化学的拡張
+  + 複数鉱物系（Quartz, Feldspar, Clay）
+  + イオン交換・表面錯体形成
+         │
+         ▼
+Level 3：空間的拡張
+  1D → 2D/3D（MODFLOW の多層モデル）
+  均質 → 不均質（確率的パラメータ場）
+         │
+         ▼
+Level 4：実データ同化
+  現地観測データとのキャリブレーション
+  アンサンブル逆解析（PEST, iES）
+```
+
+---
+
+## シリーズ全体のコード構成
+
+4回分のコードを整理すると、プロジェクト構造は以下のようになる：
+
+```
+flopy-phreeqc/
+│
+├── main.py                  # エントリーポイント（全ステップを統合）
+│
+├── setup/
+│   ├── check_env.py         # 実行ファイル・DB の存在確認
+│   └── modflow_model.py     # MODFLOW 6 モデル構築（#1）
+│
+├── coupling/
+│   ├── extract_velocity.py  # Darcy 流速の抽出（#2）
+│   ├── courant.py           # Courant 条件計算（#2）
+│   └── phreeqc_init.py      # PHREEQC 初期化・KINETICS（#2）
+│
+├── analysis/
+│   ├── parse_output.py      # SELECTED_OUTPUT の整形（#3）
+│   └── plot.py              # 各種可視化関数（#3）
+│
+├── sensitivity/
+│   └── sensitivity.py       # パラメータ感度解析（#4）
+│
+├── mf6.exe                  # MODFLOW 6 実行ファイル
+└── llnl.dat                 # PHREEQC データベース
+```
+
+`main.py` は各モジュールを順番に呼び出すだけのシンプルな構造にしておくと、後から拡張しやすい：
+
+```python
+# main.py
+from setup.check_env import check_required_files
+from setup.modflow_model import build_and_run_modflow
+from coupling.extract_velocity import get_darcy_velocity
+from coupling.courant import compute_timestep
+from coupling.phreeqc_init import initialize_phreeqc, run_coupling_loop
+from analysis.parse_output import parse_selected_output
+from analysis.plot import plot_summary_panel
+
+def main():
+    check_required_files()
+
+    gwf, sim_name = build_and_run_modflow()
+    v_darcy       = get_darcy_velocity(sim_name)
+    dt, n_steps   = compute_timestep(v_darcy)
+
+    iph = initialize_phreeqc()
+    iph = run_coupling_loop(iph, v_darcy, dt, n_steps)
+
+    df = parse_selected_output(iph, N=15)
+    plot_summary_panel(df)
+
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+## おわりに
+
+4回のシリーズを通じて、**MODFLOW 6 と PHREEQC を Python でつなぐ**という地球化学シミュレーションの核心を実装した。
+
+改めて各回のエッセンスを一言でまとめると：
+
+- **#1**：「なぜカップリングか」― 流動だけでは足りない、反応を組み込む意義
+- **#2**：「Darcy流速を橋渡しする」― Courant条件という数値安定性の鍵
+- **#3**：「破過曲線で時空間を読む」― 数字から現象を見る技術
+- **#4**：「限界を知り、先を見る」― モデルを正しく使うための誠実さ
+
+このシリーズが、地下水・地熱・CCS・環境修復のシミュレーションに取り組む誰かの出発点になれば嬉しい。
+
+コードへのフィードバック・改善提案は [GitHub Issues](https://github.com/) でお待ちしています。
+
+---
+
+*このシリーズの全記事：*
+
+- [#1 モデル設計編](../flopy-phreeqc-part1/)
+- [#2 実装編（カップリングの核心）](../flopy-phreeqc-part2/)
+- [#3 解析・可視化編](../flopy-phreeqc-part3/)
+- **#4 応用・考察編**（本記事）

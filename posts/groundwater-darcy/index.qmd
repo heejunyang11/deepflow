@@ -1,0 +1,290 @@
+---
+title: "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル"
+date: "2026-04-02"
+categories: [groundwater, MODFLOW, Python]
+description: "地下水流動の基本である「ダルシーの法則」の理論と、FloPy（MODFLOW 6）を用いた1次元モデルによる再現方法を解説します。"
+image: "image.png"
+author: "DeepFlow"
+execute:
+  enabled: false
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## 1. はじめに：地下水はどのように流れるのか？
+
+地下水モデリングを学ぶ上で、最初に理解すべき最も重要な原則が**「ダルシーの法則（Darcy's Law）」**です。
+1856年、フランスの技術者アンリ・ダルシーは、砂を詰めた円筒に水を流す実験を行い、「水を通しやすさ（透水係数）」と「水位の差（動水勾配）」が水の流れる量に比例することを発見しました。
+
+今回は、この基本法則を数式で確認した後、Pythonライブラリの**FloPy**を使ってMODFLOW 6上で実際に再現してみます。
+
+::: {.callout-important}
+## 事前準備：MODFLOW 6実行ファイルが必要です
+
+`flopy` はPythonのラッパーライブラリであり、実際の計算には **MODFLOW 6の実行ファイル**（`mf6` または `mf6.exe`）が別途必要です。[USGS公式サイト](https://water.usgs.gov/water-resources/software/MODFLOW-6/)からダウンロードし、作業ディレクトリ（`./model_ws/`）に配置してください。初心者がつまずく最初のポイントです。
+:::
+
+## 2. ダルシーの法則の基本式
+
+ダルシーの法則は、以下の数式で表されます。
+
+$$
+Q = -K \cdot A \cdot \frac{\Delta h}{\Delta l}
+$$
+
+各パラメータの意味は以下の通りです：
+
+- **$Q$**：流量（$m^3/day$）― 単位時間あたりに流れる水の量
+- **$K$**：透水係数（$m/day$）― 地層の水を通しやすさ
+- **$A$**：断面積（$m^2$）― 水が流れる面の広さ
+- **$\frac{\Delta h}{\Delta l}$**：動水勾配（無次元）― 距離 $\Delta l$ の間に水位がどれだけ変化するか。水は高いところから低いところへ流れるためマイナスがつく
+
+また、断面積 $A$ で割った「比流量（Darcy流速）」$q$（m/day）は次のように表されます。
+
+$$
+q = -K \frac{dh}{dl}
+$$
+
+## 3. FloPyで再現する仮想実験
+
+理論を学んだところで、MODFLOW 6を使って実際にモデルを作ってみます。
+
+**モデルの設定**
+
+- 長さ 100 m の1次元カラム（10 m × 10 m のセルが10個）
+- 透水係数（$K$） = 10 m/day
+- 左端（col 0）の水位 = 10 m に固定
+- 右端（col 9）の水位 = 5 m に固定
+
+### 手計算での予測
+
+$$
+q = -K \frac{\Delta h}{\Delta l} = -10 \times \frac{5 - 10}{100} = 0.5 \text{ m/day}
+$$
+
+これをFloPyで確認します。ただし、**この手計算とMODFLOWの数値解を正確に比較するには、重要な注意点がある**。次のセクションで詳しく説明する。
+
+## 4. FloPyによるコーディング
+
+```{python}
+import flopy
+import numpy as np
+import matplotlib.pyplot as plt
+from pathlib import Path
+
+# 1. ワークスペースとシミュレーションの設定
+name = "darcy_1d"
+ws = Path("./model_ws")
+ws.mkdir(exist_ok=True)
+
+sim = flopy.mf6.MFSimulation(sim_name=name, sim_ws=str(ws), exe_name="mf6")
+
+# 2. 時間設定（定常流）
+tdis = flopy.mf6.ModflowTdis(
+    sim,
+    time_units="DAYS",
+    perioddata=[(1.0, 1, 1.0)],
+)
+
+# 3. ソルバーの設定
+ims = flopy.mf6.ModflowIms(sim, complexity="SIMPLE")
+
+# 4. 地下水流動モデルの作成
+gwf = flopy.mf6.ModflowGwf(sim, modelname=name, save_flows=True)
+
+# 5. 空間離散化（DIS）: 1層, 1行, 10列
+Lx = 100.0
+nlay, nrow, ncol = 1, 1, 10
+delr = Lx / ncol   # セル幅 = 10 m
+delc = 10.0
+top  = 15.0
+botm = 0.0
+
+dis = flopy.mf6.ModflowGwfdis(
+    gwf,
+    nlay=nlay, nrow=nrow, ncol=ncol,
+    delr=delr, delc=delc,
+    top=top, botm=botm,
+)
+
+# 6. 透水係数（NPF）
+k = 10.0
+npf = flopy.mf6.ModflowGwfnpf(gwf, k=k)
+
+# 7. 初期条件（IC）
+ic = flopy.mf6.ModflowGwfic(gwf, strt=10.0)
+
+# 8. 境界条件（CHD: 固定水頭）
+#    ※ CHD はセルに水頭を与える（境界面ではない）→ 後述
+chd_spd = [[(0, 0, 0), 10.0], [(0, 0, ncol - 1), 5.0]]
+chd = flopy.mf6.ModflowGwfchd(
+    gwf,
+    stress_period_data=chd_spd,
+    save_flows=True,   # ← 流量も budget に出力
+)
+
+# 9. 出力制御（OC）
+oc = flopy.mf6.ModflowGwfoc(
+    gwf,
+    head_filerecord=f"{name}.hds",
+    budget_filerecord=f"{name}.cbc",
+    saverecord=[("HEAD", "ALL"), ("BUDGET", "ALL")],
+)
+
+# 10. モデルの書き出しと実行
+sim.write_simulation()
+success, buff = sim.run_simulation()
+if not success:
+    raise RuntimeError("MODFLOW 6 の実行に失敗しました。mf6.exe の配置を確認してください。")
+```
+
+## 5. 【重要】CHDはセル中心に水頭を与える
+
+コードを走らせる前に、**数値モデルと手計算の比較で必ずつまずくポイント**を理解しておこう。
+
+### CHDパッケージの仕組み
+
+MODFLOW 6の`CHD`（Constant Head）パッケージは、「境界面」ではなく**セルそのものに固定水頭を与える**。つまり、水頭が定義されるのはセルの物理的な中心点だ。
+
+```
+セル幅 delr = 10 m のとき：
+
+  col 0 のセル中心：x = 5 m   ← h = 10 m が与えられる
+  col 9 のセル中心：x = 95 m  ← h = 5 m が与えられる
+```
+
+このモデルの「実際のカラム長」は 100 m だが、**水頭の境界条件が与えられているのは x = 5 m と x = 95 m の間**、すなわち 90 m の区間だ。
+
+### 手計算との比較でズレが生じる理由
+
+| | 距離 Δl | 比流量 q |
+|---|---|---|
+| 手計算（解析解） | 100 m（カラム全長） | −10 × (−5/100) = **0.500 m/day** |
+| MODFLOWの数値解 | 90 m（セル中心間） | −10 × (−5/90) ≈ **0.556 m/day** |
+
+差は約11%。「手計算と一致した」とは言えない。
+
+::: {.callout-note}
+## なぜ 90 m になるのか
+
+`delr = 10 m`（各セルの幅）で10セルのとき：
+
+- col 0 の中心位置：$x = \frac{10}{2} = 5$ m
+- col 9 の中心位置：$x = 100 - \frac{10}{2} = 95$ m
+- セル中心間の距離：$95 - 5 = 90$ m
+
+セルを増やすほどセル中心は境界面に近づき、数値解は解析解に収束していく。これを**空間離散化誤差**と呼ぶ。
+:::
+
+### 正しい比較の方法：2つのアプローチ
+
+**アプローチ① セル中心ベースで手計算する**
+
+```python
+# セル中心ベースの比流量
+q_cell_center = -k * (head[0, 0, -1] - head[0, 0, 0]) / ((ncol - 1) * delr)
+print(f"セル中心ベースの比流量: {q_cell_center:.4f} m/day")
+# → 0.5556 m/day（MODFLOWの内部計算と一致）
+```
+
+**アプローチ② セル数を増やして収束を確認する**
+
+```python
+# セル数を変えて比流量の収束を確認
+for n in [10, 20, 50, 100]:
+    dx = Lx / n
+    # ... モデルを再構築・実行 ...
+    q = -k * (h[-1] - h[0]) / ((n - 1) * dx)
+    print(f"ncol={n:4d}: q = {q:.4f} m/day")
+
+# ncol=  10: q = 0.5556 m/day  ← 0.5から11%ズレ
+# ncol=  20: q = 0.5263 m/day  ← 0.5から5%ズレ
+# ncol=  50: q = 0.5102 m/day  ← 0.5から2%ズレ
+# ncol= 100: q = 0.5051 m/day  ← 0.5から1%ズレ（解析解に収束）
+```
+
+セル数を10倍にするほど誤差は約1/10に減る。これが空間収束性（spatial convergence）だ。
+
+## 6. 結果の可視化
+
+```{python}
+# 水位データの読み込み
+head = gwf.output.head().get_data()
+
+# プロット（DeepFlowダークテーマ）
+x_centers = np.linspace(delr / 2, Lx - delr / 2, ncol)
+
+plt.figure(figsize=(8, 4))
+ax = plt.gca()
+ax.set_facecolor('#0F172A')
+plt.gcf().patch.set_facecolor('#0F172A')
+
+plt.plot(x_centers, head[0, 0, :],
+         marker='o', color='#38BDF8',
+         linestyle='-', linewidth=2, label='MODFLOW 水頭（セル中心）')
+
+# 解析解の直線（x=0〜100 の全域）
+x_analytic = np.array([0, 100])
+h_analytic  = np.array([10, 5])
+plt.plot(x_analytic, h_analytic,
+         color='#F97316', linestyle='--', linewidth=1.5,
+         label='解析解（境界面ベース）', alpha=0.8)
+
+# セル中心の境界位置を示す縦線
+plt.axvline(x=5,  color='#38BDF8', linestyle=':', alpha=0.5, linewidth=1)
+plt.axvline(x=95, color='#38BDF8', linestyle=':', alpha=0.5, linewidth=1)
+
+plt.title("水頭分布（ダルシー1D）", color='white')
+plt.xlabel("Distance x [m]", color='white')
+plt.ylabel("Head [m]", color='white')
+plt.legend(fontsize=9, framealpha=0.3)
+plt.grid(color='#475569', linestyle='--', alpha=0.5)
+ax.tick_params(colors='white')
+for spine in ax.spines.values():
+    spine.set_edgecolor('#475569')
+
+plt.tight_layout()
+plt.show()
+```
+
+グラフでは、MODFLOW の点列（青）と解析解の直線（オレンジ破線）がわずかにずれていることが確認できる。解析解はカラムの端（x = 0、x = 100）に境界条件を持つが、MODFLOWはセル中心（x = 5、x = 95）に境界を置いているためだ。
+
+## 7. 流量の確認（budget）
+
+水頭分布だけでなく、実際の流量も budget から確認しよう。
+
+```{python}
+import flopy.utils.binaryfile as bf
+
+# Cell Budget File から CHD 流量を取得
+cbc = gwf.output.budget()
+chd_flux = cbc.get_data(text='CHD', totim=1.0)[0]
+
+q_in  = chd_flux[chd_flux['q'] > 0]['q'].sum()   # 入口（正の流量）
+q_out = chd_flux[chd_flux['q'] < 0]['q'].sum()   # 出口（負の流量）
+
+print(f"CHD 流入量:  {q_in:.4f} m³/day")
+print(f"CHD 流出量: {q_out:.4f} m³/day")
+print(f"収支誤差:    {abs(q_in + q_out):.2e} m³/day")
+```
+
+入流量と出流量の絶対値が一致し、収支誤差が極めて小さければ、モデルが正しく動作している証拠だ。
+
+## 8. まとめ
+
+| 確認項目 | 結果 |
+|---|---|
+| 水頭分布 | 一定勾配で低下 → ダルシー則の基本挙動を再現 |
+| 比流量（セル中心ベース） | ≈ 0.556 m/day |
+| 比流量（解析解、100 m） | 0.500 m/day |
+| 差異の原因 | CHDはセル中心に境界を置く → 実効距離が 90 m |
+| 対策 | セル数を増やすほど解析解に収束（空間収束性） |
+
+::: {.callout-tip}
+## 学びのポイント
+
+数値モデルと解析解を比較するとき、**「境界条件がどこに置かれているか」を常に意識すること**。これはMODFLOWに限らず、有限差分法・有限要素法すべてに共通する重要な概念だ。次の記事では、より複雑な2次元モデルや井戸揚水を追加していく。
+:::

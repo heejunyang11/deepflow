@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "DeepFlow",
     "section": "",
-    "text": "SCIENCE · CODE · INSIGHT\n  \n  \n  \n    Groundwater\n    Geochemistry\n    Hydrology\n    AI & Python\n    MODFLOW\n    PHREEQC\n  \n\n環境問題や水資源の評価に役立つ地下水・地球化学解析（MODFLOW, PHREEQC）と、Python・AIを用いたデータ分析のノウハウを共有します。\n科学・コード・多様な観点で、水の世界を探求するサイトです。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編\n\n\n\ngroundwater\n\npython\n\nmodflow\n\ngeochemistry\n\nsimulation\n\n\n\nMODFLOW 6（Flopy）とPHREEQC（phreeqpy）をPythonでカップリングし、1次元カラムの熱水流動と地球化学反応を統合解析するシリーズ。第1回はなぜこのカップリングが必要なのか、モデル全体の設計思想と構成を解説する。\n\n\n\n\n\n2026/04/03\n\n\nDeepFlow\n\n\n\n\n\n\n\n\n\n\n\n\n地下水流動解析入門：MODFLOWとFloPyの基本\n\n\n\ngroundwater\n\nMODFLOW\n\nPython\n\n\n\n地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門\n\n\n\n\n\n2026/04/02\n\n\nDeepFlow\n\n\n\n\n\n一致なし"
+    "text": "SCIENCE · CODE · INSIGHT\n  \n  \n  \n    Groundwater\n    Geochemistry\n    Hydrology\n    AI & Python\n    MODFLOW\n    PHREEQC\n  \n\n環境問題や水資源の評価に役立つ地下水・地球化学解析（MODFLOW, PHREEQC）と、Python・AIを用いたデータ分析のノウハウを共有します。\n科学・コード・多様な観点で、水の世界を探求するサイトです。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編\n\n\n\ngroundwater\n\npython\n\nmodflow\n\ngeochemistry\n\nsimulation\n\n\n\nMODFLOW 6（Flopy）とPHREEQC（phreeqpy）をPythonでカップリングし、1次元カラムの熱水流動と地球化学反応を統合解析するシリーズ。第1回はなぜこのカップリングが必要なのか、モデル全体の設計思想と構成を解説する。\n\n\n\n\n\n2026/04/03\n\n\nDeepFlow\n\n\n\n\n\n\n\n\n\n\n\n\nFlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）\n\n\n\ngroundwater\n\npython\n\nmodflow\n\ngeochemistry\n\nsimulation\n\n\n\nMODFLOW 6の実行からDarcy流速の抽出、Courant条件による時間刻みの自動計算、PHREEQCの初期化まで。FlopyとPHREEQCをPythonでつなぐカップリングループの核心を実装する。\n\n\n\n\n\n2026/04/02\n\n\nDeepFlow\n\n\n\n\n\n\n\n\n\n\n\n\nFlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編\n\n\n\ngroundwater\n\npython\n\nmodflow\n\ngeochemistry\n\nsimulation\n\nvisualization\n\n\n\nカップリングシミュレーションで得られたデータを読み解く。破過曲線・鉱物量の空間プロファイル・飽和指数をmatplotlibで可視化し、入口と出口で何が起きているかを解析する。\n\n\n\n\n\n2026/04/02\n\n\nDeepFlow\n\n\n\n\n\n\n\n\n\n\n\n\nFlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）\n\n\n\ngroundwater\n\npython\n\nmodflow\n\ngeochemistry\n\nsimulation\n\nsensitivity\n\n\n\nシリーズ最終回。パラメータ感度解析で「何が結果を支配するか」を明らかにし、本手法の限界と現実の地球科学問題への応用可能性を考察する。地熱貯留層・CCS・鉱山廃水処理への展開も見据える。\n\n\n\n\n\n2026/04/02\n\n\nDeepFlow\n\n\n\n\n\n\n\n\n\n\n\n\nダルシーの法則を理解する：FloPyで作る最初の地下水モデル\n\n\n\ngroundwater\n\nMODFLOW\n\nPython\n\n\n\n地下水流動の基本である「ダルシーの法則」の理論と、FloPy（MODFLOW 6）を用いた1次元モデルによる再現方法を解説します。\n\n\n\n\n\n2026/04/02\n\n\nDeepFlow\n\n\n\n\n\n\n\n\n\n\n\n\n地下水流動解析入門：MODFLOWとFloPyの基本\n\n\n\ngroundwater\n\nMODFLOW\n\nPython\n\n\n\n地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門\n\n\n\n\n\n2026/04/01\n\n\nDeepFlow\n\n\n\n\n\n一致なし"
   },
   {
     "objectID": "about.html",
@@ -117,5 +117,271 @@
     "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編",
     "section": "まとめ",
     "text": "まとめ\n\n\n\n項目\n設定値\n\n\n\n\nカラム長さ\n1.0 m\n\n\nセル分割数\n15\n\n\n透水係数\n1.0×10⁻⁵ m/s\n\n\n注入流量\n1.0×10⁻⁶ m³/s\n\n\n温度条件\n150℃\n\n\n圧力条件\n100 atm（10 MPa）\n\n\n計算期間\n24時間\n\n\n\n本シリーズのコードはすべて GitHubリポジトリ で公開予定。次回の実装編もお楽しみに。\n\nこのシリーズの他の記事：\n\n#1 モデル設計編（本記事）\n#2 実装編（カップリングの核心） ← 近日公開\n#3 解析・可視化編 ← 近日公開\n#4 応用・考察編 ← 近日公開"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html",
+    "href": "posts/flopy-phreeqc-part2/index.html",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "",
+    "text": "第1回（モデル設計編）では、カラムモデルの構造と境界条件を定義した。今回はそこから一歩進み、実際に動くカップリングループを実装する。\n今回カバーする内容：\n\nMODFLOW 6 を実行し、Cell Budget File から Darcy 流速を抽出する\nCourant 数 = 1 を満たす時間刻みを自動計算する\nPHREEQC を 150℃・100 atm 条件で初期化する\nKINETICS ブロックのパラメータ設定\nカップリングループの全体フロー"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#前回のおさらい",
+    "href": "posts/flopy-phreeqc-part2/index.html#前回のおさらい",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "",
+    "text": "第1回（モデル設計編）では、カラムモデルの構造と境界条件を定義した。今回はそこから一歩進み、実際に動くカップリングループを実装する。\n今回カバーする内容：\n\nMODFLOW 6 を実行し、Cell Budget File から Darcy 流速を抽出する\nCourant 数 = 1 を満たす時間刻みを自動計算する\nPHREEQC を 150℃・100 atm 条件で初期化する\nKINETICS ブロックのパラメータ設定\nカップリングループの全体フロー"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#step-1modflow-6-の実行と流速抽出",
+    "href": "posts/flopy-phreeqc-part2/index.html#step-1modflow-6-の実行と流速抽出",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "Step 1：MODFLOW 6 の実行と流速抽出",
+    "text": "Step 1：MODFLOW 6 の実行と流速抽出\n\nモデルを実行する\n第1回で構築した sim オブジェクトに、ODE（出力制御）と IMS（ソルバー）を追加して実行する。\nimport flopy\nimport numpy as np\n\n# --- ソルバー設定 ---\nims = flopy.mf6.ModflowIms(sim, complexity=\"simple\")\n\n# --- 出力制御：Cell Budget File を出力 ---\noc = flopy.mf6.ModflowGwfoc(\n    gwf,\n    budget_filerecord=f\"{sim_name}.cbb\",  # バイナリ予算ファイル\n    saverecord=[(\"BUDGET\", \"ALL\")],\n)\n\n# --- モデルをディスクに書き出して実行 ---\nsim.write_simulation()\nsuccess, buff = sim.run_simulation(silent=True)\n\nif not success:\n    raise RuntimeError(\"MODFLOW 6 の実行に失敗しました。mf6.exe の配置を確認してください。\")\n\nprint(\"✓ MODFLOW 6 実行完了\")\n\n\nCell Budget File から流速を取得する\nMODFLOW 6 は各セル境界を通過する流量を .cbb（Cell Budget File）というバイナリファイルに記録する。flopy.utils.CellBudgetFile でこれを読み込む。\nimport os\n\ncbb_path = os.path.join(sim_name, f\"{sim_name}.cbb\")\ncbb = flopy.utils.CellBudgetFile(cbb_path, precision=\"double\")\n\n# 比流量（Specific Discharge）を取得\n# テキストキーは MODFLOW 6 では 'DATA-SPDIS'\nspdis = cbb.get_data(text=\"DATA-SPDIS\", totim=1.0)[0]\n\n# x方向（流れ方向）の比流量を配列として取得\nqx = np.array([s[0] for s in spdis])   # shape: (N,)\n\n# カラム全体の代表 Darcy 流速（空間平均）\nv_darcy = float(np.mean(np.abs(qx)))   # [m/s]\n\nprint(f\"Darcy 流速 v = {v_darcy:.4e} m/s\")\n\n\n\n\n\n\nノートDATA-SPDIS について\n\n\n\nMODFLOW 6 の STO や NPF パッケージが有効なとき、Cell Budget には DATA-SPDIS（Specific Discharge）として各セルの流速ベクトルが記録される。古いバージョンでは FLOW-JA-FACE のみの場合もあるので、cbb.list_unique_records() で確認するとよい。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#step-2courant-条件による時間刻みの自動計算",
+    "href": "posts/flopy-phreeqc-part2/index.html#step-2courant-条件による時間刻みの自動計算",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "Step 2：Courant 条件による時間刻みの自動計算",
+    "text": "Step 2：Courant 条件による時間刻みの自動計算\n\nなぜ Courant 数 = 1 に揃えるのか\nPHREEQC の TRANSPORT ブロックは完全上流差分で移流を解く。このスキームの数値分散（数値的なぼやけ）を最小化するには、1タイムステップで水がちょうど1セル分移動するように時間刻みを設定する必要がある。\nこれを表す無次元数が Courant 数（\\(C_r\\)） だ：\n\\[\nC_r = \\frac{v \\cdot \\Delta t}{\\Delta x}\n\\]\n\\(C_r = 1\\) になるよう \\(\\Delta t\\) を逆算する：\n\\[\n\\Delta t = \\frac{\\Delta x}{v}\n\\]\nここで \\(v\\) は実流速（間隙流速）であり、Darcy 流速 \\(q\\) を有効間隙率 \\(\\phi\\) で割ったものだ：\n\\[\nv = \\frac{q}{\\phi}\n\\]\n# --- パラメータ ---\nphi   = 0.3        # 有効間隙率 [-]（典型的な砂岩値）\nL     = 1.0        # カラム長さ [m]\nN     = 15         # セル分割数\ndx    = L / N      # セル幅 [m]\n\n# --- 実流速と時間刻みの計算 ---\nv_pore = v_darcy / phi          # 実流速（間隙流速）[m/s]\ndt     = dx / v_pore            # Courant 数 = 1 を満たす Δt [s]\n\n# --- 計算期間の設定 ---\ntotal_time   = 24 * 3600        # 24時間 [s]\nn_steps      = int(total_time / dt)\n\nprint(f\"実流速      v  = {v_pore:.4e} m/s\")\nprint(f\"時間刻み    Δt = {dt:.2f} s\")\nprint(f\"総タイムステップ数 = {n_steps}\")\n\n\n\n\n\n\n重要数値分散と Courant 数\n\n\n\n\\(C_r &lt; 1\\)（時間刻みが小さすぎる）でも計算は安定するが、数値分散が増大し、濃度フロントが「にじむ」。\\(C_r &gt; 1\\) では計算が不安定になりうる。地球化学シミュレーションでは濃度フロントの精度が重要なため、\\(C_r = 1\\) を厳守するのが最善だ。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#step-3phreeqc-の初期化",
+    "href": "posts/flopy-phreeqc-part2/index.html#step-3phreeqc-の初期化",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "Step 3：PHREEQC の初期化",
+    "text": "Step 3：PHREEQC の初期化\n\nIPhreeqc エンジンの起動\nphreeqpy は IPhreeqc モジュールを通じて PHREEQC を Python から直接呼び出せるラッパーだ。\nimport sys\nfrom phreeqpy.iphreeqc.phreeqc import IPhreeqc\n\ndef initialize_phreeqc(database_path: str = \"llnl.dat\") -&gt; IPhreeqc:\n    \"\"\"\n    PHREEQCエンジンを起動し、高温データベースを読み込んで返す。\n    \"\"\"\n    iph = IPhreeqc()\n\n    # データベースの読み込み（高温高圧対応の llnl.dat）\n    try:\n        iph.load_database(database_path)\n        print(f\"✓ データベース '{database_path}' を読み込みました\")\n    except Exception as e:\n        sys.exit(f\"✗ データベースの読み込みに失敗: {e}\")\n\n    return iph\n\n\n初期水質の定義（150℃・100 atm）\nPHREEQC への入力はすべて文字列スクリプトとして渡す。Python の f-string を使えば、MODFLOW の計算結果（流速など）を動的に埋め込める。\ndef build_initial_solution(temp_c: float = 150.0, pressure_atm: float = 100.0) -&gt; str:\n    \"\"\"\n    初期水質を定義する PHREEQC インプットスクリプトを返す。\n    \"\"\"\n    script = f\"\"\"\nSOLUTION 1-{N}  初期流体（熱水系）\n    temp      {temp_c}\n    pressure  {pressure_atm}\n    pH        7.0\n    Na        1.0e-3\n    Cl        1.0e-3  charge\n    units     mol/kgw\n\nEND\n\"\"\"\n    return script\n\n# エンジン起動 → 初期水質を全セルに適用\niph = initialize_phreeqc()\niph.run_string(build_initial_solution())\nprint(\"✓ 初期水質を設定しました（150℃, 100 atm）\")\n\n\n\n\n\n\nヒントllnl.dat を選ぶ理由\n\n\n\nPHREEQC には複数のデータベースが付属する（phreeqc.dat、minteq.dat、llnl.dat など）。高温高圧条件に対応した熱力学データを持つのは llnl.dat（Lawrence Livermore National Laboratory）だ。150℃ 超の熱水系シミュレーションには必ずこれを使う。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#step-4kinetics-ブロックの設定",
+    "href": "posts/flopy-phreeqc-part2/index.html#step-4kinetics-ブロックの設定",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "Step 4：KINETICS ブロックの設定",
+    "text": "Step 4：KINETICS ブロックの設定\n平衡反応（EQUILIBRIUM_PHASES）と速度論的反応（KINETICS）の違いは、反応が時間に依存するかどうかだ。鉱物の溶解・沈殿には実際に時間がかかるため、本シミュレーションでは KINETICS を使う。\ndef build_kinetics_block(cell_id: int, m0_calcite: float) -&gt; str:\n    \"\"\"\n    指定セルの KINETICS ブロックを生成する。\n    各セルに固有の初期鉱物量（m0）を設定することで、\n    カラムの不均質性を表現できる。\n\n    Parameters\n    ----------\n    cell_id     : セル番号（1始まり）\n    m0_calcite  : そのセルの初期方解石量 [mol]\n    \"\"\"\n    script = f\"\"\"\nKINETICS {cell_id}\n    Calcite\n        -m0    {m0_calcite}      # 初期鉱物モル数\n        -parm  100.0             # 比表面積パラメータ [cm²/mol]\n                                 # → 大きいほど反応速度が速い\n        -step_divide  100        # タイムステップ細分化数\n                                 # → 数値安定性の確保\n\nEND\n\"\"\"\n    return script\n\n3つのキーパラメータ\n\n\n\n\n\n\n\n\nパラメータ\n意味\n設定の考え方\n\n\n\n\nm0\n初期鉱物量 [mol]\nセルごとに個別設定 → 不均質性の表現\n\n\nparm\n比表面積 [cm²/mol]\n大きいほど反応が速い。実験値を参照\n\n\nstep_divide\nタイムステップ細分化\n反応が速い場合は大きく設定（安定性確保）\n\n\n\n\n\n\n\n\n\nノートstep_divide の役割\n\n\n\nPHREEQC の ODE ソルバーは各タイムステップを step_divide 個の内部サブステップに分割して積分する。反応速度が速く、数値解が発散しそうな場合に増やす。計算コストと引き換えに安定性が上がる。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#step-5カップリングループの全体フロー",
+    "href": "posts/flopy-phreeqc-part2/index.html#step-5カップリングループの全体フロー",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "Step 5：カップリングループの全体フロー",
+    "text": "Step 5：カップリングループの全体フロー\nここまでの部品を組み合わせ、24時間のシミュレーションを回す。\ndef run_coupled_simulation(iph, v_darcy, dx, N, n_steps, dt):\n    \"\"\"\n    MODFLOW → PHREEQC カップリングループ。\n    各タイムステップで PHREEQC を 1 ステップ進める。\n    \"\"\"\n    results = {\n        \"time\":    [],\n        \"pH_in\":   [],   # Cell 1（入口）のpH\n        \"pH_out\":  [],   # Cell N（出口）のpH\n        \"mineral\": [],   # 鉱物量変化\n    }\n\n    # --- TRANSPORT ブロックの構築 ---\n    # Darcy 流速を PHREEQC の移流速度として渡す\n    transport_block = f\"\"\"\nTRANSPORT\n    -cells          {N}\n    -length         {dx}\n    -flow_direction forward\n    -velocity       {v_darcy / phi}   # 実流速 [m/s]\n    -time_step      {dt}\n    -shifts         1                 # 1ステップずつ進める\n    -punch_cells    1 {N}             # 入口・出口のデータを記録\n    -punch_frequency 1\n\nSELECTED_OUTPUT\n    -reset          false\n    -pH             true\n    -molalities     Na+ Ca+2 K+ Si(OH)4\n    -saturation_indices  Calcite Quartz\n    -kinetic_reactants   Calcite\n\"\"\"\n\n    print(f\"シミュレーション開始：{n_steps} ステップ（計 {total_time/3600:.0f} 時間）\")\n\n    for step in range(n_steps):\n        # PHREEQC を 1 タイムステップ実行\n        iph.run_string(transport_block)\n\n        # 結果を取得（SELECTED_OUTPUT から）\n        output = iph.get_selected_output_array()\n\n        if output and len(output) &gt; 1:\n            # 入口（Cell 1）と出口（Cell N）の pH を記録\n            results[\"time\"].append((step + 1) * dt / 3600)  # 時間単位\n            results[\"pH_in\"].append(output[1][2])            # pH列のインデックスは環境依存\n            results[\"pH_out\"].append(output[-1][2])\n\n        # 進捗表示（100ステップごと）\n        if (step + 1) % 100 == 0:\n            elapsed_h = (step + 1) * dt / 3600\n            print(f\"  {elapsed_h:.1f} h / {total_time/3600:.0f} h 完了\")\n\n    print(\"✓ シミュレーション完了\")\n    return results"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#処理フローの全体像",
+    "href": "posts/flopy-phreeqc-part2/index.html#処理フローの全体像",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "処理フローの全体像",
+    "text": "処理フローの全体像\nmain.py\n│\n├── 1. 環境チェック（mf6.exe, llnl.dat の存在確認）\n│\n├── 2. MODFLOW 6 実行\n│   └── → Cell Budget File (.cbb) から v_darcy を取得\n│\n├── 3. Courant 条件計算\n│   └── → dt = dx / (v_darcy / phi)\n│\n├── 4. PHREEQC 初期化\n│   ├── IPhreeqc 起動\n│   ├── llnl.dat 読み込み\n│   └── 初期水質（150℃, 100atm）設定\n│\n├── 5. KINETICS 設定\n│   └── 各セルに m0, parm, step_divide を定義\n│\n└── 6. カップリングループ（n_steps 回）\n    ├── TRANSPORT ブロックに v_darcy を注入\n    ├── iph.run_string() で 1 ステップ実行\n    └── SELECTED_OUTPUT から pH・濃度・鉱物量を記録"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#次回予告解析可視化編",
+    "href": "posts/flopy-phreeqc-part2/index.html#次回予告解析可視化編",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "次回予告：解析・可視化編",
+    "text": "次回予告：解析・可視化編\n第2回ではカップリングループを動かす仕組みを実装した。\n第3回では取得したデータを使って：\n\n破過曲線（入口 vs 出口の pH・濃度の時間変化）\n鉱物量の空間プロファイル（どのセルで溶解・沈殿が進んでいるか）\n飽和指数（SI）の可視化\n\nをmatplotlibで描画する。生データが「意味のある結果」に変わる瞬間を一緒に見ていこう。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part2/index.html#まとめ今回実装したこと",
+    "href": "posts/flopy-phreeqc-part2/index.html#まとめ今回実装したこと",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）",
+    "section": "まとめ：今回実装したこと",
+    "text": "まとめ：今回実装したこと\n\n\n\n\n\n\n\n\nステップ\n実装内容\nキーポイント\n\n\n\n\n流速抽出\nCellBudgetFile → DATA-SPDIS\nバイナリファイルから比流量を読む\n\n\nCourant 条件\n\\(\\Delta t = \\Delta x / v\\)\n数値分散を最小化する時間刻み\n\n\nPHREEQC 初期化\nIPhreeqc + llnl.dat\n高温データベースの選択が重要\n\n\nKINETICS\nm0, parm, step_divide\nセルごとの不均質性と安定性のバランス\n\n\nカップリングループ\nTRANSPORT に v_darcy を動的注入\nf-string でパラメータを埋め込む\n\n\n\n\nこのシリーズの他の記事：\n\n#1 モデル設計編\n#2 実装編（カップリングの核心）（本記事）\n#3 解析・可視化編 ← 近日公開\n#4 応用・考察編 ← 近日公開"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html",
+    "href": "posts/flopy-phreeqc-part3/index.html",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "",
+    "text": "第2回でカップリングループを動かし、results 辞書にデータが蓄積された。しかし数値の羅列だけでは、カラムの中で何が起きているかは見えてこない。\n\n地球化学シミュレーションの醍醐味は、反応フロントがカラムを移動する様子を時空間でとらえることだ。\n\n今回は以下の3種類の可視化を実装する：\n\n\n\n\n\n\n\n\n\n可視化\n横軸\n縦軸\n何がわかるか\n\n\n\n\n破過曲線\n時間 [h]\npH・濃度\n入口 vs 出口の反応の「遅れ」\n\n\n空間プロファイル\nセル位置 [m]\n鉱物量変化\nどこで溶解・沈殿が進んでいるか\n\n\n飽和指数（SI）\n時間 [h]\nSI値\n溶解か沈殿かの判定"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#数字を見える化する意味",
+    "href": "posts/flopy-phreeqc-part3/index.html#数字を見える化する意味",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "",
+    "text": "第2回でカップリングループを動かし、results 辞書にデータが蓄積された。しかし数値の羅列だけでは、カラムの中で何が起きているかは見えてこない。\n\n地球化学シミュレーションの醍醐味は、反応フロントがカラムを移動する様子を時空間でとらえることだ。\n\n今回は以下の3種類の可視化を実装する：\n\n\n\n\n\n\n\n\n\n可視化\n横軸\n縦軸\n何がわかるか\n\n\n\n\n破過曲線\n時間 [h]\npH・濃度\n入口 vs 出口の反応の「遅れ」\n\n\n空間プロファイル\nセル位置 [m]\n鉱物量変化\nどこで溶解・沈殿が進んでいるか\n\n\n飽和指数（SI）\n時間 [h]\nSI値\n溶解か沈殿かの判定"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#観測ポイントの設計",
+    "href": "posts/flopy-phreeqc-part3/index.html#観測ポイントの設計",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "観測ポイントの設計",
+    "text": "観測ポイントの設計\n\n入口 vs 出口\nカラムの2点を重点的に観測する：\n入口 [Cell 1]                        出口 [Cell 15]\n    │                                     │\n    ▼                                     ▼\n新鮮な熱水が                        岩石と24時間\n岩石に接触する                       反応した後の流体\n「反応最前線」                       「反応済み流体」\nこの2点を比較することで、反応の空間的な進行と時間的な遅れ（ラグ）が明確になる。\n\n\nSELECTED_OUTPUT の解釈\n第2回で設定した SELECTED_OUTPUT の出力列を整理しておく：\n# SELECTED_OUTPUT が出力する列（インデックスは 0 始まり）\n# [0] sim_time  : シミュレーション時刻 [s]\n# [1] cell_no   : セル番号\n# [2] pH        : pH\n# [3] Na+       : Na+ 濃度 [mol/kgw]\n# [4] Ca+2      : Ca²⁺ 濃度 [mol/kgw]\n# [5] K+        : K⁺ 濃度 [mol/kgw]\n# [6] Si(OH)4   : Si 濃度 [mol/kgw]\n# [7] SI_Calcite: 方解石の飽和指数\n# [8] SI_Quartz : 石英の飽和指数\n# [9] Calcite   : 方解石の残存鉱物量 [mol]"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#データの整形",
+    "href": "posts/flopy-phreeqc-part3/index.html#データの整形",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "データの整形",
+    "text": "データの整形\n可視化の前に、iph.get_selected_output_array() の生データを扱いやすい形に整形する。\nimport numpy as np\nimport pandas as pd\n\ndef parse_selected_output(iph, N: int) -&gt; pd.DataFrame:\n    \"\"\"\n    PHREEQC の SELECTED_OUTPUT を DataFrame に変換する。\n\n    Returns\n    -------\n    df : 列 = [time_h, cell, pH, Na, Ca, K, Si, SI_Calcite, SI_Quartz, mol_Calcite]\n    \"\"\"\n    raw = iph.get_selected_output_array()\n\n    # ヘッダー行を除いたデータ部分を取得\n    data = np.array(raw[1:], dtype=float)\n\n    df = pd.DataFrame(data, columns=[\n        \"time_s\", \"cell\", \"pH\",\n        \"Na\", \"Ca\", \"K\", \"Si\",\n        \"SI_Calcite\", \"SI_Quartz\",\n        \"mol_Calcite\",\n    ])\n\n    # 時間を秒から時間に変換\n    df[\"time_h\"] = df[\"time_s\"] / 3600.0\n\n    return df\n\n\n# --- 実行 ---\ndf = parse_selected_output(iph, N)\n\n# 入口・出口のデータを分離\ndf_in  = df[df[\"cell\"] == 1].copy()    # Cell 1：入口\ndf_out = df[df[\"cell\"] == N].copy()    # Cell N：出口\n\nprint(f\"データ行数：{len(df)}\")\nprint(df.head())"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#可視化-1破過曲線ph-の時間変化",
+    "href": "posts/flopy-phreeqc-part3/index.html#可視化-1破過曲線ph-の時間変化",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "可視化 1：破過曲線（pH の時間変化）",
+    "text": "可視化 1：破過曲線（pH の時間変化）\n破過曲線（Breakthrough Curve）は、出口での濃度や pH が時間とともにどう変化するかを示す。入口と出口を重ねることで「反応の遅れ」が一目でわかる。\nimport matplotlib.pyplot as plt\nimport matplotlib.ticker as ticker\n\n# --- スタイル設定（DeepFlow ダークテーマ） ---\nplt.style.use(\"dark_background\")\nACCENT_BLUE  = \"#4FC3F7\"\nACCENT_AMBER = \"#FFB74D\"\nGRID_COLOR   = \"#2a2a3e\"\nBG_COLOR     = \"#0d1117\"\n\nfig, ax = plt.subplots(figsize=(10, 5), facecolor=BG_COLOR)\nax.set_facecolor(BG_COLOR)\n\n# 入口 pH\nax.plot(\n    df_in[\"time_h\"], df_in[\"pH\"],\n    color=ACCENT_BLUE, linewidth=2.0,\n    label=\"Cell 1（入口）\", zorder=3,\n)\n\n# 出口 pH\nax.plot(\n    df_out[\"time_h\"], df_out[\"pH\"],\n    color=ACCENT_AMBER, linewidth=2.0,\n    linestyle=\"--\",\n    label=f\"Cell {N}（出口）\", zorder=3,\n)\n\n# 初期 pH の参照線\nax.axhline(7.0, color=\"white\", linewidth=0.8, linestyle=\":\", alpha=0.4,\n           label=\"初期 pH = 7.0\")\n\n# 装飾\nax.set_xlabel(\"時間 [h]\", fontsize=12, color=\"white\")\nax.set_ylabel(\"pH [-]\", fontsize=12, color=\"white\")\nax.set_title(\"破過曲線：pH の時間変化（入口 vs 出口）\",\n             fontsize=14, color=\"white\", pad=15)\nax.legend(fontsize=11, framealpha=0.3)\nax.grid(True, color=GRID_COLOR, linewidth=0.8, zorder=0)\nax.xaxis.set_major_locator(ticker.MultipleLocator(4))\n\nplt.tight_layout()\nplt.savefig(\"breakthrough_pH.png\", dpi=150, bbox_inches=\"tight\",\n            facecolor=BG_COLOR)\nplt.show()\nprint(\"✓ breakthrough_pH.png を保存しました\")\n\n読み方のポイント\n破過曲線から読み取るべき情報は2つある：\n① 定常状態への到達時刻 出口の pH が安定する時刻 = 反応フロントがカラム全体を通過した時刻。セル数・流速・反応速度によって変わる。\n② 入口と出口の pH 差（\\(\\Delta\\)pH） この差が大きいほど、カラム内で活発な反応（溶解・沈殿）が起きていることを示す。方解石溶解が進む場合、出口では pH が上昇する傾向がある。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#可視化-2鉱物量の空間プロファイル",
+    "href": "posts/flopy-phreeqc-part3/index.html#可視化-2鉱物量の空間プロファイル",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "可視化 2：鉱物量の空間プロファイル",
+    "text": "可視化 2：鉱物量の空間プロファイル\n各セルの方解石残存量を空間方向にプロットすることで、どこで溶解が最も進んでいるかが見える。\ndef plot_mineral_profile(df: pd.DataFrame, times_h: list, N: int,\n                          dx: float, m0: float):\n    \"\"\"\n    指定した時刻スナップショットごとに、\n    方解石量の空間プロファイルを描画する。\n\n    Parameters\n    ----------\n    times_h : 描画したい時刻のリスト [h]\n    m0      : 初期鉱物量 [mol]（参照線用）\n    \"\"\"\n    fig, ax = plt.subplots(figsize=(10, 5), facecolor=BG_COLOR)\n    ax.set_facecolor(BG_COLOR)\n\n    # カラーマップ：時間の経過を青→赤で表現\n    cmap   = plt.cm.coolwarm\n    colors = [cmap(i / (len(times_h) - 1)) for i in range(len(times_h))]\n\n    x_positions = np.arange(1, N + 1) * dx - dx / 2  # セル中心位置 [m]\n\n    for t_h, color in zip(times_h, colors):\n        # 最も近い時刻のデータを抽出\n        t_s   = t_h * 3600\n        df_t  = df.groupby(\"cell\").apply(\n            lambda g: g.iloc[(g[\"time_s\"] - t_s).abs().argsort().iloc[0]]\n        ).reset_index(drop=True)\n\n        ax.plot(\n            x_positions, df_t[\"mol_Calcite\"],\n            color=color, linewidth=1.8,\n            label=f\"t = {t_h:.0f} h\",\n            marker=\"o\", markersize=4,\n        )\n\n    # 初期鉱物量の参照線\n    ax.axhline(m0, color=\"white\", linewidth=0.8, linestyle=\":\",\n               alpha=0.5, label=f\"初期値 m₀ = {m0:.3f} mol\")\n\n    ax.set_xlabel(\"カラム位置 [m]\", fontsize=12, color=\"white\")\n    ax.set_ylabel(\"方解石残存量 [mol]\", fontsize=12, color=\"white\")\n    ax.set_title(\"方解石量の空間プロファイル（時間スナップショット）\",\n                 fontsize=14, color=\"white\", pad=15)\n    ax.legend(fontsize=10, framealpha=0.3, loc=\"upper right\")\n    ax.grid(True, color=GRID_COLOR, linewidth=0.8)\n\n    plt.tight_layout()\n    plt.savefig(\"mineral_profile.png\", dpi=150, bbox_inches=\"tight\",\n                facecolor=BG_COLOR)\n    plt.show()\n    print(\"✓ mineral_profile.png を保存しました\")\n\n\n# 4, 8, 12, 16, 20, 24 時間のスナップショットを描画\nplot_mineral_profile(df, times_h=[4, 8, 12, 16, 20, 24],\n                     N=N, dx=dx, m0=0.010)\n\n読み方のポイント\nプロファイルの形状は3つのパターンに分類できる：\nパターン A：前進型溶解フロント\n  mol  ▲\n       │███████████████╲____\n       │                入口側から溶解が進む\n       └──────────────────▶ 位置\n\nパターン B：均一溶解\n  mol  ▲\n       │╲_______________\n       │ 全体が均等に減少\n       └──────────────────▶ 位置\n\nパターン C：出口側優先溶解\n  mol  ▲\n       │____╲███████████\n       │       流体が十分反応してから溶解\n       └──────────────────▶ 位置\nどのパターンが現れるかは、流速・反応速度・カラム長のバランスで決まる。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#可視化-3飽和指数siの時間変化",
+    "href": "posts/flopy-phreeqc-part3/index.html#可視化-3飽和指数siの時間変化",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "可視化 3：飽和指数（SI）の時間変化",
+    "text": "可視化 3：飽和指数（SI）の時間変化\n飽和指数（Saturation Index）は鉱物の溶解・沈殿傾向を示す指標だ：\n\\[\nSI = \\log_{10} \\frac{IAP}{K_{sp}}\n\\]\n\n\n\nSI 値\n意味\n\n\n\n\n\\(SI &lt; 0\\)\n不飽和 → 溶解が進む\n\n\n\\(SI = 0\\)\n平衡状態\n\n\n\\(SI &gt; 0\\)\n過飽和 → 沈殿が進む\n\n\n\ndef plot_saturation_index(df_in: pd.DataFrame, df_out: pd.DataFrame,\n                           mineral: str = \"Calcite\"):\n    \"\"\"\n    入口・出口の飽和指数（SI）の時間変化を描画する。\n    \"\"\"\n    si_col = f\"SI_{mineral}\"\n\n    fig, ax = plt.subplots(figsize=(10, 5), facecolor=BG_COLOR)\n    ax.set_facecolor(BG_COLOR)\n\n    # SI プロット\n    ax.plot(df_in[\"time_h\"],  df_in[si_col],\n            color=ACCENT_BLUE,  linewidth=2.0, label=\"Cell 1（入口）\")\n    ax.plot(df_out[\"time_h\"], df_out[si_col],\n            color=ACCENT_AMBER, linewidth=2.0, linestyle=\"--\",\n            label=f\"Cell {N}（出口）\")\n\n    # SI = 0 の参照線（平衡）\n    ax.axhline(0, color=\"white\", linewidth=1.2, linestyle=\"-\", alpha=0.6,\n               label=\"SI = 0（平衡）\")\n\n    # 溶解・沈殿ゾーンの塗り分け\n    y_min, y_max = ax.get_ylim()\n    ax.fill_between(df_in[\"time_h\"], y_min, 0,\n                    alpha=0.08, color=ACCENT_BLUE, label=\"溶解ゾーン（SI &lt; 0）\")\n    ax.fill_between(df_in[\"time_h\"], 0, y_max,\n                    alpha=0.08, color=ACCENT_AMBER, label=\"沈殿ゾーン（SI &gt; 0）\")\n\n    # テキスト注釈\n    ax.text(0.5, -0.3, \"← 溶解\", color=ACCENT_BLUE,\n            fontsize=10, alpha=0.8)\n    ax.text(0.5,  0.3, \"← 沈殿\", color=ACCENT_AMBER,\n            fontsize=10, alpha=0.8)\n\n    ax.set_xlabel(\"時間 [h]\", fontsize=12, color=\"white\")\n    ax.set_ylabel(f\"飽和指数 SI ({mineral}) [-]\", fontsize=12, color=\"white\")\n    ax.set_title(f\"{mineral} の飽和指数（SI）時間変化\",\n                 fontsize=14, color=\"white\", pad=15)\n    ax.legend(fontsize=10, framealpha=0.3)\n    ax.grid(True, color=GRID_COLOR, linewidth=0.8)\n\n    plt.tight_layout()\n    plt.savefig(f\"SI_{mineral}.png\", dpi=150, bbox_inches=\"tight\",\n                facecolor=BG_COLOR)\n    plt.show()\n    print(f\"✓ SI_{mineral}.png を保存しました\")\n\n\nplot_saturation_index(df_in, df_out, mineral=\"Calcite\")"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#グラフを一枚にまとめる",
+    "href": "posts/flopy-phreeqc-part3/index.html#グラフを一枚にまとめる",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "4グラフを一枚にまとめる",
+    "text": "4グラフを一枚にまとめる\n個別プロットに加え、論文・レポート向けに4パネルをまとめた図を作ると便利だ。\ndef plot_summary_panel(df_in, df_out, df, N, dx, m0):\n    \"\"\"\n    pH破過曲線・Ca濃度・SI・鉱物量プロファイルを\n    2×2 パネルにまとめて描画する。\n    \"\"\"\n    fig, axes = plt.subplots(2, 2, figsize=(14, 10), facecolor=BG_COLOR)\n    fig.suptitle(\n        \"熱水カラム実験：24時間シミュレーション結果サマリー\\n\"\n        \"（150℃ / 100 atm / MODFLOW 6 + PHREEQC カップリング）\",\n        fontsize=13, color=\"white\", y=1.01,\n    )\n\n    for ax in axes.flat:\n        ax.set_facecolor(BG_COLOR)\n        ax.grid(True, color=GRID_COLOR, linewidth=0.7)\n\n    # --- パネル [0,0]：pH 破過曲線 ---\n    ax = axes[0, 0]\n    ax.plot(df_in[\"time_h\"],  df_in[\"pH\"],\n            color=ACCENT_BLUE,  lw=2, label=\"入口\")\n    ax.plot(df_out[\"time_h\"], df_out[\"pH\"],\n            color=ACCENT_AMBER, lw=2, ls=\"--\", label=\"出口\")\n    ax.axhline(7.0, color=\"white\", lw=0.7, ls=\":\", alpha=0.4)\n    ax.set_xlabel(\"時間 [h]\"); ax.set_ylabel(\"pH\")\n    ax.set_title(\"破過曲線（pH）\", color=\"white\")\n    ax.legend(fontsize=9)\n\n    # --- パネル [0,1]：Ca²⁺ 濃度 ---\n    ax = axes[0, 1]\n    ax.plot(df_in[\"time_h\"],  df_in[\"Ca\"] * 1e3,\n            color=ACCENT_BLUE,  lw=2, label=\"入口\")\n    ax.plot(df_out[\"time_h\"], df_out[\"Ca\"] * 1e3,\n            color=ACCENT_AMBER, lw=2, ls=\"--\", label=\"出口\")\n    ax.set_xlabel(\"時間 [h]\"); ax.set_ylabel(\"Ca²⁺ [mmol/kgw]\")\n    ax.set_title(\"Ca²⁺ 濃度の時間変化\", color=\"white\")\n    ax.legend(fontsize=9)\n\n    # --- パネル [1,0]：方解石 SI ---\n    ax = axes[1, 0]\n    ax.plot(df_in[\"time_h\"],  df_in[\"SI_Calcite\"],\n            color=ACCENT_BLUE,  lw=2, label=\"入口\")\n    ax.plot(df_out[\"time_h\"], df_out[\"SI_Calcite\"],\n            color=ACCENT_AMBER, lw=2, ls=\"--\", label=\"出口\")\n    ax.axhline(0, color=\"white\", lw=1.0, ls=\"-\", alpha=0.6)\n    ax.set_xlabel(\"時間 [h]\"); ax.set_ylabel(\"SI（方解石）\")\n    ax.set_title(\"飽和指数（Calcite）\", color=\"white\")\n    ax.legend(fontsize=9)\n\n    # --- パネル [1,1]：最終時刻の鉱物量プロファイル ---\n    ax = axes[1, 1]\n    x_pos = np.arange(1, N + 1) * dx - dx / 2\n    df_final = df[df[\"time_h\"] == df[\"time_h\"].max()]\n    ax.bar(x_pos, df_final.groupby(\"cell\")[\"mol_Calcite\"].mean(),\n           width=dx * 0.8, color=ACCENT_BLUE, alpha=0.7)\n    ax.axhline(m0, color=ACCENT_AMBER, lw=1.2, ls=\"--\",\n               label=f\"初期値 m₀ = {m0:.3f} mol\")\n    ax.set_xlabel(\"カラム位置 [m]\"); ax.set_ylabel(\"方解石量 [mol]\")\n    ax.set_title(\"最終時刻（t = 24h）の鉱物量分布\", color=\"white\")\n    ax.legend(fontsize=9)\n\n    plt.tight_layout()\n    plt.savefig(\"summary_panel.png\", dpi=150, bbox_inches=\"tight\",\n                facecolor=BG_COLOR)\n    plt.show()\n    print(\"✓ summary_panel.png を保存しました\")\n\n\nplot_summary_panel(df_in, df_out, df, N=N, dx=dx, m0=0.010)"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#結果の読み方3つの着眼点",
+    "href": "posts/flopy-phreeqc-part3/index.html#結果の読み方3つの着眼点",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "結果の読み方：3つの着眼点",
+    "text": "結果の読み方：3つの着眼点\nシミュレーション結果を解釈するとき、以下の順序で確認すると整理しやすい。\n\n① 定常状態に達しているか？\n破過曲線の出口 pH が時間とともに変化し続けているなら、24時間では足りない。total_time を延長するか、流速を上げてカラム通過時間を短縮する。\n\n\n② 入口と出口の差は物理的に妥当か？\n方解石が溶解すると Ca²⁺ が放出され、pH は上昇する傾向がある。入口 pH &lt; 出口 pH かつ 入口 SI &lt; 出口 SI なら、溶解反応が正しく計算されている。逆の場合は KINETICS の parm や m0 を見直す。\n\n\n③ 数値的なアーティファクトはないか？\npH が急激に振動したり、濃度が負になったりする場合は数値不安定の兆候だ。step_divide を大きくするか、dt（時間刻み）を小さくして対処する。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#次回予告応用考察編",
+    "href": "posts/flopy-phreeqc-part3/index.html#次回予告応用考察編",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "次回予告：応用・考察編",
+    "text": "次回予告：応用・考察編\n第3回では生データを視覚化する手法を網羅した。\n第4回（最終回）では：\n\nパラメータ感度解析：透水係数・反応速度・温度を変えたときの結果の変化\n本手法の限界：何が省略されているか（熱伝導・拡散・不均質性）\n実際の研究への応用：地熱貯留層・CCS・鉱山廃水処理への展開\n\nシリーズ全体の総括として、「次に何をすべきか」の道標を示す。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part3/index.html#まとめ今回実装したこと",
+    "href": "posts/flopy-phreeqc-part3/index.html#まとめ今回実装したこと",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編",
+    "section": "まとめ：今回実装したこと",
+    "text": "まとめ：今回実装したこと\n\n\n\n\n\n\n\n\n可視化\n関数\n出力ファイル\n\n\n\n\npH 破過曲線\nax.plot()\nbreakthrough_pH.png\n\n\n鉱物量空間プロファイル\nplot_mineral_profile()\nmineral_profile.png\n\n\n飽和指数（SI）\nplot_saturation_index()\nSI_Calcite.png\n\n\n4パネルサマリー\nplot_summary_panel()\nsummary_panel.png\n\n\n\n\nこのシリーズの他の記事：\n\n#1 モデル設計編\n#2 実装編（カップリングの核心）\n#3 解析・可視化編（本記事）\n#4 応用・考察編 ← 近日公開"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part4/index.html",
+    "href": "posts/flopy-phreeqc-part4/index.html",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）",
+    "section": "",
+    "text": "4回にわたるシリーズで、1次元カラムの熱水地球化学シミュレーションをゼロから構築した。\n\n\n\n回\nテーマ\n核心\n\n\n\n\n#1\nモデル設計\nなぜカップリングが必要か・カラムの離散化\n\n\n#2\n実装\nDarcy流速の受け渡し・Courant条件・KINETICS\n\n\n#3\n可視化\n破過曲線・空間プロファイル・SI\n\n\n#4（本回）\n応用・考察\n感度解析・限界・現実問題への展開\n\n\n\n最終回では「モデルをより深く理解する」ことに集中する。コードを動かすだけでなく、結果がどのパラメータに敏感で、何が省略されているかを把握することが、研究への応用に不可欠だ。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part4/index.html#シリーズを振り返る",
+    "href": "posts/flopy-phreeqc-part4/index.html#シリーズを振り返る",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）",
+    "section": "",
+    "text": "4回にわたるシリーズで、1次元カラムの熱水地球化学シミュレーションをゼロから構築した。\n\n\n\n回\nテーマ\n核心\n\n\n\n\n#1\nモデル設計\nなぜカップリングが必要か・カラムの離散化\n\n\n#2\n実装\nDarcy流速の受け渡し・Courant条件・KINETICS\n\n\n#3\n可視化\n破過曲線・空間プロファイル・SI\n\n\n#4（本回）\n応用・考察\n感度解析・限界・現実問題への展開\n\n\n\n最終回では「モデルをより深く理解する」ことに集中する。コードを動かすだけでなく、結果がどのパラメータに敏感で、何が省略されているかを把握することが、研究への応用に不可欠だ。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part4/index.html#パラメータ感度解析",
+    "href": "posts/flopy-phreeqc-part4/index.html#パラメータ感度解析",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）",
+    "section": "パラメータ感度解析",
+    "text": "パラメータ感度解析\n\nなぜ感度解析が必要か\nシミュレーションには必ず不確実性を持つ入力パラメータがある。感度解析とは、あるパラメータを変化させたとき、出力（pH・鉱物量など）がどれだけ変わるかを系統的に調べることだ。\n\n感度が高いパラメータ = フィールド観測・実験で優先的に決定すべき値\n\n本シリーズのモデルでは、以下の3パラメータが特に重要だ：\n\n\n\nパラメータ\n記号\n基準値\n調査範囲\n\n\n\n\n透水係数\n\\(K\\)\n\\(1.0 \\times 10^{-5}\\) m/s\n\\(10^{-6}\\) 〜 \\(10^{-4}\\)\n\n\n比表面積（KINETICS）\nparm\n100 cm²/mol\n10 〜 1000\n\n\n温度\n\\(T\\)\n150 ℃\n100 〜 200\n\n\n\n\n\n感度解析の実装\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom itertools import product\n\n# --- 基準パラメータ ---\nBASE_PARAMS = {\n    \"K\":    1.0e-5,   # 透水係数 [m/s]\n    \"parm\": 100.0,    # 比表面積 [cm²/mol]\n    \"temp\": 150.0,    # 温度 [℃]\n}\n\n# --- 変化範囲（基準値に対する倍率） ---\nFACTORS = [0.1, 0.5, 1.0, 2.0, 10.0]\n\ndef run_sensitivity(param_name: str, factors: list,\n                    base_params: dict) -&gt; dict:\n    \"\"\"\n    1パラメータを変化させ、24h後の出口 pH を記録する。\n\n    Returns\n    -------\n    {\"values\": [...], \"pH_out_24h\": [...]}\n    \"\"\"\n    results = {\"values\": [], \"pH_out_24h\": []}\n\n    for f in factors:\n        params = base_params.copy()\n        params[param_name] = base_params[param_name] * f\n\n        # --- ここで実際のシミュレーションを呼び出す ---\n        # （第1〜3回のコードを関数化してまとめた run_full_sim() を想定）\n        pH_final = run_full_sim(\n            K=params[\"K\"],\n            parm=params[\"parm\"],\n            temp=params[\"temp\"],\n        )\n\n        results[\"values\"].append(params[param_name])\n        results[\"pH_out_24h\"].append(pH_final)\n\n    return results\n\n\ndef plot_sensitivity(sens_results: dict, param_label: str,\n                     base_val: float):\n    \"\"\"\n    感度解析の結果を折れ線グラフで表示する。\n    \"\"\"\n    BG_COLOR   = \"#0d1117\"\n    ACCENT     = \"#4FC3F7\"\n    GRID_COLOR = \"#2a2a3e\"\n\n    fig, ax = plt.subplots(figsize=(8, 5), facecolor=BG_COLOR)\n    ax.set_facecolor(BG_COLOR)\n\n    ax.plot(sens_results[\"values\"], sens_results[\"pH_out_24h\"],\n            color=ACCENT, linewidth=2.2,\n            marker=\"o\", markersize=7, zorder=3)\n\n    # 基準値の縦線\n    ax.axvline(base_val, color=\"white\", linewidth=1.0,\n               linestyle=\"--\", alpha=0.5, label=f\"基準値 = {base_val}\")\n\n    ax.set_xscale(\"log\")\n    ax.set_xlabel(param_label, fontsize=12, color=\"white\")\n    ax.set_ylabel(\"出口 pH（t = 24 h）\", fontsize=12, color=\"white\")\n    ax.set_title(f\"感度解析：{param_label} vs 出口 pH\",\n                 fontsize=13, color=\"white\", pad=12)\n    ax.legend(fontsize=10, framealpha=0.3)\n    ax.grid(True, color=GRID_COLOR, linewidth=0.8)\n\n    plt.tight_layout()\n    plt.savefig(f\"sensitivity_{param_label}.png\", dpi=150,\n                bbox_inches=\"tight\", facecolor=BG_COLOR)\n    plt.show()\n\n\n# --- 各パラメータの感度解析を実行 ---\nfor key, label in [(\"K\", \"透水係数 K [m/s]\"),\n                    (\"parm\", \"比表面積 parm [cm²/mol]\"),\n                    (\"temp\", \"温度 T [℃]\")]:\n    res = run_sensitivity(key, FACTORS, BASE_PARAMS)\n    plot_sensitivity(res, label, BASE_PARAMS[key])\n\n\n感度解析の結果：何が支配的か\n典型的な熱水カラム実験では、以下の傾向が現れる：\n感度の大きさ（概念図）\n\n高  ▲\n    │  ██ 比表面積 (parm)\n    │  ██\n    │  ██ ██ 温度 (temp)\n    │        ██\n    │           ██ 透水係数 (K)\n低  └─────────────────────────▶\n比表面積（parm）が最も感度が高いことが多い。これは鉱物と流体の接触面積が反応速度を直接支配するためだ。一方、透水係数は流速を通じて間接的に影響するが、Courant条件で時間刻みが自動調整されるため、影響は相対的に小さい。\n\n\n\n\n\n\n重要フィールド適用への示唆\n\n\n\n感度が高いパラメータほど、現地計測や室内実験で精度よく決定する必要がある。比表面積は岩石試料の BET 測定（ガス吸着法）で、温度は坑井検層で決定するのが現実的だ。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part4/index.html#本手法の限界",
+    "href": "posts/flopy-phreeqc-part4/index.html#本手法の限界",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）",
+    "section": "本手法の限界",
+    "text": "本手法の限界\n正直に限界を把握することは、モデルを適切に使う上で最も重要なことだ。本シリーズのモデルには4つの主要な省略がある。\n\n省略 1：熱輸送の無視\n本モデルでは温度を一定値（150℃）として固定した。現実の熱水系では、流体の流入によって温度場が変化し、それが反応速度・溶解度・粘性に影響する。\n改善方向：MODFLOWの GWE（Groundwater Energy Transport）パッケージ と組み合わせることで、熱・流動・反応の3連成シミュレーションが可能になる。\n\n\n省略 2：分散・拡散の無視\n第2回で解説したように、本モデルは移流のみ（完全上流差分）を考慮し、水力学的分散と分子拡散を省略している。\n\\[\n\\frac{\\partial C}{\\partial t} = \\underbrace{-v \\frac{\\partial C}{\\partial x}}_{\\text{移流（実装済み）}}\n+ \\underbrace{D_L \\frac{\\partial^2 C}{\\partial x^2}}_{\\text{分散（省略）}}\n+ \\underbrace{R}_{\\text{反応（実装済み）}}\n\\]\n低流速・長距離のシミュレーションでは分散の影響が無視できなくなる。PHREEQCのTRANSPORTブロックには -dispersivity オプションがあり、縦分散長を指定できる。\n\n\n省略 3：不均質性の簡略化\n本モデルでは透水係数 \\(K\\) を全セルで均一とした（均質・等方）。実際の地層は強い不均質性を持ち、高透水ゾーンに流れが集中するチャネリングが地球化学反応の分布を大きく変える。\n\n\n省略 4：複数鉱物系の単純化\n本シリーズでは方解石（Calcite）1種のみを扱った。熱水系では石英（Quartz）、長石類、粘土鉱物などが同時に反応し、相互に影響し合う。複数鉱物の同時反応は PHREEQCで対応可能だが、パラメータの不確実性が増大する。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part4/index.html#現実問題への応用",
+    "href": "posts/flopy-phreeqc-part4/index.html#現実問題への応用",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）",
+    "section": "現実問題への応用",
+    "text": "現実問題への応用\n本手法は基礎的な1次元検証モデルだが、以下の応用分野への展開が現実的だ。\n\n応用 1：地熱貯留層のスケーリング予測\n問題：地熱発電の坑井内・生産配管での鉱物スケール（方解石・シリカ）\n↓\n本手法の応用：\n  - 貯留層温度・圧力条件での SI 計算\n  - 生産水が地表に向かって冷却・減圧する過程での沈殿挙動\n  - スケール抑制剤の投入タイミング最適化\n拡張に必要な追加要素：\n# 圧力変化に伴う CO₂ 脱ガスのモデル化（例）\ndegas_script = \"\"\"\nGAS_PHASE 1\n    -fixed_pressure\n    -pressure  {p_atm}\n    CO2(g)  {co2_partial_pressure}\n\"\"\"\n\n\n応用 2：CCS（地中CO₂貯留）の鉱物トラッピング\nCO₂ を地中に圧入すると、溶解した CO₂ が岩石と反応して炭酸塩鉱物として固定される（鉱物トラッピング）。\nCO₂(aq) + Ca²⁺ → CaCO₃（方解石）+ 2H⁺\n本手法を拡張することで、CO₂ 圧入から鉱物固定完了までの時間スケールを評価できる。PHREEQCの EQUILIBRIUM_PHASES に CO₂(g) を加えるだけで対応可能だ。\n\n\n応用 3：酸性鉱山廃水（AMD）の中和シミュレーション\n廃鉱山から流出する酸性水（pH 2〜4）が石灰岩層を通過するときの中和過程は、本シリーズのモデルと本質的に同じ構造だ。温度条件を常温（25℃）に変え、phreeqc.dat データベースに切り替えるだけで対応できる。\n# AMD 向けの設定変更例\nsolution_amd = \"\"\"\nSOLUTION 1  酸性鉱山廃水\n    temp     25\n    pressure 1\n    pH       2.5\n    Fe       5.0e-3   # 溶存鉄（高濃度）\n    SO4      1.0e-2   # 硫酸イオン\n    Al       2.0e-3\n    units    mol/kgw\n\"\"\""
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part4/index.html#モデル拡張のロードマップ",
+    "href": "posts/flopy-phreeqc-part4/index.html#モデル拡張のロードマップ",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）",
+    "section": "モデル拡張のロードマップ",
+    "text": "モデル拡張のロードマップ\n本シリーズのモデルを出発点として、段階的に複雑さを増す拡張パスを示す。\nLevel 0（本シリーズ）\n  1D カラム・均質・単一鉱物・等温・移流のみ\n         │\n         ▼\nLevel 1：物理的拡張\n  + 分散・拡散（dispersivity）\n  + 温度変化（GWE パッケージ）\n         │\n         ▼\nLevel 2：地球化学的拡張\n  + 複数鉱物系（Quartz, Feldspar, Clay）\n  + イオン交換・表面錯体形成\n         │\n         ▼\nLevel 3：空間的拡張\n  1D → 2D/3D（MODFLOW の多層モデル）\n  均質 → 不均質（確率的パラメータ場）\n         │\n         ▼\nLevel 4：実データ同化\n  現地観測データとのキャリブレーション\n  アンサンブル逆解析（PEST, iES）"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part4/index.html#シリーズ全体のコード構成",
+    "href": "posts/flopy-phreeqc-part4/index.html#シリーズ全体のコード構成",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）",
+    "section": "シリーズ全体のコード構成",
+    "text": "シリーズ全体のコード構成\n4回分のコードを整理すると、プロジェクト構造は以下のようになる：\nflopy-phreeqc/\n│\n├── main.py                  # エントリーポイント（全ステップを統合）\n│\n├── setup/\n│   ├── check_env.py         # 実行ファイル・DB の存在確認\n│   └── modflow_model.py     # MODFLOW 6 モデル構築（#1）\n│\n├── coupling/\n│   ├── extract_velocity.py  # Darcy 流速の抽出（#2）\n│   ├── courant.py           # Courant 条件計算（#2）\n│   └── phreeqc_init.py      # PHREEQC 初期化・KINETICS（#2）\n│\n├── analysis/\n│   ├── parse_output.py      # SELECTED_OUTPUT の整形（#3）\n│   └── plot.py              # 各種可視化関数（#3）\n│\n├── sensitivity/\n│   └── sensitivity.py       # パラメータ感度解析（#4）\n│\n├── mf6.exe                  # MODFLOW 6 実行ファイル\n└── llnl.dat                 # PHREEQC データベース\nmain.py は各モジュールを順番に呼び出すだけのシンプルな構造にしておくと、後から拡張しやすい：\n# main.py\nfrom setup.check_env import check_required_files\nfrom setup.modflow_model import build_and_run_modflow\nfrom coupling.extract_velocity import get_darcy_velocity\nfrom coupling.courant import compute_timestep\nfrom coupling.phreeqc_init import initialize_phreeqc, run_coupling_loop\nfrom analysis.parse_output import parse_selected_output\nfrom analysis.plot import plot_summary_panel\n\ndef main():\n    check_required_files()\n\n    gwf, sim_name = build_and_run_modflow()\n    v_darcy       = get_darcy_velocity(sim_name)\n    dt, n_steps   = compute_timestep(v_darcy)\n\n    iph = initialize_phreeqc()\n    iph = run_coupling_loop(iph, v_darcy, dt, n_steps)\n\n    df = parse_selected_output(iph, N=15)\n    plot_summary_panel(df)\n\nif __name__ == \"__main__\":\n    main()"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part4/index.html#おわりに",
+    "href": "posts/flopy-phreeqc-part4/index.html#おわりに",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）",
+    "section": "おわりに",
+    "text": "おわりに\n4回のシリーズを通じて、MODFLOW 6 と PHREEQC を Python でつなぐという地球化学シミュレーションの核心を実装した。\n改めて各回のエッセンスを一言でまとめると：\n\n#1：「なぜカップリングか」― 流動だけでは足りない、反応を組み込む意義\n#2：「Darcy流速を橋渡しする」― Courant条件という数値安定性の鍵\n#3：「破過曲線で時空間を読む」― 数字から現象を見る技術\n#4：「限界を知り、先を見る」― モデルを正しく使うための誠実さ\n\nこのシリーズが、地下水・地熱・CCS・環境修復のシミュレーションに取り組む誰かの出発点になれば嬉しい。\nコードへのフィードバック・改善提案は GitHub Issues でお待ちしています。\n\nこのシリーズの全記事：\n\n#1 モデル設計編\n#2 実装編（カップリングの核心）\n#3 解析・可視化編\n#4 応用・考察編（本記事）"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html",
+    "href": "posts/groundwater-darcy/index.html",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "",
+    "text": "地下水モデリングを学ぶ上で、最初に理解すべき最も重要な原則が「ダルシーの法則（Darcy’s Law）」です。 1856年、フランスの技術者アンリ・ダルシーは、砂を詰めた円筒に水を流す実験を行い、「水を通しやすさ（透水係数）」と「水位の差（動水勾配）」が水の流れる量に比例することを発見しました。\n今回は、この基本法則を数式で確認した後、PythonライブラリのFloPyを使ってMODFLOW 6上で実際に再現してみます。\n\n\n\n\n\n\n重要事前準備：MODFLOW 6実行ファイルが必要です\n\n\n\nflopy はPythonのラッパーライブラリであり、実際の計算には MODFLOW 6の実行ファイル（mf6 または mf6.exe）が別途必要です。USGS公式サイトからダウンロードし、作業ディレクトリ（./model_ws/）に配置してください。初心者がつまずく最初のポイントです。"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html#はじめに地下水はどのように流れるのか",
+    "href": "posts/groundwater-darcy/index.html#はじめに地下水はどのように流れるのか",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "",
+    "text": "地下水モデリングを学ぶ上で、最初に理解すべき最も重要な原則が「ダルシーの法則（Darcy’s Law）」です。 1856年、フランスの技術者アンリ・ダルシーは、砂を詰めた円筒に水を流す実験を行い、「水を通しやすさ（透水係数）」と「水位の差（動水勾配）」が水の流れる量に比例することを発見しました。\n今回は、この基本法則を数式で確認した後、PythonライブラリのFloPyを使ってMODFLOW 6上で実際に再現してみます。\n\n\n\n\n\n\n重要事前準備：MODFLOW 6実行ファイルが必要です\n\n\n\nflopy はPythonのラッパーライブラリであり、実際の計算には MODFLOW 6の実行ファイル（mf6 または mf6.exe）が別途必要です。USGS公式サイトからダウンロードし、作業ディレクトリ（./model_ws/）に配置してください。初心者がつまずく最初のポイントです。"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html#ダルシーの法則の基本式",
+    "href": "posts/groundwater-darcy/index.html#ダルシーの法則の基本式",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "2. ダルシーの法則の基本式",
+    "text": "2. ダルシーの法則の基本式\nダルシーの法則は、以下の数式で表されます。\n\\[\nQ = -K \\cdot A \\cdot \\frac{\\Delta h}{\\Delta l}\n\\]\n各パラメータの意味は以下の通りです：\n\n\\(Q\\)：流量（\\(m^3/day\\)）― 単位時間あたりに流れる水の量\n\\(K\\)：透水係数（\\(m/day\\)）― 地層の水を通しやすさ\n\\(A\\)：断面積（\\(m^2\\)）― 水が流れる面の広さ\n\\(\\frac{\\Delta h}{\\Delta l}\\)：動水勾配（無次元）― 距離 \\(\\Delta l\\) の間に水位がどれだけ変化するか。水は高いところから低いところへ流れるためマイナスがつく\n\nまた、断面積 \\(A\\) で割った「比流量（Darcy流速）」\\(q\\)（m/day）は次のように表されます。\n\\[\nq = -K \\frac{dh}{dl}\n\\]"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html#flopyで再現する仮想実験",
+    "href": "posts/groundwater-darcy/index.html#flopyで再現する仮想実験",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "3. FloPyで再現する仮想実験",
+    "text": "3. FloPyで再現する仮想実験\n理論を学んだところで、MODFLOW 6を使って実際にモデルを作ってみます。\nモデルの設定\n\n長さ 100 m の1次元カラム（10 m × 10 m のセルが10個）\n透水係数（\\(K\\)） = 10 m/day\n左端（col 0）の水位 = 10 m に固定\n右端（col 9）の水位 = 5 m に固定\n\n\n手計算での予測\n\\[\nq = -K \\frac{\\Delta h}{\\Delta l} = -10 \\times \\frac{5 - 10}{100} = 0.5 \\text{ m/day}\n\\]\nこれをFloPyで確認します。ただし、この手計算とMODFLOWの数値解を正確に比較するには、重要な注意点がある。次のセクションで詳しく説明する。"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html#flopyによるコーディング",
+    "href": "posts/groundwater-darcy/index.html#flopyによるコーディング",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "4. FloPyによるコーディング",
+    "text": "4. FloPyによるコーディング\n\nimport flopy\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom pathlib import Path\n\n# 1. ワークスペースとシミュレーションの設定\nname = \"darcy_1d\"\nws = Path(\"./model_ws\")\nws.mkdir(exist_ok=True)\n\nsim = flopy.mf6.MFSimulation(sim_name=name, sim_ws=str(ws), exe_name=\"mf6\")\n\n# 2. 時間設定（定常流）\ntdis = flopy.mf6.ModflowTdis(\n    sim,\n    time_units=\"DAYS\",\n    perioddata=[(1.0, 1, 1.0)],\n)\n\n# 3. ソルバーの設定\nims = flopy.mf6.ModflowIms(sim, complexity=\"SIMPLE\")\n\n# 4. 地下水流動モデルの作成\ngwf = flopy.mf6.ModflowGwf(sim, modelname=name, save_flows=True)\n\n# 5. 空間離散化（DIS）: 1層, 1行, 10列\nLx = 100.0\nnlay, nrow, ncol = 1, 1, 10\ndelr = Lx / ncol   # セル幅 = 10 m\ndelc = 10.0\ntop  = 15.0\nbotm = 0.0\n\ndis = flopy.mf6.ModflowGwfdis(\n    gwf,\n    nlay=nlay, nrow=nrow, ncol=ncol,\n    delr=delr, delc=delc,\n    top=top, botm=botm,\n)\n\n# 6. 透水係数（NPF）\nk = 10.0\nnpf = flopy.mf6.ModflowGwfnpf(gwf, k=k)\n\n# 7. 初期条件（IC）\nic = flopy.mf6.ModflowGwfic(gwf, strt=10.0)\n\n# 8. 境界条件（CHD: 固定水頭）\n#    ※ CHD はセルに水頭を与える（境界面ではない）→ 後述\nchd_spd = [[(0, 0, 0), 10.0], [(0, 0, ncol - 1), 5.0]]\nchd = flopy.mf6.ModflowGwfchd(\n    gwf,\n    stress_period_data=chd_spd,\n    save_flows=True,   # ← 流量も budget に出力\n)\n\n# 9. 出力制御（OC）\noc = flopy.mf6.ModflowGwfoc(\n    gwf,\n    head_filerecord=f\"{name}.hds\",\n    budget_filerecord=f\"{name}.cbc\",\n    saverecord=[(\"HEAD\", \"ALL\"), (\"BUDGET\", \"ALL\")],\n)\n\n# 10. モデルの書き出しと実行\nsim.write_simulation()\nsuccess, buff = sim.run_simulation()\nif not success:\n    raise RuntimeError(\"MODFLOW 6 の実行に失敗しました。mf6.exe の配置を確認してください。\")"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html#重要chdはセル中心に水頭を与える",
+    "href": "posts/groundwater-darcy/index.html#重要chdはセル中心に水頭を与える",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "5. 【重要】CHDはセル中心に水頭を与える",
+    "text": "5. 【重要】CHDはセル中心に水頭を与える\nコードを走らせる前に、数値モデルと手計算の比較で必ずつまずくポイントを理解しておこう。\n\nCHDパッケージの仕組み\nMODFLOW 6のCHD（Constant Head）パッケージは、「境界面」ではなくセルそのものに固定水頭を与える。つまり、水頭が定義されるのはセルの物理的な中心点だ。\nセル幅 delr = 10 m のとき：\n\n  col 0 のセル中心：x = 5 m   ← h = 10 m が与えられる\n  col 9 のセル中心：x = 95 m  ← h = 5 m が与えられる\nこのモデルの「実際のカラム長」は 100 m だが、水頭の境界条件が与えられているのは x = 5 m と x = 95 m の間、すなわち 90 m の区間だ。\n\n\n手計算との比較でズレが生じる理由\n\n\n\n\n\n\n\n\n\n距離 Δl\n比流量 q\n\n\n\n\n手計算（解析解）\n100 m（カラム全長）\n−10 × (−5/100) = 0.500 m/day\n\n\nMODFLOWの数値解\n90 m（セル中心間）\n−10 × (−5/90) ≈ 0.556 m/day\n\n\n\n差は約11%。「手計算と一致した」とは言えない。\n\n\n\n\n\n\nノートなぜ 90 m になるのか\n\n\n\ndelr = 10 m（各セルの幅）で10セルのとき：\n\ncol 0 の中心位置：\\(x = \\frac{10}{2} = 5\\) m\ncol 9 の中心位置：\\(x = 100 - \\frac{10}{2} = 95\\) m\nセル中心間の距離：\\(95 - 5 = 90\\) m\n\nセルを増やすほどセル中心は境界面に近づき、数値解は解析解に収束していく。これを空間離散化誤差と呼ぶ。\n\n\n\n\n正しい比較の方法：2つのアプローチ\nアプローチ① セル中心ベースで手計算する\n# セル中心ベースの比流量\nq_cell_center = -k * (head[0, 0, -1] - head[0, 0, 0]) / ((ncol - 1) * delr)\nprint(f\"セル中心ベースの比流量: {q_cell_center:.4f} m/day\")\n# → 0.5556 m/day（MODFLOWの内部計算と一致）\nアプローチ② セル数を増やして収束を確認する\n# セル数を変えて比流量の収束を確認\nfor n in [10, 20, 50, 100]:\n    dx = Lx / n\n    # ... モデルを再構築・実行 ...\n    q = -k * (h[-1] - h[0]) / ((n - 1) * dx)\n    print(f\"ncol={n:4d}: q = {q:.4f} m/day\")\n\n# ncol=  10: q = 0.5556 m/day  ← 0.5から11%ズレ\n# ncol=  20: q = 0.5263 m/day  ← 0.5から5%ズレ\n# ncol=  50: q = 0.5102 m/day  ← 0.5から2%ズレ\n# ncol= 100: q = 0.5051 m/day  ← 0.5から1%ズレ（解析解に収束）\nセル数を10倍にするほど誤差は約1/10に減る。これが空間収束性（spatial convergence）だ。"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html#結果の可視化",
+    "href": "posts/groundwater-darcy/index.html#結果の可視化",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "6. 結果の可視化",
+    "text": "6. 結果の可視化\n\n# 水位データの読み込み\nhead = gwf.output.head().get_data()\n\n# プロット（DeepFlowダークテーマ）\nx_centers = np.linspace(delr / 2, Lx - delr / 2, ncol)\n\nplt.figure(figsize=(8, 4))\nax = plt.gca()\nax.set_facecolor('#0F172A')\nplt.gcf().patch.set_facecolor('#0F172A')\n\nplt.plot(x_centers, head[0, 0, :],\n         marker='o', color='#38BDF8',\n         linestyle='-', linewidth=2, label='MODFLOW 水頭（セル中心）')\n\n# 解析解の直線（x=0〜100 の全域）\nx_analytic = np.array([0, 100])\nh_analytic  = np.array([10, 5])\nplt.plot(x_analytic, h_analytic,\n         color='#F97316', linestyle='--', linewidth=1.5,\n         label='解析解（境界面ベース）', alpha=0.8)\n\n# セル中心の境界位置を示す縦線\nplt.axvline(x=5,  color='#38BDF8', linestyle=':', alpha=0.5, linewidth=1)\nplt.axvline(x=95, color='#38BDF8', linestyle=':', alpha=0.5, linewidth=1)\n\nplt.title(\"水頭分布（ダルシー1D）\", color='white')\nplt.xlabel(\"Distance x [m]\", color='white')\nplt.ylabel(\"Head [m]\", color='white')\nplt.legend(fontsize=9, framealpha=0.3)\nplt.grid(color='#475569', linestyle='--', alpha=0.5)\nax.tick_params(colors='white')\nfor spine in ax.spines.values():\n    spine.set_edgecolor('#475569')\n\nplt.tight_layout()\nplt.show()\n\nグラフでは、MODFLOW の点列（青）と解析解の直線（オレンジ破線）がわずかにずれていることが確認できる。解析解はカラムの端（x = 0、x = 100）に境界条件を持つが、MODFLOWはセル中心（x = 5、x = 95）に境界を置いているためだ。"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html#流量の確認budget",
+    "href": "posts/groundwater-darcy/index.html#流量の確認budget",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "7. 流量の確認（budget）",
+    "text": "7. 流量の確認（budget）\n水頭分布だけでなく、実際の流量も budget から確認しよう。\n\nimport flopy.utils.binaryfile as bf\n\n# Cell Budget File から CHD 流量を取得\ncbc = gwf.output.budget()\nchd_flux = cbc.get_data(text='CHD', totim=1.0)[0]\n\nq_in  = chd_flux[chd_flux['q'] &gt; 0]['q'].sum()   # 入口（正の流量）\nq_out = chd_flux[chd_flux['q'] &lt; 0]['q'].sum()   # 出口（負の流量）\n\nprint(f\"CHD 流入量:  {q_in:.4f} m³/day\")\nprint(f\"CHD 流出量: {q_out:.4f} m³/day\")\nprint(f\"収支誤差:    {abs(q_in + q_out):.2e} m³/day\")\n\n入流量と出流量の絶対値が一致し、収支誤差が極めて小さければ、モデルが正しく動作している証拠だ。"
+  },
+  {
+    "objectID": "posts/groundwater-darcy/index.html#まとめ",
+    "href": "posts/groundwater-darcy/index.html#まとめ",
+    "title": "ダルシーの法則を理解する：FloPyで作る最初の地下水モデル",
+    "section": "8. まとめ",
+    "text": "8. まとめ\n\n\n\n確認項目\n結果\n\n\n\n\n水頭分布\n一定勾配で低下 → ダルシー則の基本挙動を再現\n\n\n比流量（セル中心ベース）\n≈ 0.556 m/day\n\n\n比流量（解析解、100 m）\n0.500 m/day\n\n\n差異の原因\nCHDはセル中心に境界を置く → 実効距離が 90 m\n\n\n対策\nセル数を増やすほど解析解に収束（空間収束性）\n\n\n\n\n\n\n\n\n\nヒント学びのポイント\n\n\n\n数値モデルと解析解を比較するとき、「境界条件がどこに置かれているか」を常に意識すること。これはMODFLOWに限らず、有限差分法・有限要素法すべてに共通する重要な概念だ。次の記事では、より複雑な2次元モデルや井戸揚水を追加していく。"
   }
 ]

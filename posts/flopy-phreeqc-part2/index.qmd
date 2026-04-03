@@ -1,0 +1,375 @@
+---
+title: "FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）"
+date: 2026-04-02
+categories: [groundwater, python, modflow, geochemistry, simulation]
+series: "熱水地球化学シミュレーション"
+description: "MODFLOW 6の実行からDarcy流速の抽出、Courant条件による時間刻みの自動計算、PHREEQCの初期化まで。FlopyとPHREEQCをPythonでつなぐカップリングループの核心を実装する。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## 前回のおさらい
+
+[第1回（モデル設計編）](../flopy-phreeqc-part1/)では、カラムモデルの構造と境界条件を定義した。今回はそこから一歩進み、**実際に動くカップリングループ**を実装する。
+
+今回カバーする内容：
+
+1. MODFLOW 6 を実行し、Cell Budget File から Darcy 流速を抽出する
+2. **Courant 数 = 1** を満たす時間刻みを自動計算する
+3. PHREEQC を 150℃・100 atm 条件で初期化する
+4. KINETICS ブロックのパラメータ設定
+5. カップリングループの全体フロー
+
+---
+
+## Step 1：MODFLOW 6 の実行と流速抽出
+
+### モデルを実行する
+
+第1回で構築した `sim` オブジェクトに、ODE（出力制御）と IMS（ソルバー）を追加して実行する。
+
+```python
+import flopy
+import numpy as np
+
+# --- ソルバー設定 ---
+ims = flopy.mf6.ModflowIms(sim, complexity="simple")
+
+# --- 出力制御：Cell Budget File を出力 ---
+oc = flopy.mf6.ModflowGwfoc(
+    gwf,
+    budget_filerecord=f"{sim_name}.cbb",  # バイナリ予算ファイル
+    saverecord=[("BUDGET", "ALL")],
+)
+
+# --- モデルをディスクに書き出して実行 ---
+sim.write_simulation()
+success, buff = sim.run_simulation(silent=True)
+
+if not success:
+    raise RuntimeError("MODFLOW 6 の実行に失敗しました。mf6.exe の配置を確認してください。")
+
+print("✓ MODFLOW 6 実行完了")
+```
+
+### Cell Budget File から流速を取得する
+
+MODFLOW 6 は各セル境界を通過する流量を `.cbb`（Cell Budget File）というバイナリファイルに記録する。`flopy.utils.CellBudgetFile` でこれを読み込む。
+
+```python
+import os
+
+cbb_path = os.path.join(sim_name, f"{sim_name}.cbb")
+cbb = flopy.utils.CellBudgetFile(cbb_path, precision="double")
+
+# 比流量（Specific Discharge）を取得
+# テキストキーは MODFLOW 6 では 'DATA-SPDIS'
+spdis = cbb.get_data(text="DATA-SPDIS", totim=1.0)[0]
+
+# x方向（流れ方向）の比流量を配列として取得
+qx = np.array([s[0] for s in spdis])   # shape: (N,)
+
+# カラム全体の代表 Darcy 流速（空間平均）
+v_darcy = float(np.mean(np.abs(qx)))   # [m/s]
+
+print(f"Darcy 流速 v = {v_darcy:.4e} m/s")
+```
+
+::: {.callout-note}
+## `DATA-SPDIS` について
+
+MODFLOW 6 の STO や NPF パッケージが有効なとき、Cell Budget には `DATA-SPDIS`（Specific Discharge）として各セルの流速ベクトルが記録される。古いバージョンでは `FLOW-JA-FACE` のみの場合もあるので、`cbb.list_unique_records()` で確認するとよい。
+:::
+
+---
+
+## Step 2：Courant 条件による時間刻みの自動計算
+
+### なぜ Courant 数 = 1 に揃えるのか
+
+PHREEQC の TRANSPORT ブロックは**完全上流差分**で移流を解く。このスキームの数値分散（数値的なぼやけ）を最小化するには、**1タイムステップで水がちょうど1セル分移動する**ように時間刻みを設定する必要がある。
+
+これを表す無次元数が **Courant 数（$C_r$）** だ：
+
+$$
+C_r = \frac{v \cdot \Delta t}{\Delta x}
+$$
+
+$C_r = 1$ になるよう $\Delta t$ を逆算する：
+
+$$
+\Delta t = \frac{\Delta x}{v}
+$$
+
+ここで $v$ は**実流速**（間隙流速）であり、Darcy 流速 $q$ を有効間隙率 $\phi$ で割ったものだ：
+
+$$
+v = \frac{q}{\phi}
+$$
+
+```python
+# --- パラメータ ---
+phi   = 0.3        # 有効間隙率 [-]（典型的な砂岩値）
+L     = 1.0        # カラム長さ [m]
+N     = 15         # セル分割数
+dx    = L / N      # セル幅 [m]
+
+# --- 実流速と時間刻みの計算 ---
+v_pore = v_darcy / phi          # 実流速（間隙流速）[m/s]
+dt     = dx / v_pore            # Courant 数 = 1 を満たす Δt [s]
+
+# --- 計算期間の設定 ---
+total_time   = 24 * 3600        # 24時間 [s]
+n_steps      = int(total_time / dt)
+
+print(f"実流速      v  = {v_pore:.4e} m/s")
+print(f"時間刻み    Δt = {dt:.2f} s")
+print(f"総タイムステップ数 = {n_steps}")
+```
+
+::: {.callout-important}
+## 数値分散と Courant 数
+
+$C_r < 1$（時間刻みが小さすぎる）でも計算は安定するが、数値分散が増大し、濃度フロントが「にじむ」。$C_r > 1$ では計算が不安定になりうる。地球化学シミュレーションでは濃度フロントの精度が重要なため、**$C_r = 1$ を厳守**するのが最善だ。
+:::
+
+---
+
+## Step 3：PHREEQC の初期化
+
+### IPhreeqc エンジンの起動
+
+`phreeqpy` は IPhreeqc モジュールを通じて PHREEQC を Python から直接呼び出せるラッパーだ。
+
+```python
+import sys
+from phreeqpy.iphreeqc.phreeqc import IPhreeqc
+
+def initialize_phreeqc(database_path: str = "llnl.dat") -> IPhreeqc:
+    """
+    PHREEQCエンジンを起動し、高温データベースを読み込んで返す。
+    """
+    iph = IPhreeqc()
+
+    # データベースの読み込み（高温高圧対応の llnl.dat）
+    try:
+        iph.load_database(database_path)
+        print(f"✓ データベース '{database_path}' を読み込みました")
+    except Exception as e:
+        sys.exit(f"✗ データベースの読み込みに失敗: {e}")
+
+    return iph
+```
+
+### 初期水質の定義（150℃・100 atm）
+
+PHREEQC への入力はすべて**文字列スクリプト**として渡す。Python の f-string を使えば、MODFLOW の計算結果（流速など）を動的に埋め込める。
+
+```python
+def build_initial_solution(temp_c: float = 150.0, pressure_atm: float = 100.0) -> str:
+    """
+    初期水質を定義する PHREEQC インプットスクリプトを返す。
+    """
+    script = f"""
+SOLUTION 1-{N}  初期流体（熱水系）
+    temp      {temp_c}
+    pressure  {pressure_atm}
+    pH        7.0
+    Na        1.0e-3
+    Cl        1.0e-3  charge
+    units     mol/kgw
+
+END
+"""
+    return script
+
+# エンジン起動 → 初期水質を全セルに適用
+iph = initialize_phreeqc()
+iph.run_string(build_initial_solution())
+print("✓ 初期水質を設定しました（150℃, 100 atm）")
+```
+
+::: {.callout-tip}
+## `llnl.dat` を選ぶ理由
+
+PHREEQC には複数のデータベースが付属する（`phreeqc.dat`、`minteq.dat`、`llnl.dat` など）。高温高圧条件に対応した熱力学データを持つのは **`llnl.dat`**（Lawrence Livermore National Laboratory）だ。150℃ 超の熱水系シミュレーションには必ずこれを使う。
+:::
+
+---
+
+## Step 4：KINETICS ブロックの設定
+
+平衡反応（EQUILIBRIUM_PHASES）と速度論的反応（KINETICS）の違いは、**反応が時間に依存するかどうか**だ。鉱物の溶解・沈殿には実際に時間がかかるため、本シミュレーションでは KINETICS を使う。
+
+```python
+def build_kinetics_block(cell_id: int, m0_calcite: float) -> str:
+    """
+    指定セルの KINETICS ブロックを生成する。
+    各セルに固有の初期鉱物量（m0）を設定することで、
+    カラムの不均質性を表現できる。
+
+    Parameters
+    ----------
+    cell_id     : セル番号（1始まり）
+    m0_calcite  : そのセルの初期方解石量 [mol]
+    """
+    script = f"""
+KINETICS {cell_id}
+    Calcite
+        -m0    {m0_calcite}      # 初期鉱物モル数
+        -parm  100.0             # 比表面積パラメータ [cm²/mol]
+                                 # → 大きいほど反応速度が速い
+        -step_divide  100        # タイムステップ細分化数
+                                 # → 数値安定性の確保
+
+END
+"""
+    return script
+```
+
+### 3つのキーパラメータ
+
+| パラメータ | 意味 | 設定の考え方 |
+|---|---|---|
+| `m0` | 初期鉱物量 [mol] | セルごとに個別設定 → 不均質性の表現 |
+| `parm` | 比表面積 [cm²/mol] | 大きいほど反応が速い。実験値を参照 |
+| `step_divide` | タイムステップ細分化 | 反応が速い場合は大きく設定（安定性確保） |
+
+::: {.callout-note}
+## `step_divide` の役割
+
+PHREEQC の ODE ソルバーは各タイムステップを `step_divide` 個の内部サブステップに分割して積分する。反応速度が速く、数値解が発散しそうな場合に増やす。計算コストと引き換えに安定性が上がる。
+:::
+
+---
+
+## Step 5：カップリングループの全体フロー
+
+ここまでの部品を組み合わせ、24時間のシミュレーションを回す。
+
+```python
+def run_coupled_simulation(iph, v_darcy, dx, N, n_steps, dt):
+    """
+    MODFLOW → PHREEQC カップリングループ。
+    各タイムステップで PHREEQC を 1 ステップ進める。
+    """
+    results = {
+        "time":    [],
+        "pH_in":   [],   # Cell 1（入口）のpH
+        "pH_out":  [],   # Cell N（出口）のpH
+        "mineral": [],   # 鉱物量変化
+    }
+
+    # --- TRANSPORT ブロックの構築 ---
+    # Darcy 流速を PHREEQC の移流速度として渡す
+    transport_block = f"""
+TRANSPORT
+    -cells          {N}
+    -length         {dx}
+    -flow_direction forward
+    -velocity       {v_darcy / phi}   # 実流速 [m/s]
+    -time_step      {dt}
+    -shifts         1                 # 1ステップずつ進める
+    -punch_cells    1 {N}             # 入口・出口のデータを記録
+    -punch_frequency 1
+
+SELECTED_OUTPUT
+    -reset          false
+    -pH             true
+    -molalities     Na+ Ca+2 K+ Si(OH)4
+    -saturation_indices  Calcite Quartz
+    -kinetic_reactants   Calcite
+"""
+
+    print(f"シミュレーション開始：{n_steps} ステップ（計 {total_time/3600:.0f} 時間）")
+
+    for step in range(n_steps):
+        # PHREEQC を 1 タイムステップ実行
+        iph.run_string(transport_block)
+
+        # 結果を取得（SELECTED_OUTPUT から）
+        output = iph.get_selected_output_array()
+
+        if output and len(output) > 1:
+            # 入口（Cell 1）と出口（Cell N）の pH を記録
+            results["time"].append((step + 1) * dt / 3600)  # 時間単位
+            results["pH_in"].append(output[1][2])            # pH列のインデックスは環境依存
+            results["pH_out"].append(output[-1][2])
+
+        # 進捗表示（100ステップごと）
+        if (step + 1) % 100 == 0:
+            elapsed_h = (step + 1) * dt / 3600
+            print(f"  {elapsed_h:.1f} h / {total_time/3600:.0f} h 完了")
+
+    print("✓ シミュレーション完了")
+    return results
+```
+
+---
+
+## 処理フローの全体像
+
+```
+main.py
+│
+├── 1. 環境チェック（mf6.exe, llnl.dat の存在確認）
+│
+├── 2. MODFLOW 6 実行
+│   └── → Cell Budget File (.cbb) から v_darcy を取得
+│
+├── 3. Courant 条件計算
+│   └── → dt = dx / (v_darcy / phi)
+│
+├── 4. PHREEQC 初期化
+│   ├── IPhreeqc 起動
+│   ├── llnl.dat 読み込み
+│   └── 初期水質（150℃, 100atm）設定
+│
+├── 5. KINETICS 設定
+│   └── 各セルに m0, parm, step_divide を定義
+│
+└── 6. カップリングループ（n_steps 回）
+    ├── TRANSPORT ブロックに v_darcy を注入
+    ├── iph.run_string() で 1 ステップ実行
+    └── SELECTED_OUTPUT から pH・濃度・鉱物量を記録
+```
+
+---
+
+## 次回予告：解析・可視化編
+
+第2回では**カップリングループを動かす仕組み**を実装した。
+
+第3回では取得したデータを使って：
+
+- **破過曲線**（入口 vs 出口の pH・濃度の時間変化）
+- **鉱物量の空間プロファイル**（どのセルで溶解・沈殿が進んでいるか）
+- **飽和指数（SI）の可視化**
+
+をmatplotlibで描画する。生データが「意味のある結果」に変わる瞬間を一緒に見ていこう。
+
+---
+
+## まとめ：今回実装したこと
+
+| ステップ | 実装内容 | キーポイント |
+|---|---|---|
+| 流速抽出 | `CellBudgetFile` → `DATA-SPDIS` | バイナリファイルから比流量を読む |
+| Courant 条件 | $\Delta t = \Delta x / v$ | 数値分散を最小化する時間刻み |
+| PHREEQC 初期化 | `IPhreeqc` + `llnl.dat` | 高温データベースの選択が重要 |
+| KINETICS | `m0`, `parm`, `step_divide` | セルごとの不均質性と安定性のバランス |
+| カップリングループ | `TRANSPORT` に `v_darcy` を動的注入 | f-string でパラメータを埋め込む |
+
+---
+
+*このシリーズの他の記事：*
+
+- [#1 モデル設計編](../flopy-phreeqc-part1/)
+- **#2 実装編（カップリングの核心）**（本記事）
+- [#3 解析・可視化編](../flopy-phreeqc-part3/)  ← 近日公開
+- [#4 応用・考察編](../flopy-phreeqc-part4/)  ← 近日公開
