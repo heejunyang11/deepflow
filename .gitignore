@@ -1,3 +1,11 @@
 /.quarto/
 **/*.quarto_ipynb
 _site/
+
+# 環境変数（最重要）
+.env
+.dev.vars
+
+# Python
+__pycache__/
+*.pyc
