@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DeepFlow</title>
+<title>Today’s Bible – DeepFlow</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -43,10 +41,12 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-51c09c167a706ef208dabe9d498949d7.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-51c09c167a706ef208dabe9d498949d7.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-51c09c167a706ef208dabe9d498949d7.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-fda0376ffae88b7b7a5025bf2553c02d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-81b61012334fe6a5e18585a39e8b2a16.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-fda0376ffae88b7b7a5025bf2553c02d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,77 +74,19 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "サーチ"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<meta property="og:title" content="DeepFlow">
-<meta property="og:description" content="Science beneath the surface">
-<meta property="og:image" content="./posts/flopy-phreeqc-part1/image3.png">
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Today’s Bible – DeepFlow">
+<meta property="og:description" content="Science beneath the surface. 環境問題や水資源の評価に役立つ地下水・地球化学解析（MODFLOW/PHREEQC）と、Python・AIを用いたデータ分析のノウハウを共有します。">
 <meta property="og:site_name" content="DeepFlow">
-<meta name="twitter:title" content="DeepFlow">
-<meta name="twitter:description" content="Science beneath the surface">
+<meta name="twitter:title" content="Today’s Bible – DeepFlow">
+<meta name="twitter:description" content="Science beneath the surface. 環境問題や水資源の評価に役立つ地下水・地球化学解析（MODFLOW/PHREEQC）と、Python・AIを用いたデータ分析のノウハウを共有します。">
 <meta name="twitter:image" content="profile.png">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
-<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -286,8 +228,10 @@ window.Quarto = {
         changeGiscusTheme();
       }
     };
-    const authorPrefersDark = true;
+    const authorPrefersDark = false;
     const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
     let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
     // Dark / light mode switch
     window.quartoToggleColorScheme = () => {
@@ -307,7 +251,7 @@ window.Quarto = {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -322,7 +266,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
@@ -330,7 +274,7 @@ window.Quarto = {
 <span class="menu-text">Series</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./english.html"> 
+    <a class="nav-link active" href="./english.html" aria-current="page"> 
 <span class="menu-text">English</span></a>
   </li>  
   <li class="nav-item">
@@ -353,150 +297,146 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">DeepFlow</h1>
-            <p class="subtitle lead">Science beneath the surface</p>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta column-page-left">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
         
-    <h5 class="quarto-listing-category-title">分類</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">すべて <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Z2VvY2hlbWlzdHJ5">geochemistry <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Z3JvdW5kd2F0ZXI=">groundwater <span class="quarto-category-count">(2)</span></div><div class="category" data-category="bW9kZmxvdw==">modflow <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TU9ERkxPVw==">MODFLOW <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cHl0aG9u">python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UHl0aG9u">Python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c2ltdWxhdGlvbg==">simulation <span class="quarto-category-count">(1)</span></div></div></div>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Today’s Bible</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-
-
-<div style="text-align:center; padding: 0.5rem 0 2rem;">
-  <div style="display:inline-block; font-size:18px; padding:4px 16px;
-    border-radius:999px; border:1px solid rgba(139,92,246,0.3);
-    color:#DDD6FE; margin-bottom:16px; letter-spacing:0.08em;">
-    SCIENCE · CODE · INSIGHT
+    
+  
+    
   </div>
-  <div style="width:48px; height:3px; background:#8B5CF6;
-    margin:0 auto 20px; border-radius:2px;"></div>
-  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2);
-      color:#A78BFA;">Groundwater</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2);
-      color:#A78BFA;">Geochemistry</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2);
-      color:#A78BFA;">Hydrology</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2);
-      color:#A78BFA;">AI &amp; Python</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2);
-      color:#A78BFA;">MODFLOW</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2);
-      color:#A78BFA;">PHREEQC</span>
+  
+
+
+</header>
+
+
+<p>今日の聖句を読んで、英単語を学びましょう。AIでさらに深掘りもできます。</p>
+<div id="bible-widget">
+
+<div style="border: 1px solid var(--bs-border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+  <p style="font-size: 12px; color: gray; margin: 0 0 8px;">📖 今日の聖句</p>
+  <p id="verse-text" style="font-size: 20px; font-style: italic; line-height: 1.8; margin: 0 0 8px;"></p>
+  <p id="verse-ref" style="font-size: 13px; color: gray; margin: 0;"></p>
+</div>
+
+<p style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">📚 単語解説</p>
+<div id="word-list" style="margin-bottom: 1.5rem;"></div>
+
+<p style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">🤖 AIでさらに深掘り</p>
+<p style="font-size: 13px; color: gray; margin-bottom: 12px;">
+  AIチャットを使うともっと詳しい解説・例文・背景知識が得られます。
+</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+  <a id="claude-link" href="" target="_blank">
+    <button style="background: #d97706; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;">
+      Claudeで聞く →
+    </button>
+  </a>
+  <a id="chatgpt-link" href="" target="_blank">
+    <button style="background: #10a37f; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;">
+      ChatGPTで聞く →
+    </button>
+  </a>
+</div>
+
+</div>
+
+<script>
+const verses = [
+  {
+    text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
+    ref: "John 3:16",
+    words: [
+      { en: "loved", phonetic: "/lʌvd/", ja: "愛した", note: "loveの過去形。深い愛情を示す" },
+      { en: "gave", phonetic: "/ɡeɪv/", ja: "与えた", note: "giveの過去形。惜しみなく与える" },
+      { en: "believes", phonetic: "/bɪˈliːvz/", ja: "信じる", note: "信頼・信仰を持つという意味" },
+      { en: "perish", phonetic: "/ˈpɛrɪʃ/", ja: "滅びる", note: "死ぬ・消滅するという意味" },
+      { en: "eternal", phonetic: "/ɪˈtɜːrnəl/", ja: "永遠の", note: "時間的な終わりがないさま" }
+    ]
+  },
+  {
+    text: "The Lord is my shepherd; I shall not want.",
+    ref: "Psalm 23:1",
+    words: [
+      { en: "Lord", phonetic: "/lɔːrd/", ja: "主・神", note: "神や支配者を指す敬称" },
+      { en: "shepherd", phonetic: "/ˈʃɛpərd/", ja: "羊飼い", note: "羊を世話し導く人。転じて導き手" },
+      { en: "shall", phonetic: "/ʃæl/", ja: "〜するだろう", note: "未来・強い意志を表す助動詞" },
+      { en: "want", phonetic: "/wɒnt/", ja: "欠乏する", note: "ここでは「不足する」の意味" }
+    ]
+  },
+  {
+    text: "Trust in the Lord with all your heart and lean not on your own understanding.",
+    ref: "Proverbs 3:5",
+    words: [
+      { en: "trust", phonetic: "/trʌst/", ja: "信頼する", note: "完全に頼ること" },
+      { en: "lean", phonetic: "/liːn/", ja: "頼る", note: "物理的に傾く→依存するの意" },
+      { en: "understanding", phonetic: "/ˌʌndəˈstændɪŋ/", ja: "理解・知恵", note: "物事を理解する力・判断力" },
+      { en: "heart", phonetic: "/hɑːrt/", ja: "心・魂", note: "感情や意志の中心を表す" }
+    ]
+  },
+  {
+    text: "I can do all things through Christ who strengthens me.",
+    ref: "Philippians 4:13",
+    words: [
+      { en: "strengthens", phonetic: "/ˈstrɛŋθənz/", ja: "強くする", note: "力・勇気を与えるという意味" },
+      { en: "through", phonetic: "/θruː/", ja: "〜を通して", note: "手段・媒介を表す前置詞" },
+      { en: "Christ", phonetic: "/kraɪst/", ja: "キリスト", note: "「油注がれた者」を意味するギリシャ語" }
+    ]
+  },
+  {
+    text: "Be still, and know that I am God.",
+    ref: "Psalm 46:10",
+    words: [
+      { en: "still", phonetic: "/stɪl/", ja: "静かに・じっとして", note: "動かない・穏やかなさま" },
+      { en: "know", phonetic: "/noʊ/", ja: "知る・悟る", note: "深く理解・認識するという意味" }
+    ]
+  }
+];
+
+function getTodayVerse() {
+  const day = new Date().getDate();
+  return verses[day % verses.length];
+}
+
+const v = getTodayVerse();
+
+document.getElementById('verse-text').textContent = '"' + v.text + '"';
+document.getElementById('verse-ref').textContent = '— ' + v.ref;
+
+document.getElementById('word-list').innerHTML = v.words.map(w => `
+  <div style="border: 1px solid var(--bs-border-color); border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; gap: 16px; flex-wrap: wrap;">
+    <div style="min-width: 120px;">
+      <span style="font-size: 16px; font-weight: bold;">${w.en}</span>
+      <span style="font-size: 12px; color: gray; margin-left: 6px;">${w.phonetic}</span>
+    </div>
+    <div>
+      <span style="font-size: 15px; color: #1d4ed8; font-weight: 500;">${w.ja}</span>
+      <span style="font-size: 13px; color: gray; margin-left: 8px;">${w.note}</span>
+    </div>
   </div>
-</div>
-<p><strong>環境問題や水資源</strong>の評価に役立つ地下水・地球化学解析（<strong style="color:#fff; text-shadow: 0 0 1.5px #000, 0 0 2.5px #000;">MODFLOW, PHREEQC</strong>）と、<strong style="color:#fff; text-shadow: 0 0 1.5px #000, 0 0 2.5px #000;">Python・AI</strong>を用いたデータ分析のノウハウを共有します。</p>
-<p>科学・コード・多様な観点で、水の世界を探求するサイトです。</p>
-<hr>
+`).join('');
+
+</script>
 
 
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Z3JvdW5kd2F0ZXIlMkNweXRob24lMkNtb2RmbG93JTJDZ2VvY2hlbWlzdHJ5JTJDc2ltdWxhdGlvbg==" data-listing-date-sort="1775142000000" data-listing-file-modified-sort="1775188519477" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2470">
-<div class="thumbnail"><a href="./posts/flopy-phreeqc-part1/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/flopy-phreeqc-part1/image3.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/flopy-phreeqc-part1/index.html" class="no-external">FlopyとPHREEQCで熱水地球化学シミュレーション #1：<br>モデル設計編</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Z3JvdW5kd2F0ZXI='); return false;">groundwater</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cHl0aG9u'); return false;">python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('bW9kZmxvdw=='); return false;">modflow</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Z2VvY2hlbWlzdHJ5'); return false;">geochemistry</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('c2ltdWxhdGlvbg=='); return false;">simulation</div>
-
-</div>
-<div class="delink listing-description"><a href="./posts/flopy-phreeqc-part1/index.html" class="no-external">
-<p>MODFLOW 6（Flopy）とPHREEQC（phreeqpy）をPythonでカップリングし、1次元カラムの熱水流動と地球化学反応を統合解析するシリーズ。第1回はなぜこのカップリングが必要なのか、モデル全体の設計思想と構成を解説する。</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/flopy-phreeqc-part1/index.html" class="no-external">
-<div class="listing-date">
-2026/04/03
-</div>
-<div class="listing-author">
-DeepFlow
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Z3JvdW5kd2F0ZXIlMkNNT0RGTE9XJTJDUHl0aG9u" data-listing-date-sort="1775055600000" data-listing-file-modified-sort="1775188215045" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="58">
-<div class="thumbnail"><a href="./posts/Groundwater-intro/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/Groundwater-intro/image2.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Groundwater-intro/index.html" class="no-external">地下水流動解析入門：<br>MODFLOWとFloPyの基本</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Z3JvdW5kd2F0ZXI='); return false;">groundwater</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TU9ERkxPVw=='); return false;">MODFLOW</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-</div>
-<div class="delink listing-description"><a href="./posts/Groundwater-intro/index.html" class="no-external">
-<p>地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/Groundwater-intro/index.html" class="no-external">
-<div class="listing-date">
-2026/04/02
-</div>
-<div class="listing-author">
-DeepFlow
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">一致なし</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

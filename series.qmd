@@ -14,12 +14,14 @@ MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
 - [地下水流動解析入門：MODFLOWとFloPyの基本](/posts/groundwater-intro/)
 
+- [FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編](/posts/flopy-phreeqc-part1/)
+
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
 
 ::: {.g-col-12 .g-col-md-6}
 ### ⚗️ Geochemistry Series
-PHREEQCとPythonで水質・地化学反応をモデリングする。
+PHREEQCとPythonで水質・地球化学反応をモデリングする。
 
 [記事を見る →](/index.qmd){.btn .btn-outline-primary}
 :::

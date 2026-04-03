@@ -4,14 +4,14 @@
     "href": "series.html",
     "title": "Series",
     "section": "",
-    "text": "地下水・地化学・AI・コラムの4つのシリーズで発信しています。\n\n\n🌊 Groundwater Series\nMODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。\n記事一覧\n\n地下水流動解析入門：MODFLOWとFloPyの基本\n\nもっと見る →\n\n\n⚗️ Geochemistry Series\nPHREEQCとPythonで水質・地化学反応をモデリングする。\n記事を見る →\n\n\n🤖 AI & Python Series\n機械学習とAIツールを研究に活用するための実践ガイド。\n記事を見る →\n\n\n💬 Column Series\n研究者・フリーランスとしての日常や思いをゆるく発信。\n記事を見る →"
+    "text": "地下水・地化学・AI・コラムの4つのシリーズで発信しています。\n\n\n🌊 Groundwater Series\nMODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。\n記事一覧\n\n地下水流動解析入門：MODFLOWとFloPyの基本\nFlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編\n\nもっと見る →\n\n\n⚗️ Geochemistry Series\nPHREEQCとPythonで水質・地球化学反応をモデリングする。\n記事を見る →\n\n\n🤖 AI & Python Series\n機械学習とAIツールを研究に活用するための実践ガイド。\n記事を見る →\n\n\n💬 Column Series\n研究者・フリーランスとしての日常や思いをゆるく発信。\n記事を見る →"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "DeepFlow",
     "section": "",
-    "text": "SCIENCE · CODE · INSIGHT\n  \n  \n  \n    Groundwater\n    Geochemistry\n    Hydrology\n    AI & Python\n    MODFLOW\n    PHREEQC\n  \n\n地下水・地球化学・水文学の研究ノウハウ（Series）から英語勉強（Bible）まで。\n科学・コード・多様な観点で、水の世界を探求するサイトです。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n地下水流動解析入門：MODFLOWとFloPyの基本\n\n\n\ngroundwater\n\nMODFLOW\n\nPython\n\n\n\n地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門\n\n\n\n\n\nApr 2, 2026\n\n\nDeepFlow\n\n\n\n\n\nNo matching items"
+    "text": "SCIENCE · CODE · INSIGHT\n  \n  \n  \n    Groundwater\n    Geochemistry\n    Hydrology\n    AI & Python\n    MODFLOW\n    PHREEQC\n  \n\n環境問題や水資源の評価に役立つ地下水・地球化学解析（MODFLOW, PHREEQC）と、Python・AIを用いたデータ分析のノウハウを共有します。\n科学・コード・多様な観点で、水の世界を探求するサイトです。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編\n\n\n\ngroundwater\n\npython\n\nmodflow\n\ngeochemistry\n\nsimulation\n\n\n\nMODFLOW 6（Flopy）とPHREEQC（phreeqpy）をPythonでカップリングし、1次元カラムの熱水流動と地球化学反応を統合解析するシリーズ。第1回はなぜこのカップリングが必要なのか、モデル全体の設計思想と構成を解説する。\n\n\n\n\n\n2026/04/03\n\n\nDeepFlow\n\n\n\n\n\n\n\n\n\n\n\n\n地下水流動解析入門：MODFLOWとFloPyの基本\n\n\n\ngroundwater\n\nMODFLOW\n\nPython\n\n\n\n地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門\n\n\n\n\n\n2026/04/02\n\n\nDeepFlow\n\n\n\n\n\n一致なし"
   },
   {
     "objectID": "about.html",
@@ -61,5 +61,61 @@
     "title": "地下水流動解析入門：MODFLOWとFloPyの基本",
     "section": "まとめ",
     "text": "まとめ\nFloPyを使うことで、地下水流動モデルの構築から 結果の可視化まですべてPythonで完結できます。\n次回は境界条件の設定について解説します。"
+  },
+  {
+    "objectID": "english.html",
+    "href": "english.html",
+    "title": "Today’s Bible",
+    "section": "",
+    "text": "今日の聖句を読んで、英単語を学びましょう。AIでさらに深掘りもできます。\n\n\n\n  📖 今日の聖句\n  \n  \n\n\n📚 単語解説\n\n\n🤖 AIでさらに深掘り\n\n  AIチャットを使うともっと詳しい解説・例文・背景知識が得られます。\n\n\n  \n    \n      Claudeで聞く →\n    \n  \n  \n    \n      ChatGPTで聞く →"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part1/index.html",
+    "href": "posts/flopy-phreeqc-part1/index.html",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編",
+    "section": "",
+    "text": "地下水の流動を計算するだけなら、MODFLOW 6単体で十分だ。しかし現実の地下環境では、水が流れると同時に岩石と反応し、鉱物が溶けたり沈殿したりする。熱水系では温度・圧力が高く、この反応がさらに複雑になる。\n\n流動モデルと反応モデルを切り離して使うと、どちらかが「嘘をつく」ことになる。\n\nそこで本シリーズでは、MODFLOW 6（流動計算）とPHREEQC（地球化学反応計算）をPythonで結合し、1次元カラムスケールでの熱水流動と地球化学反応を同時にシミュレーションする手法を段階的に解説する。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part1/index.html#なぜカップリングが必要なのか",
+    "href": "posts/flopy-phreeqc-part1/index.html#なぜカップリングが必要なのか",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編",
+    "section": "",
+    "text": "地下水の流動を計算するだけなら、MODFLOW 6単体で十分だ。しかし現実の地下環境では、水が流れると同時に岩石と反応し、鉱物が溶けたり沈殿したりする。熱水系では温度・圧力が高く、この反応がさらに複雑になる。\n\n流動モデルと反応モデルを切り離して使うと、どちらかが「嘘をつく」ことになる。\n\nそこで本シリーズでは、MODFLOW 6（流動計算）とPHREEQC（地球化学反応計算）をPythonで結合し、1次元カラムスケールでの熱水流動と地球化学反応を同時にシミュレーションする手法を段階的に解説する。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part1/index.html#モデルの全体像",
+    "href": "posts/flopy-phreeqc-part1/index.html#モデルの全体像",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編",
+    "section": "モデルの全体像",
+    "text": "モデルの全体像\n本シミュレーションは3つのコアコンポーネントで構成される。\n                  ┌─────────────────┐\n                  │  MODFLOW 6      │  💧 流動計算\n                  │  (Flopy)        │  ・カラム内の圧力・流量\n                  │                 │  ・Darcy流速の算出\n                  └────────┬────────┘\n                           │  Darcy流速 (v)\n                           ▼\n                  ┌─────────────────┐\n                  │  PHREEQC        │  🧪 反応輸送計算\n                  │  (phreeqpy)     │  ・移流（TRANSPORT）\n                  │                 │  ・鉱物溶解・沈殿（KINETICS）\n                  └────────┬────────┘\n                           │  濃度・pH・SI・鉱物量\n                           ▼\n                  ┌─────────────────┐\n                  │  Python         │  📊 統合・可視化\n                  │  (numpy +       │  ・時系列プロット\n                  │   matplotlib)   │  ・破過曲線の解析\n                  └─────────────────┘\n3つのコンポーネントの役割を整理すると：\n\n\n\nコンポーネント\nライブラリ\n担当\n\n\n\n\n流動計算\nflopy\nカラム内の流量・水頭・Darcy流速\n\n\n反応輸送計算\nphreeqpy\npH・鉱物量・元素濃度の時間変化\n\n\n統合・可視化\nnumpy, matplotlib\nデータ受け渡し・結果の描画\n\n\n\nポイントはMODFLOWが計算したDarcy流速を、そのままPHREEQCの移流速度パラメータに渡すという橋渡しの仕組みだ。これがカップリングの核心となる（詳細は第2回で実装する）。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part1/index.html#使用ライブラリ",
+    "href": "posts/flopy-phreeqc-part1/index.html#使用ライブラリ",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編",
+    "section": "使用ライブラリ",
+    "text": "使用ライブラリ\n# 流動モデル\nimport flopy                          # MODFLOW 6 の Python インターフェース\n\n# 反応計算\nfrom phreeqpy.iphreeqc.phreeqc import IPhreeqc  # PHREEQC エンジン\n\n# 数値・可視化\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# ファイル操作\nimport csv, os, shutil\nインストールは以下：\npip install flopy\npip install phreeqpy\npip install numpy matplotlib\n\n\n\n\n\n\n重要MODFLOW 6実行ファイルについて\n\n\n\nflopy はPythonラッパーであり、実際の計算には MODFLOW 6の実行ファイル（mf6.exe）が必要。USGS公式サイトからダウンロードし、作業ディレクトリに配置すること。\n\n\n\n\n\n\n\n\nヒントPHREEQCデータベースについて\n\n\n\n本シリーズでは高温高圧条件（150℃、100atm）に対応した llnl.dat を使用する。これもUSGS/USGS提供のPHREEQCパッケージに含まれているので、同じく作業ディレクトリに配置しておく。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part1/index.html#カラムモデルの設計",
+    "href": "posts/flopy-phreeqc-part1/index.html#カラムモデルの設計",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編",
+    "section": "カラムモデルの設計",
+    "text": "カラムモデルの設計\n\n物理的なイメージ\n円柱形のコアサンプル（あるいは地層の1断面）を想定する。水は一端から注入され、他端から排出される。内部では岩石鉱物と反応しながら流れる。\n\n  Model Discretization\n  カラム流動モデルの離散化イメージ\n\n  \n\n    \n    \n      \n        \n          🧊\n          モデルの次元定義\n        \n        \n          Layers:1\n          Rows:1\n          Columns:N\n        \n      \n      \n        \n          📏\n          幾何パラメータ\n        \n        セル幅：L ÷ N\n        \n        断面積：πr²\n      \n    \n\n    \n    \n      \n        \n          \n            \n            \n            \n          \n          \n            \n          \n          \n            \n          \n          \n        \n\n        \n        \n\n        \n        \n        Inlet\n\n        \n        \n        \n        Outlet\n\n        \n        \n          \n          \n          \n          \n        \n\n        \n        \n\n        \n        \n          1\n          2\n          3\n          …\n          N\n        \n\n        \n        \n        \n        \n        Column Length (L)\n\n        \n        \n        \n        \n        Cell Width (Δx = L/N)\n\n        \n        \n        Area (A = πr²)\n        \n        \n        r\n      \n    \n  \n\n\n\nMODFLOW 6による離散化\nMODFLOWは連続的な空間をグリッドセルに分割して計算する。1次元カラムの場合、DISパッケージで以下のように定義する：\nimport flopy\n\n# シミュレーション名\nsim_name = \"column_model\"\n\n# --- 基本パラメータ ---\nL = 1.0    # カラム長さ [m]\nN = 15     # セル分割数\nr = 0.05   # カラム半径 [m]\n\ndx = L / N                   # セル幅 [m]\nA  = 3.14159 * r**2          # 断面積 [m²]\n\n# --- MODFLOW モデル構築 ---\nsim = flopy.mf6.MFSimulation(sim_name=sim_name, exe_name=\"mf6\")\ngwf = flopy.mf6.ModflowGwf(sim, modelname=sim_name)\n\n# DISパッケージ：グリッド定義\ndis = flopy.mf6.ModflowGwfdis(\n    gwf,\n    nlay=1,      # 層数：1（1次元）\n    nrow=1,      # 行数：1\n    ncol=N,      # 列数：セル分割数\n    delr=dx,     # セル幅（流れ方向）\n    delc=1.0,    # セル幅（直交方向）：仮想的に1.0\n    top=1.0,\n    botm=0.0,\n)\nセル数 N=15 の場合、カラムは15個の計算ブロックに分割される。各セルの幅は均一で dx = L/N となる。\n\n\n境界条件の設定\n1次元流動モデルには3種類のパッケージを組み合わせる：\n\n\n\nパッケージ\n場所\n役割\n\n\n\n\nWEL（井戸境界）\n入口 Cell 1\n一定流量 \\(Q_{in}\\) を注入\n\n\nCHD（定水頭境界）\n出口 Cell N\n一定水頭 \\(h_{out}\\) を維持\n\n\nNPF（節点特性）\n全セル\n透水係数 \\(K\\) を定義\n\n\nIC（初期条件）\n全セル\n初期水頭 \\(h_{init}\\) を設定\n\n\n\n# --- 物性値 ---\nK     = 1.0e-5   # 透水係数 [m/s]（均質・等方）\nQin   = 1.0e-6   # 注入流量 [m³/s]\nh_out = 0.0      # 出口水頭 [m]\nh_init = 1.0     # 初期水頭 [m]\n\n# NPF：透水係数\nnpf = flopy.mf6.ModflowGwfnpf(\n    gwf,\n    k=K,          # x方向\n    k22=K,        # y方向\n    k33=K,        # z方向\n)\n\n# IC：初期条件\nic = flopy.mf6.ModflowGwfic(gwf, strt=h_init)\n\n# WEL：入口境界（定流量）\nwel = flopy.mf6.ModflowGwfwel(\n    gwf,\n    stress_period_data={0: [[(0, 0, 0), Qin]]}\n)\n\n# CHD：出口境界（定水頭）\nchd = flopy.mf6.ModflowGwfchd(\n    gwf,\n    stress_period_data={0: [[(0, 0, N-1), h_out]]}\n)\n\n\n\n\n\n\nノート均質・等方の仮定\n\n\n\n本シリーズでは検証目的のため、透水係数は全セルで一定（均質・等方）とする。実際の地層不均質性を組み込む場合は、k に配列を渡すことで対応できる。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part1/index.html#次回予告実装編カップリングの核心",
+    "href": "posts/flopy-phreeqc-part1/index.html#次回予告実装編カップリングの核心",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編",
+    "section": "次回予告：実装編（カップリングの核心）",
+    "text": "次回予告：実装編（カップリングの核心）\n第1回では「何を、なぜ組み合わせるのか」「カラムモデルをどう設計するか」を解説した。\n第2回では以下を実装する：\n\nMODFLOW 6の実行とCell Budget Fileからの流速抽出\nCourant条件（\\(C_r = 1\\)）を満たす時間刻みの自動計算\nPHREEQCの初期化（150℃・100atm条件）\nカップリングループ：流速をPHREEQCのTRANSPORTブロックへ動的注入\n\n\n「なぜCourant数を1に揃えるのか」という数値安定性の話も丁寧に解説する予定だ。"
+  },
+  {
+    "objectID": "posts/flopy-phreeqc-part1/index.html#まとめ",
+    "href": "posts/flopy-phreeqc-part1/index.html#まとめ",
+    "title": "FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編",
+    "section": "まとめ",
+    "text": "まとめ\n\n\n\n項目\n設定値\n\n\n\n\nカラム長さ\n1.0 m\n\n\nセル分割数\n15\n\n\n透水係数\n1.0×10⁻⁵ m/s\n\n\n注入流量\n1.0×10⁻⁶ m³/s\n\n\n温度条件\n150℃\n\n\n圧力条件\n100 atm（10 MPa）\n\n\n計算期間\n24時間\n\n\n\n本シリーズのコードはすべて GitHubリポジトリ で公開予定。次回の実装編もお楽しみに。\n\nこのシリーズの他の記事：\n\n#1 モデル設計編（本記事）\n#2 実装編（カップリングの核心） ← 近日公開\n#3 解析・可視化編 ← 近日公開\n#4 応用・考察編 ← 近日公開"
   }
 ]

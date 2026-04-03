@@ -2,9 +2,19 @@ project:
   type: website
   output-dir: _site
 
+# サイトの言語を日本語に設定
+lang: ja
+
 website:
   title: "DeepFlow"
-  description: "Science beneath the surface"
+  # 「環境」を追加した説明文
+  description: "Science beneath the surface. 環境問題や水資源の評価に役立つ地下水・地球化学解析（MODFLOW/PHREEQC）と、Python・AIを用いたデータ分析のノウハウを共有します。"
+  
+  open-graph: true
+  twitter-card: 
+    image: "profile.png" 
+    card-style: summary_large_image
+
   navbar:
     left:
       - href: index.qmd
@@ -23,7 +33,18 @@ website:
 
 format:
   html:
-    theme: darkly
+    # --- ここがライト/ダーク切り替えの設定です ---
+    theme:
+      dark: darkly
+      light: flatly   # 白（ライト）モードのテーマ
+         # 黒（ダーク）モードのテーマ
+    
+    # 必要に応じて、コードブロックの配色もモードで分けられます
+    # （現状は両方でdraculaが適用されます。分ける場合は下のコメントアウトを外してください）
+    # highlight-style:
+    #   light: a11y
+    #   dark: dracula
+    
     highlight-style: dracula
     code-fold: true
     toc: true
