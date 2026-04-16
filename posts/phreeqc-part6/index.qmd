@@ -1,0 +1,455 @@
+---
+title: "PHREEQCをゼロから始める #6：黄鉄鉱の酸化とAMD"
+date: 2026-04-12
+categories: [Geochemistry, PHREEQC]
+series: "PHREEQCをゼロから始める"
+description: "黄鉄鉱（FeS₂）が酸素と反応して硫酸を生成し、pH が急落する酸性鉱山廃水（AMD）の形成プロセスをPHREEQCで再現する。REACTIONブロックで不可逆反応を段階的に進め、Goethiteの沈殿条件まで含めた実践的な計算を解説する。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## 酸性鉱山廃水（AMD）とは
+
+**AMD（Acid Mine Drainage：酸性鉱山廃水）** は、鉱山や採掘現場で最も深刻な環境問題の一つである。硫化鉱物（特に黄鉄鉱 FeS₂）が空気・水と接触して酸化し、強い酸性水が生成される現象である。
+
+```{=html}
+<div style="background:#FFF1F2; border:1px solid #FECDD3; border-left:4px solid #E11D48; border-radius:0 8px 8px 0; padding:1.1rem 1.5rem; margin:1.5rem 0;">
+  <div style="font-weight:500; color:#9F1239; margin-bottom:0.4rem;">AMD の特徴</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.8rem; font-size:0.85rem;">
+    <div style="color:#BE123C;">pH: 1〜3（強酸性）</div>
+    <div style="color:#BE123C;">Fe・SO₄ が高濃度</div>
+    <div style="color:#BE123C;">赤褐色の沈殿物（Goethite）</div>
+  </div>
+</div>
+```
+
+## 酸化反応の化学
+
+黄鉄鉱の酸化は段階的に進む。
+
+**第1段階：O₂ による直接酸化**
+
+$$
+\mathrm{FeS_2 + \frac{7}{2}O_2 + H_2O \rightarrow Fe^{2+} + 2SO_4^{2-} + 2H^+}
+$$
+
+**第2段階：Fe²⁺ の酸化**
+
+$$
+\mathrm{Fe^{2+} + \frac{1}{4}O_2 + H^+ \rightarrow Fe^{3+} + \frac{1}{2}H_2O}
+$$
+
+**第3段階：Fe³⁺ による加速酸化（自己触媒）**
+
+$$
+\mathrm{FeS_2 + 14Fe^{3+} + 8H_2O \rightarrow 15Fe^{2+} + 2SO_4^{2-} + 16H^+}
+$$
+
+**第4段階：Goethite の沈殿**
+
+$$
+\mathrm{Fe^{3+} + 2H_2O \rightarrow FeOOH\downarrow + 3H^+}
+$$
+
+::: {.callout-note}
+## 自己触媒とは
+Fe³⁺ は黄鉄鉱をさらに酸化する酸化剤として働く。
+FeS₂ → Fe²⁺ → Fe³⁺ → さらに FeS₂ を酸化……という連鎖が起き、
+一度反応が始まると**指数関数的に加速**する。
+これが AMD が止まりにくい理由だ。
+:::
+
+---
+
+## 今回使う PHREEQC の新機能：REACTION ブロック
+
+これまで使ってきた `EQUILIBRIUM_PHASES` は「平衡に達するまで反応させる」命令だ。
+今回の `REACTION` ブロックは**「指定した量の物質を強制的に加える」** 不可逆反応の命令である。
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.87rem;">
+  <thead>
+    <tr style="background:#F9FAFB;">
+      <th style="padding:0.6rem 0.8rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#374151;"></th>
+      <th style="padding:0.6rem 0.8rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#374151;">EQUILIBRIUM_PHASES</th>
+      <th style="padding:0.6rem 0.8rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#374151;">REACTION</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid #F3F4F6;">
+      <td style="padding:0.5rem 0.8rem; font-weight:500; color:#374151;">反応の性質</td>
+      <td style="padding:0.5rem 0.8rem; color:#374151;">可逆（平衡）</td>
+      <td style="padding:0.5rem 0.8rem; color:#374151;">不可逆（強制添加）</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+      <td style="padding:0.5rem 0.8rem; font-weight:500; color:#374151;">終了条件</td>
+      <td style="padding:0.5rem 0.8rem; color:#374151;">SI = 0 になるまで</td>
+      <td style="padding:0.5rem 0.8rem; color:#374151;">指定量を全部加えるまで</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6;">
+      <td style="padding:0.5rem 0.8rem; font-weight:500; color:#374151;">用途</td>
+      <td style="padding:0.5rem 0.8rem; color:#374151;">鉱物の溶解・沈殿</td>
+      <td style="padding:0.5rem 0.8rem; color:#374151;">酸化・燃焼・投薬</td>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem 0.8rem; font-weight:500; color:#374151;">黄鉄鉱への適用</td>
+      <td style="padding:0.5rem 0.8rem; color:#6B7280;">不適（逆反応が起きてしまう）</td>
+      <td style="padding:0.5rem 0.8rem; color:#16A34A; font-weight:500;">✅ 適切</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+黄鉄鉱の酸化は不可逆 ── 一度 FeS₂ が溶解したら元に戻らない。だから `REACTION` を使う。
+
+---
+
+## INCREMENTAL_REACTIONS の役割
+
+今回の計算で最も重要なキーワードが **`INCREMENTAL_REACTIONS true`** だ。
+
+```{=html}
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2em; margin:1.5em 0;">
+  <div style="background:#FEF2F2; border-radius:8px; padding:1.1em; border-top:3px solid #DC2626;">
+    <div style="font-weight:700; color:#991B1B; margin-bottom:0.5em;">❌ false（デフォルト）</div>
+    <div style="font-size:0.87em; color:#7F1D1D; line-height:1.7;">
+      各ステップは<strong>初期溶液からの累積量</strong>として処理される。<br>
+      途中の Goethite 沈殿が無視され、<br>
+      正しい反応経路が再現できない。
+    </div>
+  </div>
+  <div style="background:#F0FDF4; border-radius:8px; padding:1.1em; border-top:3px solid #16A34A;">
+    <div style="font-weight:700; color:#15803D; margin-bottom:0.5em;">✅ true（今回）</div>
+    <div style="font-size:0.87em; color:#166534; line-height:1.7;">
+      各ステップは<strong>前のステップからの増分</strong>として処理される。<br>
+      ステップごとに EQUILIBRIUM_PHASES が走り、<br>
+      Goethite が過飽和になった瞬間に沈殿する。
+    </div>
+  </div>
+</div>
+```
+
+::: {.callout-important}
+## INCREMENTAL_REACTIONS を忘れると
+`EQUILIBRIUM_PHASES` に `Goethite 0 0` を書いても、
+`INCREMENTAL_REACTIONS true` がなければ
+Goethite の SI がずっと過飽和のまま沈殿せず、
+計算結果が現実とまったく異なる値になる。
+**必ずセットで書くこと。**
+:::
+
+---
+
+## PHREEQCコード（完全版・wateq4f.dat 使用）
+
+::: {.callout-important}
+## データベースの指定
+このコードは **`wateq4f.dat`** を使用する。
+PHREEQC Interactive では **File → Open** で `wateq4f.dat` を選択してから実行すること。
+`phreeqc.dat`（デフォルト）では `Goethite` の定義が異なり、正しい結果が得られない。
+:::
+
+```phreeqc
+# ============================================================
+#  DeepFlow #6 - 黄鉄鉱の酸化と AMD 形成
+#  データベース：wateq4f.dat
+#  INCREMENTAL_REACTIONS true が必須
+# ============================================================
+
+SOLUTION 1  "石灰岩地帯の地下水"
+    temp      25
+    pH        7
+    pe        4
+    units     mol/kgw
+    Ca        1.5e-2      # 15 mmol/kg（石灰岩地帯の典型的な地下水）
+    -water    1
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)    -3.5   10   # 大気 CO₂ と平衡（pCO₂ = 10⁻³·⁵ atm）
+    Goethite   0.0    0   # Goethite 沈殿シンク（Amount=0）
+
+REACTION 1
+    FeS2   4              # 黄鉄鉱（化学量論比）
+    O2    15              # 酸素
+
+    # 段階的に添加（mol 単位）
+    0.0001  0.0003  0.0005  0.001
+    0.002   0.005   0.010   moles
+
+INCREMENTAL_REACTIONS  true     # ← 必須！
+
+SELECTED_OUTPUT 1
+    -file        pyrite_oxidation.sel
+    -pH          true
+    -pe          true
+    -totals      Fe  S  Ca
+    -molalities  Fe+2  Fe+3  SO4-2
+    -saturation_indices  Goethite  Pyrite
+
+END
+```
+
+::: {.callout-note}
+## Gypsum（石膏）について
+元のコードに含まれていた `Gypsum 0 0` の設定は、
+一般的な地下水の Ca²⁺ 濃度では過飽和に達しないため本コードでは省いた。
+Gypsum の沈殿は SO₄²⁻ と Ca²⁺ が共に非常に高濃度になる
+特殊な地下水（石膏鉱床周辺など）でのみ観察される。
+:::
+
+---
+
+## 計算結果
+
+### SELECTED_OUTPUT の数値
+
+`wateq4f.dat` + `INCREMENTAL_REACTIONS true` で計算した実際の出力値だ。
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.87rem;">
+  <thead>
+    <tr style="background:#D97706; color:white;">
+      <th style="padding:9px 12px; text-align:center;">step</th>
+      <th style="padding:9px 12px; text-align:center;">pH</th>
+      <th style="padding:9px 12px; text-align:center;">pe</th>
+      <th style="padding:9px 12px; text-align:center;">Fe (mol/kg)</th>
+      <th style="padding:9px 12px; text-align:center;">SO₄ (mol/kg)</th>
+      <th style="padding:9px 12px; text-align:center;">SI_Goethite</th>
+      <th style="padding:9px 12px; text-align:center;">⊿_Goethite</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:8px 12px; text-align:center; font-weight:600;">1</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">2.865</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">15.54</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">4.2e-9</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">8.0e-4</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace; color:#16A34A; font-weight:600;">0.000</td>
+      <td style="padding:8px 12px; text-align:center; font-size:0.85em; color:#16A34A;"> 4.0e-4 沈殿中</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:8px 12px; text-align:center; font-weight:600;">2</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">2.291</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">16.35</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">2.3e-7</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">3.2e-3</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace; color:#16A34A; font-weight:600;">0.000</td>
+      <td style="padding:8px 12px; text-align:center; font-size:0.85em; color:#16A34A;"> 1.6e-3 沈殿中</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:8px 12px; text-align:center; font-weight:600;">3</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">1.973</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">16.81</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">3.3e-6</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">7.2e-3</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace; color:#16A34A; font-weight:600;">0.000</td>
+      <td style="padding:8px 12px; text-align:center; font-size:0.85em; color:#16A34A;"> 3.6e-3 沈殿中</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:8px 12px; text-align:center; font-weight:600;">4</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">1.695</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">17.21</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">3.7e-5</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">1.5e-2</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace; color:#16A34A; font-weight:600;">0.000</td>
+      <td style="padding:8px 12px; text-align:center; font-size:0.85em; color:#16A34A;"> 7.5e-3 沈殿中</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:8px 12px; text-align:center; font-weight:600;">5</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">1.440</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">17.59</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">3.5e-4</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">3.1e-2</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace; color:#16A34A; font-weight:600;">0.000</td>
+      <td style="padding:8px 12px; text-align:center; font-size:0.85em; color:#16A34A;"> 1.5e-2 沈殿中</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:8px 12px; text-align:center; font-weight:600;">6</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">1.173</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">17.98</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">3.7e-3</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">7.1e-2</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace; color:#16A34A; font-weight:600;">0.000</td>
+      <td style="padding:8px 12px; text-align:center; font-size:0.85em; color:#16A34A;"> 3.2e-2 沈殿中</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:8px 12px; text-align:center; font-weight:600;">7</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace; font-weight:600; color:#DC2626;">0.988</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">18.27</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">2.2e-2</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace;">1.5e-1</td>
+      <td style="padding:8px 12px; text-align:center; font-family:monospace; color:#16A34A; font-weight:600;">0.000</td>
+      <td style="padding:8px 12px; text-align:center; font-size:0.85em; color:#DC2626; font-weight:600;"> 2.1e-2 pH &lt; 1！強酸性</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+### pH の変化を可視化する
+
+```{=html}
+<div style="background:#F8F8F8; border:1px solid #E5E7EB; border-radius:8px; padding:1.2rem 1.5rem; margin:1.5rem 0;">
+  <div style="font-weight:500; color:#111827; margin-bottom:1rem;">pH vs FeS₂ 添加ステップ（実計算結果）</div>
+  <svg viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;display:block;">
+    <defs>
+      <marker id="arr6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+    <!-- 軸 -->
+    <line x1="50" y1="10" x2="50" y2="150" stroke="#9CA3AF" stroke-width="1" marker-end="url(#arr6)"/>
+    <line x1="50" y1="150" x2="510" y2="150" stroke="#9CA3AF" stroke-width="1" marker-end="url(#arr6)"/>
+    <!-- グリッド＋ラベル（Y軸: pH 0〜3） -->
+    <!-- pH3 → y=30, pH2 → y=70, pH1 → y=110, pH0 → y=150 -->
+    <line x1="50" y1="30"  x2="505" y2="30"  stroke="#E5E7EB" stroke-width="0.8" stroke-dasharray="4,3"/>
+    <line x1="50" y1="70"  x2="505" y2="70"  stroke="#E5E7EB" stroke-width="0.8" stroke-dasharray="4,3"/>
+    <line x1="50" y1="110" x2="505" y2="110" stroke="#E5E7EB" stroke-width="0.8" stroke-dasharray="4,3"/>
+    <text x="38" y="34"  font-size="11" fill="#9CA3AF" font-family="sans-serif" text-anchor="end">3</text>
+    <text x="38" y="74"  font-size="11" fill="#9CA3AF" font-family="sans-serif" text-anchor="end">2</text>
+    <text x="38" y="114" font-size="11" fill="#9CA3AF" font-family="sans-serif" text-anchor="end">1</text>
+    <text x="38" y="154" font-size="11" fill="#9CA3AF" font-family="sans-serif" text-anchor="end">0</text>
+    <text x="20" y="90"  font-size="11" fill="#6B7280" font-family="sans-serif" text-anchor="middle" transform="rotate(-90 20 90)">pH</text>
+    <!-- X軸ラベル -->
+    <text x="110" y="165" font-size="10" fill="#9CA3AF" font-family="sans-serif" text-anchor="middle">1</text>
+    <text x="170" y="165" font-size="10" fill="#9CA3AF" font-family="sans-serif" text-anchor="middle">2</text>
+    <text x="230" y="165" font-size="10" fill="#9CA3AF" font-family="sans-serif" text-anchor="middle">3</text>
+    <text x="290" y="165" font-size="10" fill="#9CA3AF" font-family="sans-serif" text-anchor="middle">4</text>
+    <text x="350" y="165" font-size="10" fill="#9CA3AF" font-family="sans-serif" text-anchor="middle">5</text>
+    <text x="410" y="165" font-size="10" fill="#9CA3AF" font-family="sans-serif" text-anchor="middle">6</text>
+    <text x="470" y="165" font-size="10" fill="#9CA3AF" font-family="sans-serif" text-anchor="middle">7</text>
+    <text x="280" y="178" font-size="11" fill="#6B7280" font-family="sans-serif" text-anchor="middle">FeS₂ 添加ステップ →</text>
+    <!-- 実計算値プロット -->
+    <!-- pH: 2.865,2.291,1.973,1.695,1.440,1.173,0.988 -->
+    <!-- y = 150 - pH×40 -->
+    <!-- 2.865→35.4, 2.291→58.4, 1.973→71.1, 1.695→82.2, 1.440→92.4, 1.173→103.1, 0.988→110.5 -->
+    <polyline points="110,35 170,58 230,71 290,82 350,92 410,103 470,110"
+              fill="none" stroke="#E11D48" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- データポイント -->
+    <circle cx="110" cy="35"  r="4" fill="#E11D48"/>
+    <circle cx="170" cy="58"  r="4" fill="#E11D48"/>
+    <circle cx="230" cy="71"  r="4" fill="#E11D48"/>
+    <circle cx="290" cy="82"  r="4" fill="#E11D48"/>
+    <circle cx="350" cy="92"  r="4" fill="#E11D48"/>
+    <circle cx="410" cy="103" r="4" fill="#E11D48"/>
+    <circle cx="470" cy="110" r="4" fill="#E11D48"/>
+    <!-- Goethite 沈殿中（全ステップ）の注記 -->
+    <line x1="110" y1="15" x2="470" y2="15" stroke="#7C3AED" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <circle cx="110" cy="15" r="4" fill="#7C3AED"/>
+    <text x="285" y="12" font-size="10" fill="#7C3AED" font-family="sans-serif" text-anchor="middle">Goethite 沈殿中（全ステップで SI = 0）</text>
+  </svg>
+  <div style="font-size:0.82rem; color:#6B7280; margin-top:0.5em;">FeS₂ の添加とともに pH が step1（pH 2.87）から step7（pH 0.99）まで段階的に急落する。全ステップで Goethite が沈殿し続けている。</div>
+</div>
+```
+
+---
+
+## 考察
+
+### ① pH の急落メカニズム
+
+step 1 から step 7 にかけて pH が 2.87 → 0.99 まで急落する。
+これは FeS₂ の酸化で H⁺ が継続的に生成されるためだ。
+
+特に step 4 以降（FeS₂ 累積添加 > 1 mmol）で pH の低下が加速している。
+これは Fe³⁺ が蓄積して**自己触媒的な酸化反応**が起き始めたサインだ。
+
+### ② Goethite の沈殿（全ステップで SI = 0）
+
+step 1 から最終ステップまで **SI_Goethite = 0.000** が維持されている。
+また、⊿_Goethiteは4.0e-4～3.2e-2と**常にプラス値**を示している。
+これは「Goethite が常に沈殿し続けている」ことを意味する。
+
+FeS₂ 酸化 → Fe³⁺ 生成 → 即座に Goethite として沈殿 → pH がさらに低下、
+というサイクルが全ステップにわたって継続している。
+
+これが鉱山廃水の川を特徴的な**赤褐色**に染める原因だ（「黄色い川」と呼ばれることもある）。
+
+::: {.callout-note}
+## Fe の溶存量が少ない理由
+表の Fe(mol) が非常に小さい（step1: 4.2e-9 mol/kg）のは、
+生成した Fe³⁺ がほぼ瞬時に Goethite として沈殿してしまうためだ。
+pH が 1 を下回る step7 でも Fe = 2.2e-2 mol/kg と比較的少ないのは
+同じ理由による。
+:::
+
+### ③ pe の上昇
+
+pe が 15.54 → 18.27 と上昇し続けているのも重要なシグナルだ。
+pe（電子活量の対数）が高いほど強い酸化環境を意味する。
+今回の系は O₂ を強制的に供給し続けているため、
+反応が進むほど酸化力が強まっていく。
+
+---
+
+## AMD の中和処理シミュレーション
+
+AMD の中和処理では石灰石（Calcite）を添加して pH を回復させる。
+今回の計算結果（step 7 の溶液）を使って中和処理を模擬できる：
+
+```phreeqc
+# ============================================================
+#  AMD 中和処理のシミュレーション
+#  上記計算の続きとして実行する
+# ============================================================
+
+SAVE solution 1    # 完全版の溶液を保存
+# *貼り付け位置に注意!!!* この１行だけは　END の前に書くこと！
+
+USE solution 1
+
+EQUILIBRIUM_PHASES 2
+    Calcite   0   10    # 石灰石を過剰に添加して pH を回復
+
+SELECTED_OUTPUT 2
+    -file        amd_neutralization.sel
+    -pH          true
+    -totals      Fe  Ca
+    -saturation_indices  Goethite  Calcite
+
+END
+```
+
+Calcite を添加すると pH が回復し、溶存 Fe が Goethite として沈殿する。
+`amd_neutralization.sel` で pH・Fe の変化を確認してほしい。
+
+---
+
+## まとめ：今回学んだ PHREEQC のポイント
+
+```{=html}
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1em; margin:1.5em 0;">
+  <div style="background:#FFF7ED; border-radius:10px; padding:1.1em; text-align:center; border-bottom:3px solid #D97706;">
+    <div style="font-family:monospace; font-weight:600; color:#92400E; margin-bottom:0.4em;">REACTION</div>
+    <div style="font-size:0.82em; color:#78350F; line-height:1.5;">不可逆反応の記述。指定量の物質を強制的に添加する</div>
+  </div>
+  <div style="background:#F0FDF4; border-radius:10px; padding:1.1em; text-align:center; border-bottom:3px solid #16A34A;">
+    <div style="font-family:monospace; font-weight:600; color:#15803D; margin-bottom:0.4em;">INCREMENTAL_REACTIONS true</div>
+    <div style="font-size:0.82em; color:#166534; line-height:1.5;">ステップごとに平衡計算を実行。反応経路の正確な再現に必須</div>
+  </div>
+  <div style="background:#EFF6FF; border-radius:10px; padding:1.1em; text-align:center; border-bottom:3px solid #2563EB;">
+    <div style="font-family:monospace; font-weight:600; color:#1E3A5F; margin-bottom:0.4em;">wateq4f.dat</div>
+    <div style="font-size:0.82em; color:#1E40AF; line-height:1.5;">Goethite を含む環境地球化学計算には phreeqc.dat より適切なデータベース</div>
+  </div>
+</div>
+```
+
+::: {.callout-tip}
+## 次回 #7「溶解度ダイアグラム（Gibbsite）」
+`PHASES` ブロックで pH を任意の値に固定する `Fix_H+` テクニックを使い、
+pH 3〜14 でのアルミニウム溶解度を計算する。
+Gibbsite の両性溶解挙動を溶解度ダイアグラムとして可視化する。
+:::
+
+---
+
+*DeepFlow | 地球科学シミュレーションの深みへ*

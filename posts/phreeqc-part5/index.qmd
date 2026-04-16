@@ -1,0 +1,459 @@
+---
+title: "PHREEQCをゼロから始める #5：炭酸地下水と海水の混合（混合腐食 or 混合溶解）"
+date: 2026-04-11
+categories: [Geochemistry, PHREEQC, Groundwater, Tutorial]
+series: "PHREEQCをゼロから始める"
+description: "カルサイトと平衡な2つの水を混ぜると、混合水がカルサイトに対して不飽和になる「混合腐食」or 「混合溶解」をPHREEQCで再現する。炭酸地下水70%と海水30%の混合から、ドロマイトとカルサイトへの影響まで5ステップで計算する。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## 混合腐食とは何か
+
+「カルサイトと平衡な2つの水を混ぜると、混合水がカルサイトに対して**不飽和**になる」 ── これが **混合腐食（混合溶解）（Mixing Corrosion/Freshwater-Seawater Mixing Dissolution）**である。
+
+直感に反するこの現象は、炭酸系平衡の**非線形性**によって生じる。pH もイオン強度も、単純な加重平均にはならないからである。
+
+```{=html}
+<div style="background:#FFF7ED; border:1px solid #FED7AA; border-left:4px solid #D97706; border-radius:0 8px 8px 0; padding:1.1rem 1.5rem; margin:1.5rem 0;">
+  <div style="font-weight:500; color:#92400E; margin-bottom:0.4rem;">なぜ直感に反するのか</div>
+  <div style="font-size:0.88rem; color:#B45309; line-height:1.75;">
+    地下水も海水もそれぞれカルサイトとほぼ平衡（SI ≈ 0）。だから混ぜても SI ≈ 0 のはず…と思いがちである。しかし炭酸系の溶解度積は温度・イオン強度・CO₂分圧に非線形に依存するため、混合後の SI が両端点の加重平均より低くなる。
+  </div>
+</div>
+```
+
+この現象は石灰岩地帯の沿岸部や、地下水と海水が混合する帯水層内でカルサイトが溶解する原因として地質学的に重要である。鍾乳洞の形成にも関与している。
+
+---
+
+## 計算の5ステップ
+
+今回のシミュレーションは以下の5ステップで構成される。マニュアルでは S1〜S5 と呼んでいる。
+
+```{=html}
+<div style="margin:1.5rem 0;">
+  <div style="display:flex; flex-direction:column; gap:0;">
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#3B82F6; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S1</div>
+        <div style="width:2px; flex:1; background:#E5E7EB; margin:2px 0;"></div>
+      </div>
+      <div style="padding:0 0 1rem 0.8rem;">
+        <div style="font-weight:500; color:#111827; font-size:0.9rem;">炭酸地下水の定義</div>
+        <div style="font-size:0.83rem; color:#6B7280; margin-top:2px;">純水を Pco₂ = 10⁻² atm + Calcite で平衡 → Save Solution 1</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#1D9E75; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S2</div>
+        <div style="width:2px; flex:1; background:#E5E7EB; margin:2px 0;"></div>
+      </div>
+      <div style="padding:0 0 1rem 0.8rem;">
+        <div style="font-weight:500; color:#111827; font-size:0.9rem;">海水の定義</div>
+        <div style="font-size:0.83rem; color:#6B7280; margin-top:2px;">前回（#2）の海水データ入力 → Save Solution 2</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#D97706; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S3</div>
+        <div style="width:2px; flex:1; background:#E5E7EB; margin:2px 0;"></div>
+      </div>
+      <div style="padding:0 0 1rem 0.8rem;">
+        <div style="font-weight:500; color:#111827; font-size:0.9rem;">70% 地下水 + 30% 海水の混合</div>
+        <div style="font-size:0.83rem; color:#6B7280; margin-top:2px;">MIX ブロックで混合比を指定 → Save Solution 3</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#7C3AED; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S4</div>
+        <div style="width:2px; flex:1; background:#E5E7EB; margin:2px 0;"></div>
+      </div>
+      <div style="padding:0 0 1rem 0.8rem;">
+        <div style="font-weight:500; color:#111827; font-size:0.9rem;">混合水 + Calcite + Dolomite と平衡</div>
+        <div style="font-size:0.83rem; color:#6B7280; margin-top:2px;">USE solution 3 → EQUILIBRIUM_PHASES（CalciteとDolomite）</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#D85A30; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S5</div>
+      </div>
+      <div style="padding:0 0 0 0.8rem;">
+        <div style="font-weight:500; color:#111827; font-size:0.9rem;">混合水 + Calcite のみと平衡</div>
+        <div style="font-size:0.83rem; color:#6B7280; margin-top:2px;">Dolomite は反応速度が遅いので除外した現実的ケース</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+```
+
+---
+
+## S1：炭酸地下水の定義
+
+石灰岩地帯の地下水を、純水を Pco₂ = 10⁻² atm とカルサイトで平衡させることで定義する。前回（Part 4）の「開放系」に似た設定だが、今回は CO₂分圧を 10⁻² atm（土壌に近い高めの値）にしている。
+
+```phreeqc
+SOLUTION 1  Carbonate groundwater
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)   -2.0   10   # Pco2 = 10^-2 atm
+    Calcite   0.0   10   # カルサイトと平衡
+
+SAVE solution 1          # 計算結果を保存
+
+END
+```
+
+::: {.callout-note}
+## 計算後の地下水の特徴
+
+この計算の結果、地下水は pH ≈ 7.0、Ca²⁺ ≈ 3〜4 mmol/kg 程度のカルサイム飽和水になる。Calcite SI = 0（平衡状態）であることを Output で確認しておこう。
+:::
+
+---
+
+## S2：海水の定義
+
+前回（Part 2 Speciation）で使った海水データをそのまま使用する。
+
+```phreeqc
+SOLUTION 2  Seawater
+    temp      25
+    pH        8.22
+    pe        8.451
+    redox     pe
+    units     ppm
+    density   1.023
+    Ca        412.3
+    Alkalinity 141.682  as HCO3-
+    Cl        19353
+    K         399.1
+    Mg        1291.8
+    S(6)      2712
+    Si        4.28      as SiO2
+    Na        10768
+    -water    1 # kg
+
+SAVE solution 2
+
+END
+```
+
+---
+
+## S3：70% 地下水 + 30% 海水の混合
+
+**MIX ブロック**を使って2つの水を混合する。
+
+### GUI操作
+
+1. **MIXアイコン**をクリック
+2. SOLUTION 1 に **0.70**、SOLUTION 2 に **0.30** を入力
+3. OK をクリック
+4. `SAVE solution 3` と `END` を追記
+
+```phreeqc
+MIX 1
+    1    0.70   # Solution 1（地下水）を70%
+    2    0.30   # Solution 2（海水）を30%
+
+SAVE solution 3
+
+END
+```
+
+::: {.callout-important}
+## MIXブロックの注意点
+
+MIXの数値は**体積分率（0〜1）**で入力する。合計が1になるようにすること。合計が1でなくても計算は実行されるが、混合後の水の質量が変わってしまう。
+:::
+
+---
+
+## S4：混合水 + Calcite + Dolomite と平衡
+
+混合後の水（Solution 3）をカルサイトとドロマイト（苦灰石）の両方と平衡させる。
+
+```phreeqc
+USE solution 3
+
+EQUILIBRIUM_PHASES 2
+    Calcite   0.0   10   # カルサイトと平衡
+    Dolomite  0.0   10   # ドロマイトと平衡（理想ケース）
+
+END
+```
+
+---
+
+## S5：混合水 + Calcite のみと平衡（現実的ケース）
+
+ドロマイトは**反応速度が極めて遅い**ため、現実の短い時間スケールでは沈殿しないと仮定する。カルサイトのみと平衡させた現実的なケースである。
+
+```phreeqc
+USE solution 3
+
+EQUILIBRIUM_PHASES 3
+    Calcite   0.0   10   # カルサイトのみ（ドロマイトなし）
+
+END
+```
+
+::: {.callout-note}
+## なぜドロマイトを除外するか
+
+ドロマイト（CaMg(CO₃)₂）は熱力学的には多くの地下水に対して過飽和だが、現代の地表付近ではほとんど沈殿しない。これは「**ドロマイト問題（Dolomite problem）**」として知られる地球化学の古典的な謎で、反応速度論的な障壁が原因とされている。S4 では理想ケース、S5 では現実的ケースとして計算することで、2つの違いを比較できる。
+:::
+
+---
+
+## PHREEQCコード（完全版）
+
+```phreeqc
+# =============================================
+# S1: 炭酸地下水
+# 純水 + CO2(g) at Pco2=10^-2 + Calcite 平衡
+# =============================================
+SOLUTION 1  Carbonate groundwater
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)   -2.0   10
+    Calcite   0.0   10
+
+SAVE solution 1
+END
+
+# =============================================
+# S2: 海水
+# =============================================
+SOLUTION 2  Seawater
+    temp      25
+    pH        8.22
+    pe        8.451
+    redox     pe
+    units     ppm
+    density   1.023
+    Ca        412.3
+    Alkalinity 141.682  as HCO3-
+    Cl        19353
+    K         399.1
+    Mg        1291.8
+    S(6)      2712
+    Si        4.28      as SiO2
+    Na        10768
+    -water    1 # kg
+
+SAVE solution 2
+END
+
+# =============================================
+# S3: 70% 地下水 + 30% 海水の混合
+# =============================================
+MIX 1
+    1    0.70
+    2    0.30
+
+SAVE solution 3
+END
+
+# =============================================
+# S4: 混合水 + Calcite + Dolomite（理想ケース）
+# =============================================
+USE solution 3
+
+EQUILIBRIUM_PHASES 2
+    Calcite   0.0   10
+    Dolomite  0.0   10
+
+END
+
+# =============================================
+# S5: 混合水 + Calcite のみ（現実ケース）
+# =============================================
+USE solution 3
+
+EQUILIBRIUM_PHASES 3
+    Calcite   0.0   10
+
+END
+```
+
+---
+
+## 結果の読み方
+
+各ステップの計算後、pH・Ca²⁺・Mg²⁺・Calcite SI・Dolomite SI を確認する。
+
+### 各ステップの結果比較
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.87rem;">
+  <thead>
+    <tr style="background:#F9FAFB;">
+      <th style="padding:0.6rem 0.8rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#374151;">ステップ</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid #E5E7EB; color:#374151;">pH</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid #E5E7EB; color:#374151;">Ca²⁺<br>(mmol/kg)</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid #E5E7EB; color:#374151;">Mg²⁺<br>(mmol/kg)</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid #E5E7EB; color:#374151;">SI Calcite</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid #E5E7EB; color:#374151;">SI Dolomite</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid #F3F4F6;">
+      <td style="padding:0.5rem 0.8rem; color:#1D4ED8; font-weight:500;">S1 地下水</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.29</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">1.62</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">−</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+      <td style="padding:0.5rem 0.8rem; color:#1D9E75; font-weight:500;">S2 海水</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">8.22</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">9.96</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">49.79</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.78</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">2.45</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6;">
+      <td style="padding:0.5rem 0.8rem; color:#D97706; font-weight:500;">S3 混合水</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.32</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">4.05</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">14.87</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#D97706; font-weight:500;">−0.12 !</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.47</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+      <td style="padding:0.5rem 0.8rem; color:#7C3AED; font-weight:500;">S4 +Cal+Dol</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.04</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">11.17</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.85</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem 0.8rem; color:#D85A30; font-weight:500;">S5 +Cal のみ</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.43</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">4.09</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">14.87</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.71</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+**S3（混合水）のCalcite SI = −0.12** ── これが混合腐食のシグナルである。両端点（S1・S2）は、CalciteのSIがゼロと過飽和付近なのに、混合後にマイナスになっている。
+
+---
+
+## 考察
+
+### ① 混合腐食が起きるメカニズム
+
+混合腐食の本質は**炭酸系平衡の非線形性**である。
+
+地下水（低塩分・低pH・高Pco₂）と海水（高塩分・高pH・低Pco₂）を混ぜると、混合後の溶液は：
+
+- 塩分が増えることでイオン強度が上昇し、活量係数が下がる
+- CO₂分圧と pH のバランスが非線形にシフトする
+- その結果、両端点では飽和していたカルサイトが不飽和になる
+
+```{=html}
+<div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:1.1rem 1.5rem; margin:1.5rem 0;">
+  <div style="font-weight:500; color:#166534; margin-bottom:0.5rem;">混合腐食の式で理解する</div>
+  <div style="font-size:0.88rem; color:#15803D; line-height:1.8;">
+    SI = log(IAP / K<sub>sp</sub>)<br>
+    IAP = a(Ca²⁺) × a(CO₃²⁻) = γ(Ca²⁺)·[Ca²⁺] × γ(CO₃²⁻)·[CO₃²⁻]<br><br>
+    混合でイオン強度が上昇 → γ が低下 → IAP が低下 → SI がマイナスに
+  </div>
+</div>
+```
+
+### ② S4 vs S5（ドロマイトの有無）の違い
+
+S4（Calcite + Dolomite）ではMg²⁺が消費されてドロマイトが沈殿し、Ca²⁺が増加する（ドロマイト化：Ca²⁺ → Mg²⁺の置換）。S5（Calciteのみ）ではMg²⁺は変化せず、カルサイト溶解のみが進む。
+
+Dolomite SI が S5 で 0.71（過飽和）のまま残っているのは、ドロマイトを沈殿させなかったからである。これがまさに「動力学的に沈殿しない」現実の近似になっている。
+
+### ③ 地質学的・環境的な意義
+
+::: {.callout-tip}
+## 混合腐食が起きる場所
+
+混合腐食は以下のような場所で重要な役割を果たしている：
+
+- **沿岸の石灰岩帯水層**：地下水と塩水楔が混合する遷移帯でカルサイトが溶解し、空隙率が増大する
+- **鍾乳洞の形成**：CO₂分圧の異なる2つの流れが合流する地点で洞窟が拡大する
+- **石油貯留岩の続成作用**：海水と淡水が混合する帯域での炭酸塩セメントの溶解
+:::
+
+---
+
+## まとめ：今回学んだPHREEQCのコマンド
+
+```{=html}
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.8rem; margin:1.5rem 0;">
+  <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:0.9rem;">
+    <div style="font-family:monospace; font-weight:500; color:#1E40AF; margin-bottom:0.3rem;">MIX</div>
+    <div style="font-size:0.82rem; color:#3B82F6;">2つの水を指定した比率で混合する</div>
+  </div>
+  <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:0.9rem;">
+    <div style="font-family:monospace; font-weight:500; color:#166534; margin-bottom:0.3rem;">SAVE</div>
+    <div style="font-size:0.82rem; color:#16A34A;">計算結果の溶液状態を保存</div>
+  </div>
+  <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:8px; padding:0.9rem;">
+    <div style="font-family:monospace; font-weight:500; color:#92400E; margin-bottom:0.3rem;">USE</div>
+    <div style="font-size:0.82rem; color:#D97706;">保存した溶液を呼び出して続きの計算</div>
+  </div>
+  <div style="background:#FAF5FF; border:1px solid #E9D5FF; border-radius:8px; padding:0.9rem;">
+    <div style="font-family:monospace; font-weight:500; color:#6B21A8; margin-bottom:0.3rem;">EQUILIBRIUM_PHASES</div>
+    <div style="font-size:0.82rem; color:#9333EA;">鉱物と平衡になるまで反応させる</div>
+  </div>
+</div>
+```
+
+---
+
+## 次回予告：黄鉄鉱の酸化
+
+次回は**不可逆反応（Irreversible reaction）**に踏み込む。黄鉄鉱（FeS₂）が酸素と反応して酸化する過程 ── 酸性鉱山廃水（AMD）の形成メカニズムをPHREEQCで再現する。EQUILIBRIUM_PHASESとREACTIONブロックを組み合わせた、より高度な計算に挑む。
+
+---
+
+*このシリーズの他の記事：*
+
+- [#1 インストールと最初の計算](../phreeqc-part1/)
+- [#2 Speciationで海水を解析する](../phreeqc-part2/)
+- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)
+- [#4 カルサイト−CO₂水反応](../phreeqc-part4/)
+- **#5 炭酸地下水と海水の混合**（本記事）
+- [#6 黄鉄鉱の酸化（AMD）](../phreeqc-part6/)  ← 近日公開

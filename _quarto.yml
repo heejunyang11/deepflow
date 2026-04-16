@@ -7,44 +7,57 @@ lang: ja
 
 website:
   title: "DeepFlow"
-  # 「環境」を追加した説明文
-  description: "Science beneath the surface. 環境問題や水資源の評価に役立つ地下水・地球化学解析（MODFLOW/PHREEQC）と、Python・AIを用いたデータ分析のノウハウを共有します。"
+  description: "Science beneath the surface. 地下水・地球化学解析（MODFLOW/PHREEQC）から温泉の科学、自然地理学、Python・AIを用いたデータ分析まで、深く探求する知見を共有します。"
   
+  site-url: "https://your-domain.com" # デプロイ後に設定してください
+
   open-graph: true
   twitter-card: 
     image: "profile.png" 
     card-style: summary_large_image
 
   navbar:
+    search: true # 記事が増えるため検索を有効化
     left:
       - href: index.qmd
-        text: Home
-      - href: series.qmd
-        text: Series
-      - href: english.qmd
-        text: English
+        text: Home  
+      - href: blog.qmd
+        text: Blog  
+      - href: onsen.qmd
+        text: 温泉・地理        
+      - href: apps.qmd
+        text: Apps          
+      - href: letter.qmd
+        text: Letter
       - href: about.qmd
         text: About
     right:
       - icon: github
-        href: https://github.com/heejunyang11
+        href: https://github.com/your-username # 自身のURLへ変更推奨
+
   page-footer:
     center: "© 2026 DeepFlow · Science beneath the surface"
+    right:
+      - text: "Privacy Policy"
+        href: privacy.qmd # AdSense審査に必須のプライバシーポリシー
 
 format:
   html:
-    # --- ここがライト/ダーク切り替えの設定です ---
+    # --- ライト/ダーク切り替えの標準的な設定 ---
     theme:
-      dark: darkly
-      light: flatly   # 白（ライト）モードのテーマ
-         # 黒（ダーク）モードのテーマ
+      light: flatly
+         
+    css: styles.css
     
-    # 必要に応じて、コードブロックの配色もモードで分けられます
-    # （現状は両方でdraculaが適用されます。分ける場合は下のコメントアウトを外してください）
-    # highlight-style:
-    #   light: a11y
-    #   dark: dracula
-    
-    highlight-style: dracula
+    # 読みやすさを向上させるハイライト設定
+    highlight-style: 
+      light: arrow
+       
     code-fold: true
+    code-copy: true
     toc: true
+    toc-title: "目次"
+    number-sections: true # 科学的な記事の構造を分かりやすく
+    mathjax: true # 数式（LaTeX）を多用する場合に必須
+
+editor: visual

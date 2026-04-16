@@ -1,5 +1,6 @@
 ---
 title: "About"
+number-sections: false
 ---
 
 ::: {.panel-tabset}
@@ -22,6 +23,93 @@ Python · GitHub · MODFLOW · PHREEQC · AI Tools
 
 ### 言語
 日本語 · 한국어 · English
+
+### 業績
+
+#### 学術論文（査読付）
+**26編**（第１著者 14編，責任著者 14編，最近5年間 14編）
+
+1. 梁　熙俊*，小林正雄，三田村宗樹，2011年 愛知川扇状地における地下水流動と地下水温の形成機構. *地下水学会誌* 53(2):165-177
+2. Yang H.*, Mitamura M.，2012年 Evaluation of the aquifer structure and the groundwater flow in the Echigawa alluvial fan area, Shiga Prepecture, Japan. *Journal of Geosciences Osaka City University* 55, 1-10
+3. Dong L.*, Shimada J., Kagabu M., Yang H.，2015年 Barometric and tidal-induced aquifer water level fluctuation near the Ariake Sea. *Environmental Monitoring and Assessment* 187:4187
+4. 梁　熙俊*，嶋田　純，松田　博貴，利部　慎，董　林垚，2015年 島嶼地域における地下水位の時系列解析及び電気伝導度を用いた淡水レンズ形状の評価 -沖縄県南大東島の例-. *地下水学会誌* 57(2):187-205
+5. Nikpeyman Y.*, Hosono T., Ono M., Yang H., Shimada J., Takikawa K., 2015年 Assessment of the spatial distribution of submarine groundwater discharge (SGD) along the Yatsushiro Inland Sea coastline, SW Japan, using 222Rn method. *Journal of Radioanalytical and Nuclear Chemistry* 307: 2123-2132
+6. Hossain S.*, Hosono T., Yang H., Shimada J.，2016年 Geochemical Processes Controlling Fluoride Enrichment in Groundwater at the Western Part of Kumamoto Area, Japan. *Water, Air, & Soil Pollution* 227(10):1-14
+7. Siev S.*, Yang H., Sok T., Uk S., Song L., Kodikara D., Oeurng C., Hul S., Yoshimura C. 2018年 Sediment dynamics in a large shallow lake characterized by seasonal flood pulse in Southeast Asia. *Science of the Total Environment* 631-632: 597-607
+8. Uk S.*, Yoshimura C., Siev S., Try S., Yang H., Chantha O., Li S., Hul S.，2018年 Tonle Sap Lake: Current Status and Important Research Directions. *Lakes & Reservoirs: Science, Policy and Management for Sustainable Use* 00, 1-13
+9. Nikpeyman Y.*, Hosono T., Ono M., Yang H., Ichiyanagi K., Shimada J., Takikawa K.， 2019年 Sea surficial waves as a driving force that enhances the fresh shallow coastal groundwater flux into the oceans. *Environmental Earth Sciences* 78:252
+10. Yang H.*, Shimada J., Okumura A., Shibata T., Pinti L.D.，2020年 Freshwater lens oscillation induced by sea tides and variable rainfall at the uplifted atoll island of Minami-Daito, Japan. *Hydrogeology Journal* 28: 2105–2114
+11. Yang H.*, Kagabu M., Okumura A., Shimada J., Shibata T., Pinti L.D.，2020年 Hydrogeochemical processes and long-term effects of sea-level rise in an uplifted atoll island of Minami-Daito, Japan. *Journal of Hydrology: Regional Studies* 31
+12. Yang H.*, Shibata T.，2020年 Aquifer classification and pneumatic diffusivity estimation using periodic groundwater level changes induced by barometric pressure. *Hydrological Research Letters* 14(3): 111–116
+13. Yang H.*, Tawara Y., Shimada J., Kagabu M., Okumura A.，2021年 Large-scale hydraulic conductivity distribution in an unconfined carbonate aquifer using the ocean tidal propagation. *Hydrogeology Journal* 29: 2091–2105
+14. 梁　熙俊*，柴田　智郎，2021年 別府火山性扇状地南部域における不圧地下水位の長期変動. *地下水学会誌* 63(3): 151-157
+15. 梁　熙俊*，2021年 水文化学的手法と多変量解析による別府温泉の泉質の分類および鉛直分布特性. *地下水学会誌* 63(3): 137-149
+16. Yang H.*, Siev S., Uk S., Yoshimura C.，2022年 Relationship between water levels and flood pulse induced by river–lake interaction in the Tonle Sap basin, Cambodia. *Environmental Earth Sciences* 81: 226
+17. Uk S.*, Yang H., Vouchlay T., Sok T., Siev S., Sophal T., Oeurng C., Yoshimura C.， 2022年 Dynamics of phosphorus fractions and bioavailability in a large shallow tropical lake characterized by monotonal flood pulse in Southeast Asia. *Journal of Great Lakes Research* 48(4): 944–960
+18. Yang H.*，2022年 Groundwater flow evaluation using a groundwater budget model and updated aquifer structures at an alluvial fan of Echi-gawa, Japan. *Modeling Earth Systems and Environment* 8:4359–4371
+19. Yang H.*, Mishima T., Katazakai S., Kagabu M., 2023年 Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry* 148:105535
+20. Hosoki A.*, Sugiura K., Okazaki T., Yang H., Kuramitz H., Ueda A., Terai A. 2024年 Rapid Monitoring of Scale Precipitation and Inhibition in Geothermal Fluid Using Optical Fiber Sensor Based on Surface Plasmon Resonance. *Fibers* 12(9):74
+21. Mao D., Zhang J., Hoshino Y., Satake S., Yang H., Kuramitz H., Ueda A.*, Terai A.， 2025年 Geochemical study of fluid origin and caprock formation with carbonate mineral precipitation in the Okuaizu geothermal area. *Geothermics* 127:103242
+22. Ueda A.*, Yang H., Hoshino Y., Satake S., Mao D., Terai A.，2025年 Isotope geochemical study of the origin and formation mechanism of carbonate minerals in geothermal wells and surrounding hot spring waters in the western Unzen area. *Applied Geochemistry* 185: 106384
+23. Satake S., Yang H., Mori K., Hoshino Y., Ueda A.*, Kuramitz H., Masuoka K., Enomoto H., Terai A.，2025年 CO2 geothermal power generation: Laboratory experiment on the interaction between carbonated water and Rishiri Island basalt in the vicinity of injection wells. *Energies* 18(9): 2251
+24. Satake S., Hosoki A., Suka A., Hoshino Y., Yang H., Ueda A.*, Kuramitz H., Terai A.， 2025年 Scale evaluation in geothermal fluids by a batch-type method using fiber optic scale sensor. *Geohtermics* 131: 103387
+25. Yang H.*, Ueda A., Kuramitz H., Satake S., Masuoka K., Terai A.， 2025年 Andesite and CO₂-saturated water interaction at different temperatures and flow rates using a flow-through reactor. *Geosciences* 15(9): 351
+26. Yang H.*, Ueda A., Kuramitz H., Terai A.， 2025年 Interactions between basalt and CO₂-saturated water at varying temperatures (100℃–300℃) in a duplex reactor. *Applied Geochemistry* 194: 106593
+
+#### Proceeding（査読付）
+**4編**（第１著者 1編，責任著者 1編，最近5年間 3編）
+
+1. Nikpeyman Y., Ono M., Hosono T., Yang H., Shimada J., Takikawa K. 2014年 Distribution patterns of salinity and 222Rn in Yatsushiro Inland Sea, Kyushu, Japan. *Complex Interfaces Under Change: Sea-River-Groundwater-Lake*, IAHS Publ. 365: 49-54
+
+2. Yang H., Satake S., Kuramitz H., Ueda A., Kusakabe M., Hoshino Y., Masuoka K., Enomoto H, and Terai A.，2023年 Experimental study for basalt-CO2-water interaction with a high temperature and pressure flow reactor. Proceeding, *The 17th Congress of Water-Rock Interaction (WRI17) and the 14th Applied Isotope Geochemistry (AIG14)*
+
+3. Mao D, Oochi R., Zhang J., Yang H., Satake S., Hoshino Y., Kusakabe M, Ueda A., Kuramitz H., Matsumoto K., Kaneko H., Terai A.，2023年 Fluid migration and CO2-rock interactions by isotope analyses of carbonates in the Oku-Aizu geothermal area for the natural analogue study on CO2 geothermal power generation. Proceeding, *The 17th Congress of Water-Rock Interaction (WRI17) and the 14th Applied Isotope Geochemistry (AIG14)*
+
+4. Suka A., Hosoki A., Satake S., Abrishamian F., Yang H., Ueda A., Kuramitz H., Terai A. 2025年 Hetero-core fiber optic SPR sensor for silica scale formation in geothermal water. Proceeding, *IEEE SENSORS 2025*
+
+#### その他の論文
+**15編**（第１著者 5編，責任著者 5編，最近5年間 0編）
+
+1. Hamada T., Yamada M., Ao L., Horiuchi K., Yang H., Kobayashi M., Nonomura O.，2008年 Groundwater Flow System in Alluvial Fan of Echi-gawa Traced by Groundwater Potential, Water Quality and Isotopic Compositions. In: *Hydro-environments of Alluvial Fans in Japan*, RHF, 211-222
+
+2. Kobayashi M., Hijii T., Yang H., Hamada T.，2008年 Relations between groundwater and river water in the Echi-gawa alluvial fan. Water Quality and Isotopic Compositions. In: *Hydro-environments of Alluvial Fans in Japan*, RHF, 223-234
+
+3. 松田博貴，鹿島美香，梁 煕俊，利部 慎，嶋田 純，2015年 鍾乳洞内滴下水量に基づく異なる植生下における地下水涵養特性. *月刊地球* 37(12): 521-529
+
+4. 利部 慎，梁 熙俊，松田博貴，嶋田 純，2015年 水利用形態の変遷がもたらす淡水レンズの賦存状態への影響評価. *月刊地球* 37(12): 540-548
+
+5. 梁 熙俊，奥村 梓，利部 慎，松田博貴，嶋田 純，2016年 観測井に基づく潮位変動および降水量に伴う淡水レンズの挙動. *月刊地球* 38(1): 1-9
+
+6. 奥村 梓，梁 熙俊，工藤圭史，利部 慎，嶋田 純，松田博貴，2016年 隆起環礁大洋島の地下水賦存状態と淡水レンズ貯留量の把握. *月刊地球* 38(1): 10-17
+
+7. 麻植久史，小池克明，梁 熙俊，松田博貴，嶋田 純，2016年 周波数可変型電気探査法による炭酸塩岩大洋島の帯水層構造抽出. *月刊地球* 38(1): 18-24
+
+8. 梁 熙俊，田原康博，佐伯亜由美，松田博貴，嶋田 純，2016年 数値シミュレーションによる地表植生の変化と海水準上昇に伴う淡水レンズ賦存特性の評価. *月刊地球* 38(1): 25-32
+
+9. Yang H., Siev S., Yoshimura C., Fujii H.，2017年 Identification of phase propagation of water level between the Tonle Sap Lake and River based on time series analysis. In: *The 2nd International Symposium on Conservation and Management of Tropical Lakes*, 16-22
+
+10. Siev S., Yang H., Sok T., Uk S., Song L., Yoshimura C., Oeurng C.，2017年 Sedimentation and resuspension rates in floodplain of Tonle Sap Lake. In: *The 2nd International Symposium on Conservation and Management of Tropical Lakes*, 61-66
+
+11. Uk S., Kodikara D., Yoshimura C., Yang H., Siev S., Sato M., Sok T., Song L., Oeurng C.，2017年 Phosphorus fractions in sediments and its potential exchange with water column in Tonle Sap Lake. In: *The 2nd International Symposium on Conservation and Management of Tropical Lakes*, 119-125
+
+12. Kodikara D., Uk S., Yoshimura C., Yang H., Siev S., Song L., Oeurng C.，2017年 Contemporary nitrogen distribution during dry season and its long-term trend in Tonle Sap Lake and its river basins. In: *The 2nd International Symposium on Conservation and Management of Tropical Lakes*, 85-90
+
+13. Chum K., Sok T., Chan R., Siev S., Yang H., Yoshimura C., Song L., Oeurng C.，2017年 Assessment of Spatial Interpolation Methods to Map Water Quality in Tonle Sap Lake. In: *The 2nd International Symposium on Conservation and Management of Tropical Lakes*, 91-99
+
+14. Yang H., Shibata T.，2019年 Residence time of unconfined groundwater in Beppu alluvial fan. *Institute for Geothermal Sciences: Annual Report. FY2019*, 10
+
+15. 梁　熙俊，柴田　智郎，2020年 別府南部における不圧地下水位の周期変動解析. *大分県温泉調査研究会報告* 71: 39-44
+
+#### 著書
+- **4編**（第１著者 1編，責任著者 1編，最近5年間 3編）
+  - Yoshimura C., Khanal R., Uk S. (Eds.) 2022年 *Water and Life in Tonle Sap Lake*. Springer
+
+#### 招待講演・報告会
+- **8編**（第１著者 7編，最近5年間 3編）
+
+#### 学会発表
+- **国内会議**：22編（第１著者 12編，最近5年間 12編、内ポスター3編）
+- **国際会議**：15編（第１著者 4編，最近5年間 4編、内ポスター5編）
 
 ---
 

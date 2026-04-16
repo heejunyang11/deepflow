@@ -1,0 +1,253 @@
+---
+title: "PHREEQCをゼロから始める #1：インストールと最初の計算"
+date: 2026-04-07
+categories: [Geochemistry, PHREEQC, Groundwater, Tutorial]
+series: "PHREEQCをゼロから始める"
+description: "地球化学計算ソフトPHREEQCのインストールから起動、純水の計算実行まで。スクリーンショットなしでも迷わないよう、各ステップを丁寧に解説する。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## PHREEQCとは何か
+
+**PHREEQC**（フリーク）は、米国地質調査所（USGS）が開発・無償公開している地球化学計算ソフトウェアである。名前は "pH-REdox-EQuilibrium C" の略で、その名の通り水−岩石反応のpH・酸化還元平衡を計算することを得意とする。
+
+具体的にできることを挙げると：
+
+- 水溶液中の化学種分布（Speciation）
+- 鉱物の溶解・沈殿（EQUILIBRIUM_PHASES）
+- 水の混合（MIXING）
+- 反応速度論的計算（KINETICS）
+- 酸化還元シーケンス（Redox sequences）
+
+地下水の水質解析、熱水変質、CO₂地中貯留（CCS）、海水と淡水の混合など、地球科学・環境工学の幅広い分野で使われている。そして**完全無料・オープンソース**という点も研究者・学生にとって大きな強みである。
+
+---
+
+## Step 1：PHREEQCのダウンロード
+
+### USGSの公式ページへ
+
+ブラウザで以下のURLにアクセスする：
+
+```
+https://www.usgs.gov/software/phreeqc-version-3
+```
+
+ページ中ほどの **Downloads** セクションから、OSに合ったインストーラーを選ぶ。Windowsの場合は `.exe` ファイルをダウンロードする。
+
+::: {.callout-important}
+## 必ず公式サイトからダウンロードすること
+
+PHREEQCは非常に有名なソフトウェアであるため、非公式の配布サイトも存在する。データベース（`.dat` ファイル）の整合性を保証するためにも、USGSの公式ページからのみダウンロードすること。
+:::
+
+### インストーラーの実行
+
+ダウンロードした `.exe` ファイルをダブルクリックしてインストールを進める。デフォルト設定のままで問題ない。インストールが完了すると、以下のフォルダにファイルが展開される：
+
+```
+C:\Program Files (x86)\USGS\Phreeqc Interactive 3.x.x-xxxxx\
+```
+
+`bin` フォルダの中にある `phreeqci.exe`（PHREEQCのGUI版）が起動ファイルである。
+
+---
+
+## Step 2：PHREEQCの起動と作業フォルダの準備
+
+### 作業フォルダを作る（重要）
+
+PHREEQCを使い始める前に、**デスクトップに専用フォルダを作成**しておくことを強くすすめる。
+
+```
+例：C:\Users\YourName\Desktop\PHREEQC_work\
+```
+
+::: {.callout-important}
+## フォルダ名は必ず英語にすること
+
+PHREEQCは日本語パスに対応していない場合がある。フォルダ名に日本語・スペース・特殊文字を使うと、ファイルの保存や読み込みでエラーが発生することがある。`PHREEQC_work` や `phreeqc` のように英数字のみで命名すること。
+:::
+
+### PHREEQCを起動する
+
+`bin` フォルダ内の `phreeqci.exe` をダブルクリックする。またはデスクトップにショートカットを作っておくと便利である。
+
+PHREEQCのウィンドウが開いたら起動成功である。画面左側にアイコンバーが並んでいる。これが各計算ブロック（SOLUTION・EQUILIBRIUM_PHASESなど）へのショートカットになっている。
+
+---
+
+## Step 3：純水を定義する（SOLUTION）
+
+### SOLUTIONとは
+
+PHREEQCで最初にすることは、計算対象の「水（溶液）」を定義することである。この定義ブロックを **SOLUTION** と呼ぶ。
+
+純水（蒸留水）は溶質が何も含まれていない水である。PHREEQCで純水を定義する場合、SOLUTIONブロックにデフォルト値をそのまま使えばよい。
+
+### GUIでの操作手順
+
+画面左のアイコンバーから **SOLUTIONアイコン**をクリックする。SOLUTION設定ウィンドウが表示される。
+
+純水の場合は何も変更せずに **OK** をクリックするだけでよい。すると左側のテキストエリアに以下のようなコードが自動生成される：
+
+```phreeqc
+SOLUTION 1
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+```
+
+各パラメータの意味は次の通りである：
+
+| パラメータ | 値 | 意味 |
+|---|---|---|
+| `temp` | 25 | 温度 [℃] |
+| `pH` | 7 | pH（中性） |
+| `pe` | 4 | 酸化還元電位（pe値） |
+| `redox` | pe | 酸化還元の基準をpeで定義 |
+| `units` | mmol/kgw | 濃度の単位（水1kgあたりのmmol） |
+| `density` | 1 | 密度 [g/cm³] |
+| `-water` | 1 | 水の量 [kg] |
+
+::: {.callout-note}
+## pe（酸化還元電位）とは
+
+pe = 4 は、地球表面の典型的な酸化還元条件（やや酸化的な環境）に相当する。pe が高いほど酸化的、低いほど還元的な環境を表す。詳しくはSeries Bの酸化還元反応の回で解説する。
+:::
+
+---
+
+## Step 4：ENDを入力して計算ブロックを閉じる
+
+PHREEQCでは、各計算ブロックの終わりに必ず **END** を入力する必要がある。
+
+テキストエリアの末尾をクリックして、新しい行に `END` と入力する：
+
+```phreeqc
+SOLUTION 1
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+END
+```
+
+`END` がないと、複数の計算ブロックが存在する場合にPHREEQCがどこで一つの計算が終わるかを判断できない。必ず入力する習慣をつけること。
+
+---
+
+## Step 5：計算の実行
+
+### SOLUTION 1 を選択する
+
+画面左のツリービューで **SOLUTION 1** をクリックして選択する。選択されると行がハイライトされる。
+
+次に、その行の隣にある「点（・）」をクリックする。すると **END** が自動的に追記される（すでに手入力している場合は不要）。
+
+### RUN で計算を実行
+
+メニューバーまたはツールバーの **Run** ボタンをクリックする。
+
+### ファイルの保存ダイアログ
+
+保存ダイアログが表示されたら、Step 2で作った作業フォルダを選択し、ファイル名を入力する。
+
+```
+例：pure_water.pqi
+```
+
+### 熱力学データベースを選ぶ ###
+
+Database files のドロップダウンから、**phreeqc.dat** を選択する。これはPHREEQCの標準的な熱力学データベースである。地熱関係の沢山の鉱物・化学種や高温条件の場合は、**llnl.dat**を使用する。
+
+その後 **Start** をクリックすると計算が始まる。計算が完了したら **Dismiss** をクリックして閉じる。
+
+---
+
+## Step 6：結果（Output）を読む
+
+計算が終わると、画面に **Output** が表示される。純水の計算結果の冒頭はこのようになっている：
+
+```
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Pure water
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000
+                                       pe  =   4.000
+      Specific Conductance (µS/cm,  25°C)  =     0
+                        Density (g/cm³)  =   0.99706
+                     Volume (L)          =   1.00297
+                     Activity of water   =   1.000
+                 Ionic strength (mol/kg) =   1.007e-07
+                       Mass of water (kg)=   1.000
+          Total alkalinity (eq/kg)       =   1.070e-07
+                         Temperature (°C)=  25.000
+```
+
+### 読み方のポイント
+
+**pH = 7.000** ── 入力通りの中性。
+
+**Specific Conductance = 0** ── 純水には電解質が含まれないので電気伝導度はゼロ。
+
+**Ionic strength = 1.007e-07** ── 純水でもH⁺とOH⁻が存在するため、イオン強度はゼロではなくごく微小な値になる。
+
+続いてOutputには化学種の分布（Species distribution）も表示される：
+
+```
+----------------------------Distribution of species----------------------------
+
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma    cm³/mol
+
+H2O               5.551e+01   1.000e+00     1.744     0.000     0.000     18.073
+H+                1.001e-07   1.000e-07    -7.000    -7.000     0.000      0.00
+OH-               1.001e-07   1.000e-07    -7.000    -7.000     0.000     -4.15
+```
+
+純水では H⁺ と OH⁻ の濃度がともに $10^{-7}$ mol/kg（= pH 7）になっていることが確認できる。
+
+---
+
+## 初めての計算、完了
+
+PHREEQCのインストールから純水の計算実行・結果確認まで一通り完了した。
+
+今回のポイントをまとめると：
+
+| 手順 | ポイント |
+|---|---|
+| フォルダ名 | 必ず英語で命名 |
+| SOLUTION | 純水はデフォルト設定のまま |
+| END | 各ブロックの終わりに必須 |
+| Output | pH・電気伝導度・イオン強度を確認 |
+
+次回は、実際の海水データを入力して**Speciation（化学種分布）**を計算する。Na・Ca・Mg・SO₄などの主要イオンを入力し、どのような化学種として水中に存在しているかを調べていこう。
+
+---
+
+*このシリーズの他の記事：*
+
+- **#1 インストールと最初の計算**（本記事）
+- [#2 Speciationで海水を解析する](../phreeqc-part2/)  ← 近日公開
+- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)  ← 近日公開

@@ -1,0 +1,395 @@
+---
+title: "Molar Mass App"
+format:
+  html:
+    self-contained: true
+    embed-resources: true
+number-sections: false
+---
+
+## 分子量計算ツール
+
+```{=html}
+<div class="app">
+  <div class="frame">
+
+    <div class="title">Molar Mass Tool / 分子量計算機</div>
+
+    <input type="text" id="formula" placeholder="化学式を入力　例）Ca(OH)2, NaCl" class="input">
+    <button onclick="calcMolarMass()" class="btn">calculate</button>
+
+    <!-- よく使う -->
+    <div class="examples-label">例：</div>
+    <div class="examples">
+      <span onclick="setFormula('NaCl')">NaCl</span>
+      <span onclick="setFormula('H2O')">H2O</span>
+      <span onclick="setFormula('CaCO3')">CaCO3</span>
+      <span onclick="setFormula('Ca(OH)2')">Ca(OH)2</span>
+      <span onclick="setFormula('CO2')">CO2</span>
+      <span onclick="setFormula('NH3')">NH3</span>
+    </div>
+
+    <!-- 結果表示エリア -->
+    <div class="result-box">
+      <div id="result" class="result">計算結果がここに表示されます</div>
+    </div>
+
+    <!-- 濃度変換 -->
+    <div class="convert-section">
+      <div class="convert-title">濃度変換</div>
+      <div style="font-size:18px; color:#c8f7dc; margin-bottom:10px; font-weight:bold;">計算された分子量を使って、単位を　mol/L ↔ mmol/L ↔ g/L ↔ mg/Lに変換しよう</div>
+      <div class="convert">
+        <input type="number" id="value" placeholder="数値を入力" class="convert-input">
+        <select id="unit" class="convert-select">
+          <option value="mol">mol/L</option>
+          <option value="mmol">mmol/L</option>
+          <option value="g">g/L</option>
+          <option value="mg">mg/L</option>
+        </select>
+        <button onclick="convert()" class="convert-btn">変換</button>
+      </div>
+      <div id="convert-result" class="convert-result"></div>
+    </div>
+
+    <!-- 履歴 -->
+    <div class="history-title">履歴
+      <button onclick="clearHistory()" class="clear-btn">Clear</button>
+    </div>
+    <div id="history" class="history"></div>
+
+  </div>
+</div>
+
+<style>
+body { background:#1b2a2f; }
+
+.frame {
+  background:#22363c;
+  padding:40px;
+  border-radius:20px;
+  width:720px;
+  margin:auto;
+}
+
+.title {
+  color:#c8f7dc;
+  font-size:22px;
+  margin-bottom:15px;
+}
+
+.input {
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  background:#2e4a50;
+  color:white;
+}
+
+.btn {
+  margin-top:10px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#4dd0a7;
+  color:#1a2a2f;
+  cursor:pointer;
+  font-weight:bold;
+  transition:background 0.3s ease;
+  z-index: 1;
+  position: relative;
+}
+
+.btn:hover {
+  background:#3ab88e;
+}
+
+.examples span {
+  display:inline-block;
+  margin:5px;
+  padding:5px 8px;
+  background:#2e4a50;
+  border-radius:8px;
+  cursor:pointer;
+  color:#c8f7dc;
+}
+
+.examples-label {
+  margin-top:10px;
+  color:#aaa;
+  font-size:12px;
+}
+
+.convert-section {
+  margin-top:15px;
+  background:#1a2a2f;
+  padding:15px;
+  border-radius:10px;
+}
+
+.convert-title {
+  color:#4dd0a7;
+  font-size:14px;
+  margin-bottom:10px;
+  font-weight:bold;
+}
+
+.convert {
+  display:flex;
+  gap:5px;
+}
+
+.convert-input, .convert-select {
+  flex:1;
+  padding:8px;
+  border-radius:8px;
+  border:none;
+  background:#2e4a50;
+  color:white;
+}
+
+.convert-btn {
+  padding:8px;
+  background:#4dd0a7;
+  color:#1a2a2f;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.convert-btn:hover {
+  background:#3ab88e;
+}
+
+.convert-result {
+  margin-top:15px;
+  color:#c8f7dc;
+  font-size:14px;
+  font-weight:bold;
+  background:rgba(77, 208, 167, 0.1);
+  border:1px solid #4dd0a7;
+  border-radius:8px;
+  padding:15px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:15px;
+}
+
+.result {
+  margin-top:15px;
+  font-size:28px;
+  font-weight:bold;
+  color:#4dd0a7;
+  text-align:center;
+  min-height:80px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.result-box {
+  margin-top:20px;
+  background:rgba(77, 208, 167, 0.1);
+  border:2px solid #4dd0a7;
+  border-radius:10px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.history-title {
+  margin-top:20px;
+  color:#aaa;
+}
+
+.history {
+  margin-top:10px;
+  font-size:14px;
+  color:#ddd;
+}
+
+.history-title {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.clear-btn {
+  padding:5px 12px;
+  font-size:12px;
+  background:#e74c3c;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.clear-btn:hover {
+  background:#c0392b;
+}
+</style>
+
+<script>
+// ===== 全元素（主要 + 拡張）=====
+const atomicWeights = {
+H:1.008, He:4.0026, Li:6.94, Be:9.0122, B:10.81, C:12.011, N:14.007, O:15.999, 
+F:18.998, Ne:20.180, Na:22.990, Mg:24.305, Al:26.982, Si:28.085,
+P:30.974, S:32.06, Cl:35.45, Ar:39.948, K:39.098, Ca:40.078,
+Sc:44.956, Ti:47.867, V:50.942, Cr:51.996, Mn:54.938, Fe:55.845,
+Co:58.933, Ni:58.693, Cu:63.546, Zn:65.38, Ga:69.723, Ge:72.630,
+As:74.922, Se:78.971, Br:79.904, Kr:83.798, Rb:85.468, Sr:87.62,
+Ag:107.868, Cd:112.414, Sn:118.710, I:126.904, Ba:137.327,
+Hg:200.592, Pb:207.2, U:238.029
+};
+
+// ===== 括弧対応パーサ =====
+function parseFormula(formula) {
+  let stack = [{}];
+  let i = 0;
+
+  while (i < formula.length) {
+    if (formula[i] === "(") {
+      stack.push({});
+      i++;
+    }
+    else if (formula[i] === ")") {
+      i++;
+      let num = "";
+      while (/\d/.test(formula[i])) num += formula[i++];
+
+      let group = stack.pop();
+      let mult = parseInt(num) || 1;
+
+      for (let el in group) {
+        stack[stack.length - 1][el] =
+          (stack[stack.length - 1][el] || 0) + group[el] * mult;
+      }
+    }
+    else {
+      let el = formula[i++];
+      if (/[a-z]/.test(formula[i])) el += formula[i++];
+
+      let num = "";
+      while (/\d/.test(formula[i])) num += formula[i++];
+
+      let count = parseInt(num) || 1;
+
+      stack[stack.length - 1][el] =
+        (stack[stack.length - 1][el] || 0) + count;
+    }
+  }
+
+  return stack[0];
+}
+
+// ===== 計算 =====
+function calcMolarMass() {
+  const formula = document.getElementById("formula").value.trim();
+
+  if (!formula) {
+    document.getElementById("result").innerText = "分子式を入力してください";
+    return;
+  }
+
+  let parsed = parseFormula(formula);
+  let mass = 0;
+
+  for (let el in parsed) {
+    if (!atomicWeights[el]) {
+      document.getElementById("result").innerText = "エラー: " + el + " は不明な元素です";
+      return;
+    }
+    mass += atomicWeights[el] * parsed[el];
+  }
+
+  let text = `<span style="font-weight:bold; color:#c8f7dc; font-size:24px;">${formula}: ${mass.toFixed(3)} g/mol</span>`;
+  document.getElementById("result").innerHTML = text;
+
+  // ===== 履歴追加 =====
+  let h = document.getElementById("history");
+  let item = document.createElement("div");
+  item.innerHTML = `${formula} → ${mass.toFixed(3)} g/mol`;
+  h.prepend(item);
+}
+
+// ===== 濃度変換 =====
+function convert() {
+  const formula = document.getElementById("formula").value.trim();
+  if (!formula) {
+    document.getElementById("convert-result").innerText = "エラー：先に分子式を入力してcalculateボタンを押してください";
+    return;
+  }
+
+  let parsed = parseFormula(formula);
+  let mass = 0;
+
+  for (let el in parsed) {
+    if (!atomicWeights[el]) {
+      document.getElementById("convert-result").innerText = "計算エラー";
+      return;
+    }
+    mass += atomicWeights[el] * parsed[el];
+  }
+
+  let value = parseFloat(document.getElementById("value").value);
+  let unit = document.getElementById("unit").value;
+
+  if (isNaN(value)) {
+    document.getElementById("convert-result").innerText = "値を入力してください";
+    return;
+  }
+
+  let mol, mmol, g, mg;
+
+  if (unit === "mol") {
+    mol = value;
+    mmol = mol * 1000;
+    g = mol * mass;
+    mg = g * 1000;
+  } else if (unit === "mmol") {
+    mmol = value;
+    mol = mmol / 1000;
+    g = mol * mass;
+    mg = g * 1000;
+  } else if (unit === "g") {
+    g = value;
+    mol = g / mass;
+    mmol = mol * 1000;
+    mg = g * 1000;
+  } else {
+    mg = value;
+    g = mg / 1000;
+    mol = g / mass;
+    mmol = mol * 1000;
+  }
+
+  let text = `
+    <div style="text-align:center;">
+      <div style="font-size:14px; color:#aaa; margin-bottom:8px;">入力</div>
+      <div style="font-size:20px; font-weight:bold;">${value} ${unit === "mol" ? "mol/L" : unit === "mmol" ? "mmol/L" : unit === "g" ? "g/L" : "mg/L"}</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="border-left: 1px solid #4dd0a7; padding-left:15px;">
+        <div style="font-size:14px; color:#aaa; margin-bottom:10px;">変換結果</div>
+        <div style="font-size:18px; margin-bottom:8px;">mol/L: ${mol.toFixed(4)}</div>
+        <div style="font-size:18px; margin-bottom:8px;">mmol/L: ${mmol.toFixed(2)}</div>
+        <div style="font-size:18px; margin-bottom:8px;">g/L: ${g.toFixed(4)}</div>
+        <div style="font-size:18px;">mg/L: ${mg.toFixed(2)}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById("convert-result").innerHTML = text;
+}
+
+// 入力補助（例をクリックしたら入力欄に代入）
+function setFormula(f){
+  document.getElementById("formula").value = f;
+}
+
+// 履歴クリア
+function clearHistory() {
+  document.getElementById("history").innerHTML = "";
+}
+</script>
+```

@@ -1,0 +1,39 @@
+---
+title: "温泉・地理"
+number-sections: false
+crossref:
+  chapters: false
+---
+
+温泉に関する物理・化学的な知識および泉質の分析や特徴に関する情報を提供します。
+
+:::  {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+### 🌊 温泉の化学
+温泉に関わる化学的な特徴や成分、反応などを解説します。
+
+
+**記事一覧**
+
+- [温泉の化学的特徴](/posts/onsen-chemistry/)
+
+
+
+[もっと見る →](/index.qmd){.btn .btn-outline-primary}
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### ⚗️ 泉質分類
+泉質の分類やその方法を解説します。
+
+
+
+**記事一覧**
+
+- [別府温泉の化学的特徴による分類分類](/posts/onsen-classification/)
+
+
+
+[もっと見る →](/index.qmd){.btn .btn-outline-primary}
+:::

@@ -2,9 +2,9 @@
 title: "地下水流動解析入門：<br>MODFLOWとFloPyの基本"
 date: "2026-04-01"
 author: "DeepFlow"
-categories: [groundwater, MODFLOW, Python]
+categories: [Groundwater, MODFLOW, Python, Tutorial, 地下水]
 description: "地下水流動解析の基本とPythonライブラリFloPyを使った実践的な入門"
-image: "image2.png"
+image: "image2.jpg"
 ---
 
 ## はじめに

@@ -1,0 +1,347 @@
+---
+title: "PHREEQCをゼロから始める #4：カルサイト−CO₂水反応（開放系 vs 閉鎖系）"
+date: 2026-04-10
+categories: [Geochemistry, PHREEQC, Groundwater]
+series: "PHREEQCをゼロから始める"
+description: "土壌中のCO₂と純水・カルサイト（Calcite）の反応を、開放系(Open system)と閉鎖系(Closed system)の2ケースでシミュレーションする。地下水の水質形成において最も基本的なこの反応が、系のCO₂条件によってpHと溶存Ca²⁺濃度にどう影響するかをPHREEQCで定量的に示す。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## なぜこの反応が重要か
+
+地下水の水質形成において、最も基本的かつ重要な反応が **カルサイト（方解石）とCO₂水の反応**である。
+
+雨水が土壌を通って地下に浸透するとき、土壌中のCO₂を吸収して弱酸性になる。その酸性水が炭酸塩岩（石灰岩など）と接触すると、カルサイトが溶解してCa²⁺とHCO₃⁻が水中に溶け出す。これが多くの地下水が「硬水」になる理由である。
+
+しかし、この反応の進み方は **系がCO₂に対して「開いているか」「閉じているか」** で大きく異なる。
+
+```{=html}
+<div style="background:#F8F9FA; border:1px solid #E5E7EB; border-radius:10px; padding:1.2rem 1.5rem; margin:1.5rem 0;">
+  <div style="font-weight:500; color:#111827; margin-bottom:0.8rem;">今回の計算で比較する2つのシナリオ</div>
+  <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px; border-left:3px solid #3B82F6; padding-left:0.8rem;">
+      <div style="font-weight:500; color:#1D4ED8; margin-bottom:0.3rem;">開放系（Open system）</div>
+      <div style="font-size:0.85rem; color:#4B5563;">CO₂ガスと常に平衡。反応中もCO₂が補給され続ける。土壌中での反応に相当。</div>
+    </div>
+    <div style="flex:1; min-width:200px; border-left:3px solid #D97706; padding-left:0.8rem;">
+      <div style="font-weight:500; color:#92400E; margin-bottom:0.3rem;">閉鎖系（Closed system）</div>
+      <div style="font-size:0.85rem; color:#4B5563;">CO₂を一定量溶解させた後、ガスとの接触を遮断。密閉された地下環境に相当。</div>
+    </div>
+  </div>
+</div>
+```
+
+---
+
+## 反応の化学式
+
+まず反応の全体像を整理しておこう。
+
+**CO₂の溶解：**
+
+$$
+\mathrm{CO_2(g) + H_2O \rightleftharpoons H_2CO_3^* \rightleftharpoons H^+ + HCO_3^-}
+$$
+
+**カルサイトの溶解：**
+
+$$
+\mathrm{CaCO_3 + H^+ \rightleftharpoons Ca^{2+} + HCO_3^-}
+$$
+
+**全体の反応（開放系）：**
+
+$$
+\mathrm{CaCO_3 + CO_2(g) + H_2O \rightleftharpoons Ca^{2+} + 2HCO_3^-}
+$$
+
+開放系では、CO₂が補給され続けることで左から右への反応（溶解）が促進される。閉鎖系では、溶解したCO₂が限られるため反応が止まりやすく、最終的なpHが高くなる。
+
+---
+
+## CO₂分圧の設定
+
+土壌中のCO₂分圧は大気の約30〜100倍に達することが多い。今回は代表値として：
+
+$$
+P_{CO_2} = 10^{-1.5} \approx 0.032 \text{ atm}
+$$
+
+を使用する。これは石灰岩地帯の土壌で典型的な値である（大気の $10^{-3.5}$ atm の約100倍）。
+
+PHREEQCでは CO₂ガスは `CO2(g)` という名前で呼ぶ。EQUILIBRIUM_PHASESブロックで `CO2(g) -1.5` と書くことで、$\log P_{CO_2} = -1.5$ の条件（= $10^{-1.5}$ atm）を指定できる。
+
+---
+
+## 計算シナリオの構成
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+  <thead>
+    <tr style="background:#F9FAFB;">
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#111827;">シナリオ</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#111827;">CO₂条件</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#111827;">カルサイト条件</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#111827;">PHREEQCブロック</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid #F3F4F6;">
+      <td style="padding:0.5rem 1rem; color:#1D4ED8; font-weight:500;">開放系</td>
+      <td style="padding:0.5rem 1rem; color:#374151;">CO₂(g) と常に平衡<br>（P = 10⁻¹·⁵ atm）</td>
+      <td style="padding:0.5rem 1rem; color:#374151;">Calcite（SI=0, 10 mol）</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706; font-size:0.82rem;">SOLUTION 1<br>EQUILIBRIUM_PHASES 1<br>（CO2+Calcite同時）</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+      <td style="padding:0.5rem 1rem; color:#92400E; font-weight:500;">閉鎖系</td>
+      <td style="padding:0.5rem 1rem; color:#374151;">まず CO₂(g) と平衡<br>→ その後ガス遮断</td>
+      <td style="padding:0.5rem 1rem; color:#374151;">別のEQ_PHASESで<br>Calcite のみと平衡</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706; font-size:0.82rem;">SOLUTION 2<br>EQUILIBRIUM_PHASES 1<br>SAVE → USE<br>EQUILIBRIUM_PHASES 2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+---
+
+## GUI操作手順
+
+### 開放系の設定
+
+**Step 1：** SOLUTIONアイコンから純水（SOLUTION 1）を定義する。
+
+**Step 2：** EQUILIBRIUM_PHASESアイコンをクリックし、以下を設定する：
+
+- `CO2(g)`：SI目標値 = **-1.5**、Amount = **10**
+- `Calcite`：SI目標値 = **0**、Amount = **10**
+
+::: {.callout-note}
+## CO2(g) のSI目標値 = -1.5 の意味
+
+`CO2(g) -1.5` は「$\log P_{CO_2} = -1.5$（つまり $P_{CO_2} = 10^{-1.5}$ atm）と平衡になるまでCO₂を溶かし込む」という指示である。開放系ではCO₂が常にこの分圧に保たれる。
+:::
+
+**Step 3：** `END` を入力して計算実行。
+
+---
+
+### 閉鎖系の設定
+
+閉鎖系は2段階に分かれる。
+
+**Stage 1：CO₂を溶解させる（ガスあり）**
+
+SOLUTION 2 を定義したあと、EQUILIBRIUM_PHASES でCO₂のみと平衡させ、`SAVE solution 2` で水の状態を保存する。
+
+**Stage 2：カルサイトと反応させる（ガスなし）**
+
+`USE solution 2` で保存した水を呼び出し、新しいEQUILIBRIUM_PHASESでカルサイトのみと平衡させる。ここにCO₂は含めない。
+
+---
+
+## PHREEQCコード（完全版）
+
+```phreeqc
+# ===================================
+# 開放系（Open system）
+# CO2とCalciteを同時に平衡させる
+# ===================================
+SOLUTION 1  Open system - Pure water
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)   -1.5   10   # log P(CO2) = -1.5 atm, 常にCO2補給
+    Calcite   0     10   # カルサイトと平衡
+
+END
+
+# ===================================
+# 閉鎖系（Closed system）
+# Stage 1: まずCO2を溶解させる
+# ===================================
+SOLUTION 2  Closed system - Pure water
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)   -1.5   10   # CO2のみと平衡（カルサイトなし）
+
+SAVE solution 2          # CO2溶解後の水を保存
+
+END
+
+# ===================================
+# 閉鎖系 Stage 2:
+# CO2遮断後にカルサイトと反応させる
+# ===================================
+USE solution 2           # 保存した水を呼び出す
+
+EQUILIBRIUM_PHASES 2
+    Calcite   0     10   # カルサイトのみと平衡（CO2ガスなし）
+
+END
+```
+
+::: {.callout-important}
+## `SAVE` と `USE` の使い方
+
+`SAVE solution 2` は計算途中の水の状態（pH・各イオン濃度・温度など）をメモリに保存する命令である。`USE solution 2` でその保存された状態を呼び出して、続きの計算ができる。閉鎖系のように「段階的な反応」を表現するときに必須のコマンドである。
+:::
+
+---
+
+## 結果の読み方
+
+計算が完了すると、2つのシナリオのOutputを比較できる。
+
+### 開放系の結果（SOLUTION 1 after）
+
+```
+pH                 =   6.97
+Ca²⁺ (mol/kgw)    =   2.39e-03
+HCO₃⁻ (mol/kgw)  =   4.88e-03
+Calcite SI        =   0.00     ← 平衡状態
+CO2(g) SI         =   -1.5     ← CO2(g)は入力条件の通り、-1.5
+```
+
+### 閉鎖系の結果（SOLUTION 2 after Stage 2）
+
+```
+pH                 =   7.68
+Ca²⁺ (mol/kgw)    =   9.94e-04
+HCO₃⁻ (mol/kgw)  =   1.99e-03
+Calcite SI        =   0.00     ← 平衡状態
+CO2(g) SI         =  -2.58     ← CO2は不飽和（ガスなし）
+```
+
+---
+
+### 2ケースの比較
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+  <thead>
+    <tr style="background:#F9FAFB;">
+      <th style="padding:0.7rem 1rem; text-align:left; border-bottom:2px solid #E5E7EB; color:#374151;">項目</th>
+      <th style="padding:0.7rem 1rem; text-align:center; border-bottom:2px solid #E5E7EB; color:#1D4ED8;">開放系</th>
+      <th style="padding:0.7rem 1rem; text-align:center; border-bottom:2px solid #E5E7EB; color:#92400E;">閉鎖系</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid #F3F4F6;">
+      <td style="padding:0.5rem 1rem; color:#374151; font-weight:500;">最終 pH</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8; font-weight:500;">6.97</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E; font-weight:500;">7.68</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+      <td style="padding:0.5rem 1rem; color:#374151; font-weight:500;">Ca²⁺ 濃度</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8;">2.39×10⁻³ mol/kg<br><span style="font-size:0.82rem; color:#6B7280;">≈ 96 mg/L</span></td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E;">9.94×10⁻⁴ mol/kg<br><span style="font-size:0.82rem; color:#6B7280;">≈ 40 mg/L</span></td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6;">
+      <td style="padding:0.5rem 1rem; color:#374151; font-weight:500;">HCO₃⁻ 濃度</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8;">4.88×10⁻³ mol/kg</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E;">1.99×10⁻³ mol/kg</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+      <td style="padding:0.5rem 1rem; color:#374151; font-weight:500;">カルサイト溶解量</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8;">多い（約2.5倍）</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E;">少ない</td>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem 1rem; color:#374151; font-weight:500;">CO₂(g) SI</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8;">-1.5（入力条件）</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E;">−2.58（CO₂消費）</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+---
+
+## 考察
+
+### ① なぜ開放系のpHが低いか
+
+開放系では CO₂ が常に $P_{CO_2} = 10^{-1.5}$ atm に保たれる。カルサイトが溶けて H⁺ が消費されても、**ガス相からCO₂が追加供給**されて H⁺ が再生成される。このため酸性が維持され、カルサイトの溶解が促進される。最終的なCa濃度は 2.39×10^-3 mol/kgw と、閉鎖系よりも多く溶解している。
+
+$$
+\mathrm{CO_2(g) \rightarrow CO_2(aq) \rightarrow H^+ + HCO_3^- \xrightarrow{Calcite} Ca^{2+} + 2HCO_3^-}
+$$
+
+### ② なぜ閉鎖系のpHが高いか
+
+閉鎖系では Stage 1 で溶解したCO₂の量が上限である。カルサイト溶解で H⁺ が消費される。しかし、**閉鎖系であるため新たなCO₂の供給がない**ため反応が止まる。そのため、溶液中のCO₂は急速に消費され、pHが上昇する。
+
+### ③ 地下水への適用
+
+::: {.callout-tip}
+## 現実の地下水はどちらに近いか
+
+現実の地下水は、その流れの段階によって変わる：
+
+- **土壌帯（浅部）**：土壌CO₂が豊富で常に補給される → 開放系に近い
+- **深部帯水層**：岩盤に囲まれてCO₂の補給がない → 閉鎖系に近い
+
+このため、地下水は深くなるにつれてpHが上昇し、カルサイトに対して過飽和になりやすい。洞窟の鍾乳石（スタラグマイト）は、CO₂が脱ガスすることでカルサイトが沈殿した産物である。
+:::
+
+### ④ 反応の進み方の違いをまとめると
+
+```{=html}
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0;">
+  <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:1rem;">
+    <div style="font-weight:500; color:#1E40AF; margin-bottom:0.5rem;">開放系のメカニズム</div>
+    <div style="font-size:0.85rem; color:#1D4ED8; line-height:1.7;">
+      CO₂補給 → H⁺生成 → Calcite溶解 → H⁺消費 → CO₂補給 → …（繰り返し）
+    </div>
+    <div style="margin-top:0.5rem; font-size:0.82rem; color:#3B82F6;">→ 平衡まで溶解が進む</div>
+  </div>
+  <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:8px; padding:1rem;">
+    <div style="font-weight:500; color:#92400E; margin-bottom:0.5rem;">閉鎖系のメカニズム</div>
+    <div style="font-size:0.85rem; color:#B45309; line-height:1.7;">
+      CO₂溶解（限定）→ H⁺生成 → Calcite溶解 → H⁺消費 → CO₂枯渇 → 停止
+    </div>
+    <div style="margin-top:0.5rem; font-size:0.82rem; color:#D97706;">→ CO₂が尽きると反応が止まる</div>
+  </div>
+</div>
+```
+
+---
+
+## 次回予告：炭酸地下水と海水の混合
+
+次回は **炭酸地下水（石灰岩地帯の地下水）と海水が混合したとき** に何が起きるかを計算する。
+
+単純に2つの水を混ぜただけでは、混合水がカルサイトに対して不飽和になる（溶解方向になる）という「**混合腐食（mixing corrosion）**」という現象が起きる。石灰岩の洞窟形成にも関わるこの現象を、PHREEQCのMixingとEQUILIBRIUM_PHASESを組み合わせて再現していこう。
+
+---
+
+*このシリーズの他の記事：*
+
+- [#1 インストールと最初の計算](../phreeqc-part1/)
+- [#2 Speciationで海水を解析する](../phreeqc-part2/)
+- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)
+- **#4 カルサイト−CO₂水反応**（本記事）
+- [#5 炭酸地下水と海水の混合](../phreeqc-part5/)  ← 近日公開

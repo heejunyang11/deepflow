@@ -1,7 +1,7 @@
 ---
 title: "FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編"
-date: 2026-04-02
-categories: [groundwater, python, modflow, geochemistry, simulation, visualization]
+date: 2026-04-05
+categories: [Groundwater, Python, MODFLOW, Geochemistry, Simulation, 地下水]
 series: "熱水地球化学シミュレーション"
 description: "カップリングシミュレーションで得られたデータを読み解く。破過曲線・鉱物量の空間プロファイル・飽和指数をmatplotlibで可視化し、入口と出口で何が起きているかを解析する。"
 image: thumbnail.png
@@ -17,7 +17,7 @@ lang: ja
 
 第2回でカップリングループを動かし、`results` 辞書にデータが蓄積された。しかし数値の羅列だけでは、カラムの中で何が起きているかは見えてこない。
 
-> 地球化学シミュレーションの醍醐味は、**反応フロントがカラムを移動する様子**を時空間でとらえることだ。
+> 地球化学シミュレーションの醍醐味は、**反応フロントがカラムを移動する様子**を時空間でとらえることである。
 
 今回は以下の3種類の可視化を実装する：
 
@@ -270,7 +270,7 @@ plot_mineral_profile(df, times_h=[4, 8, 12, 16, 20, 24],
 
 ## 可視化 3：飽和指数（SI）の時間変化
 
-飽和指数（Saturation Index）は鉱物の溶解・沈殿傾向を示す指標だ：
+飽和指数（Saturation Index）は鉱物の溶解・沈殿傾向を示す指標である：
 
 $$
 SI = \log_{10} \frac{IAP}{K_{sp}}
@@ -338,7 +338,7 @@ plot_saturation_index(df_in, df_out, mineral="Calcite")
 
 ## 4グラフを一枚にまとめる
 
-個別プロットに加え、論文・レポート向けに4パネルをまとめた図を作ると便利だ。
+個別プロットに加え、論文・レポート向けに4パネルをまとめた図を作ると便利である。
 
 ```python
 def plot_summary_panel(df_in, df_out, df, N, dx, m0):
@@ -427,7 +427,7 @@ plot_summary_panel(df_in, df_out, df, N=N, dx=dx, m0=0.010)
 
 ### ③ 数値的なアーティファクトはないか？
 
-pH が急激に振動したり、濃度が負になったりする場合は数値不安定の兆候だ。`step_divide` を大きくするか、`dt`（時間刻み）を小さくして対処する。
+pH が急激に振動したり、濃度が負になったりする場合は数値不安定の兆候である。`step_divide` を大きくするか、`dt`（時間刻み）を小さくして対処する。
 
 ---
 

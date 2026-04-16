@@ -1,101 +1,156 @@
+/* =========================================
+   基本設定・フォント
+========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
 
-body { font-family: 'Inter', sans-serif; }
+body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: #F7F4EF !important; 
+    color: #333333 !important; 
+}
 
-/* ナビバー */
+h1, h2, h3, h4 { color: #1A1A1A !important; }
+p, li { 
+    color: #333333; 
+    line-height: 1.75; 
+}
+a { color: #2563EB !important; } 
+a:hover { color: #1D4ED8 !important; }
+
+/* =========================================
+   ナビゲーションバー & フッター
+========================================= */
 .navbar {
-  background-color: #1E293B !important;
-  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    background-color: rgba(252, 252, 252, 0.9) !important;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #E5E7EB !important;
 }
 .navbar-brand {
-  color: #38BDF8 !important;
-  letter-spacing: 0.06em !important;
+    color: #1A1A1A !important; 
+    letter-spacing: 0.06em !important;
 }
-.nav-link { color: #94A3B8 !important; }
-.nav-link:hover { color: #38BDF8 !important; }
+.nav-link { 
+    color: #4B5563 !important; 
+}
+.nav-link:hover { 
+    color: #D97706 !important; 
+}
+.nav-footer {
+    background-color: #F9FAFB !important;
+    border-top: 1px solid #E5E7EB !important;
+    color: #6B7280 !important;
+}
 
-/* ヒーロー */
+/* =========================================
+   ヒーローエリア（タイトルバナー）
+========================================= */
 .quarto-title-banner {
-  background-color: #0F172A !important;
-  background-image:
-    linear-gradient(rgba(56,189,248,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56,189,248,0.04) 1px, transparent 1px) !important;
-  background-size: 40px 40px !important;
-  border-bottom: 1px solid rgba(56,189,248,0.12) !important;
-  padding: 4rem 0 3rem !important;
+    background-color: #F7F4EF !important;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px) !important;
+    background-size: 40px 40px !important;
+    border-bottom: 2px solid #D97706 !important;
+    padding: 4rem 0 3rem !important;
 }
 .quarto-title-banner .title {
-  color: #F1F5F9 !important;
-  font-size: 3rem !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.02em !important;
+    color: #111827 !important; 
+    font-weight: 500 !important;
+    letter-spacing: 0.02em !important;
 }
 .quarto-title-banner .description {
-  color: #64748B !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  font-size: 0.85rem !important;
+    color: #4B5563 !important;
+    font-weight: 300 !important;
 }
 
-/* ページ全体の背景 */
-body, .page-layout-full {
-  background-color: #0F172A !important;
+/* =========================================
+   記事カード・リスト
+========================================= */
+.page-layout-full {
+    background-color: #F7F4EF !important;
 }
-
-/* 記事カード */
 .quarto-post {
-  background: #1E293B !important;
-  border: 0.5px solid rgba(255,255,255,0.06) !important;
-  border-left: 3px solid #38BDF8 !important;
-  border-radius: 12px !important;
-  transition: border-color 0.2s !important;
-  overflow: hidden !important;
-  padding: 1rem !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E5E7EB !important;
+    border-left: 4px solid #D97706 !important; 
+    border-radius: 12px !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+    overflow: hidden !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1rem !important;
 }
 .quarto-post:hover {
-  border-color: rgba(56,189,248,0.4) !important;
+    border-color: #D97706 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
 }
-.quarto-post .title { color: #E2E8F0 !important; }
-.quarto-post .description { color: #64748B !important; }
-.quarto-post .listing-date { color: #475569 !important; }
+.quarto-post .title { color: #1A1A1A !important; }
+.quarto-post .description { color: #4B5563 !important; }
+.quarto-post .listing-date { color: #6B7280 !important; }
 
 /* カテゴリバッジ */
 .listing-category {
-  background: rgba(56,189,248,0.06) !important;
-  border: 1px solid rgba(56, 189, 248, 0.18) !important;
-  color: #7DD3FC !important;
-  border-radius: 999px !important;
-  font-size: 10px !important;
-  letter-spacing: 0.04em !important;
+    background: #FEF3C7 !important; 
+    border: 1px solid #FDE68A !important;
+    color: #D97706 !important; 
+    border-radius: 999px !important;
+    font-size: 11px !important;
+    padding: 0.2rem 0.6rem !important;
+}
+.quarto-listing-category-title { 
+    color: #D97706 !important; 
+    font-size: 11px !important; 
+    letter-spacing: 0.12em !important; 
+}
+.quarto-listing-category a { color: #6B7280 !important; }
+.quarto-listing-category a:hover { color: #D97706 !important; }
+
+
+/* =========================================
+   コードブロック・インラインコードの設定
+   （★ここを大きく修正しました）
+========================================= */
+
+/* コードブロック全体（複数行のコード） */
+pre, pre.sourceCode {
+    background: #F8F8F7 !important; /* 0.pngのような清潔なごく薄いグレー */
+    border: 1px solid #E5E7EB !important;
+    border-radius: 8px !important;
+    /* 削除: color: #... !important; はハイライト色を潰すので書かない */
 }
 
-/* サイドバー */
-.quarto-listing-category-title { color: #38BDF8 !important; font-size: 10px !important; letter-spacing: 0.12em !important; }
-.quarto-listing-category a { color: #64748B !important; }
-.quarto-listing-category a:hover { color: #38BDF8 !important; }
-
-/* フッター */
-.nav-footer {
-  background-color: #020617 !important;
-  border-top: 1px solid rgba(56,189,248,0.08) !important;
-  color: #334155 !important;
+/* コードブロック内のテキスト色リセット */
+pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0 !important;
 }
 
-/* コードブロック */
-pre {
-  background: #020617 !important;
-  border: 1px solid rgba(56,189,248,0.15) !important;
-  border-radius: 8px !important;
+/* インラインコード（文章中の短いコード）
+   ★ 0.png (Claude風) のような「薄い背景＋濃い赤文字」に変更しました */
+code:not(pre code) {
+    background: #F3F4F6 !important; /* ほんのりグレー */
+    color: #9B2C2C !important;      /* 落ち着いた赤（エンジ色） */
+    border: 1px solid #E5E7EB !important; /* 薄い枠線を追加 */
+    border-radius: 4px !important;
+    padding: 0.1em 0.4em !important;
+    font-size: 0.88em !important;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace !important;
 }
 
-/* スクロールバー */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0F172A; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #38BDF8; }
+/* =========================================
+   スクロールバー
+========================================= */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #FDFDFD; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
-/* 見出し・テキスト全般 */
-h1, h2, h3, h4 { color: #E2E8F0 !important; }
-p, li { color: #94A3B8; }
-a { color: #38BDF8 !important; }
-a:hover { color: #7DD3FC !important; }
+/* listing カードのタイトルを明示的に指定 */
+.quarto-post .title,
+.quarto-post .listing-title,
+h3.no-anchor.listing-title {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: #1A1A1A !important;
+    line-height: 1.4 !important;
+}

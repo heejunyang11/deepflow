@@ -1,0 +1,380 @@
+---
+title: "PHREEQCをゼロから始める #2：Speciationで海水を解析する"
+date: 2026-04-08
+categories: [Geochemistry, PHREEQC, Groundwater]
+series: "PHREEQCをゼロから始める"
+description: "PHREEQCのSpeciation計算を使って海水の化学種分布を求める。Na・Ca・Mg・SO₄など主要イオンの入力方法から、錯体形成・飽和指数の読み方まで丁寧に解説する。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## Speciationとは何か
+
+前回の記事では、PHREEQCに「純水」を定義して計算を実行した。今回は実際の海水データを入力して、より本質的な計算 ── **Speciation（化学種分布）** ── に踏み込む。
+
+Speciationとは、「溶液中のある元素が、どのような化学形態（化学種）として存在しているか」を計算することである。
+
+たとえば海水中に $\mathrm{SO_4^{2-}}$ が 2712 mg/L 含まれているとしても、そのすべてが単独の $\mathrm{SO_4^{2-}}$ イオンとして存在しているわけではない。一部は $\mathrm{Mg^{2+}}$ と錯体（$\mathrm{MgSO_4}$）を形成し、別の一部は $\mathrm{Na^+}$ と $\mathrm{NaSO_4^-}$ を形成している。
+
+```{=html}
+<div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-left:3px solid #1D9E75; border-radius:8px; padding:1.2rem 1.5rem; margin:1.5rem 0;">
+  <p style="color:var(--color-text-primary); font-weight:500; margin-bottom:0.5rem;">Speciationが必要な理由</p>
+  <p style="color:var(--color-text-secondary); margin:0; font-size:0.9rem;">
+    鉱物の溶解・沈殿を判断する「飽和指数（SI）」は、溶液中のイオン活量（activity）で計算される。
+    活量は単純な濃度とは異なり、錯体形成やイオン強度の影響を受ける。
+    Speciationはこの活量を正確に求めるための計算である。
+  </p>
+</div>
+```
+
+---
+
+## 海水の化学組成
+
+今回使用する海水データを以下に示す。これは教科書的な平均海水組成である。
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+  <thead>
+    <tr style="background:var(--color-background-secondary);">
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">成分</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">化学式</th>
+      <th style="padding:0.6rem 1rem; text-align:right; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">濃度 (mg/L)</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">ナトリウム</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#1D9E75;">Na</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">10768</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">最多の陽イオン</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">カリウム</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#1D9E75;">K</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">399.1</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);"></td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">カルシウム</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#1D9E75;">Ca</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">412.3</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">炭酸塩鉱物に関係</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">マグネシウム</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#1D9E75;">Mg</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">1291.8</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">SO₄と錯体形成</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">塩化物</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">Cl</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">19353</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">最多の陰イオン</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">重炭酸</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">HCO₃⁻ (Alkalinity)</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">141.682</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">AlkalinityとしてHCO₃-で入力</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">硫酸</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">SO₄</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">2712</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">複数の錯体を形成</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">硝酸</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">NO₃</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">0.29</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">微量</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">鉄</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">Fe</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">0.002</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">極微量</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">ケイ素</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">Si</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">4.28</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">SiO₂として存在</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+pH は 8.22、温度は 25℃、密度は 1.023 g/cm³ である。
+
+---
+
+## PHREEQCへの入力手順
+
+### ① SOLUTIONアイコンをクリック
+
+前回同様、画面左のアイコンバーから **SOLUTIONアイコン**をクリックする。SOLUTION設定ウィンドウが開く。
+
+### ② pH・pe・温度を入力
+
+ウィンドウ上部のフィールドに以下を入力する：
+
+```{=html}
+<div style="display:flex; gap:1rem; margin:1rem 0; flex-wrap:wrap;">
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.8rem 1.2rem; min-width:120px;">
+    <div style="color:var(--color-text-secondary); font-size:0.75rem; margin-bottom:0.2rem;">pH</div>
+    <div style="color:var(--color-text-primary); font-weight:500; font-size:1.1rem;">8.22</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.8rem 1.2rem; min-width:120px;">
+    <div style="color:var(--color-text-secondary); font-size:0.75rem; margin-bottom:0.2rem;">pe</div>
+    <div style="color:var(--color-text-primary); font-weight:500; font-size:1.1rem;">8.451</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.8rem 1.2rem; min-width:120px;">
+    <div style="color:var(--color-text-secondary); font-size:0.75rem; margin-bottom:0.2rem;">Temperature</div>
+    <div style="color:var(--color-text-primary); font-weight:500; font-size:1.1rem;">25 ℃</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.8rem 1.2rem; min-width:120px;">
+    <div style="color:var(--color-text-secondary); font-size:0.75rem; margin-bottom:0.2rem;">density</div>
+    <div style="color:var(--color-text-primary); font-weight:500; font-size:1.1rem;">1.023</div>
+  </div>
+</div>
+```
+
+### ③ 濃度の単位を ppm に変更
+
+デフォルトの単位は `mmol/kgw` であるが、今回のデータは mg/L（≒ ppm）単位なので変更が必要である。ウィンドウ内の単位選択ドロップダウンから **ppm** を選ぶ。
+
+::: {.callout-important}
+## 単位の確認は必須
+
+PHREEQCで最もよくあるミスが単位の入れ間違いである。mg/L のデータを mmol/kgw で入力すると計算結果が数桁ずれる。必ず入力前に単位を確認すること。
+:::
+
+### ④ 各成分にチェックを入れて濃度を入力
+
+ウィンドウ下部に元素のリストが表示される。使用する元素にチェックを入れ、右側のフィールドに濃度を入力する。
+
+::: {.callout-note}
+## Alkalinity の特別な扱い
+
+HCO₃⁻（重炭酸イオン）は `HCO3` ではなく `Alkalinity` として入力する。その際、単位欄に `as HCO3-` と記入することで、PHREEQCが正しく炭酸系の計算を行う。
+
+```
+Alkalinity   141.682   as HCO3-
+```
+:::
+
+---
+
+## PHREEQCコード
+
+GUIで入力した結果、以下のコードが自動生成される。直接テキストエリアに貼り付けて実行することもできる。
+
+```phreeqc
+SOLUTION 1  Seawater
+    temp      25
+    pH        8.22
+    pe        8.451
+    redox     pe
+    units     ppm
+    density   1.023
+    Na        10768
+    K         399.1
+    Ca        412.3
+    Mg        1291.8
+    Cl        19353
+    Alkalinity 141.682  as HCO3-
+    S(6)      2712         # SO4²⁻ は S(6) で入力
+    N(5)      0.29         # NO3⁻ は N(5) で入力
+    Fe        0.002
+    Si        4.28
+    -water    1  # kg
+
+END
+```
+
+::: {.callout-note}
+## `S(6)` と `N(5)` の書き方
+
+PHREEQCでは硫酸（$\mathrm{SO_4^{2-}}$）は元素 `S` ではなく酸化数を指定して `S(6)` と書く。同様に硝酸（$\mathrm{NO_3^-}$）は `N(5)` と書く。これにより、還元型の $\mathrm{S^{2-}}$（硫化物）や $\mathrm{NH_4^+}$（アンモニア）と区別する。
+:::
+
+---
+
+## 計算の実行
+
+コードを入力（またはGUIで設定）したら、`END` を追加してから **Run → OK** をクリックする。保存ダイアログでは作業フォルダを選択してファイル名（例：`seawater_speciation.pqi`）を入力し、**Start → Dismiss** で完了である。
+
+---
+
+## 結果（Output）の読み方
+
+### 溶液の基本情報
+
+Outputの冒頭に溶液の概要が表示される：
+
+```
+----------------------------Description of solution----------------------------
+
+                                       pH  =   8.220
+                                       pe  =   8.451
+      Specific Conductance (µS/cm,  25°C)  =   52634
+                        Density (g/cm³)    =   1.02282
+                     Activity of water     =   0.981
+                 Ionic strength (mol/kg)   =   6.651e-01
+                       Mass of water (kg)  =   1.000
+          Total alkalinity (eq/kg)         =   2.379e-03
+```
+
+**Ionic strength（イオン強度）= 0.665 mol/kg** ── これは非常に高い値である。淡水の地下水では 0.001 mol/kg 以下のことが多い。海水のようにイオン強度が高いと、各イオンの活量係数（γ）が大きく1からずれるため、Speciation計算の意義が大きい。
+
+**Activity of water = 0.981** ── 純水では 1.000 であるが、海水では溶質の影響で水の活量が下がる。これが「海水は蒸発しにくい」ことの熱力学的な説明になっている。
+
+---
+
+### 化学種分布（Species distribution）
+
+Outputの中盤に各元素の化学種分布が表示される。SO₄を例に見てみよう：
+
+```
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma    cm³/mol
+
+S(6)
+   SO4-2         2.101e-02   5.848e-03    -1.678    -2.233    -0.555     14.15
+   MgSO4         3.765e-03   3.765e-03    -2.424    -2.424     0.000     -1.59
+   NaSO4-        2.980e-03   2.064e-03    -2.526    -2.685    -0.160      8.22
+   CaSO4         5.280e-04   5.280e-04    -3.277    -3.277     0.000      4.46
+   KSO4-         9.360e-05   6.479e-05    -4.029    -4.188    -0.160      7.32
+```
+
+```{=html}
+<div style="background-color: rgba(120, 120, 120, 0.08); border: 1px solid rgba(120, 120, 120, 0.2); border-radius: 10px; padding: 1.2rem 1.5rem; margin: 1.5rem 0;">
+  <p style="font-weight: bold; margin-bottom: 0.8rem; font-size: 1.1rem;">SO₄²⁻ の化学種分布（計算値）</p>
+  
+  <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+    <!-- SO₄²⁻ -->
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div style="width: 80px; font-size: 0.9rem; flex-shrink: 0; opacity: 0.8;">SO₄²⁻</div>
+      <div style="flex: 1; background-color: rgba(120, 120, 120, 0.2); border-radius: 4px; height: 18px; position: relative;">
+        <div style="width: 74%; background-color: #1D9E75; height: 100%; border-radius: 4px;"></div>
+      </div>
+      <div style="width: 40px; text-align: right; font-size: 0.9rem; flex-shrink: 0;">74%</div>
+    </div>
+    
+    <!-- MgSO₄ -->
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div style="width: 80px; font-size: 0.9rem; flex-shrink: 0; opacity: 0.8;">MgSO₄</div>
+      <div style="flex: 1; background-color: rgba(120, 120, 120, 0.2); border-radius: 4px; height: 18px; position: relative;">
+        <div style="width: 13%; background-color: #BA7517; height: 100%; border-radius: 4px;"></div>
+      </div>
+      <div style="width: 40px; text-align: right; font-size: 0.9rem; flex-shrink: 0;">13%</div>
+    </div>
+    
+    <!-- NaSO₄⁻ -->
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div style="width: 80px; font-size: 0.9rem; flex-shrink: 0; opacity: 0.8;">NaSO₄⁻</div>
+      <div style="flex: 1; background-color: rgba(120, 120, 120, 0.2); border-radius: 4px; height: 18px; position: relative;">
+        <div style="width: 10%; background-color: #534AB7; height: 100%; border-radius: 4px;"></div>
+      </div>
+      <div style="width: 40px; text-align: right; font-size: 0.9rem; flex-shrink: 0;">10%</div>
+    </div>
+    
+    <!-- CaSO₄ -->
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div style="width: 80px; font-size: 0.9rem; flex-shrink: 0; opacity: 0.8;">CaSO₄</div>
+      <div style="flex: 1; background-color: rgba(120, 120, 120, 0.2); border-radius: 4px; height: 18px; position: relative;">
+        <div style="width: 2%; background-color: #993C1D; height: 100%; border-radius: 4px;"></div>
+      </div>
+      <div style="width: 40px; text-align: right; font-size: 0.9rem; flex-shrink: 0;">2%</div>
+    </div>
+  </div>
+
+  <p style="font-size: 0.85rem; margin-top: 1rem; margin-bottom: 0; opacity: 0.7;">
+    SO₄²⁻ のうち約26%は錯体として存在しており、「遊離したSO₄²⁻」ではない
+  </p>
+</div>
+```
+
+---
+
+### 飽和指数（Saturation Index）
+
+Outputの後半に **Saturation Indices** セクションが現れる：
+
+```
+-------------------------------Saturation indices-------------------------------
+
+  Phase               SI   log IAP   log K(T, P)
+
+  Anhydrite        -0.82     -4.06     -3.23  CaSO4
+  Aragonite         0.71     -7.62     -8.34  CaCO3
+  Calcite           0.86     -7.62     -8.48  CaCO3
+  Dolomite          2.07    -14.53    -16.60  CaMg(CO3)2
+  Gypsum           -0.59     -4.06     -3.47  CaSO4:2H2O
+  Halite           -1.59      2.69      4.27  NaCl
+  Quartz            0.32     -2.71     -3.02  SiO2
+  Sepiolite(d)      2.64     22.98     20.34  Mg4Si6O15(OH)2:6H2O
+```
+
+**飽和指数（SI）の読み方：**
+
+$$
+SI = \log \frac{IAP}{K_{sp}}
+$$
+
+| SI値 | 意味 | 鉱物の挙動 |
+|---|---|---|
+| $SI > 0$ | 過飽和 | **沈殿**する方向 |
+| $SI = 0$ | 平衡 | 溶解も沈殿もしない |
+| $SI < 0$ | 不飽和 | **溶解**する方向 |
+
+---
+
+## 考察：海水の地球化学的意味
+
+今回のSpeciation計算から以下のことが読み取れる。
+
+**① 方解石（Calcite）は過飽和（SI = 0.86）**
+
+海水は方解石に対して過飽和であり、熱力学的には沈殿が起きる方向にある。実際に熱帯の浅海では方解石・アラゴナイトの生物起源炭酸塩が大量に沈殿している。
+
+**② 硬石膏（Anhydrite）・石膏（Gypsum）は不飽和**
+
+SI がそれぞれ −0.82、−0.59 であり、通常の海水では硫酸塩鉱物は沈殿しない。蒸発が進んで濃縮されると SI が上昇し、最終的に蒸発岩（石膏など）として沈殿する。
+
+**③ ドロマイト（Dolomite）は大過飽和（SI = 2.07）**
+
+熱力学的には強く過飽和であるが、現代の海水ではドロマイトはほとんど沈殿しない。これは反応速度論的な制約（動力学的障壁）があるためで、地球化学の「ドロマイト問題」として知られる。PHREEQCは熱力学的平衡を計算するが、**反応速度は考慮しない**点に注意が必要である。
+
+::: {.callout-tip}
+## Speciationで押さえるべき3つのポイント
+
+1. **単位の確認** ── ppm / mmol/kgw を間違えない
+2. **Alkalinity の入力方法** ── `as HCO3-` を忘れずに
+3. **SIの読み方** ── 正が沈殿方向、負が溶解方向
+:::
+
+---
+
+## 次回予告：MixingとEQUILIBRIUM_PHASES
+
+次回は2つの水を混合する **Mixing** 計算と、鉱物との平衡を計算する **EQUILIBRIUM_PHASES** を組み合わせる。具体的には、石膏（Gypsum）と硬石膏（Anhydrite）を純水に加えて温度を上昇させると何が起きるか ── を計算する。25℃から75℃への加熱で石膏と硬石膏のどちらが安定かが逆転する興味深い現象を見ていこう。
+
+---
+
+*このシリーズの他の記事：*
+
+- [#1 インストールと最初の計算](../phreeqc-part1/)
+- **#2 Speciationで海水を解析する**（本記事）
+- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)  ← 近日公開

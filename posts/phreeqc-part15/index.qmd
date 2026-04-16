@@ -1,0 +1,693 @@
+---
+title: "PHREEQCをゼロから始める #15：反応速度論 — 平衡に達しない世界をシミュレートする"
+date: 2025-09-09
+categories: [Geochemistry, PHREEQC]
+series: "PHREEQCをゼロから始める"
+description: "KINETICSブロックでMonod式・TST（遷移状態理論）・黄鉄鉱酸化速度則を実装する。平衡計算が前提としてきた「反応は瞬時に完了する」という仮定を外し、時間スケールが結果を左右するリアルな地球化学へ。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## はじめに：「平衡」という仮定を外す日
+
+#2 から #14 まで、すべての計算は**ひとつの大きな仮定**の上に立っていた。
+
+> **「反応は瞬時に完了し、系は常に熱力学的平衡にある」**
+
+現実の地下水はそうではない。
+カルサイトの溶解には数時間、長石の風化には数千年かかる。
+微生物が触媒する硝酸塩の還元は、菌の密度と基質濃度に依存する。
+黄鉄鉱の酸化速度は pH と溶存酸素の積に比例する。
+
+これらを扱うのが **KINETICS ブロック**だ。
+
+```{=html}
+<div style="background:#FFF7ED; border-left:4px solid #D97706; padding:1.2em 1.5em; margin:1.5em 0; border-radius:0 8px 8px 0;">
+  <div style="font-weight:700; color:#92400E; margin-bottom:0.6em;">平衡計算 vs 速度論計算</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1em; font-size:0.88em; margin-top:0.5em;">
+    <div style="color:#78350F; line-height:1.8;">
+      <strong>平衡計算（これまで）</strong><br>
+      ・時間概念なし<br>
+      ・SI = 0 になるまで反応<br>
+      ・反応量は熱力学が決める<br>
+      ・速い反応に適切
+    </div>
+    <div style="color:#1E40AF; line-height:1.8;">
+      <strong>速度論計算（今回）</strong><br>
+      ・時間を明示的に扱う<br>
+      ・反応速度式が必要<br>
+      ・反応量は速度 × 時間<br>
+      ・遅い反応・微生物反応に必須
+    </div>
+  </div>
+</div>
+```
+
+::: {.callout-note}
+## この記事で学ぶこと
+- `KINETICS` ブロックの基本構文と `RATES` ブロックの書き方
+- シナリオ1：カルサイト溶解速度（TST 式）
+- シナリオ2：微生物による硝酸塩還元（Monod 式）
+- シナリオ3：黄鉄鉱の酸化速度（Singer & Stumm 式）
+- `KINETICS` + `TRANSPORT` の組み合わせ
+- Python による時間発展プロットの可視化
+:::
+
+---
+
+## 理論：主要な速度則
+
+### 1. 遷移状態理論（TST）— 鉱物の溶解・沈殿
+
+鉱物の溶解速度は **SI（飽和指数）** からの距離に依存する：
+
+$$
+r = k_+ \cdot A \cdot \left(1 - \frac{\text{IAP}}{K_{sp}}\right) = k_+ \cdot A \cdot \left(1 - 10^{SI}\right)
+$$
+
+$k_+$：溶解速度定数（mol/m²/s）、$A$：比表面積（m²/mol）
+
+SI が大きく負 → 駆動力大 → 速く溶ける。
+SI → 0 → 平衡に近づき → 速度がゼロになる。
+
+```{=html}
+<div style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.5em; margin:1.5em 0;">
+<svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;" role="img">
+  <title>TSTによる溶解速度とSIの関係グラフ</title>
+  <defs>
+    <marker id="arrK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- プロット背景 -->
+  <rect x="80" y="20" width="520" height="160" fill="#F9FAFB" rx="4"/>
+
+  <!-- グリッド -->
+  <line x1="80"  y1="20"  x2="600" y2="20"  stroke="#E5E7EB" stroke-width="0.8"/>
+  <line x1="80"  y1="60"  x2="600" y2="60"  stroke="#E5E7EB" stroke-width="0.8"/>
+  <line x1="80"  y1="100" x2="600" y2="100" stroke="#E5E7EB" stroke-width="0.8" stroke-dasharray="4 3"/>
+  <line x1="80"  y1="140" x2="600" y2="140" stroke="#E5E7EB" stroke-width="0.8"/>
+  <line x1="80"  y1="180" x2="600" y2="180" stroke="#E5E7EB" stroke-width="0.8"/>
+
+  <!-- 軸 -->
+  <line x1="80"  y1="180" x2="600" y2="180" stroke="#9CA3AF" stroke-width="1.5"/>
+  <line x1="340" y1="20"  x2="340" y2="180" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="5 3"/>
+
+  <!-- X軸ラベル -->
+  <text x="80"  y="198" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#6B7280">−4</text>
+  <text x="210" y="198" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#6B7280">−2</text>
+  <text x="340" y="198" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#16A34A" font-weight="600">0（平衡）</text>
+  <text x="470" y="198" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#6B7280">+2</text>
+  <text x="600" y="198" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#6B7280">+4</text>
+  <text x="340" y="215" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#374151">SI（飽和指数）</text>
+
+  <!-- Y軸ラベル -->
+  <text x="68" y="183" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="10" fill="#6B7280">0</text>
+  <text x="68" y="103" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="10" fill="#6B7280">k₊A</text>
+  <text x="68" y="23"  text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="10" fill="#6B7280">2k₊A</text>
+  <text transform="rotate(-90 22 100)" x="22" y="100" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#374151">溶解速度 r</text>
+
+  <!-- 溶解速度曲線（SI < 0 で正、SI > 0 で負） -->
+  <!-- 溶解域（SI < 0）: r = k+ * (1 - 10^SI) -->
+  <path d="M80,21 C100,22 150,30 210,55 C260,78 310,95 340,100"
+    fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- 沈殿域（SI > 0）: r は負 -->
+  <path d="M340,100 C370,105 420,120 470,145 C520,165 570,175 600,178"
+    fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="7 3"/>
+
+  <!-- ラベル -->
+  <text x="160" y="45" font-family="'Segoe UI',sans-serif" font-size="10" fill="#2563EB" font-style="italic">溶解（SI &lt; 0）</text>
+  <text x="420" y="135" font-family="'Segoe UI',sans-serif" font-size="10" fill="#DC2626" font-style="italic">沈殿（SI &gt; 0）</text>
+  <text x="344" y="95" font-family="'Segoe UI',sans-serif" font-size="9" fill="#16A34A">速度 = 0</text>
+</svg>
+<p style="text-align:center; font-size:0.82em; color:#6B7280; margin-top:0.5em;">図1. TST による溶解速度 — SI がゼロに近づくにつれて速度もゼロになる</p>
+</div>
+```
+
+### 2. Monod 式 — 微生物反応
+
+微生物が触媒する反応は**基質濃度と電子受容体濃度**に依存する：
+
+$$
+r = r_{max} \cdot \frac{[S]}{K_S + [S]} \cdot \frac{[A]}{K_A + [A]} \cdot B
+$$
+
+$r_{max}$：最大反応速度、$K_S$：半飽和定数（基質）、$K_A$：半飽和定数（電子受容体）、$B$：バイオマス
+
+### 3. 黄鉄鉱酸化速度則（Singer & Stumm, 1970）
+
+$$
+r_{FeS_2} = k \cdot [\text{Fe}^{3+}]^{0.5} \cdot [\text{O}_2]^{0.5} \cdot [\text{H}^+]^{-0.11}
+$$
+
+Fe³⁺ と O₂ が両方とも酸化剤として働き、pH が低いほど速く酸化する。
+
+---
+
+## KINETICS ブロックの基本構文
+
+```phreeqc
+RATES
+    反応名
+        -start
+        10 ...  # BASIC 言語で速度式を記述
+        20 ...
+        -end
+
+KINETICS 1
+    反応名
+        -m0    0.01       # 初期量（mol/kgw）
+        -m     0.01       # 現在量（変数）
+        -parms  k  Ks     # 速度パラメータ
+        -time_step  86400 # タイムステップ（秒）
+        -steps  10 in 30  # 30ステップを10日ごとに
+```
+
+::: {.callout-important}
+## BASIC 言語について
+PHREEQC の `RATES` ブロックは **BASIC 言語の方言** で速度式を書く。
+変数の取得方法：
+- `TOT("Ca")` — Ca の全濃度
+- `ACT("H+")` — H⁺ の活量
+- `SI("Calcite")` — カルサイトの飽和指数
+- `PARM(1)` — `-parms` で渡したパラメータの1番目
+- `M` — 現在の反応物量
+- `M0` — 初期の反応物量
+- `RATE` — 計算した速度（mol/kgw/s）を最後に代入する
+:::
+
+---
+
+## シナリオ1：カルサイトの溶解速度（TST式）
+
+### 速度パラメータ
+
+カルサイトの溶解速度は **Plummer et al. (1978)** の実験式が有名だが、
+ここでは TST ベースの簡略式を使う：
+
+- $k_+ = 10^{-5.81}$ mol/m²/s（25°C, pH 中性付近）
+- 比表面積 A = 20 m²/mol（細粒カルサイトの典型値）
+
+```phreeqc
+# ============================================================
+#  DeepFlow #15 - シナリオ1：カルサイト溶解速度
+# ============================================================
+
+RATES
+    Calcite_kinetic
+        -start
+        # ---- Plummer et al. (1978) 簡略版 ----
+        # r = k_H * ACT("H+") + k_CO2 * ACT("CO2") + k_H2O - k_back * ACT("Ca+2") * ACT("HCO3-")
+        # ここでは TST 式を使用
+        10 k_plus = 10^(-5.81)       # 速度定数（mol/m²/s）
+        20 A      = PARM(1)          # 比表面積（m²/mol）
+        30 SI_val = SI("Calcite")
+        40 IF SI_val > 0 THEN GOTO 100  # 過飽和なら速度ゼロ
+        50 rate   = k_plus * A * M/M0 * (1 - 10^SI_val)
+        # M/M0 は残存鉱物量による補正（溶けるほど表面積が減る）
+        60 MOLES  = rate * TIME
+        # 溶解は負の進行（鉱物が減る）
+        70 IF (M - MOLES) < 0 THEN MOLES = M
+        80 PUT(MOLES, 1)
+        90 SAVE MOLES
+        100 END
+        -end
+
+SOLUTION 1  "酸性雨水（CaCO3 を溶かす前）"
+    temp      15
+    pH        5.0
+    pe        12
+    units     mol/kgw
+    -water    1
+
+KINETICS 1
+    Calcite_kinetic
+        -m0    0.050            # 初期 Calcite 量 0.05 mol/kgw
+        -m     0.050
+        -parms 20.0             # 比表面積 20 m²/mol
+        -steps 3600 in 720      # 1時間ステップ × 720 = 30日
+
+INCREMENTAL_REACTIONS true
+
+SELECTED_OUTPUT 1
+    -file             calcite_kinetics.txt
+    -reset            false
+    -time             true
+    -pH               true
+    -totals           Ca C(4)
+    -saturation_indices Calcite
+    -kinetic_reactants  Calcite_kinetic
+
+USER_PUNCH 1
+    -headings  time_hr  pH  Ca_mM  SI_Calcite  Calcite_remaining_mol
+    -start
+    10 PUNCH TIME/3600, -LA("H+"), TOT("Ca")*1000, SI("Calcite"), KIN("Calcite_kinetic")
+    -end
+END
+```
+
+---
+
+## シナリオ2：微生物による硝酸塩還元（Monod式）
+
+農業地帯の帯水層で硝酸塩が有機炭素を電子供与体として還元される過程：
+
+$$
+\text{CH}_2\text{O} + \frac{4}{5}\text{NO}_3^- + \frac{4}{5}\text{H}^+ \rightarrow \text{CO}_2 + \frac{2}{5}\text{N}_2 + \frac{7}{5}\text{H}_2\text{O}
+$$
+
+```phreeqc
+# ============================================================
+#  シナリオ2：微生物的硝酸塩還元（Monod式）
+# ============================================================
+
+RATES
+    Denitrification
+        -start
+        # ---- Monod 式 ----
+        # r = rmax * [NO3] / (Ks_NO3 + [NO3]) * [Corg] / (Ks_C + [Corg])
+        10 rmax    = PARM(1)            # 最大速度（mol NO₃/kgw/s）
+        20 Ks_NO3  = PARM(2)            # NO₃ 半飽和定数（mol/kgw）
+        30 Ks_C    = PARM(3)            # 有機炭素半飽和定数
+        40 NO3_conc = TOT("N(5)")       # NO₃⁻ 濃度
+        50 C_conc   = M                 # 有機炭素残量（= M）
+        # Monod 項
+        60 f_NO3 = NO3_conc / (Ks_NO3 + NO3_conc)
+        70 f_C   = C_conc   / (Ks_C   + C_conc)
+        80 rate  = rmax * f_NO3 * f_C
+        # NO₃ が枯渇したら停止
+        90 IF NO3_conc < 1e-10 THEN rate = 0
+        # 有機炭素も枯渇したら停止
+        100 IF M < 1e-10 THEN rate = 0
+        110 MOLES = rate * TIME
+        120 IF MOLES > M THEN MOLES = M
+        130 SAVE MOLES
+        -end
+
+SOLUTION 2  "農業地帯地下水"
+    temp      14
+    pH        6.8
+    pe        10
+    units     mol/kgw
+    N(5)      5.0e-4        # NO₃⁻ 0.5 mmol/kg ≈ 31 mg/L
+    Ca        1.5e-3
+    Alkalinity 2.5e-3 as HCO3
+    Na        1.0e-3
+    Cl        0.8e-3
+    -water    1
+
+KINETICS 2
+    Denitrification
+        -m0    2.0e-3       # 有機炭素 初期量 2 mmol/kgw
+        -m     2.0e-3
+        -parms  5e-10   1e-5   2e-4
+        #       rmax    Ks_NO3  Ks_C
+        -steps  86400 in 365   # 1日ステップ × 365日
+
+INCREMENTAL_REACTIONS true
+
+SELECTED_OUTPUT 2
+    -file             denitrification.txt
+    -reset            false
+    -time             true
+    -pH               true
+    -totals           N(5) N(0) C(4)
+    -kinetic_reactants Denitrification
+
+USER_PUNCH 2
+    -headings  time_day  pH  NO3_uM  N2_uM  Corg_remaining_mmol
+    -start
+    10 PUNCH TIME/86400, -LA("H+"), TOT("N(5)")*1e6, TOT("N(0)")*1e6, KIN("Denitrification")*1000
+    -end
+END
+```
+
+---
+
+## シナリオ3：黄鉄鉱の酸化速度
+
+#6・#13 で扱った AMD 形成を、今度は速度論で計算する。
+
+```phreeqc
+# ============================================================
+#  シナリオ3：黄鉄鉱の酸化速度（Singer & Stumm 式）
+# ============================================================
+
+RATES
+    Pyrite_oxidation
+        -start
+        # ---- Singer & Stumm (1970) 速度則 ----
+        # r = k * [Fe3+]^0.5 * [O2(aq)]^0.5 * [H+]^(-0.11)
+        10 k_rate  = PARM(1)           # 速度定数
+        20 A_surf  = PARM(2)           # 比表面積（m²/mol）
+        # 各活量の取得
+        30 Fe3_act  = ACT("Fe+3")
+        40 O2_act   = ACT("O2")
+        50 H_act    = ACT("H+")
+        # Fe³⁺ または O₂ が枯渇したら速度ゼロ
+        60 IF Fe3_act <= 0 THEN GOTO 200
+        70 IF O2_act  <= 0 THEN GOTO 200
+        # Singer & Stumm 式
+        80 rate = k_rate * A_surf * (M/M0) * \
+                  Fe3_act^0.5 * O2_act^0.5 * H_act^(-0.11)
+        90 MOLES = rate * TIME
+        100 IF MOLES > M THEN MOLES = M
+        110 SAVE MOLES
+        120 GOTO 300
+        200 MOLES = 0
+        210 SAVE 0
+        300 END
+        -end
+
+SOLUTION 3  "鉱山廃水（初期・中性）"
+    temp      15
+    pH        7.0
+    pe        12
+    units     mol/kgw
+    O(0)      2.5e-4      # 溶存酸素
+    Fe        1.0e-5
+    S(6)      1.0e-5
+    Alkalinity 1.0e-3 as HCO3
+    -water    1
+
+# 鉄の加水分解（Goethite との平衡）
+EQUILIBRIUM_PHASES 3
+    Goethite    0.0    0.0     # Fe³⁺ の沈殿先
+
+KINETICS 3
+    Pyrite_oxidation
+        -m0    0.010            # 黄鉄鉱 初期量 10 mmol/kgw
+        -m     0.010
+        -parms  1e-8.19  50.0   # k（mol/m²/s）, A（m²/mol）
+        -steps  3600 in 720     # 1時間ステップ × 720 = 30日
+
+INCREMENTAL_REACTIONS true
+
+SELECTED_OUTPUT 3
+    -file             pyrite_kinetics.txt
+    -reset            false
+    -time             true
+    -pH               true
+    -pe               true
+    -totals           Fe S(6) O(0)
+    -saturation_indices  Goethite Jarosite Pyrite
+    -kinetic_reactants   Pyrite_oxidation
+
+USER_PUNCH 3
+    -headings  time_hr  pH  pe  Fe_mM  SO4_mM  FeS2_remaining  SI_Goethite
+    -start
+    10 PUNCH TIME/3600, -LA("H+"), PE, TOT("Fe")*1000, \
+             TOT("S(6)")*1000, KIN("Pyrite_oxidation"), SI("Goethite")
+    -end
+END
+```
+
+---
+
+## KINETICS + TRANSPORT の組み合わせ
+
+速度論的反応を空間方向に展開する場合、`KINETICS` と `TRANSPORT` を組み合わせる。
+#13 の Redox sequences を速度論で空間的に再現する例：
+
+```phreeqc
+# ============================================================
+#  KINETICS + TRANSPORT：Redox fronts の速度論的計算
+# ============================================================
+
+RATES
+    Organic_C_oxidation
+        -start
+        # 有機炭素の酸化（O₂ を優先的に使う Monod式）
+        10 rmax   = PARM(1)
+        20 Ks_O2  = PARM(2)
+        30 O2_conc = TOT("O(0)")
+        40 Corg   = M
+        50 IF O2_conc < 1e-15 THEN GOTO 200
+        60 f_O2 = O2_conc / (Ks_O2 + O2_conc)
+        70 rate  = rmax * f_O2 * Corg / (1e-4 + Corg)
+        80 MOLES = rate * TIME
+        90 IF MOLES > M THEN MOLES = M
+        100 SAVE MOLES
+        110 GOTO 300
+        200 MOLES = 0
+        210 SAVE 0
+        300 END
+        -end
+
+SOLUTION 0  "注入水（好気的）"
+    temp      15
+    pH        7.0
+    pe        12
+    O(0)      2.5e-4
+    N(5)      5.0e-4
+    Alkalinity 2.0e-3 as HCO3
+    -water    1
+
+SOLUTION 1-20  "帯水層（有機炭素含む）"
+    temp      15
+    pH        7.2
+    pe        2
+    Alkalinity 4.0e-3 as HCO3
+    Fe        2.0e-4
+    -water    1
+
+KINETICS 1-20
+    Organic_C_oxidation
+        -m0    0.005
+        -m     0.005
+        -parms  1e-9   1e-5
+
+TRANSPORT
+    -cells            20
+    -length           0.5
+    -shifts           60
+    -time_step        86400
+    -flow_direction   forward
+    -boundary_conditions  flux  flux
+    -dispersivity     0.5
+    -punch_cells      1-20
+    -punch_frequency  20
+
+SELECTED_OUTPUT 4
+    -file             redox_kinetics_transport.txt
+    -distance         true
+    -time             true
+    -pH               true
+    -totals           O(0) N(5) Fe
+END
+```
+
+---
+
+## Python で時間発展を可視化する
+
+```python
+# ============================================================
+#  kinetics_plot.py
+#  3シナリオの時間発展を比較プロット
+# ============================================================
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+
+plt.rcParams.update({
+    "font.family":     "sans-serif",
+    "font.sans-serif": ["Noto Sans CJK JP", "IPAexGothic", "DejaVu Sans"],
+    "axes.unicode_minus": False,
+    "figure.dpi":      150,
+})
+
+fig = plt.figure(figsize=(15, 12))
+gs = gridspec.GridSpec(3, 2, hspace=0.45, wspace=0.35)
+
+# ======= シナリオ1：カルサイト溶解 =======
+df1 = pd.read_csv("calcite_kinetics.txt", sep="\t",
+                  comment="#", skipinitialspace=True)
+
+ax1a = fig.add_subplot(gs[0, 0])
+ax1a.plot(df1["time_hr"], df1["Ca_mM"],
+          color="#2563EB", lw=2.2, label="Ca²⁺ (mM)")
+ax1b = ax1a.twinx()
+ax1b.plot(df1["time_hr"], df1["SI_Calcite"],
+          color="#D97706", lw=1.8, ls="--", label="SI(Calcite)")
+ax1b.axhline(0, color="#16A34A", lw=1, ls=":", alpha=0.7)
+ax1a.set(xlabel="時間 (時間)", ylabel="Ca²⁺ (mM)",
+         title="シナリオ1：カルサイト溶解速度（TST）")
+ax1b.set_ylabel("SI", color="#D97706")
+lines = ax1a.get_lines() + ax1b.get_lines()
+ax1a.legend(lines, [l.get_label() for l in lines],
+            fontsize=9, loc="center right")
+ax1a.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+ax1c = fig.add_subplot(gs[0, 1])
+ax1c.plot(df1["time_hr"], df1["pH"],
+          color="#16A34A", lw=2.2, label="pH")
+ax1c.plot(df1["time_hr"],
+          df1["Calcite_remaining_mol"] * 1000,
+          color="#DC2626", lw=1.8, ls="--", label="Calcite残量(mmol)")
+ax1c.set(xlabel="時間 (時間)", ylabel="pH / Calcite 残量",
+         title="pH の上昇と鉱物の消耗")
+ax1c.legend(fontsize=9)
+ax1c.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+# ======= シナリオ2：脱窒 =======
+df2 = pd.read_csv("denitrification.txt", sep="\t",
+                  comment="#", skipinitialspace=True)
+
+ax2a = fig.add_subplot(gs[1, 0])
+ax2a.plot(df2["time_day"], df2["NO3_uM"] / 1000,
+          color="#EA580C", lw=2.2, label="NO₃⁻ (mM)")
+ax2a.plot(df2["time_day"], df2["Corg_remaining_mmol"],
+          color="#92400E", lw=1.8, ls="--", label="有機炭素残量(mmol)")
+ax2a.set(xlabel="時間 (日)", ylabel="濃度",
+         title="シナリオ2：微生物的脱窒（Monod式）")
+ax2a.legend(fontsize=9)
+ax2a.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+ax2b = fig.add_subplot(gs[1, 1])
+ax2b.plot(df2["time_day"], df2["pH"],
+          color="#16A34A", lw=2.2)
+ax2b.set(xlabel="時間 (日)", ylabel="pH",
+         title="pH の変化（脱窒は pH を上昇させる）")
+ax2b.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+# ======= シナリオ3：黄鉄鉱酸化 =======
+df3 = pd.read_csv("pyrite_kinetics.txt", sep="\t",
+                  comment="#", skipinitialspace=True)
+
+ax3a = fig.add_subplot(gs[2, 0])
+ax3a.plot(df3["time_hr"], df3["pH"],
+          color="#DC2626", lw=2.2, label="pH")
+ax3b = ax3a.twinx()
+ax3b.plot(df3["time_hr"], df3["SO4_mM"],
+          color="#CA8A04", lw=1.8, ls="--", label="SO₄²⁻ (mM)")
+ax3a.set(xlabel="時間 (時間)", ylabel="pH",
+         title="シナリオ3：黄鉄鉱酸化（Singer & Stumm）")
+ax3b.set_ylabel("SO₄²⁻ (mM)", color="#CA8A04")
+lines = ax3a.get_lines() + ax3b.get_lines()
+ax3a.legend(lines, [l.get_label() for l in lines], fontsize=9)
+ax3a.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+ax3c = fig.add_subplot(gs[2, 1])
+ax3c.plot(df3["time_hr"], df3["Fe_mM"],
+          color="#92400E", lw=2.2, label="Fe (mM)")
+ax3c.plot(df3["time_hr"], df3["FeS2_remaining"] * 1000,
+          color="#374151", lw=1.8, ls="--", label="FeS₂残量(mmol)")
+ax3c.set(xlabel="時間 (時間)", ylabel="濃度 / 残量",
+         title="Fe 濃度上昇と FeS₂ の消耗")
+ax3c.legend(fontsize=9)
+ax3c.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+plt.suptitle("PHREEQC KINETICS：3シナリオの時間発展",
+             fontsize=14, y=1.01)
+plt.savefig("kinetics_results.svg", bbox_inches="tight")
+plt.show()
+print("✅ kinetics_results.svg を保存")
+```
+
+---
+
+## 平衡計算との比較：どちらを使うべきか
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5em 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.88em;">
+  <thead>
+    <tr style="background:#D97706; color:white;">
+      <th style="padding:10px 13px; text-align:left;">反応・鉱物</th>
+      <th style="padding:10px 13px; text-align:center;">典型的な<br>時間スケール</th>
+      <th style="padding:10px 13px; text-align:center;">推奨</th>
+      <th style="padding:10px 13px; text-align:left;">理由</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#F0FDF4;">
+      <td style="padding:9px 13px; font-weight:600; color:#15803D;">炭酸系（H₂CO₃⇌HCO₃⁻）</td>
+      <td style="padding:9px 13px; text-align:center; font-family:monospace;">&lt; 1秒</td>
+      <td style="padding:9px 13px; text-align:center; color:#16A34A; font-weight:600;">平衡計算</td>
+      <td style="padding:9px 13px; font-size:0.88em;">地下水の時間スケールに比べ瞬時</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 13px; font-weight:600;">カルサイト溶解</td>
+      <td style="padding:9px 13px; text-align:center; font-family:monospace;">時間〜日</td>
+      <td style="padding:9px 13px; text-align:center; color:#D97706; font-weight:600;">状況次第</td>
+      <td style="padding:9px 13px; font-size:0.88em;">滞留時間が数日以上なら平衡で近似可</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 13px; font-weight:600; color:#92400E;">ドロマイト溶解</td>
+      <td style="padding:9px 13px; text-align:center; font-family:monospace;">千年〜万年</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626; font-weight:600;">速度論必須</td>
+      <td style="padding:9px 13px; font-size:0.88em;">現代の地下水では平衡に達しない</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 13px; font-weight:600;">長石（アルバイト等）</td>
+      <td style="padding:9px 13px; text-align:center; font-family:monospace;">万年〜百万年</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626; font-weight:600;">速度論必須</td>
+      <td style="padding:9px 13px; font-size:0.88em;">風化速度が極めて遅い</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 13px; font-weight:600; color:#EA580C;">微生物的硝酸塩還元</td>
+      <td style="padding:9px 13px; text-align:center; font-family:monospace;">日〜年</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626; font-weight:600;">速度論必須</td>
+      <td style="padding:9px 13px; font-size:0.88em;">バイオマスと基質濃度に依存</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 13px; font-weight:600; color:#DC2626;">黄鉄鉱酸化</td>
+      <td style="padding:9px 13px; text-align:center; font-family:monospace;">日〜月</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626; font-weight:600;">速度論必須</td>
+      <td style="padding:9px 13px; font-size:0.88em;">pH・O₂・Fe³⁺ 濃度に非線形依存</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 13px; font-weight:600; color:#2563EB;">石膏・ハライト溶解</td>
+      <td style="padding:9px 13px; text-align:center; font-family:monospace;">秒〜分</td>
+      <td style="padding:9px 13px; text-align:center; color:#16A34A; font-weight:600;">平衡計算</td>
+      <td style="padding:9px 13px; font-size:0.88em;">非常に速い溶解反応</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+---
+
+## まとめ：速度論が開く新しい視野
+
+```{=html}
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1em; margin:1.5em 0;">
+  <div style="background:#FFF7ED; border-radius:10px; padding:1.2em; text-align:center; border-bottom:3px solid #D97706;">
+    <div style="font-size:1.6em; margin-bottom:0.3em;">⏱️</div>
+    <div style="font-weight:700; color:#92400E; margin-bottom:0.4em;">時間が主役になる</div>
+    <div style="font-size:0.83em; color:#78350F; line-height:1.5;">平衡では「いつか」だったものが<br>「何日後に」になる<br>滞留時間との対話</div>
+  </div>
+  <div style="background:#EFF6FF; border-radius:10px; padding:1.2em; text-align:center; border-bottom:3px solid #2563EB;">
+    <div style="font-size:1.6em; margin-bottom:0.3em;">🦠</div>
+    <div style="font-weight:700; color:#1E3A5F; margin-bottom:0.4em;">微生物を組み込める</div>
+    <div style="font-size:0.83em; color:#1E40AF; line-height:1.5;">Monod式でバイオマスを<br>明示的にモデル化<br>自然浄化の定量評価</div>
+  </div>
+  <div style="background:#F0FDF4; border-radius:10px; padding:1.2em; text-align:center; border-bottom:3px solid #16A34A;">
+    <div style="font-size:1.6em; margin-bottom:0.3em;">🔗</div>
+    <div style="font-weight:700; color:#15803D; margin-bottom:0.4em;">平衡と共存できる</div>
+    <div style="font-size:0.83em; color:#166534; line-height:1.5;">速い反応は EQUILIBRIUM_PHASES<br>遅い反応は KINETICS<br>混在させて使える</div>
+  </div>
+</div>
+```
+
+::: {.callout-tip}
+## 次回 #16「表面錯体モデル — 鉱物表面への吸着を計算する」
+KINETICS で時間を手に入れた。
+次は**空間の最小単位** — 鉱物表面を扱う。
+水酸化鉄の表面に重金属がどう吸着するかを、
+`SURFACE` ブロックと表面錯体モデル（SCM）で計算する。
+農業汚染・重金属浄化・土壌汚染評価に直結する内容だ。
+:::
+
+---
+
+*DeepFlow | 地球科学シミュレーションの深みへ*

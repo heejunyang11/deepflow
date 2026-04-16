@@ -1,0 +1,840 @@
+---
+title: "PHREEQCをゼロから始める #16：硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか"
+date: 2025-09-16
+categories: [Geochemistry, PHREEQC]
+series: "PHREEQCをゼロから始める"
+description: "農業地帯の地下水で最も頻繁に問題となる硝酸塩汚染を、PHREEQCで診断・定量する。Nitrificationで生成されるNO₃⁻がどう移動し、脱窒でどう消えるかを概念から計算・野外診断まで一気通貫で学ぶ。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## はじめに：農業地帯の地下水はなぜ「硝酸塩だらけ」になるのか
+
+日本の農業地帯で採取した地下水を分析すると、しばしば硝酸態窒素が
+**10 mg/L（環境基準値）を超える**。
+なぜか。答えは土壌の中にある。
+
+```{=html}
+<div style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.5em; margin:1.5em 0;">
+<svg viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;" role="img">
+  <title>農業地帯における窒素の地下水への移行プロセス概念図</title>
+  <defs>
+    <marker id="arrN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- 空・農地 -->
+  <rect x="0" y="0" width="680" height="55" fill="#EFF6FF" opacity="0.5" rx="4"/>
+  <text x="340" y="20" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#2563EB">施肥・家畜排泄物 → NH₄⁺ / 有機態窒素</text>
+
+  <!-- 土壌ゾーン（好気的） -->
+  <rect x="0" y="55" width="680" height="55" fill="#92400E" opacity="0.10"/>
+  <text x="340" y="76" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#92400E">土壌ゾーン（好気的 · 硝化帯）</text>
+  <text x="340" y="93" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#78350F">NH₄⁺ → NO₂⁻ → NO₃⁻　（硝化 · Nitrification）</text>
+  <text x="340" y="105" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#B45309">Nitrosomonas・Nitrobacter が触媒</text>
+
+  <!-- 不飽和帯 -->
+  <rect x="0" y="110" width="680" height="40" fill="#FEF3C7" opacity="0.6"/>
+  <text x="340" y="128" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#92400E">不飽和帯 → NO₃⁻ が移流で地下水面へ下降</text>
+  <text x="340" y="142" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#B45309">O₂ がある間は NO₃⁻ は安定（分解されない）</text>
+
+  <!-- 地下水面 -->
+  <line x1="0" y1="150" x2="680" y2="150" stroke="#2563EB" stroke-width="2" stroke-dasharray="8 4" opacity="0.6"/>
+  <text x="10" y="148" font-family="'Segoe UI',sans-serif" font-size="9" fill="#2563EB">地下水面</text>
+
+  <!-- 帯水層 -->
+  <rect x="0" y="150" width="680" height="90" fill="#DBEAFE" opacity="0.25"/>
+
+  <!-- 脱窒ゾーン（有機炭素あり） -->
+  <rect x="80" y="155" width="200" height="60" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="180" y="176" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#15803D">脱窒ゾーン</text>
+  <text x="180" y="190" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#166534">NO₃⁻ → N₂（消滅）</text>
+  <text x="180" y="203" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#166534">有機炭素が電子供与体</text>
+
+  <!-- NO₃⁻ が残るゾーン -->
+  <rect x="380" y="155" width="220" height="60" rx="8" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="490" y="176" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#DC2626">NO₃⁻ 汚染ゾーン</text>
+  <text x="490" y="190" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#DC2626">有機炭素が少ない</text>
+  <text x="490" y="203" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#DC2626">DO が残存 → 脱窒なし</text>
+
+  <!-- 矢印 -->
+  <line x1="340" y1="20"  x2="340" y2="55"  stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrN)" opacity="0.6"/>
+  <line x1="340" y1="108" x2="340" y2="150" stroke="#D97706" stroke-width="1.5" marker-end="url(#arrN)" opacity="0.6"/>
+</svg>
+<p style="text-align:center; font-size:0.82em; color:#6B7280; margin-top:0.5em;">図1. 農業地帯における窒素の地下水への移行プロセス</p>
+</div>
+```
+
+この記事では：
+
+1. **硝化（Nitrification）** — NH₄⁺ が NO₃⁻ に変わる過程
+2. **移動（Transport）** — NO₃⁻ が帯水層を流れる過程
+3. **脱窒（Denitrification）** — NO₃⁻ が N₂ として消える過程
+4. **診断** — 野外データから「どこで・どれだけ」脱窒しているかを評価する方法
+
+をすべて PHREEQC で計算する。
+
+::: {.callout-note}
+## 環境基準と換算
+- 日本の地下水環境基準：**硝酸態窒素 + 亜硝酸態窒素 ≤ 10 mg/L**
+- WHO 飲料水ガイドライン：**NO₃⁻-N ≤ 11.3 mg/L（= 50 mg/L as NO₃⁻）**
+- 換算：10 mg/L as N = 10 / 14 × 62 = **44.3 mg/L as NO₃⁻ = 0.714 mmol/L**
+:::
+
+---
+
+## 理論：窒素の変換反応
+
+### 硝化（Nitrification）
+
+好気的条件下で微生物が NH₄⁺ を酸化する 2 段階反応：
+
+$$
+\text{NH}_4^+ + \frac{3}{2}\text{O}_2 \xrightarrow{\text{Nitrosomonas}} \text{NO}_2^- + \text{H}_2\text{O} + 2\text{H}^+
+\quad \Delta G° = -275 \text{ kJ/mol}
+$$
+
+$$
+\text{NO}_2^- + \frac{1}{2}\text{O}_2 \xrightarrow{\text{Nitrobacter}} \text{NO}_3^-
+\quad \Delta G° = -76 \text{ kJ/mol}
+$$
+
+**重要な点：**
+- 硝化は **H⁺ を生成する** → 土壌・地下水の pH を下げる
+- 硝化には **O₂ が必須** → 嫌気的な帯水層では硝化は起きない
+- 硝化で生成した NO₃⁻ は **負電荷を持つ** → 土壌への吸着が弱く、雨水で容易に溶脱
+
+### 脱窒（Denitrification）
+
+嫌気的条件下で微生物が NO₃⁻ を N₂ に還元する：
+
+$$
+\text{CH}_2\text{O} + \frac{4}{5}\text{NO}_3^- + \frac{4}{5}\text{H}^+ \rightarrow \text{CO}_2 + \frac{2}{5}\text{N}_2 + \frac{7}{5}\text{H}_2\text{O}
+\quad \Delta G° = -453 \text{ kJ/mol}
+$$
+
+**脱窒の必要条件：**
+
+```{=html}
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1em; margin:1.2em 0;">
+  <div style="background:#FEF2F2; border-radius:8px; padding:1em; border-top:3px solid #DC2626;">
+    <div style="font-weight:700; color:#991B1B; font-size:0.92em; margin-bottom:0.4em;">❌ O₂ がない</div>
+    <div style="font-size:0.83em; color:#7F1D1D; line-height:1.6;">DO &lt; 0.5 mg/L が目安。O₂ がある限り脱窒菌は O₂ を優先的に使い、NO₃⁻ を還元しない</div>
+  </div>
+  <div style="background:#F0FDF4; border-radius:8px; padding:1em; border-top:3px solid #16A34A;">
+    <div style="font-weight:700; color:#15803D; font-size:0.92em; margin-bottom:0.4em;">✅ 有機炭素がある</div>
+    <div style="font-size:0.83em; color:#166534; line-height:1.6;">電子供与体（CH₂O）が必要。DOC &gt; 0.5 mg/L が脱窒活性の目安とされる</div>
+  </div>
+  <div style="background:#EFF6FF; border-radius:8px; padding:1em; border-top:3px solid #2563EB;">
+    <div style="font-weight:700; color:#1E3A5F; font-size:0.92em; margin-bottom:0.4em;">🦠 脱窒菌がいる</div>
+    <div style="font-size:0.83em; color:#1E40AF; line-height:1.6;">Pseudomonas・Paracoccus など通性嫌気性菌。地下水にはほぼ普遍的に存在する</div>
+  </div>
+</div>
+```
+
+---
+
+## Step 1：硝化のシミュレーション
+
+### 設定
+
+土壌中で NH₄⁺ が好気的に酸化される過程を、
+`KINETICS` の Monod 式で計算する。
+
+```phreeqc
+# ============================================================
+#  DeepFlow #16 - Step1：硝化（Nitrification）
+#  NH₄⁺ → NO₂⁻ → NO₃⁻
+# ============================================================
+
+RATES
+
+    # ---- ステップ1：NH₄⁺ → NO₂⁻（Nitrosomonas） ----
+    Nitrification_step1
+        -start
+        10 rmax1  = PARM(1)           # 最大速度（mol/kgw/s）
+        20 Ks_NH4 = PARM(2)           # NH₄⁺ 半飽和定数
+        30 Ks_O2  = PARM(3)           # O₂ 半飽和定数
+        40 NH4_c  = TOT("N(-3)")      # NH₄⁺ 濃度
+        50 O2_c   = TOT("O(0)")       # O₂ 濃度
+        60 IF NH4_c < 1e-15 THEN GOTO 200
+        70 IF O2_c  < 1e-15 THEN GOTO 200
+        80 rate = rmax1 * NH4_c / (Ks_NH4 + NH4_c) * O2_c / (Ks_O2 + O2_c)
+        90 MOLES = rate * TIME
+        100 IF MOLES > NH4_c THEN MOLES = NH4_c
+        110 SAVE MOLES
+        120 GOTO 300
+        200 MOLES = 0
+        210 SAVE 0
+        300 END
+        -end
+
+    # ---- ステップ2：NO₂⁻ → NO₃⁻（Nitrobacter） ----
+    Nitrification_step2
+        -start
+        10 rmax2  = PARM(1)
+        20 Ks_NO2 = PARM(2)
+        30 Ks_O2  = PARM(3)
+        40 NO2_c  = TOT("N(3)")       # NO₂⁻ 濃度
+        50 O2_c   = TOT("O(0)")
+        60 IF NO2_c < 1e-15 THEN GOTO 200
+        70 IF O2_c  < 1e-15 THEN GOTO 200
+        80 rate = rmax2 * NO2_c / (Ks_NO2 + NO2_c) * O2_c / (Ks_O2 + O2_c)
+        90 MOLES = rate * TIME
+        100 IF MOLES > NO2_c THEN MOLES = NO2_c
+        110 SAVE MOLES
+        120 GOTO 300
+        200 MOLES = 0
+        210 SAVE 0
+        300 END
+        -end
+
+# ---- 初期溶液：施肥後の土壌水 ----
+SOLUTION 1  "施肥後の土壌水"
+    temp      15
+    pH        6.5
+    pe        10
+    units     mol/kgw
+    N(-3)     5.0e-4        # NH₄⁺ 0.5 mmol/kg（施肥由来）
+    O(0)      2.5e-4        # DO ≈ 8 mg/L
+    Ca        1.0e-3
+    Alkalinity 2.0e-3 as HCO3
+    -water    1
+
+KINETICS 1
+    Nitrification_step1
+        -m0    5.0e-4
+        -parms  3e-9   5e-5   1e-5
+        #       rmax   Ks_NH4  Ks_O2
+        -steps  3600 in 240    # 1時間 × 240 = 10日
+    Nitrification_step2
+        -m0    0               # NO₂⁻ は最初ゼロ
+        -parms  5e-9   2e-5   1e-5
+        -steps  3600 in 240
+
+INCREMENTAL_REACTIONS true
+
+SELECTED_OUTPUT 1
+    -file             nitrification.txt
+    -reset            false
+    -time             true
+    -pH               true
+    -totals           N(-3) N(3) N(5) O(0)
+
+USER_PUNCH 1
+    -headings  time_day  pH  NH4_uM  NO2_uM  NO3_uM  DO_mg
+    -start
+    10 PUNCH TIME/86400, -LA("H+"), \
+             TOT("N(-3)")*1e6, TOT("N(3)")*1e6, TOT("N(5)")*1e6, \
+             TOT("O(0)")*32000
+    -end
+END
+```
+
+---
+
+## Step 2：NO₃⁻ の移流 — 地下水面への到達
+
+硝化で生成した NO₃⁻ が不飽和帯を通過して地下水面に到達するまでの
+移流分散をシミュレートする。
+
+```phreeqc
+# ============================================================
+#  Step2：NO₃⁻ の移流（TRANSPORT）
+#  農業地からの溶脱と地下水への浸透
+# ============================================================
+
+# ---- 注入水：硝化完了後の土壌水 ----
+SOLUTION 0  "硝化後の土壌浸出水"
+    temp      15
+    pH        6.0          # 硝化で pH 低下
+    pe        10
+    units     mol/kgw
+    N(5)      7.14e-4      # NO₃⁻ ≈ 10 mg/L as N（環境基準ぎりぎり）
+    O(0)      2.5e-4       # DO が残存
+    Ca        1.2e-3
+    Alkalinity 1.5e-3 as HCO3
+    Cl        5.0e-4       # 保守的トレーサー
+    -water    1
+
+# ---- 初期帯水層水：清浄な地下水 ----
+SOLUTION 1-20
+    temp      14
+    pH        7.2
+    pe        8
+    units     mol/kgw
+    N(5)      5.0e-6       # バックグラウンド NO₃⁻（ほぼゼロ）
+    O(0)      2.0e-4
+    Ca        1.5e-3
+    Alkalinity 3.0e-3 as HCO3
+    Cl        3.0e-4
+    -water    1
+
+TRANSPORT
+    -cells            20
+    -length           0.5       # 各セル 0.5m → 総延長 10m
+    -shifts           60
+    -time_step        86400     # 1日/ステップ
+    -flow_direction   forward
+    -boundary_conditions  flux  flux
+    -dispersivity     0.5
+    -punch_cells      1-20
+    -punch_frequency  20
+
+SELECTED_OUTPUT 2
+    -file             NO3_transport.txt
+    -reset            false
+    -distance         true
+    -time             true
+    -pH               true
+    -totals           N(5) O(0) Cl
+
+USER_PUNCH 2
+    -headings  dist_m  time_day  NO3_mgN  Cl_mM  DO_mg
+    -start
+    10 PUNCH DIST, TIME/86400, \
+             TOT("N(5)")*14000, TOT("Cl")*1000, TOT("O(0)")*32000
+    -end
+END
+```
+
+---
+
+## Step 3：脱窒のシミュレーション — NO₃⁻ が消える条件
+
+### 設定
+
+有機炭素を含む還元的な帯水層に NO₃⁻ 汚染水が侵入する場合。
+脱窒が起きる条件・起きない条件を比較する。
+
+```phreeqc
+# ============================================================
+#  Step3：脱窒（Denitrification）
+#  有機炭素あり vs なし の比較
+# ============================================================
+
+RATES
+    Denitrification
+        -start
+        10 rmax   = PARM(1)
+        20 Ks_NO3 = PARM(2)
+        30 Ks_C   = PARM(3)
+        40 NO3_c  = TOT("N(5)")
+        50 O2_c   = TOT("O(0)")
+        60 Corg   = M
+        # O₂ があれば脱窒を抑制（O₂ が優先）
+        70 inhibit_O2 = Ks_NO3 / (Ks_NO3 + O2_c * 100)
+        80 IF NO3_c < 1e-15 THEN GOTO 200
+        90 IF Corg  < 1e-15 THEN GOTO 200
+        100 rate = rmax * NO3_c / (Ks_NO3 + NO3_c) \
+                       * Corg  / (Ks_C   + Corg) \
+                       * inhibit_O2
+        110 MOLES = rate * TIME
+        120 IF MOLES > Corg THEN MOLES = Corg
+        130 IF MOLES * (4/5) > NO3_c THEN MOLES = NO3_c * (5/4)
+        140 SAVE MOLES
+        150 GOTO 300
+        200 MOLES = 0
+        210 SAVE 0
+        300 END
+        -end
+
+# ==============================
+# ケース A：有機炭素あり（脱窒が起きる）
+# ==============================
+SOLUTION 2  "NO₃⁻ 汚染地下水"
+    temp      14
+    pH        7.0
+    pe        8
+    units     mol/kgw
+    N(5)      7.14e-4      # NO₃⁻ 10 mg/L as N
+    O(0)      5.0e-5       # DO 低め（嫌気的に近い）
+    Ca        1.5e-3
+    Alkalinity 3.0e-3 as HCO3
+    -water    1
+
+KINETICS 2
+    Denitrification
+        -m0    3.0e-3      # 有機炭素 3 mmol/kgw（十分な量）
+        -m     3.0e-3
+        -parms  2e-9   1e-5   5e-4
+        -steps  86400 in 365   # 1日 × 365日
+
+INCREMENTAL_REACTIONS true
+
+SELECTED_OUTPUT 3
+    -file             denitrification_caseA.txt
+    -reset            false
+    -time             true
+    -pH               true
+    -pe               true
+    -totals           N(5) N(0) C(4)
+    -kinetic_reactants Denitrification
+
+USER_PUNCH 3
+    -headings  time_day  pH  pe  NO3_mgN  N2_uM  Corg_mmol
+    -start
+    10 PUNCH TIME/86400, -LA("H+"), PE, \
+             TOT("N(5)")*14000, TOT("N(0)")*1e6, KIN("Denitrification")*1000
+    -end
+END
+
+# ==============================
+# ケース B：有機炭素なし（脱窒が起きない）
+# ==============================
+SOLUTION 3  "NO₃⁻ 汚染地下水（有機炭素なし）"
+    temp      14
+    pH        7.0
+    pe        10
+    units     mol/kgw
+    N(5)      7.14e-4
+    O(0)      2.0e-4      # DO が高い
+    Ca        1.5e-3
+    Alkalinity 3.0e-3 as HCO3
+    -water    1
+
+KINETICS 3
+    Denitrification
+        -m0    1.0e-5      # 有機炭素ごく微量
+        -m     1.0e-5
+        -parms  2e-9   1e-5   5e-4
+        -steps  86400 in 365
+
+INCREMENTAL_REACTIONS true
+
+SELECTED_OUTPUT 4
+    -file             denitrification_caseB.txt
+    -reset            false
+    -time             true
+    -pH               true
+    -totals           N(5) N(0)
+    -kinetic_reactants Denitrification
+
+USER_PUNCH 4
+    -headings  time_day  pH  NO3_mgN  N2_uM
+    -start
+    10 PUNCH TIME/86400, -LA("H+"), TOT("N(5)")*14000, TOT("N(0)")*1e6
+    -end
+END
+```
+
+---
+
+## Step 4：野外データからの診断
+
+### 脱窒が「起きているか」の判断指標
+
+野外で採水した水質データを見るだけで、脱窒の有無をある程度診断できる：
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5em 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.88em;">
+  <thead>
+    <tr style="background:#D97706; color:white;">
+      <th style="padding:10px 13px; text-align:left;">指標</th>
+      <th style="padding:10px 13px; text-align:center;">脱窒あり</th>
+      <th style="padding:10px 13px; text-align:center;">脱窒なし</th>
+      <th style="padding:10px 13px; text-align:left;">理由</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 13px; font-weight:600;">DO（溶存酸素）</td>
+      <td style="padding:9px 13px; text-align:center; color:#16A34A; font-weight:600;">&lt; 0.5 mg/L</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626;">&gt; 1 mg/L</td>
+      <td style="padding:9px 13px; font-size:0.88em;">O₂ があると脱窒が抑制される</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 13px; font-weight:600;">Fe²⁺</td>
+      <td style="padding:9px 13px; text-align:center; color:#16A34A; font-weight:600;">&gt; 0.1 mg/L</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626;">検出なし</td>
+      <td style="padding:9px 13px; font-size:0.88em;">Fe²⁺ が溶存 = 還元的環境 = 脱窒条件</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 13px; font-weight:600;">NO₃⁻/Cl⁻ 比</td>
+      <td style="padding:9px 13px; text-align:center; color:#16A34A; font-weight:600;">上流より低下</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626;">Cl⁻ と同じ比率</td>
+      <td style="padding:9px 13px; font-size:0.88em;">Cl⁻ は保守的（反応しない）。比が下がれば NO₃⁻ が消費されている</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 13px; font-weight:600;">過剰 N₂（excess N₂）</td>
+      <td style="padding:9px 13px; text-align:center; color:#16A34A; font-weight:600;">検出あり</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626;">温度補正後ゼロ</td>
+      <td style="padding:9px 13px; font-size:0.88em;">脱窒で生成した N₂ は大気溶存量を超える excess N₂ として検出できる</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 13px; font-weight:600;">δ¹⁵N-NO₃⁻</td>
+      <td style="padding:9px 13px; text-align:center; color:#16A34A; font-weight:600;">重くなる（+10〜+30‰）</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626;">施肥由来（0〜+5‰）</td>
+      <td style="padding:9px 13px; font-size:0.88em;">脱窒で軽い ¹⁴N が優先的に N₂ になり、残った NO₃⁻ の δ¹⁵N が重くなる</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 13px; font-weight:600;">HCO₃⁻ の増加</td>
+      <td style="padding:9px 13px; text-align:center; color:#16A34A; font-weight:600;">上流より増加</td>
+      <td style="padding:9px 13px; text-align:center; color:#DC2626;">変化なし</td>
+      <td style="padding:9px 13px; font-size:0.88em;">脱窒で CO₂ が生成 → HCO₃⁻ 増加。炭酸塩溶解と区別が必要</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+### 診断コード：逆モデリングで脱窒量を定量する
+
+```phreeqc
+# ============================================================
+#  Step4：野外データからの脱窒量推定
+#  農業地帯 2 地点の水質データを使った逆モデリング
+# ============================================================
+
+# ---- 上流（涵養域）: NO₃⁻ 汚染水 ----
+SOLUTION 10  "上流井戸（農業地帯・浅層）"
+    temp      14
+    pH        6.9
+    pe        9.5
+    units     mg/L
+    O(0)      5.8       as O2
+    N(5)      28.0      as NO3     # NO₃⁻-N = 6.3 mg/L（汚染）
+    Ca        62
+    Mg        14
+    Na        18
+    K         5
+    Cl        32                    # 保守的トレーサー
+    Alkalinity 145      as HCO3
+    S(6)      22        as SO4
+    -water    1
+
+# ---- 下流（排水域）: NO₃⁻ が減少 ----
+SOLUTION 11  "下流井戸（農業地帯・深層）"
+    temp      14
+    pH        7.4
+    pe        2.0        # 還元的
+    units     mg/L
+    O(0)      0.2       as O2
+    N(5)      2.0       as NO3     # NO₃⁻-N = 0.45 mg/L（大幅減少）
+    N(0)      0         as N2      # 過剰 N₂（測定困難だが推定）
+    Fe        2.8                   # Fe²⁺ 検出 → 還元的環境の証拠
+    Ca        74
+    Mg        16
+    Na        19
+    K         5
+    Cl        33                    # Cl⁻ はほぼ変化なし
+    Alkalinity 228      as HCO3    # HCO₃⁻ 増加 → 有機炭素酸化
+    S(6)      20        as SO4
+    -water    1
+
+INVERSE_MODELING 3
+    -solutions   10   11
+
+    -phases
+        Calcite          dissolve
+        CO2(g)           dissolve
+        O2(g)            dissolve   # O₂ の消費
+        Goethite         dissolve   # FeOOH の還元溶解
+        Organic_C        dissolve   # 有機炭素酸化（電子供与体）
+        # 脱窒反応（NO₃⁻ → N₂）は N のバランスで推定される
+
+    -tolerance    0.05
+    -range        true
+
+    -balances
+        N(5)      0.01   # 硝酸塩バランス
+        Cl        0.005  # 保守的トレーサーでチェック
+        Fe        0.005
+        Alkalinity 0.1
+
+END
+```
+
+### NO₃⁻/Cl⁻ 比の計算と可視化（Python）
+
+```python
+# ============================================================
+#  NO3_Cl_ratio.py
+#  NO₃⁻/Cl⁻ 比による脱窒診断
+# ============================================================
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.rcParams.update({
+    "font.family":     "sans-serif",
+    "font.sans-serif": ["Noto Sans CJK JP", "IPAexGothic", "DejaVu Sans"],
+    "axes.unicode_minus": False,
+    "figure.dpi":      150,
+})
+
+# ---- サンプルデータ（野外データを想定） ----
+# 農業地帯の複数井戸からのデータ
+wells = pd.DataFrame({
+    "well_id": ["W01", "W02", "W03", "W04", "W05",
+                "W06", "W07", "W08", "W09", "W10"],
+    "depth_m":  [5, 8, 12, 18, 25, 32, 40, 15, 20, 35],
+    "NO3_mgN":  [8.2, 6.5, 4.1, 1.2, 0.3, 0.1, 0.05, 5.8, 2.4, 0.8],
+    "Cl_mg":    [28, 26, 27, 25, 24, 23, 24, 26, 25, 24],
+    "DO_mg":    [6.2, 4.8, 2.1, 0.5, 0.2, 0.1, 0.1, 3.2, 0.8, 0.2],
+    "Fe_mg":    [0.02, 0.05, 0.2, 1.8, 3.2, 4.1, 3.8, 0.1, 1.2, 2.9],
+})
+
+# NO₃⁻/Cl⁻ 比（mol/mol）
+wells["NO3_mol"] = wells["NO3_mgN"] / 14
+wells["Cl_mol"]  = wells["Cl_mg"]  / 35.5
+wells["NO3_Cl_ratio"] = wells["NO3_mol"] / wells["Cl_mol"]
+
+# 脱窒の有無を判定
+wells["denitrification"] = (wells["DO_mg"] < 0.5) & (wells["Fe_mg"] > 0.5)
+
+fig, axes = plt.subplots(1, 3, figsize=(14, 5))
+
+# ---- 深度 vs NO₃⁻ ----
+ax = axes[0]
+colors = ["#DC2626" if not d else "#16A34A"
+          for d in wells["denitrification"]]
+ax.scatter(wells["NO3_mgN"], wells["depth_m"],
+           c=colors, s=80, edgecolors="white", zorder=3)
+ax.axvline(10, color="#D97706", lw=1.5, ls="--", label="環境基準 10 mg/L")
+ax.set(xlabel="NO₃⁻-N (mg/L)", ylabel="深度 (m)",
+       title="深度と NO₃⁻ 濃度")
+ax.invert_yaxis()
+ax.legend(fontsize=9)
+ax.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+# ---- NO₃⁻/Cl⁻ 比 vs 深度 ----
+ax = axes[1]
+# 上流端の比率（最浅井戸）を基準に正規化
+ref_ratio = wells.loc[wells["depth_m"].idxmin(), "NO3_Cl_ratio"]
+wells["ratio_normalized"] = wells["NO3_Cl_ratio"] / ref_ratio
+ax.scatter(wells["ratio_normalized"], wells["depth_m"],
+           c=colors, s=80, edgecolors="white", zorder=3)
+ax.axvline(1.0, color="#9CA3AF", lw=1, ls=":", alpha=0.7)
+ax.axvline(0.5, color="#D97706", lw=1.5, ls="--",
+           label="比率 50%（50%脱窒）")
+ax.set(xlabel="NO₃⁻/Cl⁻ 比（上流比 = 1）", ylabel="深度 (m)",
+       title="NO₃⁻/Cl⁻ 比による脱窒診断")
+ax.invert_yaxis()
+ax.legend(fontsize=9)
+ax.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+# ---- DO vs Fe²⁺（脱窒指標） ----
+ax = axes[2]
+ax.scatter(wells["DO_mg"], wells["Fe_mg"],
+           c=colors, s=80, edgecolors="white", zorder=3)
+ax.axvline(0.5, color="#D97706", lw=1.5, ls="--",
+           label="DO = 0.5 mg/L（脱窒閾値）")
+ax.axhline(0.5, color="#92400E", lw=1.5, ls=":",
+           label="Fe²⁺ = 0.5 mg/L")
+# 各ゾーンのラベル
+ax.text(0.1, 5.5, "脱窒ゾーン\n（還元的）",
+        color="#16A34A", fontsize=9, ha="center")
+ax.text(5.0, 0.1, "非脱窒ゾーン\n（好気的）",
+        color="#DC2626", fontsize=9, ha="center")
+ax.set(xlabel="DO (mg/L)", ylabel="Fe²⁺ (mg/L)",
+       title="DO–Fe²⁺ 図による酸化還元状態の診断")
+ax.legend(fontsize=9)
+ax.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+# 凡例（色の意味）
+from matplotlib.patches import Patch
+legend_els = [Patch(color="#DC2626", label="脱窒なし（好気的）"),
+              Patch(color="#16A34A", label="脱窒あり（還元的）")]
+fig.legend(handles=legend_els, loc="upper center",
+           bbox_to_anchor=(0.5, 1.02), ncol=2, fontsize=10)
+
+plt.suptitle("農業地帯 地下水の硝酸塩汚染診断",
+             fontsize=13, y=1.06)
+plt.tight_layout()
+plt.savefig("NO3_diagnosis.svg", bbox_inches="tight")
+plt.show()
+print("✅ NO3_diagnosis.svg を保存")
+```
+
+---
+
+## Step 5：脱窒ポテンシャルの試算 — あと何年で浄化されるか
+
+逆モデリングで推定した脱窒速度から、残存汚染が消えるまでの時間を計算する。
+
+```python
+# ============================================================
+#  denitrification_capacity.py
+#  帯水層の脱窒ポテンシャル試算
+# ============================================================
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ---- パラメータ ----
+NO3_init    = 10.0     # 初期 NO₃⁻-N 濃度 (mg/L)
+target      = 1.0      # 目標濃度 (mg/L)
+
+# ケースA：有機炭素豊富（脱窒速度 大）
+k_A = 0.015            # 一次速度定数 (1/day)
+
+# ケースB：有機炭素貧困（脱窒速度 小）
+k_B = 0.002
+
+# ケースC：脱窒なし
+k_C = 0.0
+
+time = np.linspace(0, 1000, 1000)   # 0〜1000日
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+for k, label, color, ls in [
+    (k_A, "ケースA：有機炭素豊富（k=0.015/day）", "#16A34A", "-"),
+    (k_B, "ケースB：有機炭素貧困（k=0.002/day）", "#D97706", "--"),
+    (k_C, "ケースC：脱窒なし",                    "#DC2626", ":"),
+]:
+    if k > 0:
+        NO3 = NO3_init * np.exp(-k * time)
+        # 目標到達時間
+        t_target = -np.log(target / NO3_init) / k
+        ax.plot(time, NO3, color=color, lw=2.2, ls=ls, label=label)
+        ax.axvline(t_target, color=color, lw=0.8, alpha=0.5)
+        ax.text(t_target + 10, target + 0.3,
+                f"{t_target:.0f}日\n（{t_target/365:.1f}年）",
+                color=color, fontsize=9)
+    else:
+        ax.axhline(NO3_init, color=color, lw=2.2, ls=ls, label=label)
+
+ax.axhline(target, color="#9CA3AF", lw=1, ls="-.",
+           label=f"目標 {target} mg/L as N")
+ax.axhline(10, color="#374151", lw=1, ls=":",
+           label="環境基準 10 mg/L as N", alpha=0.5)
+ax.fill_between(time, 0, target, alpha=0.05, color="#16A34A")
+
+ax.set(xlim=(0, 1000), ylim=(0, 12),
+       xlabel="時間 (日)",
+       ylabel="NO₃⁻-N (mg/L)",
+       title="脱窒ポテンシャル試算 — 初期濃度 10 mg/L から目標 1 mg/L まで")
+ax.legend(fontsize=10, loc="upper right")
+ax.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+
+plt.tight_layout()
+plt.savefig("denitrification_capacity.svg", bbox_inches="tight")
+plt.show()
+
+# ---- 到達時間の計算 ----
+for k, label in [(k_A, "ケースA"), (k_B, "ケースB")]:
+    t = -np.log(target / NO3_init) / k
+    print(f"{label}: {t:.0f}日 = {t/365:.1f}年")
+```
+
+---
+
+## 現場診断フロー：採水したらまずこれを見る
+
+```{=html}
+<div style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.5em; margin:1.5em 0;">
+<svg viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;" role="img">
+  <title>野外採水後の硝酸塩汚染診断フローチャート</title>
+  <defs>
+    <marker id="arrD" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- スタート -->
+  <rect x="240" y="10" width="200" height="40" rx="20" fill="#374151"/>
+  <text x="340" y="34" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" font-weight="600" fill="white">採水・水質分析</text>
+
+  <line x1="340" y1="50" x2="340" y2="75" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrD)"/>
+
+  <!-- 分岐1：NO₃⁻ > 基準値？ -->
+  <polygon points="340,75 460,105 340,135 220,105" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="340" y="101" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#92400E">NO₃⁻ &gt; 10 mg/L?</text>
+  <text x="340" y="116" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#B45309">（as N）</text>
+
+  <!-- No → 基準以下 -->
+  <line x1="220" y1="105" x2="100" y2="105" stroke="#16A34A" stroke-width="1.5" marker-end="url(#arrD)"/>
+  <text x="160" y="98" font-family="'Segoe UI',sans-serif" font-size="10" fill="#16A34A">No</text>
+  <rect x="20" y="85" width="78" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="1"/>
+  <text x="59" y="101" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#15803D">基準以下</text>
+  <text x="59" y="115" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#166534">継続監視</text>
+
+  <!-- Yes ↓ -->
+  <line x1="340" y1="135" x2="340" y2="160" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrD)"/>
+  <text x="350" y="153" font-family="'Segoe UI',sans-serif" font-size="10" fill="#DC2626">Yes</text>
+
+  <!-- 分岐2：DO < 0.5？ -->
+  <polygon points="340,160 460,190 340,220 220,190" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="340" y="186" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#92400E">DO &lt; 0.5 mg/L?</text>
+  <text x="340" y="201" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#B45309">Fe²⁺ あり？</text>
+
+  <!-- No → 好気的 脱窒なし -->
+  <line x1="460" y1="190" x2="570" y2="190" stroke="#DC2626" stroke-width="1.5" marker-end="url(#arrD)"/>
+  <text x="515" y="183" font-family="'Segoe UI',sans-serif" font-size="10" fill="#DC2626">No</text>
+  <rect x="572" y="170" width="100" height="40" rx="6" fill="#FEF2F2" stroke="#DC2626" stroke-width="1"/>
+  <text x="622" y="186" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#DC2626">好気的</text>
+  <text x="622" y="200" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#DC2626">脱窒なし</text>
+
+  <!-- Yes ↓ -->
+  <line x1="340" y1="220" x2="340" y2="245" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrD)"/>
+  <text x="350" y="238" font-family="'Segoe UI',sans-serif" font-size="10" fill="#16A34A">Yes</text>
+
+  <!-- 分岐3：NO₃⁻/Cl⁻ 比 -->
+  <polygon points="340,245 460,270 340,295 220,270" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="340" y="266" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#92400E">NO₃⁻/Cl⁻ 比</text>
+  <text x="340" y="281" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#B45309">上流より低下？</text>
+
+  <!-- Yes → 脱窒進行中 -->
+  <line x1="220" y1="270" x2="100" y2="270" stroke="#16A34A" stroke-width="1.5" marker-end="url(#arrD)"/>
+  <text x="160" y="263" font-family="'Segoe UI',sans-serif" font-size="10" fill="#16A34A">Yes</text>
+  <rect x="20" y="250" width="78" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="59" y="266" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#15803D">脱窒進行中</text>
+  <text x="59" y="280" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#166534">速度を定量</text>
+
+  <!-- No → 脱窒なし（有機炭素不足） -->
+  <line x1="460" y1="270" x2="572" y2="270" stroke="#D97706" stroke-width="1.5" marker-end="url(#arrD)"/>
+  <text x="515" y="263" font-family="'Segoe UI',sans-serif" font-size="10" fill="#D97706">No</text>
+  <rect x="574" y="250" width="98" height="40" rx="6" fill="#FFF7ED" stroke="#D97706" stroke-width="1"/>
+  <text x="623" y="266" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#92400E">嫌気的だが</text>
+  <text x="623" y="280" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#78350F">有機炭素不足</text>
+</svg>
+<p style="text-align:center; font-size:0.82em; color:#6B7280; margin-top:0.5em;">図2. 野外採水後の硝酸塩汚染診断フロー</p>
+</div>
+```
+
+---
+
+## まとめ
+
+```{=html}
+<div style="background:#FFF7ED; border-left:4px solid #D97706; padding:1.4em 1.5em; margin:1.5em 0; border-radius:0 8px 8px 0;">
+  <div style="font-weight:700; color:#92400E; margin-bottom:0.8em; font-size:1.05em;">硝酸塩汚染の地下水診断 — 3つの問いに答える</div>
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1em; font-size:0.88em;">
+    <div style="color:#78350F; line-height:1.8;">
+      <strong>① どこで汚染が生まれるか</strong><br>
+      土壌の硝化帯。DO があり NH₄⁺ がある場所で NO₃⁻ が生成。
+      Step 1 のコードで定量。
+    </div>
+    <div style="color:#78350F; line-height:1.8;">
+      <strong>② どこで消えるか</strong><br>
+      嫌気的 + 有機炭素がある帯水層。
+      NO₃⁻/Cl⁻ 比と DO・Fe²⁺ の組み合わせで診断。
+    </div>
+    <div style="color:#78350F; line-height:1.8;">
+      <strong>③ いつ消えるか</strong><br>
+      脱窒速度定数から試算。有機炭素量が鍵。
+      KINETICS + 逆モデリングで定量。
+    </div>
+  </div>
+</div>
+```
+
+::: {.callout-tip}
+## 次回 #17「表面錯体モデル（SURFACE ブロック）— 重金属の吸着を計算する」
+硝酸塩の次は重金属だ。
+水酸化鉄の表面に As・Pb・Cd がどう吸着するかを
+`SURFACE` ブロックと Diffuse Layer Model で計算する。
+土壌汚染・地下水浄化・自然浄化能評価に直結する内容だ。
+:::
+
+---
+
+*DeepFlow | 地球科学シミュレーションの深みへ*
