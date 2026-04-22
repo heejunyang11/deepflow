@@ -21,9 +21,9 @@ a:hover { color: #1D4ED8 !important; }
    ナビゲーションバー & フッター
 ========================================= */
 .navbar {
-    background-color: rgba(252, 252, 252, 0.9) !important;
+    background-color: #F7F4EF !important;
     backdrop-filter: blur(8px);
-    border-bottom: 1px solid #E5E7EB !important;
+    border-bottom: 1.5px solid #d7dff0 !important;
 }
 .navbar-brand {
     color: #1A1A1A !important; 
@@ -107,16 +107,14 @@ a:hover { color: #1D4ED8 !important; }
 
 /* =========================================
    コードブロック・インラインコードの設定
-   （★ここを大きく修正しました）
 ========================================= */
 
 /* コードブロック全体（複数行のコード） */
 pre, pre.sourceCode {
-    background: #F8F8F7 !important; /* 0.pngのような清潔なごく薄いグレー */
-    border: 1px solid #E5E7EB !important;
+    background: #f4f0e7 !important; 
+    border: 1px solid #dbd9d9 !important;
     border-radius: 8px !important;
-    /* 削除: color: #... !important; はハイライト色を潰すので書かない */
-}
+    }
 
 /* コードブロック内のテキスト色リセット */
 pre code {

@@ -4,7 +4,7 @@ date: 2026-04-13
 categories: [Geochemistry, PHREEQC]
 series: "PHREEQCをゼロから始める"
 description: "PHASESブロックでpHを固定し、pH 3〜14 でのアルミニウム溶解度を計算する。USER_GRAPHで溶解度ダイアグラムを描き、Gibbsiteの両性溶解挙動を可視化する。"
-image: thumbnail.png
+image: S5KLpHFZ.jfif
 author: "DeepFlow"
 toc: true
 toc-depth: 3
@@ -15,13 +15,13 @@ lang: ja
 
 ## はじめに：なぜ「溶解度ダイアグラム」が重要か
 
-アルミニウムは地殻中で最も豊富な金属元素のひとつだが、その挙動は pH に対して劇的に変化する。 強酸性・強アルカリ性では高い溶解度を示すが、中性付近（pH 6〜8）では Gibbsite（Al(OH)₃）として沈殿し、溶存量が極めて低くなる。 この「両性溶解（amphoteric dissolution）」を定量的に理解することは：
+アルミニウムは地殻中で最も豊富な金属元素のひとつである。しかし、その挙動は pH に対して劇的に変化する。 強酸性・強アルカリ性では高い溶解度を示すが、中性付近（pH 6〜8）では Gibbsite（Al(OH)₃）として沈殿し、溶存量が極めて低くなる。 この「両性溶解（amphoteric dissolution）」を定量的に理解することは：
 
 - **酸性鉱山廃水（AMD）** での Al 毒性予測
 - **土壌酸性化** による Al の生態毒性評価
 - **水処理** での凝集・沈殿プロセス設計
 
-に直結する重要なスキルだ。
+に直結する重要なスキルである。
 
 ::: callout-note
 ## このシリーズで学ぶこと
@@ -701,56 +701,6 @@ pH \> 12 のコンクリート孔隙水では Al(OH)₄⁻ として再溶解し
 
 ------------------------------------------------------------------------
 
-## PHREEQC コードの拡張：Python で自動化
-
-手作業で pH を 1 ステップずつ書くのは繰り返しが多い。 Python の `phreeqpy` ライブラリまたはテキスト処理で自動化できる：
-
-``` python
-import subprocess
-import pandas as pd
-
-# PHREEQC インプットを自動生成
-def generate_gibbsite_input(ph_values):
-    header = """PHASES
-    Fix_H+
-        H+ = H+
-        log_k     0
-
-SOLUTION 1
-    temp      25
-    pH        7
-    -water    1
-SAVE solution 1
-END
-"""
-    blocks = []
-    for i, ph in enumerate(ph_values, start=2):
-        reagent = "HCl" if ph <= 7 else "NaOH"
-        block = f"""
-USE solution 1
-EQUILIBRIUM_PHASES {i}
-    Fix_H+    -{ph:.1f}    {reagent}    10
-    Gibbsite   0          0           10
-END
-SELECTED_OUTPUT {i}
-    -reset            false
-    -pH               true
-    -totals           Al
-    -activities       Al+3  AlOH+2  Al(OH)2+  Al(OH)3  Al(OH)4-
-"""
-        blocks.append(block)
-    return header + "".join(blocks)
-
-# pH 3〜14 を 0.5 刻みで計算
-ph_range = [x / 2 for x in range(6, 29)]  # 3.0, 3.5, ..., 14.0
-input_text = generate_gibbsite_input(ph_range)
-
-with open("gibbsite_auto.pqi", "w") as f:
-    f.write(input_text)
-
-print(f"Generated {len(ph_range)} pH steps")
-```
-
 ::: callout-tip
 ## 次のステップ
 
@@ -784,6 +734,17 @@ print(f"Generated {len(ph_range)} pH steps")
 今回は `PHASES` ブロックの `Fix_H+` テクニックを使って **pH を任意の値に固定** し、 Gibbsite との平衡計算から Al 溶解度ダイアグラムを描いた。 この手法は pH 固定の溶解度計算に汎用的に使えるため、Fe、Mn、Si など他の鉱物系でも応用できる。
 
 次回 #8 では、この結果を Python で処理し、より高精細な可視化とデータ解析を行う。
+
+*このシリーズの他の記事：*
+
+- [#1 インストールと最初の計算](../phreeqc-part1/)
+- [#2 Speciationで海水を解析する](../phreeqc-part2/)
+- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)
+- [#4 カルサイト−CO₂水反応](../phreeqc-part4/)
+- [#5 炭酸地下水と海水の混合](../phreeqc-part5/)
+- [#6 黄鉄鉱の酸化（AMD）](../phreeqc-part6/)
+- **#7 溶解度ダイアグラム（Gibbsite）**
+- [#8 Pythonでの可視化](../phreeqc-part8/)
 
 ------------------------------------------------------------------------
 

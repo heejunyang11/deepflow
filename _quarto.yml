@@ -27,8 +27,6 @@ website:
         text: 温泉・地理        
       - href: apps.qmd
         text: Apps          
-      - href: letter.qmd
-        text: Letter
       - href: about.qmd
         text: About
     right:
@@ -48,6 +46,7 @@ format:
       light: flatly
          
     css: styles.css
+    includes-in-header: google-adsense.html
     
     # 読みやすさを向上させるハイライト設定
     highlight-style: 

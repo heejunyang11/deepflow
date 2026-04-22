@@ -21,9 +21,7 @@ lang: ja
 - **EQUILIBRIUM_PHASES**（#3〜#5）：1点での鉱物平衡
 - **REACTION**（#11）：時間方向への変化
 
-今回の **TRANSPORT ブロック**はこれに**空間の次元**を加える。
-地下水が帯水層の中を流れながら、鉱物と反応し、汚染物質を運び、濃度前線を形成する——
-その全プロセスを一度に計算する。
+今回の **TRANSPORT ブロック**はこれに**空間の次元**を加える。 地下水が帯水層の中を流れながら、鉱物と反応し、汚染物質を運び、濃度前線を形成する—— その全プロセスを一度に計算する。
 
 ```{=html}
 <div style="background:#FFF7ED; border-left:4px solid #D97706; padding:1.2em 1.5em; margin:1.5em 0; border-radius:0 8px 8px 0;">
@@ -36,8 +34,9 @@ lang: ja
 </div>
 ```
 
-::: {.callout-note}
+::: callout-note
 ## この記事で学ぶこと
+
 - 移流（advection）・分散（dispersion）・反応（reaction）の3つの概念
 - `TRANSPORT` ブロックの基本構文
 - シナリオ1：塩水フロントの移動（純粋な移流分散）
@@ -46,15 +45,13 @@ lang: ja
 - Python による濃度プロファイルの可視化
 :::
 
----
+------------------------------------------------------------------------
 
 ## 理論：移流分散方程式
 
 地下水中の溶質移動は **移流分散方程式（ADE: Advection-Dispersion Equation）** で記述される：
 
-$$
-\frac{\partial C}{\partial t} = D \frac{\partial^2 C}{\partial x^2} - v \frac{\partial C}{\partial x} + R
-$$
+$$\frac{\partial C}{\partial t} = D \frac{\partial^2 C}{\partial x^2} - v \frac{\partial C}{\partial x} + R$$
 
 ```{=html}
 <div style="overflow-x:auto; margin:1.5em 0;">
@@ -145,11 +142,11 @@ PHREEQCは ADE を直接解くのではなく、**移流・分散・反応を交
 </div>
 ```
 
----
+------------------------------------------------------------------------
 
 ## TRANSPORT ブロックの基本構文
 
-```phreeqc
+``` phreeqc
 TRANSPORT
     -cells            20        # セル数（空間方向の分割数）
     -length           0.1       # 各セルの長さ（m）
@@ -164,24 +161,21 @@ TRANSPORT
     -print_cells      1 5 10 20 # 画面表示するセル
 ```
 
-::: {.callout-tip}
+::: callout-tip
 ## セル数と計算精度のバランス
-セル数を増やすと精度が上がるが計算時間も増える。
-**ペクレ数（Pe = v·Δx/D）** が 2 以下になるようにセル長を決めるのが基本だ。
-Pe > 2 では数値分散が生じて物理的な分散を過大評価する。
+
+セル数を増やすと精度が上がるが計算時間も増える。 **ペクレ数（Pe = v·Δx/D）** が 2 以下になるようにセル長を決めよう。 Pe \> 2 では数値分散が生じて物理的な分散を過大評価する。
 :::
 
----
+------------------------------------------------------------------------
 
 ## シナリオ1：塩水フロントの移動（純粋な移流分散）
 
 ### 設定
 
-純水が流れている帯水層（20セル、各0.5m = 総延長10m）に、
-左端から NaCl 溶液（0.1 mol/L）を注入する。
-塩水フロントがどのように移動・拡散するかを追う。
+純水に満たされている帯水層（20セル、各0.5m = 総延長10m）に、 NaCl 溶液（0.1 mol/L）を注入する。 塩水フロントがどのように移動・拡散するかを追う。
 
-```phreeqc
+``` phreeqc
 # ============================================================
 #  DeepFlow #12 - シナリオ1：塩水フロントの移動
 #  純水の帯水層に NaCl 溶液を注入
@@ -205,7 +199,7 @@ TRANSPORT
     -cells            20
     -length           0.5       # 各セル 0.5 m → 総延長 10 m
     -shifts           40        # 40 タイムステップ
-    -time_step        86400     # 1 日/ステップ
+    -time_step        86400     # 1 日/ステップ　単純計算(見かけの移動速度)で0.5 m / 86400 s = 5.8 * 10^-6 m/s
     -flow_direction   forward
     -boundary_conditions  flux  flux
     -dispersivity     0.5       # 分散長 0.5 m（セル長と同じ）
@@ -216,7 +210,6 @@ TRANSPORT
 # ---- 出力設定 ----
 SELECTED_OUTPUT 1
     -file             saltfront.txt
-    -reset            false
     -distance         true
     -time             true
     -totals           Na Cl
@@ -229,23 +222,21 @@ USER_PUNCH 1
 END
 ```
 
----
+------------------------------------------------------------------------
 
 ## シナリオ2：カルサイト溶解前線（移流＋化学反応）
 
 ### 設定
 
-カルサイトを含む帯水層（初期：カルサイトと平衡した Ca–HCO₃ 水）に
-**酸性水（pH 4.5）** を注入する。
-溶解前線がどのように移動するか、pH・Ca²⁺・SI(Calcite) を追う。
+カルサイトを含む帯水層（初期：カルサイトと平衡した Ca–HCO₃ 水）に **酸性水（pH 4.5）** を注入する。 溶解前線がどのように移動するか、pH・Ca²⁺・SI(Calcite) を追う。簡単に石灰岩地下水に酸性の水が入ったらどうなるか？
 
-```phreeqc
+``` phreeqc
 # ============================================================
 #  シナリオ2：カルサイト溶解前線
 #  酸性水を石灰岩帯水層に注入
 # ============================================================
 
-# ---- 注入水：酸性雨水 ----
+# ---- 注入水（酸性＋CO2） ----
 SOLUTION 0  "注入酸性水"
     temp      12
     pH        4.5
@@ -253,47 +244,49 @@ SOLUTION 0  "注入酸性水"
     units     mol/kgw
     -water    1
 
-# ---- 初期帯水層水：カルサイトと平衡 ----
+EQUILIBRIUM_PHASES 0
+    CO2(g)   -2.0   10   # 土壌CO2
+
+# ---- 初期地下水（カルサイト＋CO2平衡） ----
 SOLUTION 1-20  "初期地下水"
     temp      12
-    pH        7.4
+    pH        7.2
     units     mol/kgw
-    Ca        2.5e-3
-    Alkalinity 5.0e-3 as HCO3
+    Ca        2.0e-3
+    Alkalinity 4.0e-3 as HCO3
     -water    1
 
-# ---- 帯水層の鉱物（全セルにカルサイトを配置） ----
 EQUILIBRIUM_PHASES 1-20
-    Calcite   0.0   0.5   # 0.5 mol カルサイト/セル（溶解可能量）
+    Calcite   0.0   0.5
+    CO2(g)   -2.0   10
 
-# ---- TRANSPORT ----
+# ---- 移流分散 ----
 TRANSPORT
     -cells            20
     -length           0.5
     -shifts           60
     -time_step        86400
     -flow_direction   forward
-    -boundary_conditions  flux  flux
+    -boundary_conditions  flux flux
     -dispersivity     0.3
     -diffusion_coefficient 1e-9
     -punch_cells      1-20
     -punch_frequency  20
 
-SELECTED_OUTPUT 2
-    -file             calcite_front.txt
-    -reset            false
-    -distance         true
-    -time             true
-    -pH               true
-    -totals           Ca C(4)
+# ---- 出力 ----
+SELECTED_OUTPUT 1
+    -file calcite_front.txt
+    -distance true
+    -time     true
+    -pH       true
+    -totals   Ca C(4)
     -saturation_indices Calcite
     -equilibrium_phases Calcite
 
-USER_PUNCH 2
-    -headings  dist_m  time_d  pH  Ca_mM  SI_Calcite  Calcite_mol
+USER_PUNCH 1
+    -headings dist_m time_d pH Ca_mM SI_Calcite Calcite_mol
     -start
-    10 PUNCH DIST, TIME/86400, -LA("H+"), TOT("Ca")*1000, \
-             SI("Calcite"), EQUI("Calcite")
+    10 PUNCH DIST, TIME/86400, -LA("H+"), TOT("Ca")*1000, SI("Calcite"), EQUI("Calcite")
     -end
 END
 ```
@@ -316,7 +309,7 @@ END
     </tr>
     <tr style="background:#FDFDFD;">
       <td style="padding:9px 13px; font-weight:600; color:#16A34A;">Ca²⁺ が前線前方で上昇</td>
-      <td style="padding:9px 13px; font-size:0.88em;">カルサイトの溶解によって Ca²⁺ が供給される。溶解量は SI(Calcite) の負の大きさに比例</td>
+      <td style="padding:9px 13px; font-size:0.88em;">カルサイトの溶解によって Ca²⁺ が供給される。平衡条件を満たす量だけ溶解</td>
     </tr>
     <tr style="background:#FFF7ED;">
       <td style="padding:9px 13px; font-weight:600; color:#2563EB;">SI(Calcite) = 0 ゾーンが存在</td>
@@ -331,16 +324,15 @@ END
 </div>
 ```
 
----
+------------------------------------------------------------------------
 
 ## シナリオ3：重金属（Cd²⁺）汚染の移動と土壌吸着
 
 ### 設定
 
-鉱山廃水由来の Cd²⁺ 汚染水が帯水層に侵入した場合を想定する。
-土壌の**陽イオン交換（ion exchange）** による吸着遅延効果を組み込む。
+鉱山廃水由来の Cd²⁺ 汚染水が帯水層に侵入した場合を想定する。 土壌の**陽イオン交換（ion exchange）** による吸着遅延効果を組み込む。
 
-```phreeqc
+``` phreeqc
 # ============================================================
 #  シナリオ3：重金属汚染の移動と土壌吸着
 #  Cd²⁺ の移流 + 陽イオン交換による遅延
@@ -368,10 +360,13 @@ SOLUTION 1-20
     -water    1
 
 # ---- 土壌の陽イオン交換体（全セル） ----
-# CEC（陽イオン交換容量）= 0.002 mol/kgw（20 cmol/kg 相当）
+# phreeqc.dat の交換体定義を使用:
+#   NaX, KX, CaX2, MgX2, CdX2 など
+# X- は phreeqc.dat では定義されないため -equilibrate で初期化
 EXCHANGE 1-20
-    X-         0.002    # 交換サイト総量
-    -equilibrate  1     # 初期溶液と平衡化
+    NaX      0.0018   # Na が初期条件で交換サイトを占める
+    CaX2     0.0001   # Ca も微量占有
+    -equilibrate  1   # SOLUTION 1 と平衡化して初期状態を決定
 
 # ---- TRANSPORT ----
 TRANSPORT
@@ -388,7 +383,6 @@ TRANSPORT
 
 SELECTED_OUTPUT 3
     -file             cd_transport.txt
-    -reset            false
     -distance         true
     -time             true
     -totals           Cd Na Ca
@@ -402,97 +396,240 @@ USER_PUNCH 3
 END
 ```
 
-::: {.callout-important}
+::: callout-important
 ## 遅延係数（Retardation Factor）とは
-吸着がある場合、汚染物質の移動速度は地下水の流速より**遅くなる**。
-この比率が遅延係数 R だ：
+
+吸着がある場合、汚染物質の移動速度は地下水の流速より**遅くなる**。 この比率が遅延係数 R であり、次式で表される：
 
 $$R = 1 + \frac{\rho_b \cdot K_d}{\theta}$$
 
-$\rho_b$：嵩密度、$K_d$：分配係数、$\theta$：間隙率
+$\rho_b$：嵩密度、$K_d$：分配係数、$\theta$：空隙率。
 
-Cd²⁺ のような重金属は土壌に強く吸着するため R が大きく、
-地下水の1/5〜1/10の速度でしか移動しないことが多い。
-PHREEQC の EXCHANGE ブロックはこの効果を熱力学的に自動計算する。
+### 物理的な意味
+
+遅延係数 R は
+
+> **地下水の流速 ÷ 汚染物質の移動速度**を意味する。例えば：
+
+- R=1：水と同じ速度（吸着なし）
+
+- R=5：水の1/5の速度
+
+- R=10：水の1/10の速度
+
+Cd²⁺ のような重金属は土壌に強く吸着するため R が大きく、 地下水の1/5〜1/10の速度でしか移動しないことが多い。 PHREEQC の EXCHANGE ブロックはこの効果を熱力学的に自動計算する。
 :::
 
----
+------------------------------------------------------------------------
 
 ## Python で濃度プロファイルを可視化する
 
-```python
+``` python
 # ============================================================
 #  transport_plot.py
 #  3シナリオの空間濃度プロファイルを可視化
 # ============================================================
-import pandas as pd
 import numpy as np
+import os
+import matplotlib
+import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
+# ---- フォント設定（日本語環境） ----
 plt.rcParams.update({
-    "font.family":     "sans-serif",
-    "font.sans-serif": ["Noto Sans CJK JP", "IPAexGothic", "DejaVu Sans"],
+    "font.family": "sans-serif",
+    "font.sans-serif": ["MS Gothic", "Noto Sans CJK JP", "IPAexGothic", "DejaVu Sans"],
     "axes.unicode_minus": False,
     "figure.dpi":      150,
 })
 
-# ---- シナリオ1：塩水フロント ----
-df1 = pd.read_csv("saltfront.txt", sep="\t", comment="#", skipinitialspace=True)
+#  数値計算コア：PHREEQCのオペレータスプリッティングを再現
+#  ① 移流：セルを1つ右にシフト
+#  ② 分散：隣接セル間のミキシング（混合率 = α/(dx+α)）
+
+def adv_disp(nx, dx, alpha, n_shifts, C0, C_init,
+             punch_freq, R=1):
+    """
+    1次元移流分散シミュレータ（オペレータスプリッティング）
+
+    Parameters
+    ----------
+    nx         : セル数
+    dx         : セル長（m）
+    alpha      : 分散長（m）
+    n_shifts   : タイムステップ数（シフト数）
+    C0         : 注入水濃度
+    C_init     : 初期帯水層濃度
+    punch_freq : 何シフトごとに記録するか
+    R          : 遅延係数（吸着あり＝R>1）
+
+    Returns
+    -------
+    list of (shift, concentration_array)
+    """
+    C = np.full(nx, float(C_init))
+    f_mix = alpha / (dx + alpha)   # 分散混合率
+    results = []
+
+    for s in range(1, n_shifts + 1):
+        # ① 移流（遅延係数 R を考慮：R=5 なら5ステップに1回シフト）
+        if s % R == 0:
+            C_adv = np.empty(nx)
+            C_adv[0] = C0          # 入口境界：注入水濃度
+            C_adv[1:] = C[:-1]     # 1セル右へシフト
+        else:
+            C_adv = C.copy()       # シフトなし（吸着遅延）
+
+        # ② 分散（隣接セルとのミキシング）
+        C_new = C_adv.copy()
+        for i in range(nx):
+            left  = C_adv[i - 1] if i > 0      else C0          # 左境界
+            right = C_adv[i + 1] if i < nx - 1 else C_adv[i]   # 右境界（flux BC）
+            C_new[i] = C_adv[i] + f_mix * (left - 2 * C_adv[i] + right) / 2
+
+        C = C_new.clip(min(C0, C_init), max(C0, C_init))
+
+        if s % punch_freq == 0:
+            results.append((s, C.copy()))
+
+    return results
+
+
+def ph_front(nx, dx, alpha, n_shifts, pH_in, pH_init,
+             punch_freq):
+    """
+    pH 前線のシミュレータ（移流分散 ＋ カルサイト緩衝の近似）
+
+    カルサイト緩衝の近似：
+      pH < 6.5 の領域で 30% の中和（CaCO3 溶解による H+ 消費）
+    """
+    pH = np.full(nx, float(pH_init))
+    f_mix = alpha / (dx + alpha)
+    results = []
+
+    for s in range(1, n_shifts + 1):
+        # ① 移流
+        pH_adv = np.empty(nx)
+        pH_adv[0] = pH_in
+        pH_adv[1:] = pH[:-1]
+
+        # ② 分散
+        pH_d = pH_adv.copy()
+        for i in range(nx):
+            L = pH_adv[i - 1] if i > 0      else pH_in
+            R = pH_adv[i + 1] if i < nx - 1 else pH_adv[i]
+            pH_d[i] = pH_adv[i] + f_mix * (L - 2 * pH_adv[i] + R) / 2
+
+        # ③ カルサイト緩衝（pH < 6.5 の領域を部分中和）
+        pH_buf = pH_d.copy()
+        for i in range(nx):
+            if pH_d[i] < 6.5:
+                pH_buf[i] = pH_d[i] + 0.30 * (6.5 - pH_d[i])
+
+        pH = pH_buf.clip(pH_in, pH_init)
+
+        if s % punch_freq == 0:
+            results.append((s, pH.copy()))
+
+    return results
+
+#  各シナリオのパラメータ設定
+
+x = np.arange(0.5, 20.5) * 0.5   # セル中心座標（m）
+
+# シナリオ1：塩水フロント（NaCl 0.1 mol/L = Na 100 mM）
+res1 = adv_disp(
+    nx=20, dx=0.5, alpha=0.5, n_shifts=40,
+    C0=100.0, C_init=0.0, punch_freq=10
+)
+
+# シナリオ2：カルサイト溶解前線（pH）
+res2 = ph_front(
+    nx=20, dx=0.5, alpha=0.3, n_shifts=60,
+    pH_in=4.5, pH_init=7.4, punch_freq=20
+)
+
+# シナリオ3：Cd²⁺ 汚染（保守的トレーサー + 吸着遅延 R=5）
+res3_cons = adv_disp(
+    nx=20, dx=0.5, alpha=0.3, n_shifts=80,
+    C0=10.0, C_init=0.0, punch_freq=20, R=1
+)
+res3_cd = adv_disp(
+    nx=20, dx=0.5, alpha=0.3, n_shifts=80,
+    C0=10.0, C_init=0.0, punch_freq=20, R=5   # R=5 で遅延
+)
+
+#  作図
 
 fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+fig.patch.set_facecolor("white")
 
-# ---- 塩水フロント（時間ステップごとに色を変える） ----
+# ---- シナリオ1：塩水フロント ----
 ax = axes[0]
-times = df1["time_d"].unique()
-colors = cm.Blues(np.linspace(0.3, 1.0, len(times)))
-for t, c in zip(times, colors):
-    sub = df1[df1["time_d"] == t]
-    ax.plot(sub["dist_m"], sub["Na_mM"], color=c, lw=2,
-            label=f"{t:.0f} d")
-ax.set(xlabel="距離 (m)", ylabel="Na⁺ (mM)",
-       title="シナリオ1：塩水フロント移動")
-ax.legend(title="経過日数", fontsize=8, loc="upper right")
+blues = cm.Blues(np.linspace(0.35, 1.0, len(res1)))
+for (step, C), col in zip(res1, blues):
+    ax.plot(x, C, color=col, lw=2, label=f"{step} 日")
+ax.set(
+    xlabel="距離 (m)",
+    ylabel="Na (mM)",
+    title="シナリオ1：塩水フロント移動\nNaCl 0.1 mol/L 注入",
+)
+ax.legend(title="経過日数", fontsize=8.5, loc="upper left",
+          framealpha=0.9, edgecolor="#E5E7EB")
+ax.set_ylim(-2, 108)
 ax.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+ax.set_facecolor("white")
 
-# ---- カルサイト溶解前線 ----
-df2 = pd.read_csv("calcite_front.txt", sep="\t", comment="#", skipinitialspace=True)
+# ---- シナリオ2：カルサイト溶解前線 ----
 ax = axes[1]
-times2 = df2["time_d"].unique()
-colors2 = cm.Oranges(np.linspace(0.3, 1.0, len(times2)))
-for t, c in zip(times2, colors2):
-    sub = df2[df2["time_d"] == t]
-    ax.plot(sub["dist_m"], sub["pH"], color=c, lw=2,
-            label=f"{t:.0f} d")
-ax.axhline(7.4, color="#9CA3AF", lw=1, ls=":", alpha=0.7)
-ax.text(0.2, 7.5, "初期 pH 7.4", color="#9CA3AF", fontsize=8)
-ax.set(xlabel="距離 (m)", ylabel="pH",
-       title="シナリオ2：カルサイト溶解前線")
-ax.legend(title="経過日数", fontsize=8, loc="lower right")
+oranges = cm.Oranges(np.linspace(0.35, 1.0, len(res2)))
+for (step, pH), col in zip(res2, oranges):
+    ax.plot(x, pH, color=col, lw=2, label=f"{step} 日")
+ax.axhline(7.4, color="#9CA3AF", lw=1, ls=":", alpha=0.8)
+ax.text(0.2, 7.55, "初期 pH 7.4", color="#9CA3AF", fontsize=8.5)
+ax.axhline(4.5, color="#93C5FD", lw=1, ls=":", alpha=0.8)
+ax.text(0.2, 4.65, "注入水 pH 4.5", color="#93C5FD", fontsize=8.5)
+ax.set(
+    xlabel="距離 (m)",
+    ylabel="pH",
+    title="シナリオ2：カルサイト溶解前線\n酸性水 pH 4.5 注入",
+)
+ax.legend(title="経過日数", fontsize=8.5, loc="lower right",
+          framealpha=0.9, edgecolor="#E5E7EB")
+ax.set_ylim(3.8, 7.9)
 ax.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+ax.set_facecolor("white")
 
-# ---- Cd²⁺ 汚染の移動 ----
-df3 = pd.read_csv("cd_transport.txt", sep="\t", comment="#", skipinitialspace=True)
+# ---- シナリオ3：Cd 汚染と吸着遅延 ----
 ax = axes[2]
-times3 = df3["time_d"].unique()
-colors3 = cm.Reds(np.linspace(0.3, 1.0, len(times3)))
-for t, c in zip(times3, colors3):
-    sub = df3[df3["time_d"] == t]
-    ax.plot(sub["dist_m"], sub["Cd_umol"], color=c, lw=2,
-            label=f"{t:.0f} d")
-ax.set(xlabel="距離 (m)", ylabel="Cd²⁺ (μmol/L)",
-       title="シナリオ3：Cd²⁺ 汚染移動（吸着遅延あり）")
-ax.legend(title="経過日数", fontsize=8, loc="upper right")
+grays = cm.Greys(np.linspace(0.35, 0.75, len(res3_cons)))
+reds  = cm.Reds(np.linspace(0.35, 1.0,  len(res3_cd)))
+for i, ((step, Cc), (_, Cd)) in enumerate(zip(res3_cons, res3_cd)):
+    ax.plot(x, Cc, color=grays[i], lw=1.5, ls="--")
+    ax.plot(x, Cd, color=reds[i],  lw=2)
+ax.plot([], [], color="gray",    lw=1.5, ls="--", label="保守的トレーサー (R=1)")
+ax.plot([], [], color="#DC2626", lw=2,            label="Cd (R=5, 吸着遅延)")
+ax.set(
+    xlabel="距離 (m)",
+    ylabel="濃度 (umol/L)",
+    title="シナリオ3：Cd 汚染移動\n陽イオン交換による遅延",
+)
+ax.legend(fontsize=8.5, loc="upper right",
+          framealpha=0.9, edgecolor="#E5E7EB")
 ax.grid(True, ls="--", lw=0.5, color="#E5E7EB")
+ax.set_facecolor("white")
 
-plt.suptitle("PHREEQC TRANSPORT：3シナリオの濃度プロファイル", fontsize=13)
+fig.suptitle("PHREEQC TRANSPORT：3シナリオの濃度プロファイル",
+             fontsize=13, y=0.99)
 plt.tight_layout()
-plt.savefig("transport_profiles.svg", bbox_inches="tight")
+plt.savefig("transport_profiles.png", dpi=150,
+            bbox_inches="tight", facecolor="white")
 plt.show()
-print("✅ transport_profiles.svg を保存")
+print("transport_profiles.png を保存しました")
 ```
 
----
+------------------------------------------------------------------------
 
 ## 3シナリオの比較
 
@@ -565,7 +702,7 @@ print("✅ transport_profiles.svg を保存")
 </div>
 ```
 
----
+------------------------------------------------------------------------
 
 ## TRANSPORT の重要パラメータ早見表
 
@@ -622,7 +759,7 @@ print("✅ transport_profiles.svg を保存")
 </div>
 ```
 
----
+------------------------------------------------------------------------
 
 ## まとめ：シリーズ全体の完成
 
@@ -673,13 +810,14 @@ print("✅ transport_profiles.svg を保存")
 </div>
 ```
 
-::: {.callout-tip}
+::: callout-tip
 ## ここまで来たあなたへ
+
 #1 のインストールから始まり、Speciation・混合・平衡・酸化還元・溶解度・活量・飽和指数・反応経路、そして今回の移流分散まで——PHREEQCで地球化学シミュレーションを実践するために必要な知識の核心を一通り歩いた。
 
 次のステップとして、実際の野外データ（水質分析値）を使った**逆モデリング**（`INVERSE_MODELING` ブロック）や、**FloPy × PHREEQC の結合**（シリーズ冒頭の熱水シミュレーション）へ進む道が開けている。
 :::
 
----
+------------------------------------------------------------------------
 
-*DeepFlow | 地球科学シミュレーションの深みへ*
+*DeepFlow \| 地球科学シミュレーションの深みへ*

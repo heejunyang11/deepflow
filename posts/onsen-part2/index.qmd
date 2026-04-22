@@ -1,0 +1,403 @@
+---
+title: "[温泉 #2] ヘキサダイアグラム (Stiff diagram)で読む水質——主要8成分の意味と水道水・河川水・地下水・海水の比較"
+date: 2026-04-22
+categories: [水文地球化学, 温泉, 地下水, 可視化]
+description: "温泉・地下水の泉質分類に欠かせないヘキサダイアグラム（Stiff図）の読み方・描き方を解説する。主要8成分の地球化学的意味、および水道水・河川水・地下水・海水・温泉の比較を通じて、水質の「顔」を見る目を養う。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## ヘキサダイアグラムとは
+
+天然水（地下水・温泉・河川水・海水）の水質を一枚の図で表現するツールが **ヘキサダイアグラム（Hexadiagram / Stiff Diagram）** である。中央の垂直軸を 0 とし、左右に主要イオンの当量濃度（meq/L）をプロットすることで、水の「化学的な顔」を可視化する。
+
+::: callout-note
+## ヘキサダイアグラムの別名
+
+ヘキサダイアグラムは Stiff 図（スティフ図）とも呼ばれる。また類似の可視化手法として、陽イオン・陰イオンをそれぞれ三角図に落とし込む**パイパー図（Piper diagram）**もある。本記事では Stiff 形式のヘキサダイアグラムを中心に解説する。
+:::
+
+------------------------------------------------------------------------
+
+## 1. 主要8成分の地球化学的意味
+
+天然水の化学組成は、以下の8成分（陽イオン4種・陰イオン4種）でほぼ記述できる。
+
+::: {style="background:#FDFDFD;border:1px solid #E5E7EB;border-radius:12px;padding:1.4em 1.6em;margin:1.2em 0;font-family:'Segoe UI',sans-serif;"}
+<p style="font-weight:700;color:#D97706;margin:0 0 0.9em;">
+
+⚗️ 水質を規定する主要8成分
+
+</p>
+
+| 種別 | イオン | 記号 | 主な起源 | 高濃度が示すこと |
+|--------------|--------------|--------------|--------------|-----------------|
+| 陽 | ナトリウム | Na⁺ | 岩塩溶解・深部熱水・海水 | 塩化物型熱水・海水混合 |
+| 陽 | カリウム | K⁺ | 長石の風化・火山性熱水 | 深部高温熱水 |
+| 陽 | カルシウム | Ca²⁺ | 石灰岩・石膏・炭酸岩 | 炭酸水素塩泉・硬水 |
+| 陽 | マグネシウム | Mg²⁺ | ドロマイト・苦灰岩 | 未熟な地下水・炭酸水素塩泉 |
+| 陰 | 塩化物 | Cl⁻ | 海塩・深部熱水・岩塩 | 深部 Na-Cl 型熱水・海水 |
+| 陰 | 硫酸 | SO₄²⁻ | 石膏・硫化物酸化・火山ガス | 硫酸塩泉・鉱山廃水 |
+| 陰 | 炭酸水素 | HCO₃⁻ | CO₂溶解・炭酸岩溶解 | 炭酸水素塩泉・重曹泉 |
+| 陰 | 硝酸 | NO₃⁻ | 施肥・汚水・森林土壌 | 人為的汚染・窒素負荷 |
+:::
+
+### 1.1 Na⁺（ナトリウム）
+
+Na⁺ は天然水中で最も卓越しやすい陽イオンである。岩塩（NaCl）の溶解、アルバイト（Na-長石）の風化、深部熱水からの供給がおもな起源である。海水では Na⁺ が圧倒的に主要な陽イオン（約10,700 mg/L）であり、海水の混合指標としても用いられる。
+
+### 1.2 K⁺（カリウム）
+
+K⁺ は正長石（K-長石）・雲母の風化から供給される。Na⁺ より岩石への再吸着が起きやすいため一般に低濃度だが、**高温熱水（深部起源）では K⁺/Na⁺ 比が上昇**する。
+
+### 1.3 Ca²⁺（カルシウム）
+
+石灰岩・ドロマイト地帯の地下水で卓越する。炭酸ガスが溶け込んだ水による石灰岩の溶解が主反応である。温泉水では、Na⁺ が多い深部熱水と Ca²⁺ が多い浅層地下水の混合比が泉質に反映される。
+
+### 1.4 Mg²⁺（マグネシウム）
+
+ドロマイト、かんらん石、輝石などの苦鉄質鉱物の風化から供給される。Mg²⁺/Ca²⁺ 比は岩石との反応成熟度の指標となり、**新しい浅層地下水では Mg²⁺ が相対的に高い**傾向がある。
+
+### 1.5 Cl⁻（塩化物イオン）
+
+地下水化学において Cl⁻ は**保存性成分**として極めて重要である。大部分の岩石・鉱物はほとんど Cl⁻ を含まないため、地下水中の Cl⁻ は海塩（大気降下物）・深部熱水・岩塩溶解に由来する。
+
+### 1.6 SO₄²⁻（硫酸イオン）
+
+火山地帯では H₂S ガスが酸化されて SO₄²⁻ が生成される。一般の地下水では石膏（CaSO₄）の溶解が主供給源となる。ヘキサダイアグラムではしばしば NO₃⁻ と合算して表示される。
+
+### 1.7 HCO₃⁻（炭酸水素イオン）
+
+天然水中で最も広く見られる陰イオンのひとつ。CO₂ が水に溶解して生じる。Ca²⁺ との共存は炭酸水素塩泉を形成し、日本で「美肌の湯」や重曹泉と呼ばれる温泉に多い。
+
+### 1.8 NO₃⁻（硝酸イオン）
+
+主に施肥や生活排水などの人為的影響の指標となる陰イオンである。地下水で高濃度を示す場合は窒素負荷の増大が疑われる。ヘキサダイアグラム（Stiff図）では、SO₄²⁻ と組み合わせてプロットされるのが一般的である。
+
+------------------------------------------------------------------------
+
+## 2. ヘキサダイアグラムの構造と描き方
+
+### 2.1 座標系の設計
+
+ヘキサダイアグラム（Stiff 図）は、**中央の垂直軸から左右に伸びる平行な水平軸**によって構成される。
+
+```{=html}
+<svg role="img" viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;display:block;margin:1.5em auto;border:1px solid #E5E7EB;border-radius:12px;">
+  <title>ヘキサダイアグラム（Stiff図）の軸構造</title>
+  <rect width="700" height="300" fill="#FDFDFD" rx="12"/>
+
+  <!-- 中央の垂直軸 -->
+  <line x1="350" y1="40" x2="350" y2="260" stroke="#9CA3AF" stroke-width="2"/>
+  <text x="350" y="32" text-anchor="middle" font-size="11" font-weight="600" fill="#6B7280" font-family="'Segoe UI',sans-serif">0 meq/L</text>
+
+  <!-- 水平軸1 (Na+K / Cl) -->
+  <line x1="150" y1="80" x2="550" y2="80" stroke="#E5E7EB" stroke-width="1.5"/>
+  <text x="140" y="85" text-anchor="end" font-size="12" font-weight="700" fill="#2563EB" font-family="'Segoe UI',sans-serif">Na⁺ + K⁺</text>
+  <text x="560" y="85" text-anchor="start" font-size="12" font-weight="700" fill="#DC2626" font-family="'Segoe UI',sans-serif">Cl⁻</text>
+
+  <!-- 水平軸2 (Ca / HCO3) -->
+  <line x1="150" y1="150" x2="550" y2="150" stroke="#E5E7EB" stroke-width="1.5"/>
+  <text x="140" y="155" text-anchor="end" font-size="12" font-weight="700" fill="#2563EB" font-family="'Segoe UI',sans-serif">Ca²⁺</text>
+  <text x="560" y="155" text-anchor="start" font-size="12" font-weight="700" fill="#DC2626" font-family="'Segoe UI',sans-serif">HCO₃⁻</text>
+
+  <!-- 水平軸3 (Mg / SO4+NO3) -->
+  <line x1="150" y1="220" x2="550" y2="220" stroke="#E5E7EB" stroke-width="1.5"/>
+  <text x="140" y="225" text-anchor="end" font-size="12" font-weight="700" fill="#2563EB" font-family="'Segoe UI',sans-serif">Mg²⁺</text>
+  <text x="560" y="225" text-anchor="start" font-size="12" font-weight="700" fill="#DC2626" font-family="'Segoe UI',sans-serif">SO₄²⁻ + NO₃⁻</text>
+
+  <!-- 凡例 -->
+  <text x="250" y="280" text-anchor="middle" font-size="11" font-weight="600" fill="#2563EB" font-family="'Segoe UI',sans-serif">← 陽イオン (Cations)</text>
+  <text x="450" y="280" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626" font-family="'Segoe UI',sans-serif">陰イオン (Anions) →</text>
+</svg>
+```
+
+<p style="text-align:center;font-size:0.82em;color:#6B7280;margin-top:0.5em;">
+
+図1. ヘキサダイアグラム（Stiff図）の軸構造：中央から左が陽イオン、右が陰イオン
+
+</p>
+
+### 2.2 当量濃度（meq/L）への換算
+
+$$\text{meq/L} = \frac{\text{mg/L}}{\text{式量} / |\text{価数}|}$$
+
+::: {style="background:#FDFDFD;border:1px solid #E5E7EB;border-radius:12px;padding:1.2em 1.5em;margin:1em 0;font-family:'Segoe UI',sans-serif;"}
+<p style="font-weight:700;color:#D97706;margin:0 0 0.7em;">
+
+🔢 meq/L 換算係数
+
+</p>
+
+| イオン | 式量 | 価数 | 換算係数 |
+|--------|------|------|----------|
+| Na⁺    | 23.0 | +1   | ÷ 23.0   |
+| K⁺     | 39.1 | +1   | ÷ 39.1   |
+| Ca²⁺   | 40.1 | +2   | ÷ 20.0   |
+| Mg²⁺   | 24.3 | +2   | ÷ 12.2   |
+| Cl⁻    | 35.5 | −1   | ÷ 35.5   |
+| SO₄²⁻  | 96.1 | −2   | ÷ 48.0   |
+| HCO₃⁻  | 61.0 | −1   | ÷ 61.0   |
+| NO₃⁻   | 62.0 | −1   | ÷ 62.0   |
+:::
+
+------------------------------------------------------------------------
+
+## 3. インタラクティブ ヘキサダイアグラム
+
+左のスライダーで各イオン濃度（mg/L）を入力すると、右の Stiff 図がリアルタイムで更新される。
+
+```{=html}
+<div id="hexa-app" style="font-family:'Segoe UI',sans-serif;background:#FDFDFD;border:1px solid #E5E7EB;border-radius:12px;padding:1.4em;margin:1.2em 0;">
+
+<!-- プリセットボタン -->
+<div style="margin-bottom:1em;">
+  <p style="font-size:0.85em;font-weight:600;color:#6B7280;margin:0 0 0.5em;">プリセット水質を選ぶ：</p>
+  <div style="display:flex;flex-wrap:wrap;gap:0.5em;">
+    <button onclick="loadPreset('tap')"    style="padding:0.3em 0.8em;border-radius:6px;border:1.5px solid #D97706;background:#FEF3C7;color:#92400E;font-size:0.82em;cursor:pointer;font-weight:600;">水道水</button>
+    <button onclick="loadPreset('gw')"     style="padding:0.3em 0.8em;border-radius:6px;border:1.5px solid #2563EB;background:#EFF6FF;color:#1E40AF;font-size:0.82em;cursor:pointer;font-weight:600;">地下水</button>
+    <button onclick="loadPreset('sea')"    style="padding:0.3em 0.8em;border-radius:6px;border:1.5px solid #7C3AED;background:#F5F3FF;color:#5B21B6;font-size:0.82em;cursor:pointer;font-weight:600;">海水</button>
+    <button onclick="loadPreset('onsen')"  style="padding:0.3em 0.8em;border-radius:6px;border:1.5px solid #DC2626;background:#FEF2F2;color:#991B1B;font-size:0.82em;cursor:pointer;font-weight:600;">温泉（Na-Cl型）</button>
+  </div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:1.2em;align-items:flex-start;">
+
+<!-- 入力パネル -->
+<div style="flex:0 0 260px;min-width:220px;">
+  <p style="font-size:0.85em;font-weight:600;color:#374151;margin:0 0 0.6em;">イオン濃度を入力（mg/L）</p>
+  <div style="margin-bottom:0.5em;">
+    <p style="font-size:0.78em;font-weight:700;color:#2563EB;margin:0 0 0.3em;">陽イオン</p>
+    <div id="cation-sliders"></div>
+  </div>
+  <div>
+    <p style="font-size:0.78em;font-weight:700;color:#DC2626;margin:0 0 0.3em;">陰イオン</p>
+    <div id="anion-sliders"></div>
+  </div>
+  <div id="ib-box" style="margin-top:0.9em;padding:0.6em 0.8em;border-radius:8px;border:1px solid #E5E7EB;background:#F9FAFB;font-size:0.82em;">
+    <span style="font-weight:600;color:#374151;">イオンバランス：</span><span id="ib-val" style="font-weight:700;"></span>
+    <div style="margin-top:0.2em;font-size:0.78em;color:#9CA3AF;">Σ陽 = <span id="sum-cat"></span> meq/L　Σ陰 = <span id="sum-an"></span> meq/L</div>
+  </div>
+</div>
+
+<!-- SVG -->
+<div style="flex:1;min-width:260px;">
+  <svg id="hexa-svg" viewBox="0 0 320 280" style="width:100%;max-width:420px;display:block;margin:0 auto;">
+    <g id="axis-lines"></g>
+    <polygon id="hexa-poly" fill="rgba(217,119,6,0.15)" stroke="#D97706" stroke-width="2" stroke-linejoin="round"/>
+    <g id="axis-labels" font-family="'Segoe UI',sans-serif"></g>
+    <g id="data-points"></g>
+  </svg>
+  <div id="wtype-box" style="text-align:center;margin-top:0.4em;font-size:0.84em;font-weight:600;color:#374151;min-height:1.4em;"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+(function(){
+const CENTER_X = 160;
+const R_MAX = 100;
+const ROWS = [60, 130, 200];
+const AXES_STIFF = [
+  { key:'nk',  label:'Na⁺+K⁺',      row:0, side:-1, col:'#2563EB' },
+  { key:'ca',  label:'Ca²⁺',         row:1, side:-1, col:'#2563EB' },
+  { key:'mg',  label:'Mg²⁺',         row:2, side:-1, col:'#2563EB' },
+  { key:'so_no',label:'SO₄²⁻+NO₃⁻', row:2, side: 1, col:'#DC2626' },
+  { key:'hc',  label:'HCO₃⁻',       row:1, side: 1, col:'#DC2626' },
+  { key:'cl',  label:'Cl⁻',          row:0, side: 1, col:'#DC2626' },
+];
+const EQ = { na:23.0, k:39.1, ca:20.0, mg:12.2, cl:35.5, so:48.0, hco:61.0, no3:62.0 };
+const PRESETS = {
+  tap:   { na:17, k:1.5, ca:25, mg:6.5, cl:18, so:22, hco:41, no3:2 },
+  gw:    { na:12, k:1.2, ca:45, mg:9,   cl:14, so:12, hco:110,no3:5 },
+  sea:   { na:10556,k:380,ca:400,mg:1272,cl:18980,so:2649,hco:140,no3:0.1 },
+  onsen: { na:545, k:35, ca:44, mg:8, cl:848, so:160, hco:90, no3:0.1 },
+};
+const SLIDERS = [
+  { id:'na', lab:'Na⁺', max:12000, c:'#2563EB' }, { id:'k', lab:'K⁺', max:500, c:'#3B82F6' },
+  { id:'ca', lab:'Ca²⁺', max:500, c:'#0EA5E9' }, { id:'mg', lab:'Mg²⁺', max:300, c:'#06B6D4' },
+  { id:'cl', lab:'Cl⁻', max:20000, c:'#DC2626' }, { id:'so', lab:'SO₄²⁻', max:3000, c:'#EF4444' },
+  { id:'hco', lab:'HCO₃⁻', max:600, c:'#F97316' }, { id:'no3', lab:'NO₃⁻', max:100, c:'#FB923C' },
+];
+let vals = {...PRESETS.tap};
+
+function init(){
+  buildSliders('cation-sliders', ['na','k','ca','mg']);
+  buildSliders('anion-sliders',  ['cl','so','hco','no3']);
+  buildSVGBase();
+  loadPreset('tap');
+}
+function buildSliders(id, keys){
+  const cont = document.getElementById(id); cont.innerHTML = '';
+  keys.forEach(k => {
+    const s = SLIDERS.find(x=>x.id===k);
+    cont.innerHTML += `<div style="margin-bottom:0.45em;"><div style="display:flex;justify-content:space-between;"><label style="font-size:0.8em;font-weight:600;">${s.lab}</label><span id="val-${k}" style="font-size:0.78em;color:#6B7280;"></span></div><input type="range" id="sl-${k}" min="0" max="${s.max}" step="0.1" style="width:100%;height:4px;accent-color:${s.c};" oninput="window._hexaUpdate('${k}',this.value)"/></div>`;
+  });
+}
+function buildSVGBase(){
+  const axisG = document.getElementById('axis-lines');
+  axisG.innerHTML = `<line x1="${CENTER_X}" y1="20" x2="${CENTER_X}" y2="240" stroke="#9CA3AF" stroke-width="2"/>`;
+  ROWS.forEach(y => {
+    axisG.innerHTML += `<line x1="${CENTER_X-R_MAX}" y1="${y}" x2="${CENTER_X+R_MAX}" y2="${y}" stroke="#E5E7EB"/>`;
+    for(let f of [-1,-0.5,0.5,1]){ const x=CENTER_X+f*R_MAX; axisG.innerHTML+=`<line x1="${x}" y1="${y-3}" x2="${x}" y2="${y+3}" stroke="#D1D5DB"/>`; }
+  });
+  const lg = document.getElementById('axis-labels'); lg.innerHTML = '';
+  AXES_STIFF.forEach(a => {
+    const x = CENTER_X + a.side*(R_MAX+8);
+    lg.innerHTML += `<text x="${x}" y="${ROWS[a.row]}" text-anchor="${a.side<0?'end':'start'}" dominant-baseline="middle" font-size="10" font-weight="700" fill="${a.col}">${a.label}</text>`;
+  });
+}
+function updateDiagram(){
+  const meq = { nk: vals.na/EQ.na+vals.k/EQ.k, ca: vals.ca/EQ.ca, mg: vals.mg/EQ.mg, hc: vals.hco/EQ.hco, so_no: vals.so/EQ.so+vals.no3/EQ.no3, cl: vals.cl/EQ.cl };
+  const maxV = Math.max(...Object.values(meq), 0.1);
+  const pts = AXES_STIFF.map(a => ({ x: CENTER_X + a.side*(Math.min(meq[a.key]/maxV, 1)*R_MAX), y: ROWS[a.row] }));
+  document.getElementById('hexa-poly').setAttribute('points', pts.map(p=>p.x+','+p.y).join(' '));
+  const dg = document.getElementById('data-points'); dg.innerHTML = '';
+  pts.forEach((p,i) => { dg.innerHTML += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="${AXES_STIFF[i].col}" stroke="white"/>`; });
+  const sC = meq.nk+meq.ca+meq.mg, sA = meq.cl+meq.so_no+meq.hc;
+  const ib = (sC+sA>0)?((sC-sA)/(sC+sA)*200).toFixed(1):'0';
+  document.getElementById('ib-val').textContent = ib+'%';
+  document.getElementById('sum-cat').textContent = sC.toFixed(2);
+  document.getElementById('sum-an').textContent = sA.toFixed(2);
+}
+window._hexaUpdate = (k,v) => { vals[k]=parseFloat(v)||0; document.getElementById('val-'+k).textContent = vals[k].toLocaleString()+' mg/L'; updateDiagram(); };
+window.loadPreset = (n) => { vals={...PRESETS[n]}; SLIDERS.forEach(s=>{ const el=document.getElementById('sl-'+s.id); if(el){el.value=vals[s.id]||0; document.getElementById('val-'+s.id).textContent=(vals[s.id]||0).toLocaleString()+' mg/L';} }); updateDiagram(); };
+if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',init); } else { init(); }
+})();
+</script>
+```
+
+------------------------------------------------------------------------
+
+## 代表的な水質の比較
+
+### 4種類の代表的な水質をヘキサダイアグラム（Stiff図）で比較すると、形状の違いが一目で分かる。
+
+::: {style="background:#FDFDFD;border:1px solid #E5E7EB;border-radius:12px;padding:1.2em 1.5em;margin:1em 0;font-family:'Segoe UI',sans-serif;overflow-x:auto;"}
+<p style="font-weight:700;color:#D97706;margin:0 0 0.8em;">
+
+📊 比較に使用した代表値（mg/L）
+
+</p>
+
+| 水種                        | Na⁺    | K⁺  | Ca²⁺ | Mg²⁺  | Cl⁻    | SO₄²⁻ | HCO₃⁻ |
+|-----------------------------|--------|-----|------|-------|--------|-------|-------|
+| 水道水（東京・例）          | 17     | 1.5 | 25   | 6.5   | 18     | 22    | 41    |
+| 河川水（日本平均）          | 7      | 1.3 | 12   | 3     | 8      | 9     | 28    |
+| 地下水（Ca-HCO₃型）         | 12     | 1.2 | 45   | 9     | 14     | 12    | 110   |
+| 海水                        | 10,556 | 380 | 400  | 1,272 | 18,980 | 2,649 | 140   |
+| 温泉（Na-Cl型・別府G1相当） | 545    | 35  | 44   | 8     | 848    | 160   | 90    |
+:::
+
+#### 数値の出典と精度
+
+水道水は東京都水道局の水質測定値（代表的年平均値）、河川水は国土交通省「河川水質データ」に基づく日本河川の概略平均値、地下水は典型的な Ca-HCO₃型地下水の文献値、海水は Hem（1985）、温泉は梁（2021）の表1・G1グループの代表値を参照した。いずれも概略値であり、地点・季節により大きく変動する。
+
+## 各水種の特徴（模式図）
+
+```{=html}
+<svg role="img" viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;display:block;margin:1.5em auto;border:1px solid #E5E7EB;border-radius:12px;">
+  <title>4水種のStiff図模式比較</title>
+  <rect width="700" height="340" fill="#FDFDFD" rx="12"/>
+  <text x="350" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#374151" font-family="'Segoe UI',sans-serif">4水種の形状の違い（Stiff図形式）</text>
+
+  <!-- 各水種の模式Stiff図（4枚を横並び） -->
+  <!-- 水道水 -->
+  <text x="87" y="50" text-anchor="middle" font-size="11" font-weight="600" fill="#D97706">水道水</text>
+  <g transform="translate(87,160)">
+    <line x1="0" y1="-80" x2="0" y2="80" stroke="#9CA3AF" stroke-width="1.5"/>
+    <polygon points="-15,-60 18,-60 12,0 15,60 -10,60 -12,0" fill="rgba(217,119,6,0.18)" stroke="#D97706" stroke-width="1.2"/>
+    <text x="-35" y="-60" text-anchor="end" font-size="7" fill="#2563EB">Na+K</text>
+    <text x="35" y="-60" text-anchor="start" font-size="7" fill="#DC2626">Cl</text>
+    <text x="-35" y="60" text-anchor="end" font-size="7" fill="#2563EB">Mg</text>
+    <text x="35" y="60" text-anchor="start" font-size="7" fill="#DC2626">SO₄+NO₃</text>
+  </g>
+
+  <!-- 地下水 -->
+  <text x="262" y="50" text-anchor="middle" font-size="11" font-weight="600" fill="#2563EB">地下水</text>
+  <g transform="translate(262,160)">
+    <line x1="0" y1="-80" x2="0" y2="80" stroke="#9CA3AF" stroke-width="1.5"/>
+    <polygon points="-10,-60 12,-60 55,0 12,60 -12,60 -45,0" fill="rgba(37,99,235,0.15)" stroke="#2563EB" stroke-width="1.2"/>
+  </g>
+
+  <!-- 海水 -->
+  <text x="438" y="50" text-anchor="middle" font-size="11" font-weight="600" fill="#7C3AED">海水</text>
+  <g transform="translate(438,160)">
+    <line x1="0" y1="-80" x2="0" y2="80" stroke="#9CA3AF" stroke-width="1.5"/>
+    <polygon points="-75,-60 78,-60 15,0 12,60 -12,60 -18,0" fill="rgba(124,58,237,0.15)" stroke="#7C3AED" stroke-width="1.2"/>
+  </g>
+
+  <!-- 温泉 -->
+  <text x="613" y="50" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">温泉（Na-Cl）</text>
+  <g transform="translate(613,160)">
+    <line x1="0" y1="-80" x2="0" y2="80" stroke="#9CA3AF" stroke-width="1.5"/>
+    <polygon points="-65,-60 68,-60 15,0 42,60 -12,60 -18,0" fill="rgba(220,38,38,0.15)" stroke="#DC2626" stroke-width="1.2"/>
+  </g>
+</svg>
+```
+
+------------------------------------------------------------------------
+
+## 5. ヘキサダイアグラムの「大きさ」と「形」を読む
+
+:::: {style="background:#FDFDFD;border:1px solid #E5E7EB;border-radius:12px;padding:1.4em 1.6em;margin:1.2em 0;font-family:'Segoe UI',sans-serif;"}
+<p style="font-weight:700;color:#D97706;margin:0 0 0.9em;">
+
+🔍 読み取りのポイント
+
+</p>
+
+::: {style="background:#FDFDFD;border:1px solid #E5E7EB;border-radius:12px;padding:1.4em 1.6em;margin:1.2em 0;font-family:'Segoe UI',sans-serif;"}
+**六角形の「大きさ」＝ 総溶存成分量（TDS の代理）**
+
+六角形の面積が大きいほど溶存イオン総量が多い。海水＞温泉＞地下水＞水道水＞河川水 の順が典型的である。
+
+**六角形の「形」＝ 水質タイプ（支配イオンの組み合わせ）**
+
+| 形の特徴              | 示す水質タイプ | 代表的な水                   |
+|-----------------------|----------------|------------------------------|
+| Na+K 軸と Cl 軸が突出 | Na-Cl 型       | 海水・深部熱水・塩化物泉     |
+| Ca 軸と HCO₃ 軸が突出 | Ca-HCO₃ 型     | 石灰岩地下水・炭酸水素塩泉   |
+| 全軸がほぼ均等        | 混合型         | 多種の水が混合した地下水     |
+| SO₄ 軸が突出          | SO₄ 型         | 硫酸塩泉・鉱山廃水・石膏地帯 |
+| Mg 軸が相対的に高い   | Mg-HCO₃ 型     | 未成熟地下水・玄武岩地帯     |
+
+**形が「似ている」＝ 水質の類縁関係**
+
+同じ水系に属する地下水はヘキサダイアグラムの形が似る傾向がある。逆に形が大きく異なる場合は、異なる流動系や汚染の影響が疑われる。
+:::
+::::
+
+## 6. 温泉診断への応用
+
+ヘキサダイアグラムは温泉の泉質診断で以下のように活用される。
+
+**① 泉質タイプの即時判定**：六角形のどの軸が突出しているかを見るだけで、「Na-Cl 型」「Ca-HCO₃ 型」「H-SO₄ 型」などの判定ができる。
+
+**② 混合の検出**：六角形が海水と温泉の「中間の形」をしている場合、海水混合が示唆される。梁（2021）の温泉井10はこの手法で混合率12%と推定された。
+
+**③ 経年変化の追跡**：同一温泉井で時系列のヘキサダイアグラムを重ね描きすることで、泉質の変化（例：塩化物泉→炭酸水素塩泉）を視覚的に追跡できる。
+
+::: callout-important
+## ヘキサダイアグラムの限界
+
+ヘキサダイアグラムは**相対的な割合**ではなく**絶対当量濃度**をプロットするため、サンプル間で濃度スケールが大きく異なる場合（例：海水と河川水を同一軸で比較）は軸の最大値をそろえる工夫が必要である。また微量成分（Fe²⁺、Al³⁺、SiO₂、CO₂など）はこの図に現れない。これらの補完にはトリリニアダイアグラム（パイパー図）や個別の散布図が有効である。
+:::
+
+------------------------------------------------------------------------
+
+## 参考文献
+
+梁 熙俊（2021）水文化学的手法と多変量解析による別府温泉の泉質の分類および鉛直分布特性．*地下水学会誌*，**63**（3），137–149.
+
+Hem J.D.（1985）Study and interpretation of the chemical characteristics of natural water, 3rd ed. *USGS Water-Supply Paper* 2254.
+
+東京都水道局（各年）水質試験年報．https://www.waterworks.metro.tokyo.lg.jp/
+
+国土交通省（各年）河川水質データベース．https://www.mlit.go.jp/

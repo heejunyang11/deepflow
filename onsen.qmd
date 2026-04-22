@@ -10,28 +10,31 @@ crossref:
 :::  {.grid}
 
 ::: {.g-col-12 .g-col-md-6}
-### 🌊 温泉の化学
-温泉に関わる化学的な特徴や成分、反応などを解説します。
+### 🌊 温泉の科学
+温泉に関わる科学的な特徴や成分、反応などを解説します。
 
 
 **記事一覧**
 
-- [温泉の化学的特徴](/posts/onsen-chemistry/)
+- [別府温泉の化学的特徴](/posts/onsen-part1/)
 
+- [HexaDiagram（ヘキサダイアグラム）とは？](/posts/onsen-part2/)
 
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
 
+:::
+
 ::: {.g-col-12 .g-col-md-6}
-### ⚗️ 泉質分類
-泉質の分類やその方法を解説します。
+### ⚗️ 地理
+地形やGISについて。
 
 
 
 **記事一覧**
 
-- [別府温泉の化学的特徴による分類分類](/posts/onsen-classification/)
+- [別府温泉の地形]
 
 
 

@@ -9,11 +9,9 @@ image: "image2.jpg"
 
 ## はじめに
 
-地下水流動解析とは、地下の水がどのように動いているかを
-数値モデルで再現する技術です。
+地下水流動解析とは、地下の水がどのように動いているかを 数値モデルで再現する技術です。
 
-代表的なソフトウェアとして **MODFLOW**（米国地質調査所開発）があり、
-Pythonライブラリ **FloPy** を使うことでコードからモデルを操作できます。
+代表的なソフトウェアとして **MODFLOW**（米国地質調査所開発）があり、 Pythonライブラリ **FloPy** を使うことでコードからモデルを操作できます。
 
 ## MODFLOWとは
 
@@ -22,7 +20,8 @@ Pythonライブラリ **FloPy** を使うことでコードからモデルを操
 - FloPyを使えばPythonから完全に操作可能
 
 ## 簡単なコード例
-```python
+
+``` python
 import flopy
 
 # モデル作成
@@ -41,9 +40,88 @@ dis = flopy.modflow.ModflowDis(
 print("モデル作成完了！")
 ```
 
+## インタラクティブ・グリッド・シミュレーター
+
+MODFLOWのモデル範囲は、格子の数と幅の掛け算で決まります。スライダーを動かして、設定がどのようにモデルの形状（スケール感）に影響するか試してみましょう。
+
+```{ojs}
+//| echo: false
+
+// --- スタイル設定 (ベージュ系) ---
+bgColor = "#fdfcf0"
+panelColor = "#f4f1de"
+accentColor = "#3b82f6"
+
+// --- 入力UI ---
+md`### 🛠️ Model Configurator`
+
+viewof nrow = Inputs.range([1, 100], {value: 20, step: 1, label: "nrow (行数)"})
+viewof ncol = Inputs.range([1, 100], {value: 20, step: 1, label: "ncol (列数)"})
+viewof delr = Inputs.range([1, 1000], {value: 250, step: 10, label: "delr (セルの幅 m)"})
+viewof delc = Inputs.range([1, 1000], {value: 250, step: 10, label: "delc (セルの高さ m)"})
+
+// --- 統計情報の表示 ---
+html`
+<div style="display: flex; gap: 10px; margin: 20px 0; font-family: sans-serif;">
+  <div style="flex:1; background: ${panelColor}; padding: 15px; border-radius: 8px; border: 1px solid #e9e5d3;">
+    <div style="font-size: 0.7rem; color: #7f7c6b;">DOMAIN SIZE</div>
+    <div style="font-size: 1.1rem; font-weight: bold;">${(ncol * delr / 1000).toFixed(1)} x ${(nrow * delc / 1000).toFixed(1)} <span style="font-size:0.7rem">km</span></div>
+  </div>
+  <div style="flex:1; background: ${panelColor}; padding: 15px; border-radius: 8px; border: 1px solid #e9e5d3;">
+    <div style="font-size: 0.7rem; color: #7f7c6b;">TOTAL NODES</div>
+    <div style="font-size: 1.1rem; font-weight: bold;">${(nrow * ncol).toLocaleString()}</div>
+  </div>
+</div>
+`
+
+// --- チャート ---
+chart = {
+  const modelWidth = ncol * delr;
+  const modelHeight = nrow * delc;
+  const maxDim = Math.max(modelWidth, modelHeight, 5000) * 1.1;
+
+  return Plot.plot({
+    width: 600,
+    height: 450,
+    style: {
+      backgroundColor: bgColor,
+      color: "#333",
+      fontFamily: "system-ui"
+    },
+    x: { domain: [0, maxDim], label: "X (m) →" },
+    y: { domain: [0, maxDim * (450/600)], label: "Y (m) ↑" },
+    grid: true,
+    marks: [
+      // モデル領域
+      Plot.rect([0], {
+        x1: 0, y1: 0, x2: modelWidth, y2: modelHeight,
+        fill: accentColor, fillOpacity: 0.1,
+        stroke: accentColor, strokeWidth: 2
+      }),
+      // 格子線
+      Plot.ruleX(d3.range(0, (ncol + 1) * delr, delr), {
+        y1: 0, y2: modelHeight, stroke: accentColor, 
+        strokeOpacity: ncol > 50 ? 0.05 : 0.15
+      }),
+      Plot.ruleY(d3.range(0, (nrow + 1) * delc, delc), {
+        x1: 0, x2: modelWidth, stroke: accentColor, 
+        strokeOpacity: nrow > 50 ? 0.05 : 0.15
+      }),
+      // インタラクティブなツールチップ代わり
+      Plot.ruleX([0], {px: Plot.pointerX, stroke: "#e63946", strokeDasharray: "4,4"}),
+      Plot.ruleY([0], {py: Plot.pointerY, stroke: "#e63946", strokeDasharray: "4,4"}),
+      Plot.text([0], {
+        px: Plot.pointerX, py: Plot.pointerY, 
+        text: d => `${Math.round(Plot.pointerX(d))}m, ${Math.round(Plot.pointerY(d))}m`,
+        dy: -10, fontWeight: "bold", fill: "#e63946"
+      })
+    ]
+  })
+}
+```
+
 ## まとめ
 
-FloPyを使うことで、地下水流動モデルの構築から
-結果の可視化まですべてPythonで完結できます。
+FloPyを使うことで、地下水流動モデルの構築から 結果の可視化まですべてPythonで完結できます。
 
 次回は境界条件の設定について解説します。

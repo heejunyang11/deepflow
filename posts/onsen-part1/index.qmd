@@ -1,0 +1,398 @@
+---
+title: "[温泉 #1] 別府温泉の「泉質」は何で決まるのか——水文地球化学で読み解く地下熱水"
+date: 2026-04-23
+categories: [温泉, 水文地球化学, 別府, 地下水]
+description: "温泉の色や味はなぜ違うのか。梁（2021）の研究を入口に、水文地球化学の基礎から別府温泉の流動システムまでを解説する。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## この記事で学べること
+
+別府温泉には「地獄」と呼ばれる青白い泉から、透明な重曹泉、酸っぱい硫酸塩泉まで、驚くほど多様な泉質が存在する。なぜ同じ「別府」でこれほど異なる温泉が湧くのか。
+
+この問いに答えるのが **水文地球化学（Hydrogeochemistry）**——水と岩石・ガスの化学反応を追う学問である。本記事では梁（2021）の研究をガイドに、温泉の泉質を決める仕組みを基礎から解説する。
+
+::: callout-note
+## 参照論文
+
+梁 熙俊（2021）「水文化学的手法と多変量解析による別府温泉の泉質の分類および鉛直分布特性」*地下水学会誌* 第63巻第3号, pp.137–149.
+:::
+
+------------------------------------------------------------------------
+
+## 1. 温泉の「泉質」とは何か
+
+温泉に含まれる主要イオンを整理すると、以下のように分類できる。
+
+::: {style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.4em 1.6em; margin:1.2em 0; font-family:'Segoe UI',sans-serif;"}
+<p style="font-weight:600; color:#D97706; margin:0 0 0.8em;">
+
+💧 温泉水の主要溶存成分
+
+</p>
+
+| 分類           | イオン         | 記号  | 意味・指標                   |
+|----------------|----------------|-------|------------------------------|
+| 陽イオン（＋） | ナトリウム     | Na⁺   | 深部熱水・海水の指標         |
+|                | カルシウム     | Ca²⁺  | 浅層地下水・岩石溶解の指標   |
+|                | マグネシウム   | Mg²⁺  | 浅層地下水・未成熟な水の指標 |
+|                | カリウム       | K⁺    | 深部高温熱水の指標           |
+| 陰イオン（－） | 塩化物イオン   | Cl⁻   | 保存性成分、深部熱水の指標   |
+|                | 炭酸水素イオン | HCO₃⁻ | 二酸化炭素反応、浅層の指標   |
+|                | 硫酸イオン     | SO₄²⁻ | 火山ガス（H₂S）酸化の指標    |
+|                | 硝酸イオン     | NO₃⁻  | 人為的汚染・施肥の影響       |
+:::
+
+どのイオンが **卓越している**（多く含まれている）かによって、泉質の「型」が決まる。たとえば「Na-Cl 型」とはナトリウムと塩化物イオンが主体の温泉である。
+
+::: callout-tip
+## ポイント：泉質は「水が通ってきた岩石の記録」
+
+温泉水はもともと雨水（天水）が地下に浸み込んだものである。地下深部を流れるあいだに岩石を溶かし、ガスと反応し、熱水と混合することで独自の化学組成を獲得する。泉質は地下の「旅の履歴書」だといえる。
+:::
+
+------------------------------------------------------------------------
+
+## 2. 別府温泉の地下で何が起きているか。
+
+```{=html}
+<svg role="img" viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;display:block;margin:1em auto;border:1px solid #E5E7EB;border-radius:12px;">
+  <title>別府温泉の地下熱水システム概念図</title>
+  <defs>
+    <marker id="arr-red" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <polygon points="0,0 7,3.5 0,7" fill="#DC2626"/>
+    </marker>
+    <marker id="arr-green" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <polygon points="0,0 7,3.5 0,7" fill="#059669"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <polygon points="0,0 7,3.5 0,7" fill="#1D4ED8"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="700" height="420" fill="#FDFDFD" rx="12"/>
+
+  <!-- 地層 -->
+  <rect x="0" y="140" width="620" height="80" fill="#EEF2FF"/>
+  <rect x="0" y="220" width="620" height="60" fill="#FEF3C7"/>
+  <rect x="0" y="280" width="620" height="140" fill="#FEE2E2"/>
+  <rect x="620" y="0" width="80" height="420" fill="#BFDBFE"/>
+
+  <!-- 地上 -->
+  <rect x="0" y="0" width="620" height="140" fill="#F0FDF4"/>
+  <path d="M0,140 Q60,128 160,132 Q280,122 430,128 Q530,122 620,115" stroke="#6B7280" stroke-width="1.5" fill="none"/>
+
+  <!-- 山 -->
+  <polygon points="28,140 90,32 155,140" fill="#C8A96E" stroke="#8B7355" stroke-width="1.5"/>
+  <text x="90" y="24" text-anchor="middle" font-size="11" font-weight="600" fill="#5C3D11">由布・鶴見火山</text>
+
+  <!-- 鉄輪断層 -->
+  <line x1="338" y1="10" x2="338" y2="420" stroke="#D97706" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="342" y="26" font-size="10" font-weight="600" fill="#D97706">鉄輪断層</text>
+
+  <!-- ラベル -->
+  <text x="14" y="165" font-size="11" font-weight="600" fill="#3730A3">浅層地下水帯</text>
+  <text x="14" y="305" font-size="11" font-weight="600" fill="#991B1B">深部熱水帯</text>
+  <text x="14" y="320" font-size="9.5" fill="#7F1D1D">Na-Cl 型熱水（250〜300℃）</text>
+
+  <!-- 熱水上昇 -->
+  <line x1="348" y1="408" x2="348" y2="292" stroke="#DC2626" stroke-width="2.5" marker-end="url(#arr-red)"/>
+  <text x="356" y="370" font-size="10" fill="#DC2626" font-weight="600">熱水上昇</text>
+
+  <!-- 沸騰・蒸気分離 -->
+  <ellipse cx="348" cy="232" rx="34" ry="13" fill="#FCA5A5" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="348" y="236" text-anchor="middle" font-size="9" fill="#7F1D1D" font-weight="600">沸騰・蒸気分離</text>
+
+  <!-- ガス上昇 -->
+  <path d="M328,220 Q308,195 294,178" stroke="#059669" stroke-width="1.8" stroke-dasharray="5,3" fill="none" marker-end="url(#arr-green)"/>
+  <text x="210" y="192" font-size="9.5" fill="#065F46">CO₂・H₂S ガス</text>
+
+  <!-- 泉質域 -->
+  <ellipse cx="185" cy="178" rx="62" ry="17" fill="#D1FAE5" stroke="#059669" stroke-width="1.2"/>
+  <text x="185" y="182" text-anchor="middle" font-size="10" fill="#065F46" font-weight="600">炭酸水素塩泉</text>
+  <ellipse cx="355" cy="172" rx="58" ry="17" fill="#FEF08A" stroke="#CA8A04" stroke-width="1.2"/>
+  <text x="355" y="181" text-anchor="middle" font-size="10" fill="#713F12" font-weight="600">酸性硫酸塩泉</text>
+
+  <!-- 海水 -->
+  <path d="M620,168 Q604,165 586,168" stroke="#1D4ED8" stroke-width="1.8" stroke-dasharray="4,3" fill="none" marker-end="url(#arr-blue)"/>
+  <text x="627" y="155" font-size="9.5" fill="#1E40AF">海水の混合</text>
+</svg>
+```
+
+<p style="text-align:center; font-size:0.82em; color:#6B7280; margin-top:0.5em;">
+
+図1. 別府温泉の地下熱水システム概念図（梁 2021 をもとに作成）
+
+</p>
+
+### 泉質を生む3つのプロセス
+
+別府温泉の泉質は、深部熱水が地表に向かって上昇する過程で起こる次の3つのプロセスによって形成される。
+
+**① 沸騰と蒸気分離**：深部（250〜300℃）の塩化物型熱水が上昇・減圧すると沸騰し、液体（熱水）と蒸気に分離する。CO₂・H₂S などのガス成分は蒸気側に移行する。
+
+**② 蒸気と浅層地下水の反応**：地表近くの冷たい地下水（もとは雨水）に蒸気が吹き込むことで反応が起きる。CO₂ガスが溶け込めば炭酸水素塩泉が、H₂S が酸化されれば酸性硫酸塩泉が生まれる。
+
+$$\mathrm{H_2S + 2O_2 \rightarrow H_2SO_4}$$
+
+**③ 混合と希釈**：上昇してきた熱水は、途中で冷地下水や他の温泉水と混合しながら希釈される。海岸付近では海水との混合も起きる。
+
+------------------------------------------------------------------------
+
+## 3. 研究の手法：52ヶ所の温泉を「仕分ける」
+
+梁（2021）は、2016〜2019年に分析された別府市内52ヶ所の温泉分析書を使い、泉質を定量的に分類した。
+
+### 3.1 使ったデータ
+
+::: {style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.2em 1.5em; margin:1em 0; font-family:'Segoe UI',sans-serif;"}
+<p style="font-weight:600; color:#D97706; margin:0 0 0.7em;">
+
+📋 解析に使用した11項目
+
+</p>
+
+| 項目           | 記号   | 意味                           |
+|----------------|--------|--------------------------------|
+| 泉温           | T      | 温泉水の温度（℃）              |
+| 電気伝導度     | EC     | 溶存イオンの多さの指標（mS/m） |
+| pH             | —      | 酸性・アルカリ性の度合い       |
+| ナトリウム     | Na⁺    | 塩化物泉の指標                 |
+| カリウム       | K⁺     | 深部熱水の指標                 |
+| カルシウム     | Ca²⁺   | 炭酸水素塩泉の指標             |
+| マグネシウム   | Mg²⁺   | 炭酸水素塩泉の指標             |
+| 塩化物イオン   | Cl⁻    | 深部塩化物型熱水の指標         |
+| 硫酸イオン     | SO₄²⁻  | 酸性硫酸塩泉・火山性の指標     |
+| 炭酸水素イオン | HCO₃⁻  | 炭酸水素塩泉の指標             |
+| 遊離CO₂        | CO₂(g) | 炭酸ガス濃度                   |
+:::
+
+### 3.2 階層的クラスター分析（HCA）
+
+52ヶ所の温泉を「似た者同士」にまとめる手法が **階層的クラスター分析（HCA）** である。
+
+## HCA の考え方
+
+複数の変数（ここでは9つの溶存成分）について、温泉同士の「距離」（化学組成の違いの大きさ）を計算し、距離が近いものから順番にグループにまとめていく。結果は「デンドログラム（樹形図）」として表現される。
+
+分析の結果、52ヶ所は大きく **5つのグループ**（G1, G2a, G2b, G2c, G3）に分類された。
+
+### 3.3 因子分析（FA）
+
+なぜそのようにグループが分かれるのか、背後にある「共通因子」を探る手法が **因子分析（FA）** である。
+
+::: {style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.2em 1.5em; margin:1em 0; font-family:'Segoe UI',sans-serif;"}
+<p style="font-weight:600; color:#D97706; margin:0 0 0.7em;">
+
+📊 因子分析の結果（累積寄与率 81%）
+
+</p>
+
+| 因子                 | 高い負荷量を示す成分 | 解釈                       |
+|----------------------|----------------------|----------------------------|
+| **因子1**（寄与47%） | Na⁺、K⁺、Cl⁻、HCO₃⁻  | 深部塩化物型熱水の影響     |
+| **因子2**（寄与25%） | Ca²⁺、Mg²⁺、SO₄²⁻    | アルカリ土類金属の反応     |
+| **因子3**（寄与9%）  | pH                   | 酸性度（火山性ガスの影響） |
+:::
+
+つまりこの3つの因子だけで別府温泉の泉質の多様性の81%が説明できる。
+
+------------------------------------------------------------------------
+
+## 4. 5グループの特徴
+
+```{=html}
+<svg role="img" viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;display:block;margin:1.2em auto;background:#FDFDFD;border:1px solid #E5E7EB;border-radius:12px;">
+  <title>別府温泉5グループの化学的特徴</title>
+  <text x="350" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#333">5グループの化学的特徴と分布域</text>
+
+  <!-- G1 -->
+  <rect x="15" y="45" width="125" height="240" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.2" rx="8"/>
+  <text x="77" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#DC2626">G1</text>
+  <text x="77" y="86" text-anchor="middle" font-size="10.5" font-weight="600" fill="#4B5563">Na-Cl 型</text>
+  <text x="77" y="100" text-anchor="middle" font-size="9" fill="#6B7280">（酸性・高濃度）</text>
+  <line x1="30" y1="110" x2="125" y2="110" stroke="#DC2626" stroke-width="0.5" stroke-dasharray="2,2"/>
+  <text x="35" y="128" font-size="9.5" fill="#1F2937">Cl⁻, Na⁺   ●●●</text>
+  <text x="35" y="142" font-size="9.5" fill="#1F2937">SO₄²⁻      ●●●</text>
+  <text x="35" y="156" font-size="9.5" fill="#1F2937">pH       2〜4</text>
+  <text x="77" y="180" text-anchor="middle" font-size="9.5" fill="#374151">亀川地熱域</text>
+  <text x="77" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#991B1B">深部熱水</text>
+  <text x="77" y="238" text-anchor="middle" font-size="9.5" font-weight="600" fill="#991B1B">＋蒸気分離混合</text>
+
+  <!-- G2a -->
+  <rect x="150" y="45" width="125" height="240" fill="#FFF7ED" stroke="#EA580C" stroke-width="1.2" rx="8"/>
+  <text x="212" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#EA580C">G2a</text>
+  <text x="212" y="86" text-anchor="middle" font-size="10.5" font-weight="600" fill="#4B5563">Na-Cl 型</text>
+  <text x="212" y="100" text-anchor="middle" font-size="9" fill="#6B7280">（弱食塩泉）</text>
+  <line x1="165" y1="110" x2="260" y2="110" stroke="#EA580C" stroke-width="0.5" stroke-dasharray="2,2"/>
+  <text x="170" y="128" font-size="9.5" fill="#1F2937">Cl⁻, Na⁺   ●●</text>
+  <text x="170" y="142" font-size="9.5" fill="#1F2937">HCO₃⁻      ●</text>
+  <text x="170" y="156" font-size="9.5" fill="#1F2937">pH       6〜8</text>
+  <text x="212" y="180" text-anchor="middle" font-size="9.5" fill="#374151">亀川地熱域</text>
+  <text x="212" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#9A3412">熱水の希釈</text>
+
+  <!-- G2b -->
+  <rect x="285" y="45" width="125" height="240" fill="#F8FAFC" stroke="#475569" stroke-width="1.2" rx="8"/>
+  <text x="347" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#475569">G2b</text>
+  <text x="347" y="86" text-anchor="middle" font-size="10.5" font-weight="600" fill="#4B5563">中間型</text>
+  <text x="347" y="100" text-anchor="middle" font-size="9" fill="#6B7280">（混合型）</text>
+  <line x1="300" y1="110" x2="395" y2="110" stroke="#475569" stroke-width="0.5" stroke-dasharray="2,2"/>
+  <text x="305" y="128" font-size="9.5" fill="#1F2937">Cl⁻, HCO₃⁻ ●</text>
+  <text x="305" y="142" font-size="9.5" fill="#1F2937">Na⁺, K⁺    ●</text>
+  <text x="347" y="180" text-anchor="middle" font-size="9.5" fill="#374151">海岸・新川付近</text>
+  <text x="347" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#334155">流動途上の</text>
+  <text x="347" y="238" text-anchor="middle" font-size="9.5" font-weight="600" fill="#334155">多成分混合</text>
+
+  <!-- G2c -->
+  <rect x="420" y="45" width="125" height="240" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.2" rx="8"/>
+  <text x="482" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#16A34A">G2c</text>
+  <text x="482" y="86" text-anchor="middle" font-size="10.5" font-weight="600" fill="#4B5563">HCO₃⁻ 主体</text>
+  <text x="482" y="100" text-anchor="middle" font-size="9" fill="#6B7280">（低濃度）</text>
+  <line x1="435" y1="110" x2="530" y2="110" stroke="#16A34A" stroke-width="0.5" stroke-dasharray="2,2"/>
+  <text x="440" y="128" font-size="9.5" fill="#1F2937">HCO₃⁻      ●●</text>
+  <text x="440" y="142" font-size="9.5" fill="#1F2937">Ca²⁺, Mg²⁺ ●</text>
+  <text x="482" y="180" text-anchor="middle" font-size="9.5" fill="#374151">別府地熱域</text>
+  <text x="482" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#166534">冷地下水との</text>
+  <text x="482" y="238" text-anchor="middle" font-size="9.5" font-weight="600" fill="#166534">希釈・混合</text>
+
+  <!-- G3 -->
+  <rect x="555" y="45" width="130" height="240" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.2" rx="8"/>
+  <text x="620" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#2563EB">G3</text>
+  <text x="620" y="86" text-anchor="middle" font-size="10.5" font-weight="600" fill="#4B5563">Ca-HCO₃ 型</text>
+  <text x="620" y="100" text-anchor="middle" font-size="9" fill="#6B7280">（重炭酸土類泉）</text>
+  <line x1="570" y1="110" x2="675" y2="110" stroke="#2563EB" stroke-width="0.5" stroke-dasharray="2,2"/>
+  <text x="575" y="128" font-size="9.5" fill="#1F2937">HCO₃⁻      ●●●</text>
+  <text x="575" y="142" font-size="9.5" fill="#1F2937">Ca²⁺, Mg²⁺ ●●●</text>
+  <text x="620" y="180" text-anchor="middle" font-size="9.5" fill="#374151">別府地熱域</text>
+  <text x="620" y="225" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1E40AF">浅層での</text>
+  <text x="620" y="238" text-anchor="middle" font-size="9.5" font-weight="600" fill="#1E40AF">ガス反応・混合</text>
+</svg>
+```
+
+<p style="text-align:center; font-size:0.82em; color:#6B7280; margin-top:0.2em;">
+
+図2. 5グループの化学的特徴（梁 2021 をもとに作成）
+
+</p>
+
+各グループの特徴を以下にまとめる。
+
+::: {style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.2em 1.5em; margin:1em 0; font-family:'Segoe UI',sans-serif; overflow-x:auto;"}
+<p style="font-weight:600; color:#D97706; margin:0 0 0.8em;">
+
+🌡 5グループの特徴まとめ
+
+</p>
+
+| グループ | 水質型 | 主な特徴 | 主な分布 |
+|------------------|------------------|------------------|------------------|
+| **G1** | Na-Cl 型（酸性） | Na⁺・Cl⁻・SO₄²⁻ が高濃度、pH 2〜4 | 亀川地熱域・鉄輪断層沿い |
+| **G2a** | Na-Cl 型 | G1より希薄、同系統の熱水 | 亀川地熱域（G1周辺） |
+| **G2b** | 中間型 | Na⁺・K⁺・Cl⁻・HCO₃⁻ が中程度 | 海岸付近・新川付近（両域） |
+| **G2c** | HCO₃ 主体 | Ca²⁺・Mg²⁺・HCO₃⁻ が中程度 | 別府地熱域 |
+| **G3** | Ca-HCO₃ 型 | Ca²⁺・Mg²⁺・HCO₃⁻ が高濃度 | 別府地熱域（別府駅周辺） |
+:::
+
+------------------------------------------------------------------------
+
+## 
+
+## 5. 泉質の「鉛直分布」——深さで泉質が変わる
+
+この研究の独自性のひとつが、**泉質の鉛直（深さ方向）分布の解析**である。掘削深度が記録されている19ヶ所を使って断面図が作成された。
+
+### 5.1 亀川地熱域（A-A' 断面）
+
+- **G1**（鉄輪断層付近）：井底が標高 −150〜−200 m と深い。深部熱水の遷移帯に達している。
+- **G2a**：G1より浅い −50〜−130 m。冷地下水の希釈影響が大きい。
+
+深さが深いほど熱水の影響が強く、浅いほど冷地下水に希釈されることが読み取れる。
+
+### 5.2 別府地熱域（B-B'・C-C' 断面）
+
+::: {style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.2em 1.5em; margin:1em 0; font-family:'Segoe UI',sans-serif;"}
+<p style="font-weight:600; color:#D97706; margin:0 0 0.7em;">
+
+🔍 BGRL（京都大学地球熱学研究施設）の深度別水質区分
+
+</p>
+
+| 深度（標高） | 水質型 | 解釈 |
+|------------------------|------------------------|------------------------|
+| −70 m より浅い層 | Ca,Mg-HCO₃ 型 | 冷地下水が熱・炭酸の供給を受けて変化 |
+| 約 −70〜−250 m | Na-Cl 型 | HCO₃型温泉水の侵入を受けた熱水 |
+| −250 m より深い層 | Na-HCO₃ 型 | 熱水変質鉱物（Calcite・Mg-Chlorite）の沈殿による Na 濃集 |
+:::
+
+堺川付近（B-B' 断面）の温泉井は別府駅周辺より約100 m 深く、**異なる流動系**に属することが断面図から明らかになった。これは水素・酸素安定同位体比の先行研究（北岡ほか 1993）とも整合する。
+
+------------------------------------------------------------------------
+
+## 6. 海水の混合——海岸温泉で検出された12%
+
+別府湾に面した海岸付近の温泉井（温泉井10）では、Na⁺と Cl⁻ が他と比べて著しく高い。これは **海水の混合**を示唆する。
+
+海水は保存性成分である Cl⁻ が保たれる性質を利用して混合率を計算できる。
+
+$$ f_{\text{海水}} = \frac{[\text{Cl}^-]_{\text{温泉}}}{[\text{Cl}^-]_{\text{海水}}} = \frac{2.45 \text{ g/L}}{20 \text{ g/L}} \approx 12\% $$
+
+つまりこの温泉井の温泉水は、**約12%が別府湾の海水で占められている**と推定される。
+
+## ガイベン・ヘルツベルグの原理
+
+海岸付近の帯水層では、軽い淡水の下に重い海水が潜り込む。淡水水頭 $h$ m に対して、塩淡境界は海面下 $40h$ m に形成される（密度差による静水圧バランスから導出）。温泉井10では、この境界よりさらに深い位置に海水混合水が確認された。これは静水圧条件だけでなく、温泉水が別府湾方向に**流動している**ことを示唆する。
+
+------------------------------------------------------------------------
+
+## 7. 泉質変化——1980年代との比較
+
+研究では、1980年代との Cl⁻/HCO₃⁻ 比の比較も行われた。
+
+別府駅周辺では **Cl⁻/HCO₃⁻ 比が1980年代より低下**しており、塩化物泉から炭酸水素塩泉への変化が認められる。
+
+考えられる原因は、公民館・市営・商業用温泉の利用増加による**温泉水頭（地下水圧）の低下**である。深部を流動する高圧の塩化物型熱水の供給が減り、相対的に炭酸水素型水質が卓越するようになった可能性がある。
+
+::: callout-important
+## 持続利用への示唆
+
+泉質の変化は地下の熱水流動システムの変化を反映する。「温泉は無限にわき出る」わけではなく、過剰な採取は泉質そのものを変えてしまう可能性がある。定量的なモニタリングの重要性が本研究から示唆される。
+:::
+
+------------------------------------------------------------------------
+
+## 8. まとめ
+
+::: {style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.4em 1.8em; margin:1em 0; font-family:'Segoe UI',sans-serif;"}
+<p style="font-weight:700; color:#D97706; font-size:1em; margin:0 0 0.9em;">
+
+📌 この記事のまとめ
+
+</p>
+
+**泉質は何で決まるか** 温泉水が地下を旅するあいだに岩石・ガス・他の水と反応・混合した結果として決まる。別府では深部 Na-Cl 型熱水が起点となり、蒸気分離・混合・希釈を経て多様な泉質が生まれる。
+
+**5グループへの分類** HCA（階層的クラスター分析）と FA（因子分析）を組み合わせることで、52ヶ所を G1・G2a・G2b・G2c・G3 の5グループに客観的に分類できた。3つの因子で泉質多様性の81%が説明される。
+
+**深さで泉質が変わる** 同じ地域でも、井底の標高（深度）によって水質型が異なる。断面図を描くことで温泉水の三次元的な流動系を推定できる。
+
+**海水混合と泉質変化** 海岸温泉では約12%の海水混合が確認された。また別府駅周辺では塩化物泉から炭酸水素塩泉への泉質変化が進行している。
+:::
+
+------------------------------------------------------------------------
+
+## 参考文献
+
+梁 熙俊（2021）水文化学的手法と多変量解析による別府温泉の泉質の分類および鉛直分布特性．*地下水学会誌*，**63**（3），137–149.
+
+大沢信二・由佐悠紀・北岡豪一（1994）別府温泉南部地域における温泉水の流動経路．*温泉科学*，**44**，199–208.
+
+北岡豪一ほか（1993）水素と酸素の同位体比から見た別府温泉における熱水流体の移動過程．*地下水学会誌*，**35**（4），287–305.
+
+Allis R.G. and Yusa Y.（1989）Fluid flow processes in the Beppu geothermal system, Japan. *Geothermics*, **18**, 743–759.
