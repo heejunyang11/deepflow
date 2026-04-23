@@ -3,13 +3,6 @@ title: "Blog"
 number-sections: false
 crossref:
   chapters: false
-listing:
-  contents: posts   # サブフォルダも自動で拾う
-  sort: "date desc"
-  type: default
-  filter-ui: true       # ← 検索・フィルタ追加
-  sort-ui: true
-  categories: true 
 ---
 
 温泉の成分と源を科学する。地理と地化学で、お湯の秘密を読み解く。
@@ -70,13 +63,7 @@ PHREEQCとPythonで水質・地球化学反応をモデリングする。
 
 - [PHREEQCをゼロから始める #13：酸化還元シークエンス — 地下水が「還元」されていく順番](/posts/phreeqc/phreeqc-part13/)
 
-- [PHREEQCをゼロから始める #14：逆モデリング — 野外データから反応量を推定する](/posts/phreeqc/phreeqc-part14/)
-
-- [PHREEQCをゼロから始める #15：反応速度論 — 平衡に達しない世界をシミュレートする](/posts/phreeqc/phreeqc-part15/)
-
-- [PHREEQCをゼロから始める #16：硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか](/posts/phreeqc/phreeqc-part16/)
-
-- [PHREEQCをゼロから始める #17：表面錯体モデル — 重金属の吸着を計算する](/posts/phreeqc/phreeqc-part17/)
+- [PHREEQCをゼロから始める（応用編）#14：硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか](/posts/phreeqc/phreeqc-part14/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
