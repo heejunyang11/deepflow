@@ -818,6 +818,20 @@ print("transport_profiles.png を保存しました")
 次のステップとして、実際の野外データ（水質分析値）を使った**逆モデリング**（`INVERSE_MODELING` ブロック）や、**FloPy × PHREEQC の結合**（シリーズ冒頭の熱水シミュレーション）へ進む道が開けている。
 :::
 
+- [#1 インストールと最初の計算](../phreeqc-part1/)
+- [#2 Speciationで海水を解析する](../phreeqc-part2/)
+- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)
+- [#4 カルサイト−CO₂水反応](../phreeqc-part4/)
+- [#5 炭酸地下水と海水の混合](../phreeqc-part5/)
+- [#6 黄鉄鉱の酸化（AMD）](../phreeqc-part6/)
+- [#7 溶解度ダイアグラム（Gibbsite）](../phreeqc-part7/)
+- [#8 Pythonでの可視化](../phreeqc-part8/)
+- [#9 イオン強度と活量係数](../phreeqc-part9/)
+- [#10 飽和指数（SI）の使いこなし](../phreeqc-part10/)
+- [#11 反応経路モデリング（REACTION block の応用）](../phreeqc-part11/)
+- **#12 移流分散モデル（TRANSPORT block の応用）** ← 今回
+- [#13 酸化還元シークエンス — 地下水が「還元」されていく順番](../phreeqc-part13/)
+
 ------------------------------------------------------------------------
 
 *DeepFlow \| 地球科学シミュレーションの深みへ*

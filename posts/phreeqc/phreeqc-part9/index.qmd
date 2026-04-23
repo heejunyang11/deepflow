@@ -2,7 +2,7 @@
 title: "PHREEQCをゼロから始める #9：イオン強度と活量係数 — 海水と真水で計算結果が変わる理由"
 description: "PHREEQCが裏で何をしているのか、ついに解き明かす。Debye-Hückel・Davies・Pitzerモデルの違い、イオン強度の正体、そして「なぜ同じpHでも計算結果が違うのか」を徹底解説する。"
 date: 2026-04-15
-categories: [PHREEQC, Pitzer]
+categories: [PHREEQC, Python]
 image: thumbnail.png
 ---
 

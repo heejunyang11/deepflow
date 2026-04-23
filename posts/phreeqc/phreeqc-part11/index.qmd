@@ -2,7 +2,7 @@
 title: "PHREEQCをゼロから始める #11：反応経路モデリング — 雨水が地下水になるまで"
 description: "REACTION ブロックで石灰岩・花崗岩を少しずつ溶かしながら、pH・SI・化学種濃度がリアルタイムで変化する様子をシミュレート。#3〜#10 で積み上げた知識がすべて統合される。"
 date: 2026-04-18
-categories: [PHREEQC, REACTION]
+categories: [PHREEQC, Groundwater]
 image: thumbnail.png
 ---
 

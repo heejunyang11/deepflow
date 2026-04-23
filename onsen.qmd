@@ -3,40 +3,41 @@ title: "温泉・地理"
 number-sections: false
 crossref:
   chapters: false
+listing:
+  contents: posts   # サブフォルダも自動で拾う
+  sort: "date desc"
+  type: default
+  filter-ui: true       # ← 検索・フィルタ追加
+  sort-ui: true
+  categories: true 
 ---
 
 温泉に関する物理・化学的な知識および泉質の分析や特徴に関する情報を提供します。
 
-:::  {.grid}
-
+:::: grid
 ::: {.g-col-12 .g-col-md-6}
 ### 🌊 温泉の科学
-温泉に関わる科学的な特徴や成分、反応などを解説します。
 
+温泉に関わる科学的な特徴や成分、反応などを解説します。
 
 **記事一覧**
 
-- [別府温泉の化学的特徴](/posts/onsen-part1/)
+- [別府温泉の化学的特徴](/posts/onsen/onsen-part1/)
 
-- [HexaDiagram（ヘキサダイアグラム）とは？](/posts/onsen-part2/)
-
+- [HexaDiagram（ヘキサダイアグラム）とは？](/posts/onsen/onsen-part2/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
-
-:::
+::::
 
 ::: {.g-col-12 .g-col-md-6}
 ### ⚗️ 地理
+
 地形やGISについて。
-
-
 
 **記事一覧**
 
-- [別府温泉の地形]
-
-
+- \[別府温泉の地形\]
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::

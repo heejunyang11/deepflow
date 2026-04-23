@@ -3,78 +3,85 @@ title: "Blog"
 number-sections: false
 crossref:
   chapters: false
+listing:
+  contents: posts   # サブフォルダも自動で拾う
+  sort: "date desc"
+  type: default
+  filter-ui: true       # ← 検索・フィルタ追加
+  sort-ui: true
+  categories: true 
 ---
 
 温泉の成分と源を科学する。地理と地化学で、お湯の秘密を読み解く。
 
 :::::: grid
-::: {.g-col-12 .g-col-md-6}
+::: g-col-12
 ### 🌊 Groundwater Series
 
 MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
 **記事一覧**
 
-- [地下水流動解析入門：MODFLOWとFloPyの基本](/posts/groundwater-intro/)
+- [地下水流動解析入門：MODFLOWとFloPyの基本](/posts/groundwater/groundwater-intro/)
 
-- [ダルシーの法則を理解する：FloPyで作る最初の地下水モデル](/posts/groundwater-darcy/)
+- [ダルシーの法則を理解する：FloPyで作る最初の地下水モデル](/posts/groundwater/groundwater-darcy/)
 
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編](/posts/flopy-phreeqc-part1/)
 
-- [FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）](/posts/flopy-phreeqc-part2/)
+- [FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）](/posts/groundwater/flopy-phreeqc-part2/)
 
-- [FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編](/posts/flopy-phreeqc-part3/)
+- [FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編](/posts/groundwater/flopy-phreeqc-part3/)
 
-- [FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）](/posts/flopy-phreeqc-part4/)
+- [FlopyとPHREEQCで熱水地球化学シミュレーション #4：応用・考察編（最終回）](/posts/groundwater/flopy-phreeqc-part4/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
 
-::: {.g-col-12 .g-col-md-6}
+::: g-col-12
 ### ⚗️ Geochemistry Series
 
 PHREEQCとPythonで水質・地球化学反応をモデリングする。
 
 **記事一覧**
 
-- [PHREEQCをゼロから始める #1：インストールと最初の計算](/posts/phreeqc-part1/)
+- [PHREEQCをゼロから始める #1：インストールと最初の計算](/posts/phreeqc/phreeqc-part1/)
 
-- [PHREEQCをゼロから始める #2：Speciationで海水を解析する](/posts/phreeqc-part2/)
+- [PHREEQCをゼロから始める #2：Speciationで海水を解析する](/posts/phreeqc/phreeqc-part2/)
 
-- [PHREEQCをゼロから始める #3：MixingとEQUILIBRIUM_PHASES](/posts/phreeqc-part3/)
+- [PHREEQCをゼロから始める #3：MixingとEQUILIBRIUM_PHASES](/posts/phreeqc/phreeqc-part3/)
 
-- [PHREEQCをゼロから始める #4：KINETICSで反応速度を考慮する](/posts/phreeqc-part4/)
+- [PHREEQCをゼロから始める #4：KINETICSで反応速度を考慮する](/posts/phreeqc/phreeqc-part4/)
 
-- [PHREEQCをゼロから始める #5：炭酸地下水と海水の混合（混合腐食 or 混合溶解）](/posts/phreeqc-part5/)
+- [PHREEQCをゼロから始める #5：炭酸地下水と海水の混合（混合腐食 or 混合溶解）](/posts/phreeqc/phreeqc-part5/)
 
-- [PHREEQCをゼロから始める #6：黄鉄鉱の酸化とAMD](/posts/phreeqc-part6/)
+- [PHREEQCをゼロから始める #6：黄鉄鉱の酸化とAMD](/posts/phreeqc/phreeqc-part6/)
 
-- [PHREEQCをゼロから始める #7：溶解度ダイアグラム（Gibbsite）](/posts/phreeqc-part7/)
+- [PHREEQCをゼロから始める #7：溶解度ダイアグラム（Gibbsite）](/posts/phreeqc/phreeqc-part7/)
 
-- [PHREEQCをゼロから始める #8：PythonでPHREEQCの結果を解析・可視化する](/posts/phreeqc-part8/)
+- [PHREEQCをゼロから始める #8：PythonでPHREEQCの結果を解析・可視化する](/posts/phreeqc/phreeqc-part8/)
 
-- [PHREEQCをゼロから始める #9：イオン強度と活量係数 — 海水と真水で計算結果が変わる理由](/posts/phreeqc-part9/)
+- [PHREEQCをゼロから始める #9：イオン強度と活量係数 — 海水と真水で計算結果が変わる理由](/posts/phreeqc/phreeqc-part9/)
 
-- [PHREEQCをゼロから始める #10：飽和指数（SI）の使いこなし — 鉱物は溶けているか、沈殿しているか](/posts/phreeqc-part10/)
+- [PHREEQCをゼロから始める #10：飽和指数（SI）の使いこなし — 鉱物は溶けているか、沈殿しているか](/posts/phreeqc/phreeqc-part10/)
 
-- [PHREEQCをゼロから始める #11：反応経路モデリング — 雨水が地下水になるまで](/posts/phreeqc-part11/)
+- [PHREEQCをゼロから始める #11：反応経路モデリング — 雨水が地下水になるまで](/posts/phreeqc/phreeqc-part11/)
 
-- [PHREEQCをゼロから始める #12：移流分散モデル — 地下水中の物質移動](/posts/phreeqc-part12/)
+- [PHREEQCをゼロから始める #12：移流分散モデル — 地下水中の物質移動](/posts/phreeqc/phreeqc-part12/)
 
-- [PHREEQCをゼロから始める #13：酸化還元シークエンス — 地下水が「還元」されていく順番](/posts/phreeqc-part13/)
+- [PHREEQCをゼロから始める #13：酸化還元シークエンス — 地下水が「還元」されていく順番](/posts/phreeqc/phreeqc-part13/)
 
-- [PHREEQCをゼロから始める #14：逆モデリング — 野外データから反応量を推定する](/posts/phreeqc-part14/)
+- [PHREEQCをゼロから始める #14：逆モデリング — 野外データから反応量を推定する](/posts/phreeqc/phreeqc-part14/)
 
-- [PHREEQCをゼロから始める #15：反応速度論 — 平衡に達しない世界をシミュレートする](/posts/phreeqc-part15/)
+- [PHREEQCをゼロから始める #15：反応速度論 — 平衡に達しない世界をシミュレートする](/posts/phreeqc/phreeqc-part15/)
 
-- [PHREEQCをゼロから始める #16：硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか](/posts/phreeqc-part16/)
+- [PHREEQCをゼロから始める #16：硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか](/posts/phreeqc/phreeqc-part16/)
 
-- [PHREEQCをゼロから始める #17：表面錯体モデル — 重金属の吸着を計算する](/posts/phreeqc-part17/)
+- [PHREEQCをゼロから始める #17：表面錯体モデル — 重金属の吸着を計算する](/posts/phreeqc/phreeqc-part17/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
 
-::: {.g-col-12 .g-col-md-6}
+::: g-col-12
 ### 🤖 AI & Python Series
 
 機械学習とAIツールを研究やビジネスに活用するための勉強ノート。
