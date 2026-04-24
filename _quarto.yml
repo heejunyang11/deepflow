@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: _site
+  resources:
+    - "apps/"   # ← これを追加
 
 # サイトの言語を日本語に設定
 lang: ja
@@ -46,8 +48,7 @@ format:
       light: flatly
          
     css: styles.css
-    includes-in-header: google-adsense.html
-    
+      
     # 読みやすさを向上させるハイライト設定
     highlight-style: 
       light: arrow

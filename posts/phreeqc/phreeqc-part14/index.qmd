@@ -17,57 +17,7 @@ lang: ja
 
 日本の農業地帯で採取した地下水を分析すると、しばしば硝酸態窒素が **10 mg/L（環境基準値）を超える**。 なぜか。答えは土壌の中にある。
 
-```{=html}
-<div style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.5em; margin:1.5em 0;">
-<svg viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;" role="img">
-  <title>農業地帯における窒素の地下水への移行プロセス概念図</title>
-  <defs>
-    <marker id="arrN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </marker>
-  </defs>
-
-  <!-- 空・農地 -->
-  <rect x="0" y="0" width="680" height="55" fill="#EFF6FF" opacity="0.5" rx="4"/>
-  <text x="340" y="20" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#2563EB">施肥・家畜排泄物 → NH₄⁺ / 有機態窒素</text>
-
-  <!-- 土壌ゾーン（好気的） -->
-  <rect x="0" y="55" width="680" height="55" fill="#92400E" opacity="0.10"/>
-  <text x="340" y="76" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#92400E">土壌ゾーン（好気的 · 硝化帯）</text>
-  <text x="340" y="93" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#78350F">NH₄⁺ → NO₂⁻ → NO₃⁻　（硝化 · Nitrification）</text>
-  <text x="340" y="105" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#B45309">Nitrosomonas・Nitrobacter が触媒</text>
-
-  <!-- 不飽和帯 -->
-  <rect x="0" y="110" width="680" height="40" fill="#FEF3C7" opacity="0.6"/>
-  <text x="340" y="128" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#92400E">不飽和帯 → NO₃⁻ が移流で地下水面へ下降</text>
-  <text x="340" y="142" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#B45309">O₂ がある間は NO₃⁻ は安定（分解されない）</text>
-
-  <!-- 地下水面 -->
-  <line x1="0" y1="150" x2="680" y2="150" stroke="#2563EB" stroke-width="2" stroke-dasharray="8 4" opacity="0.6"/>
-  <text x="10" y="148" font-family="'Segoe UI',sans-serif" font-size="9" fill="#2563EB">地下水面</text>
-
-  <!-- 帯水層 -->
-  <rect x="0" y="150" width="680" height="90" fill="#DBEAFE" opacity="0.25"/>
-
-  <!-- 脱窒ゾーン（有機炭素あり） -->
-  <rect x="80" y="155" width="200" height="60" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
-  <text x="180" y="176" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#15803D">脱窒ゾーン</text>
-  <text x="180" y="190" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#166534">NO₃⁻ → N₂（消滅）</text>
-  <text x="180" y="203" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#166534">有機炭素が電子供与体</text>
-
-  <!-- NO₃⁻ が残るゾーン -->
-  <rect x="380" y="155" width="220" height="60" rx="8" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.5"/>
-  <text x="490" y="176" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" font-weight="600" fill="#DC2626">NO₃⁻ 汚染ゾーン</text>
-  <text x="490" y="190" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#DC2626">有機炭素が少ない</text>
-  <text x="490" y="203" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#DC2626">DO が残存 → 脱窒なし</text>
-
-  <!-- 矢印 -->
-  <line x1="340" y1="20"  x2="340" y2="55"  stroke="#2563EB" stroke-width="1.5" marker-end="url(#arrN)" opacity="0.6"/>
-  <line x1="340" y1="108" x2="340" y2="150" stroke="#D97706" stroke-width="1.5" marker-end="url(#arrN)" opacity="0.6"/>
-</svg>
-<p style="text-align:center; font-size:0.82em; color:#6B7280; margin-top:0.5em;">図1. 農業地帯における窒素の地下水への移行プロセス</p>
-</div>
-```
+![](NO3.png)
 
 この記事では：
 

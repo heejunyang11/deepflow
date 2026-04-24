@@ -1,11 +1,185 @@
 ---
-title: "Blog"
+title: "-Science Beneath the Surface-"
 number-sections: false
 crossref:
   chapters: false
 ---
 
-温泉の成分と源を科学する。地理と地化学で、お湯の秘密を読み解く。
+```{=html}
+<div class="blog-intro">
+
+  <div class="intro-lead">
+    <div class="intro-lead-line"></div>
+    <p class="intro-lead-text">水は、地表の下でも動いている。</p>
+  </div>
+
+  <p class="intro-body">
+    雨が降り、地下に染み込んだ水がどこへ向かうのか。海岸の地下では淡水と海水がどう混ざり合うのか。硝酸塩がいつ、どのように分解されるのか。そういった「目に見えない水の動き」を、コンピューターの中で再現しようとしているのがこのブログです。
+  </p>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon">⬛</div>
+      <div class="tool-content">
+        <div class="tool-name">MODFLOW / SEAWAT</div>
+        <div class="tool-desc">地下水流れを数値的に解く業界標準のシミュレーター。ダルシー則に基づく流れ・密度差による対流・潮汐の影響まで計算。沿岸部の塩淡境界（Ghyben-Herzberg界面）やSGDの解析に不可欠。</div>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">⚗️</div>
+      <div class="tool-content">
+        <div class="tool-name">PHREEQC</div>
+        <div class="tool-desc">地球化学計算のエンジン。水と岩石の間の化学反応、混合水の飽和指数、脱窒反応の進行——「水の化学」を反応方程式レベルで解く。</div>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🐍</div>
+      <div class="tool-content">
+        <div class="tool-name">Python（FloPy・PhreeqPy）</div>
+        <div class="tool-desc">2つをつなぐ接着剤。グリッド生成・境界条件設定・結果の可視化まで完全自動化。パラメータを一行変えれば別のシナリオがすぐに走る。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="themes-block">
+    <div class="themes-label">扱うテーマ</div>
+    <div class="themes-list">
+      <div class="theme-item">琉球石灰岩帯水層における塩淡境界の形成</div>
+      <div class="theme-item">岩石－水反応解析（溶液濃度・温度などの条件下で）</div>
+      <div class="theme-item">地下水における硝酸塩汚染と脱窒診断</div>
+      <div class="theme-item">混合溶解による石灰岩溶解ポテンシャル解析</div>
+    </div>
+  </div>
+
+  <p class="intro-footer">
+    このブログは完成した研究成果を発表する場ではなく、<strong>試行錯誤の記録</strong>です。コードがうまく動かなかった話、パラメータをどう決めたかの迷い、Vibe Codingを駆使し修正に悩む過程——そういう「過程」もできるだけ含めて書いていきます。
+  </p>
+
+</div>
+
+<style>
+.blog-intro {
+  max-width: 720px;
+  margin: 0 0 2.5rem 0;
+  font-family: inherit;
+}
+
+/* リード文 */
+.intro-lead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.2rem;
+}
+.intro-lead-line {
+  width: 3px;
+  height: 28px;
+  background: #C96A28;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.intro-lead-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* 本文 */
+.intro-body {
+  font-size: 0.93rem;
+  line-height: 1.85;
+  color: #3a3a3a;
+  margin-bottom: 1.6rem;
+}
+
+/* ツールカード */
+.tools-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1.6rem;
+}
+.tool-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #FDFAF6;
+  border: 1px solid #E8E4DC;
+  border-left: 3px solid #E07B39;
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.tool-icon {
+  font-size: 18px;
+  line-height: 1;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.tool-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin-bottom: 4px;
+  font-family: 'SF Mono', 'Consolas', monospace;
+  letter-spacing: 0.01em;
+}
+.tool-desc {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: #5a5a5a;
+}
+
+/* テーマ */
+.themes-block {
+  background: #F7F5F0;
+  border: 1px solid #E8E4DC;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 1.4rem;
+}
+.themes-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #7A746A;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.themes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.theme-item {
+  font-size: 0.88rem;
+  color: #3a3a3a;
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.6;
+}
+.theme-item::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: #C96A28;
+  font-weight: 700;
+}
+
+/* フッター文 */
+.intro-footer {
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: #5a5a5a;
+  border-top: 1px solid #E8E4DC;
+  padding-top: 1rem;
+}
+.intro-footer strong {
+  color: #1A1A1A;
+}
+</style>
+```
 
 :::::: grid
 ::: g-col-12

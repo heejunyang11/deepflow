@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>正規分布 ビジュアライザー</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F4EF;
+      --surface: #4c4d4e;
+      --surface2: #22263a;
+      --border: #2e3347;
+      --accent: #5b8af5;
+      --accent2: #7dd3fc;
+      --green: #4ade80;
+      --orange: #fb923c;
+      --purple: #a78bfa;
+      --text: #f7f8fc;
+      --muted: #6b7280;
+      --curve: #5b8af5;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* ヘッダー */
+    .header {
+      margin-bottom: 28px;
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .header h1 span {
+      color: var(--accent);
+    }
+    .header p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    /* 式 */
+    .formula-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      color: var(--accent2);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .formula-bar .param { color: var(--orange); }
+
+    /* グラフカード */
+    .graph-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    canvas {
+      width: 100%;
+      height: 260px;
+      display: block;
+    }
+
+    /* スライダー群 */
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .control-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .control-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .control-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .control-name .sym {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 17px;
+      color: var(--orange);
+      font-weight: 600;
+    }
+
+    .control-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(91,138,245,0.2);
+      transition: box-shadow 0.15s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 0 5px rgba(91,138,245,0.3);
+    }
+
+    /* 統計カード */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent2);
+    }
+
+    /* 68-95-99.7則 */
+    .rule-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+    }
+
+    .rule-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .rule-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rule-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rule-range {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      width: 140px;
+      flex-shrink: 0;
+    }
+
+    .rule-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .rule-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .rule-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      width: 48px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* 区間確率 */
+    .prob-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+
+    .prob-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .prob-inputs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .prob-inputs label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .prob-inputs input[type=number] {
+      width: 80px;
+      height: 34px;
+      padding: 0 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      outline: none;
+    }
+    .prob-inputs input[type=number]:focus {
+      border-color: var(--accent);
+    }
+
+    .prob-result {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--green);
+      margin-top: 4px;
+    }
+
+    .prob-desc {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* 凡例 */
+    .legend {
+      display: flex;
+      gap: 14px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1><span>正規分布 ビジュアライザー</span></h1>
+    <p>μ（平均）と σ（標準偏差）を動かしてグラフの変化を確認しよう</p>
+  </div>
+
+  <div class="formula-bar" id="formula-bar">
+    f(x) = 1 / (σ√(2π)) · exp( −(x−μ)² / (2σ²) )
+  </div>
+
+  <div class="graph-card">
+    <canvas id="chart" width="680" height="260"></canvas>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#5b8af5"></div>確率密度 f(x)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(91,138,245,0.25)"></div>μ±σ 範囲 (68%)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fb923c; width:2px; height:14px; border-radius:1px;"></div>平均 μ</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-card">
+      <div class="control-label">
+        <div class="control-name"><span class="sym">μ</span> 平均</div>
+        <div class="control-value" id="mu-val">0.0</div>
+      </div>
+      <input type="range" id="mu-slider" min="-4" max="4" step="0.1" value="0">
+    </div>
+    <div class="control-card">
+      <div class="control-label">
+        <div class="control-name"><span class="sym">σ</span> 標準偏差</div>
+        <div class="control-value" id="sigma-val">1.0</div>
+      </div>
+      <input type="range" id="sigma-slider" min="0.3" max="3" step="0.1" value="1">
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">平均 (μ)</div>
+      <div class="stat-value" id="stat-mean">0.000</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">分散 (σ²)</div>
+      <div class="stat-value" id="stat-var">1.000</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">最大値 f(μ)</div>
+      <div class="stat-value" id="stat-peak">0.399</div>
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-title">68 – 95 – 99.7 則</div>
+    <div class="rule-bars">
+      <div class="rule-row">
+        <div class="rule-range" id="range1">μ±1σ</div>
+        <div class="rule-bar-wrap"><div class="rule-bar-fill" id="bar1" style="width:68.27%; background:#5b8af5"></div></div>
+        <div class="rule-pct" style="color:#5b8af5">68.27%</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-range" id="range2">μ±2σ</div>
+        <div class="rule-bar-wrap"><div class="rule-bar-fill" id="bar2" style="width:95.45%; background:#a78bfa"></div></div>
+        <div class="rule-pct" style="color:#a78bfa">95.45%</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-range" id="range3">μ±3σ</div>
+        <div class="rule-bar-wrap"><div class="rule-bar-fill" id="bar3" style="width:99.73%; background:#4ade80"></div></div>
+        <div class="rule-pct" style="color:#4ade80">99.73%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prob-card">
+    <div class="prob-title">区間確率を計算</div>
+    <div class="prob-inputs">
+      <label>P(</label>
+      <input type="number" id="prob-a" value="-1" step="0.1">
+      <label>≤ X ≤</label>
+      <input type="number" id="prob-b" value="1" step="0.1">
+      <label>)</label>
+    </div>
+    <div class="prob-result" id="prob-result">68.27%</div>
+    <div class="prob-desc" id="prob-desc">この区間に含まれる確率</div>
+  </div>
+
+</div>
+
+<script>
+// ===== 正規分布の計算 =====
+function pdf(x, mu, sigma) {
+  return (1 / (sigma * Math.sqrt(2 * Math.PI))) *
+         Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+}
+
+// 誤差関数（erf）の近似
+function erf(x) {
+  const t = 1 / (1 + 0.3275911 * Math.abs(x));
+  const poly = t * (0.254829592 + t * (-0.284496736 + t * (1.421413741 + t * (-1.453152027 + t * 1.061405429))));
+  const result = 1 - poly * Math.exp(-x * x);
+  return x >= 0 ? result : -result;
+}
+
+// 正規分布の累積分布関数
+function cdf(x, mu, sigma) {
+  return 0.5 * (1 + erf((x - mu) / (sigma * Math.sqrt(2))));
+}
+
+// 区間確率
+function probInterval(a, b, mu, sigma) {
+  return cdf(b, mu, sigma) - cdf(a, mu, sigma);
+}
+
+// ===== 状態 =====
+let mu = 0, sigma = 1;
+
+// ===== Canvas描画 =====
+const canvas = document.getElementById('chart');
+const ctx = canvas.getContext('2d');
+
+function drawChart() {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.clientWidth;
+  const H = canvas.clientHeight;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  const pad = { top: 20, right: 20, bottom: 36, left: 48 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // x軸の範囲（μ±5σ or 固定-8〜8の広い方）
+  const xMin = Math.min(mu - 5 * sigma, -8);
+  const xMax = Math.max(mu + 5 * sigma,  8);
+  const yMax = pdf(mu, mu, sigma) * 1.15;
+
+  function toCanvasX(x) { return pad.left + (x - xMin) / (xMax - xMin) * cw; }
+  function toCanvasY(y) { return pad.top + ch - (y / yMax) * ch; }
+
+  // グリッド
+  ctx.strokeStyle = '#2e3347';
+  ctx.lineWidth = 1;
+  const gridXs = [-6,-4,-2,0,2,4,6];
+  gridXs.forEach(gx => {
+    if (gx < xMin || gx > xMax) return;
+    const cx = toCanvasX(gx);
+    ctx.beginPath(); ctx.moveTo(cx, pad.top); ctx.lineTo(cx, pad.top + ch); ctx.stroke();
+  });
+
+  // μ±σ 塗り（fill）
+  ctx.beginPath();
+  const fillSteps = 200;
+  const s1 = mu - sigma, s2 = mu + sigma;
+  for (let i = 0; i <= fillSteps; i++) {
+    const x = s1 + (s2 - s1) * i / fillSteps;
+    const y = pdf(x, mu, sigma);
+    const cx = toCanvasX(x), cy = toCanvasY(y);
+    if (i === 0) ctx.moveTo(cx, toCanvasY(0));
+    ctx.lineTo(cx, cy);
+  }
+  ctx.lineTo(toCanvasX(s2), toCanvasY(0));
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(91,138,245,0.18)';
+  ctx.fill();
+
+  // 区間確率の塗り
+  const probA = parseFloat(document.getElementById('prob-a').value);
+  const probB = parseFloat(document.getElementById('prob-b').value);
+  if (!isNaN(probA) && !isNaN(probB) && probA < probB) {
+    const pA = Math.max(probA, xMin), pB = Math.min(probB, xMax);
+    ctx.beginPath();
+    const pSteps = 300;
+    for (let i = 0; i <= pSteps; i++) {
+      const x = pA + (pB - pA) * i / pSteps;
+      const y = pdf(x, mu, sigma);
+      const cx = toCanvasX(x), cy = toCanvasY(y);
+      if (i === 0) ctx.moveTo(cx, toCanvasY(0));
+      ctx.lineTo(cx, cy);
+    }
+    ctx.lineTo(toCanvasX(pB), toCanvasY(0));
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(74,222,128,0.22)';
+    ctx.fill();
+  }
+
+  // 曲線
+  ctx.beginPath();
+  ctx.strokeStyle = '#5b8af5';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  const steps = 400;
+  for (let i = 0; i <= steps; i++) {
+    const x = xMin + (xMax - xMin) * i / steps;
+    const y = pdf(x, mu, sigma);
+    const cx = toCanvasX(x), cy = toCanvasY(y);
+    if (i === 0) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+  }
+  ctx.stroke();
+
+  // μ 垂直線
+  ctx.beginPath();
+  ctx.strokeStyle = '#fb923c';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 3]);
+  ctx.moveTo(toCanvasX(mu), pad.top);
+  ctx.lineTo(toCanvasX(mu), pad.top + ch);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // x軸
+  ctx.beginPath();
+  ctx.strokeStyle = '#4b5563';
+  ctx.lineWidth = 1;
+  ctx.moveTo(pad.left, pad.top + ch);
+  ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.stroke();
+
+  // x軸ラベル
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '11px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  gridXs.forEach(gx => {
+    if (gx < xMin || gx > xMax) return;
+    ctx.fillText(gx, toCanvasX(gx), pad.top + ch + 18);
+  });
+
+  // y軸ラベル
+  ctx.textAlign = 'right';
+  [0, yMax * 0.25, yMax * 0.5, yMax * 0.75].forEach(gy => {
+    const cy = toCanvasY(gy);
+    ctx.fillText(gy.toFixed(2), pad.left - 6, cy + 4);
+  });
+
+  // μ ラベル
+  ctx.fillStyle = '#fb923c';
+  ctx.textAlign = 'center';
+  ctx.font = '12px Noto Sans JP, sans-serif';
+  ctx.fillText('μ=' + mu.toFixed(1), toCanvasX(mu), pad.top + ch + 30);
+}
+
+// ===== UI更新 =====
+function update() {
+  // 式バー
+  document.getElementById('formula-bar').innerHTML =
+    `f(x) = 1 / (<span class="param">σ</span>√(2π)) · exp( −(x−<span class="param">μ</span>)² / (2<span class="param">σ</span>²) )&nbsp;&nbsp;　<span class="param">μ=${mu.toFixed(1)}, σ=${sigma.toFixed(1)}</span>`;
+
+  // スライダー値
+  document.getElementById('mu-val').textContent    = mu.toFixed(1);
+  document.getElementById('sigma-val').textContent = sigma.toFixed(1);
+
+  // 統計
+  document.getElementById('stat-mean').textContent = mu.toFixed(3);
+  document.getElementById('stat-var').textContent  = (sigma * sigma).toFixed(3);
+  document.getElementById('stat-peak').textContent = pdf(mu, mu, sigma).toFixed(3);
+
+  // 68-95-99.7則（範囲表示）
+  document.getElementById('range1').textContent =
+    `${(mu - sigma).toFixed(1)} 〜 ${(mu + sigma).toFixed(1)}`;
+  document.getElementById('range2').textContent =
+    `${(mu - 2*sigma).toFixed(1)} 〜 ${(mu + 2*sigma).toFixed(1)}`;
+  document.getElementById('range3').textContent =
+    `${(mu - 3*sigma).toFixed(1)} 〜 ${(mu + 3*sigma).toFixed(1)}`;
+
+  // 区間確率
+  updateProb();
+
+  drawChart();
+
+  // 高さ通知
+  window.parent.postMessage({ type: 'resize', id: 'nd-iframe', height: document.body.scrollHeight }, '*');
+}
+
+function updateProb() {
+  const a = parseFloat(document.getElementById('prob-a').value);
+  const b = parseFloat(document.getElementById('prob-b').value);
+  if (isNaN(a) || isNaN(b) || a >= b) {
+    document.getElementById('prob-result').textContent = '—';
+    document.getElementById('prob-desc').textContent  = 'a < b になるよう入力してください';
+    return;
+  }
+  const p = probInterval(a, b, mu, sigma) * 100;
+  document.getElementById('prob-result').textContent = p.toFixed(2) + '%';
+  document.getElementById('prob-desc').textContent =
+    `P(${a} ≤ X ≤ ${b}) — この区間に含まれる確率`;
+  drawChart();
+}
+
+// ===== イベント =====
+document.getElementById('mu-slider').addEventListener('input', e => {
+  mu = parseFloat(e.target.value);
+  update();
+});
+document.getElementById('sigma-slider').addEventListener('input', e => {
+  sigma = parseFloat(e.target.value);
+  update();
+});
+document.getElementById('prob-a').addEventListener('input', updateProb);
+document.getElementById('prob-b').addEventListener('input', updateProb);
+
+window.addEventListener('resize', drawChart);
+
+// 初期描画
+update();
+new ResizeObserver(() => {
+  drawChart();
+  window.parent.postMessage({ type: 'resize', id: 'nd-iframe', height: document.body.scrollHeight }, '*');
+}).observe(document.body);
+</script>
+</body>
+</html>

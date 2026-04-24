@@ -23,13 +23,17 @@ image: "image2.jpg"
 
 ``` python
 import flopy
+import matplotlib.pyplot as plt
 
-# モデル作成
-mf = flopy.modflow.Modflow('tutorial', exe_name='mflow')
+plt.rcParams['font.family'] = ['MS Gothic', 'Yu Gothic', 'sans-serif']
+# シミュレーション作成
+sim = flopy.mf6.MFSimulation(sim_name='tutorial', exe_name='mf6')
+tdis = flopy.mf6.ModflowTdis(sim, time_units='DAYS', perioddata=[(1, 1, 1)])
 
 # グリッド設定
-dis = flopy.modflow.ModflowDis(
-    mf, 
+gwf = flopy.mf6.ModflowGwf(sim, modelname='gwf_1')
+dis = flopy.mf6.ModflowGwfdis(
+    gwf, 
     nlay=1,   # 層数
     nrow=10,  # 行数
     ncol=10,  # 列数
@@ -37,8 +41,22 @@ dis = flopy.modflow.ModflowDis(
     delc=100  # 行方向の格子幅（m）
 )
 
+# グリッドの可視化
+fig, ax = plt.subplots(figsize=(8, 6))
+modelgrid = gwf.modelgrid
+modelgrid.plot(ax=ax)
+ax.set_title(f'モデルグリッド\n{dis.nlay.get_data()}層 × {dis.nrow.get_data()}行 × {dis.ncol.get_data()}列')
+ax.set_xlabel('X座標 (m)')
+ax.set_ylabel('Y座標 (m)')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('model_grid.png', dpi=150, bbox_inches='tight')
+plt.show()
+
 print("モデル作成完了！")
 ```
+
+**mf6**については次の記事で説明します。
 
 ## インタラクティブ・グリッド・シミュレーター
 
