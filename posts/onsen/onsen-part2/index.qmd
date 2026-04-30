@@ -295,9 +295,7 @@ if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded
 | 温泉（Na-Cl型・別府G1相当） | 545    | 35  | 44   | 8     | 848    | 160   | 90    |
 :::
 
-#### 数値の出典と精度
-
-水道水は東京都水道局の水質測定値（代表的年平均値）、河川水は国土交通省「河川水質データ」に基づく日本河川の概略平均値、地下水は典型的な Ca-HCO₃型地下水の文献値、海水は Hem（1985）、温泉は梁（2021）の表1・G1グループの代表値を参照した。いずれも概略値であり、地点・季節により大きく変動する。
+いずれも概略値であり、地点・季節により大きく変動する。
 
 ## 各水種の特徴（模式図）
 
@@ -395,9 +393,3 @@ if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded
 ## 参考文献
 
 梁 熙俊（2021）水文化学的手法と多変量解析による別府温泉の泉質の分類および鉛直分布特性．*地下水学会誌*，**63**（3），137–149.
-
-Hem J.D.（1985）Study and interpretation of the chemical characteristics of natural water, 3rd ed. *USGS Water-Supply Paper* 2254.
-
-東京都水道局（各年）水質試験年報．https://www.waterworks.metro.tokyo.lg.jp/
-
-国土交通省（各年）河川水質データベース．https://www.mlit.go.jp/

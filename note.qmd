@@ -1,0 +1,39 @@
+---
+title: "研究ノート"
+number-sections: false
+crossref:
+  chapters: false
+listing:
+  contents: posts   # サブフォルダも自動で拾う
+  sort: "date desc"
+  type: default
+  filter-ui: true       # ← 検索・フィルタ追加
+  sort-ui: true
+  categories: true 
+---
+
+今行っている研究を時系列で記録します。計算失敗などもそのまま載せます。なお、統計に関する身近な事例と取り扱います。ここでは「なぜ統計を使うのか」に焦点を合わせます。
+
+:::: grid
+::: g-col-12
+### 🌊 ノート
+
+**記事一覧**
+
+[もっと見る →](/index.qmd){.btn .btn-outline-primary}
+:::
+::::
+
+:::: grid
+::: g-col-12
+### 🌊 統計の話
+
+**記事一覧**
+
+- [「平均42℃」なのに凍えた?!](/posts/note/intro/)
+
+- [「普通の人でいい」は、上位2.5%への求婚だった](/posts/note/nomal_part1/)
+
+[もっと見る →](/index.qmd){.btn .btn-outline-primary}
+:::
+::::

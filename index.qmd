@@ -53,13 +53,15 @@ title-block-banner: true
 </div>
 ```
 
-<strong>環境問題や水資源</strong>の評価に役立つ地下水・地球化学解析（<strong>MODFLOW, PHREEQC</strong>）と、<strong>Python・AI</strong>を用いたデータ分析のノウハウを共有します。
+<strong>環境問題や水資源</strong>の評価に役立つ地下水・地球化学解析（<strong>MODFLOW, PHREEQC</strong>）と、<strong>Python・AI・Vibe Coding</strong>を用いたデータ分析のノウハウを共有します。
 
 科学・コード・多様な観点で、水の世界を探求し、**「データから自然現象を読み解く」**サイトです。
 
-**・Blog** : MODFLOW・PHREEQC・Pythonで、**水**の謎をコードで解く。数式と実装の世界へ。
+**・Main** : MODFLOW・PHREEQC・Pythonで、**水**の謎をコードで解く。数式と実装の世界へ。
 
 **・温泉・地理** : 温泉の成分と源を科学する。地理と地球化学で、泉質の秘密を読み解く。
+
+**・研究ノート** : 研究課程を時系列で記録する。統計に関する身近な事例を紹介。
 
 **・Apps** : 地球化学計算や分子量計算など、研究にちょいと必要なツール。
 

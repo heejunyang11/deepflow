@@ -24,16 +24,15 @@ website:
       - href: index.qmd
         text: Home  
       - href: blog.qmd
-        text: Blog  
+        text: Main  
       - href: onsen.qmd
         text: 温泉・地理        
-      - href: apps.qmd
+      - href: note.qmd
+        text: ノート
+      - href: apps.qmd      
         text: Apps          
       - href: about.qmd
         text: About
-    right:
-      - icon: github
-        href: https://github.com/your-username # 自身のURLへ変更推奨
 
   page-footer:
     center: "© 2026 DeepFlow · Science beneath the surface"

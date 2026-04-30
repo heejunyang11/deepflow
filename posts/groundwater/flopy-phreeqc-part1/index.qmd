@@ -253,6 +253,15 @@ A  = 3.14159 * r**2          # 断面積 [m²]
 
 # --- MODFLOW モデル構築 ---
 sim = flopy.mf6.MFSimulation(sim_name=sim_name, exe_name="mf6")
+
+# TDIS：時間設定
+tdis = flopy.mf6.ModflowTdis(
+    sim,
+    time_units="SECONDS",
+    nper=1,
+    perioddata=[(86400, 1, 1.0)]
+)
+
 gwf = flopy.mf6.ModflowGwf(sim, modelname=sim_name)
 
 # DISパッケージ：グリッド定義
@@ -354,6 +363,6 @@ chd = flopy.mf6.ModflowGwfchd(
 *このシリーズの他の記事：*
 
 - **#1 モデル設計編**（本記事）
-- [#2 実装編（カップリングの核心）](../flopy-phreeqc-part2/) 
-- [#3 解析・可視化編](../flopy-phreeqc-part3/) 
-- [#4 応用・考察編](../flopy-phreeqc-part4/) 
+- [#2 実装編（カップリングの核心）](../flopy-phreeqc-part2/)
+- [#3 解析・可視化編](../flopy-phreeqc-part3/)
+- [#4 応用・考察編](../flopy-phreeqc-part4/)
