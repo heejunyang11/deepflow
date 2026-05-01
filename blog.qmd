@@ -195,7 +195,7 @@ MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編](/posts/groundwater/flopy-phreeqc-part1/)
 
-- [FlopyとPHREEQCで熱水地球化学シミュレーション #2：実装編（カップリングの核心）](/posts/groundwater/flopy-phreeqc-part2/)
+- [FlopyとPHREEQCで熱水地球化学シミュレーション #2：カップリングの概念](/posts/groundwater/flopy-phreeqc-part2/)
 
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編](/posts/groundwater/flopy-phreeqc-part3/)
 
@@ -228,6 +228,8 @@ PHREEQCとPythonで水質・地球化学反応をモデリングする。
 ### 🤖 AI & Python Series
 
 機械学習とAIツールを研究やビジネスに活用するための勉強ノート。
+
+- [偏微分方程式をPythonで解く：1次元熱方程式入門](/posts/groundwater/pde-part1/)
 
 [記事を見る →](/index.qmd){.btn .btn-outline-primary}
 :::

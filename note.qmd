@@ -20,6 +20,8 @@ listing:
 
 **記事一覧**
 
+- [高温水熱条件下における地球化学的反応輸送シミュレーション（第1回）：概要とシステム設計](/posts/note/reactive-transport-part1/)
+
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
 ::::
