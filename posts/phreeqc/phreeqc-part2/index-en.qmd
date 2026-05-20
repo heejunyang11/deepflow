@@ -1,0 +1,390 @@
+---
+title: "PHREEQC from Scratch #2: Analyzing Seawater with Speciation"
+date: 2026-04-08
+categories: [Geochemistry, PHREEQC, Groundwater, English]
+series: "PHREEQC from Scratch"
+description: "Calculate the chemical speciation of seawater using PHREEQC. This tutorial covers inputting major ions like Na, Ca, Mg, and SO₄, and interpreting ion complexation and saturation indices."
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+include-in-header:
+  - text: |
+      <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part2/" />
+      <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part2/index-en.html" />
+---
+
+## What is Speciation?
+
+In the previous article, we defined "pure water" in PHREEQC and ran a basic calculation. In this session, we will input actual seawater data and dive into a more essential concept: **Speciation (Chemical Species Distribution)**.
+
+Speciation is the calculation of which chemical forms (species) an element takes within a solution.
+
+For instance, even if seawater contains 2712 mg/L of $\mathrm{SO_4^{2-}}$, not all of it exists as a free $\mathrm{SO_4^{2-}}$ ion. Some portion forms complexes with $\mathrm{Mg^{2+}}$ (as $\mathrm{MgSO_4}$), and another portion pairs with $\mathrm{Na^+}$ to form $\mathrm{NaSO_4^-}$.
+
+```{=html}
+<div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-left:3px solid #D97706; border-radius:8px; padding:1.2rem 1.5rem; margin:1.5rem 0;">
+  <p style="color:var(--color-text-primary); font-weight:500; margin-bottom:0.5rem;">Why Speciation Matters</p>
+  <p style="color:var(--color-text-secondary); margin:0; font-size:0.9rem;">
+    The "Saturation Index (SI)," which determines whether a mineral will dissolve or precipitate, is calculated using the chemical <b>activity</b> of ions in solution. 
+    Activity differs from simple concentration because it is influenced by complexation and ionic strength. 
+    Speciation is the process of accurately determining these activities.
+  </p>
+</div>
+```
+
+------------------------------------------------------------------------
+
+## Chemical Composition of Seawater
+
+Below is the seawater data we will use, representing a typical average seawater composition.
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+  <thead>
+    <tr style="background:var(--color-background-secondary);">
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Component</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Formula</th>
+      <th style="padding:0.6rem 1rem; text-align:right; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Conc. (mg/L)</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Sodium</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706;">Na</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">10768</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Major cation</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Potassium</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706;">K</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">399.1</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);"></td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Calcium</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706;">Ca</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">412.3</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Relates to carbonates</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Magnesium</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706;">Mg</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">1291.8</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Forms complexes with SO₄</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Chloride</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">Cl</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">19353</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Major anion</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Bicarbonate</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">HCO₃⁻ (Alkalinity)</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">141.682</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Input as Alkalinity</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Sulfate</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">SO₄</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">2712</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Forms multiple complexes</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Nitrate</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">NO₃</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">0.29</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Trace</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Iron</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">Fe</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">0.002</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Ultratrace</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Silicon</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#7F77DD;">Si</td>
+      <td style="padding:0.5rem 1rem; text-align:right; color:var(--color-text-primary);">4.28</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-secondary);">Exists as SiO₂</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+The pH is 8.22, temperature is 25°C, and density is 1.023 g/cm³.
+
+------------------------------------------------------------------------
+
+## Input Procedure in PHREEQC
+
+### 1. Click the SOLUTION Icon
+
+As before, click the **SOLUTION icon** in the left icon bar. The SOLUTION property window will open.
+
+### 2. Enter pH, pe, and Temperature
+
+Input the following values into the fields at the top of the window:
+
+```{=html}
+<div style="display:flex; gap:1rem; margin:1rem 0; flex-wrap:wrap;">
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.8rem 1.2rem; min-width:120px;">
+    <div style="color:var(--color-text-secondary); font-size:0.75rem; margin-bottom:0.2rem;">pH</div>
+    <div style="color:var(--color-text-primary); font-weight:500; font-size:1.1rem;">8.22</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.8rem 1.2rem; min-width:120px;">
+    <div style="color:var(--color-text-secondary); font-size:0.75rem; margin-bottom:0.2rem;">pe</div>
+    <div style="color:var(--color-text-primary); font-weight:500; font-size:1.1rem;">8.451</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.8rem 1.2rem; min-width:120px;">
+    <div style="color:var(--color-text-secondary); font-size:0.75rem; margin-bottom:0.2rem;">Temperature</div>
+    <div style="color:var(--color-text-primary); font-weight:500; font-size:1.1rem;">25 ℃</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.8rem 1.2rem; min-width:120px;">
+    <div style="color:var(--color-text-secondary); font-size:0.75rem; margin-bottom:0.2rem;">Density</div>
+    <div style="color:var(--color-text-primary); font-weight:500; font-size:1.1rem;">1.023</div>
+  </div>
+</div>
+```
+
+### 3. Change Units to ppm
+
+The default unit is `mmol/kgw`, but since our data is in mg/L (approximately ppm), we need to change it. Select **ppm** from the unit dropdown menu.
+
+::: callout-important
+## Verify Units Carefully
+
+One of the most common mistakes in PHREEQC is using the wrong units. Entering mg/L data as mmol/kgw will cause your results to be off by orders of magnitude. Always double-check before proceeding.
+:::
+
+### 4. Select Elements and Enter Concentrations
+
+Check the boxes for the elements you want to include and enter their concentrations in the fields on the right.
+
+::: callout-note
+## Handling Alkalinity
+
+Bicarbonate ($\mathrm{HCO_3^-}$) should be entered as `Alkalinity` rather than `HCO3`. By specifying `as HCO3-` in the units column, PHREEQC will correctly perform calculations for the carbonate system.
+
+```         
+Alkalinity   141.682   as HCO3-
+```
+:::
+
+------------------------------------------------------------------------
+
+## PHREEQC Code
+
+The GUI will automatically generate the following code. You can also copy and paste this directly into the text editor.
+
+``` phreeqc
+SOLUTION 1  Seawater
+    temp      25
+    pH        8.22
+    pe        8.451
+    redox     pe
+    units     ppm
+    density   1.023
+    Na        10768
+    K         399.1
+    Ca        412.3
+    Mg        1291.8
+    Cl        19353
+    Alkalinity 141.682  as HCO3-
+    S(6)      2712         # Sulfate entered as S(6)
+    N(5)      0.29         # Nitrate entered as N(5)
+    Fe        0.002
+    Si        4.28
+    -water    1  # kg
+
+END
+```
+
+::: callout-note
+## Specifying Oxidation States: `S(6)` and `N(5)`
+
+In PHREEQC, sulfate ($\mathrm{SO_4^{2-}}$) is written as `S(6)` to specify the oxidation state of sulfur. Similarly, nitrate ($\mathrm{NO_3^-}$) is written as `N(5)`. This distinguishes them from reduced forms like $\mathrm{S^{2-}}$ (sulfide) or $\mathrm{NH_4^+}$ (ammonium).
+:::
+
+------------------------------------------------------------------------
+
+## Running the Calculation
+
+After entering the code, ensure you have an `END` statement, then click **Run → OK**. Choose your workspace folder, save the file (e.g., `seawater_speciation.pqi`), and click **Start → Dismiss**.
+
+------------------------------------------------------------------------
+
+## Reading the Output
+
+### Basic Solution Information
+
+The beginning of the Output file provides a summary of the solution:
+
+```         
+----------------------------Description of solution----------------------------
+
+                                        pH  =   8.220
+                                        pe  =   8.451
+      Specific Conductance (µS/cm,  25°C)  =   52634
+                        Density (g/cm³)    =   1.02282
+                     Activity of water     =   0.981
+                 Ionic strength (mol/kg)   =   6.748e-01
+                       Mass of water (kg)  =   1.000
+            　　　　　　　　　　　　　　　　　...
+```
+
+**Ionic strength = 0.665 mol/kg**: This is quite high. Freshwater typically has an ionic strength below 0.001 mol/kg. At such high values, the activity coefficients ($\gamma$) of ions deviate significantly from 1, making speciation calculations essential.
+
+**Activity of water = 0.981**: While pure water has an activity of 1.000, solutes in seawater lower this value. This decreases the vapor pressure, which is one reason why seawater evaporates more slowly than freshwater.
+
+------------------------------------------------------------------------
+
+### Species Distribution
+
+The middle section of the Output shows the distribution for each element. Let's look at Sulfate ($S(6)$):
+
+```         
+                                               Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma    cm³/mol
+
+S(6)          2.926e-02
+   SO4-2           1.432e-02   2.604e-03    -1.844    -2.584    -0.740     17.49
+   MgSO4           7.170e-03   8.375e-03    -2.144    -2.077     0.067      5.84
+   NaSO4-          6.637e-03   4.482e-03    -2.178    -2.349    -0.171     21.21
+   CaSO4           9.548e-04   1.115e-03    -3.020    -2.953     0.067      7.50
+   KSO4-           1.756e-04   1.186e-04    -3.755    -3.926    -0.171     34.85
+```
+
+```{=html}
+<div style="background-color: rgba(120, 120, 120, 0.08); border: 1px solid rgba(120, 120, 120, 0.2); border-radius: 10px; padding: 1.2rem 1.5rem; margin: 1.5rem 0;">
+  <p style="font-weight: bold; margin-bottom: 0.8rem; font-size: 1.1rem;">SO₄²⁻ Species Distribution (Calculated)</p>
+  
+  <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+    <!-- SO₄²⁻ -->
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div style="width: 80px; font-size: 0.9rem; flex-shrink: 0; opacity: 0.8;">SO₄²⁻</div>
+      <div style="flex: 1; background-color: rgba(120, 120, 120, 0.2); border-radius: 4px; height: 18px; position: relative;">
+        <div style="width: 49%; background-color: #D97706; height: 100%; border-radius: 4px;"></div>
+      </div>
+      <div style="width: 40px; text-align: right; font-size: 0.9rem; flex-shrink: 0;">49%</div>
+    </div>
+    
+    <!-- MgSO₄ -->
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div style="width: 80px; font-size: 0.9rem; flex-shrink: 0; opacity: 0.8;">MgSO₄</div>
+      <div style="flex: 1; background-color: rgba(120, 120, 120, 0.2); border-radius: 4px; height: 18px; position: relative;">
+        <div style="width: 25%; background-color: #BA7517; height: 100%; border-radius: 4px;"></div>
+      </div>
+      <div style="width: 40px; text-align: right; font-size: 0.9rem; flex-shrink: 0;">25%</div>
+    </div>
+    
+    <!-- NaSO₄⁻ -->
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div style="width: 80px; font-size: 0.9rem; flex-shrink: 0; opacity: 0.8;">NaSO₄⁻</div>
+      <div style="flex: 1; background-color: rgba(120, 120, 120, 0.2); border-radius: 4px; height: 18px; position: relative;">
+        <div style="width: 23%; background-color: #534AB7; height: 100%; border-radius: 4px;"></div>
+      </div>
+      <div style="width: 40px; text-align: right; font-size: 0.9rem; flex-shrink: 0;">23%</div>
+    </div>
+    
+    <!-- CaSO₄ -->
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <div style="width: 80px; font-size: 0.9rem; flex-shrink: 0; opacity: 0.8;">CaSO₄</div>
+      <div style="flex: 1; background-color: rgba(120, 120, 120, 0.2); border-radius: 4px; height: 18px; position: relative;">
+        <div style="width: 3%; background-color: #993C1D; height: 100%; border-radius: 4px;"></div>
+      </div>
+      <div style="width: 40px; text-align: right; font-size: 0.9rem; flex-shrink: 0;">3%</div>
+    </div>
+  </div>
+
+  <p style="font-size: 0.85rem; margin-top: 1rem; margin-bottom: 0; opacity: 0.7;">
+    Based on SO₄²⁻ Molality (1.432e-2) and Activity (2.60e-3), the activity coefficient (γ) is approximately 0.18. This indicates a significant reduction in the chemical effectiveness of free SO₄²⁻. About 51% of total sulfate exists as ion pairs.
+  </p>
+</div>
+```
+
+------------------------------------------------------------------------
+
+### Saturation Index (SI)
+
+The latter half of the Output contains the **Saturation Indices** section:
+
+```         
+-------------------------------Saturation indices-------------------------------
+
+  Phase               SI   log IAP   log K(T, P)
+
+  Anhydrite        -0.93     -5.20   -4.28  CaSO4
+  Aragonite         0.61     -7.73   -8.34  CaCO3
+  Calcite           0.75     -7.73   -8.48  CaCO3
+  Chalcedony       -0.52     -4.07   -3.55  SiO2
+  Chrysotile        3.36     35.56   32.20  Mg3Si2O5(OH)4
+  CO2(g)           -3.39     -4.86   -1.47  CO2
+  Dolomite          2.39    -14.70  -17.08  CaMg(CO3)2
+  Fe(OH)3(a)        0.18      5.07    4.89  Fe(OH)3
+```
+
+The Saturation Index (SI) is defined as:
+
+$$SI = \log \frac{IAP}{K_{sp}}$$
+
+- $SI$: Saturation Index $[-]$
+- $IAP$: Ion Activity Product $[-]$
+- $K_{sp}$: Thermodynamic Solubility Product at specific $T$ and $P$ $[-]$
+
+| SI Value | Meaning        | Mineral Behavior                 |
+|----------|----------------|----------------------------------|
+| $SI > 0$ | Supersaturated | Tendency to **precipitate**      |
+| $SI = 0$ | Equilibrium    | No net dissolution/precipitation |
+| $SI < 0$ | Undersaturated | Tendency to **dissolve**         |
+
+------------------------------------------------------------------------
+
+## Discussion: Geochemical Implications for Seawater
+
+Our speciation results reveal several important aspects of seawater geochemistry:
+
+**1. Calcite is Supersaturated (SI = 0.75)**
+
+Seawater is supersaturated with respect to calcite, meaning it is thermodynamically favored to precipitate. This explains the abundance of biogenic carbonate (calcite and aragonite) in tropical shallow waters.
+
+**2. Anhydrite and Gypsum are Undersaturated**
+
+With SI values of -0.93 and -0.59 respectively, sulfate minerals do not precipitate in normal seawater. If evaporation occurs and the solution concentrates, the SI will rise, eventually leading to the precipitation of evaporites like gypsum.
+
+**3. Dolomite is Highly Supersaturated (SI = 2.39)**
+
+While thermodynamically favored, dolomite rarely precipitates directly from modern seawater. This is due to kinetic constraints (a kinetic barrier), a phenomenon known in geochemistry as the "Dolomite Problem." It is important to remember that PHREEQC calculates **thermodynamic equilibrium** but does not account for **reaction kinetics**.
+
+::: callout-tip
+## 3 Key Points of Speciation
+
+1.  **Verify Units** — Don't confuse ppm with mmol/kgw.
+2.  **Inputting Alkalinity** — Remember to use `as HCO3-`.
+3.  **Interpreting SI** — Positive values indicate precipitation; negative values indicate dissolution.
+:::
+
+------------------------------------------------------------------------
+
+## Next Time: Mixing and EQUILIBRIUM_PHASES
+
+In the next tutorial, we will combine **Mixing** (merging two solutions) and **EQUILIBRIUM_PHASES** (calculating equilibrium with minerals). We will investigate what happens when gypsum and anhydrite are added to pure water as temperature increases from 25°C to 75°C—a fascinating example of how stability can flip between two minerals.
+
+------------------------------------------------------------------------
+
+*Other articles in this series:*
+
+- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
+- **#2 Analyzing Seawater with Speciation** (This article)
+- [#3 Mixing and EQUILIBRIUM_PHASES](../phreeqc-part3/index-en.html)
+
+------------------------------------------------------------------------
+
+*DeepFlow \| Science beneath the surface*

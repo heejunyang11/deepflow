@@ -1,0 +1,353 @@
+---
+title: "地下水はなぜ変化するのか #1：別府温泉と冷地下水の関係"
+description: "別府南部で観測された不圧地下水位の長期低下。その背景にある温泉水と冷地下水の関係、地質構造、そして「地下水位を測ることの意味」を解説する。"
+date: 2026-05-12
+categories: [地下水, 温泉, 地球熱学]
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+---
+
+## はじめに：別府の地下はどうなっているのか
+
+別府市の地面の下には、世界有数の地熱系が広がっている。地表では至るところから湯けむりが立ち上り、湧出量も泉源数も日本最大級だ。しかし、そこで暮らす人々の足元にある**冷たい地下水**はいったいどこから来て、どこへ行くのか——そしてなぜ年々水位が下がっているのか。
+
+この連載では、京都大学地球熱学研究施設（別府市）で行った不圧地下水位の観測データを出発点に、**信号処理・統計解析・Pythonコード**を使いながら、地下水の動きを読み解いていく。
+
+::: callout-note
+## この連載で学ぶこと（全5回）
+
+| 回               | テーマ                                 |
+|------------------|----------------------------------------|
+| **#1（本記事）** | 別府の地質と地下水低下の背景           |
+| #2               | FFTで周期変動を「見える化」する        |
+| #3               | 気圧と地下水位の相互相関解析           |
+| #4               | 2つの観測井でなぜ時間差が違うのか      |
+| #5               | 市民に伝える地下水科学——まとめと可視化 |
+
+対象読者：地球科学に興味がある方、地域の環境に関心のある別府市民の方、両方を意識した構成にしてあります。専門用語には都度説明を入れます。
+:::
+
+------------------------------------------------------------------------
+
+## 別府の地熱系：温泉水の流れ
+
+別府南部の地下は、大きく分けて**3種類の温泉水**が異なる深度で流れている。
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5em 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.9em;">
+  <thead>
+    <tr style="background:#2E7D32; color:white;">
+      <th style="padding:10px 14px; text-align:left;">タイプ</th>
+      <th style="padding:10px 14px; text-align:left;">水質</th>
+      <th style="padding:10px 14px; text-align:center;">深度（海面下）</th>
+      <th style="padding:10px 14px; text-align:left;">特徴</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#F1F8E9;">
+      <td style="padding:9px 14px; font-weight:600; color:#1B5E20;">A型</td>
+      <td style="padding:9px 14px; font-size:0.88em;">Ca・Mg-HCO₃型</td>
+      <td style="padding:9px 14px; text-align:center; font-family:monospace;">−100〜−200 m</td>
+      <td style="padding:9px 14px; font-size:0.88em;">浅部涵養型。雨水起源が強い。</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 14px; font-weight:600; color:#6A1B9A;">B型</td>
+      <td style="padding:9px 14px; font-size:0.88em;">Na-Cl型</td>
+      <td style="padding:9px 14px; text-align:center; font-family:monospace;">約 −250 m</td>
+      <td style="padding:9px 14px; font-size:0.88em;">堀田断層より深部。熱水成分が増加。</td>
+    </tr>
+    <tr style="background:#FFF3E0;">
+      <td style="padding:9px 14px; font-weight:600; color:#E65100;">C型</td>
+      <td style="padding:9px 14px; font-size:0.88em;">Na-HCO₃型</td>
+      <td style="padding:9px 14px; text-align:center; font-family:monospace;">約 −300 m</td>
+      <td style="padding:9px 14px; font-size:0.88em;">最深部。熱水貯留層と関連。</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+さらに地表近くでは、**D型（蒸気加熱硫酸塩泉）**が存在する。火山ガスが地下水と反応して酸性になったもので、別府の「地獄めぐり」の一部がこれにあたる。
+
+地質の骨格を作っているのは、**鶴見岳・伽藍岳の火山噴出物**（凝灰岩・凝灰角礫岩）と、その上を覆う堆積層（砂・礫）だ。堀田断層・亀川断層が地下水の流れを区切る「壁」として機能しており、断層の南北で水質や温度が大きく異なる。
+
+------------------------------------------------------------------------
+
+## 不圧地下水位はなぜ下がるのか
+
+この地域で長年観測を続けてきた由佐（1979, 2001）らの研究によると、**不圧地下水位は年々低下**している。その原因として主に2つが挙げられている。
+
+```{=html}
+<div style="background:#FFF7ED; border-left:4px solid #D97706; padding:1.2em 1.5em; margin:1.5em 0; border-radius:0 8px 8px 0;">
+  <div style="font-weight:700; color:#92400E; margin-bottom:0.8em;">不圧地下水位低下の2大原因</div>
+  <div style="display:flex; gap:1.5em; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px; background:#FFFBEB; border-radius:8px; padding:1em;">
+      <div style="font-weight:600; color:#B45309; margin-bottom:0.4em;">① 都市化による涵養量の減少</div>
+      <div style="font-size:0.88em; color:#78350F; line-height:1.7;">
+        別府市街地のアスファルト・コンクリート舗装が拡大することで、
+        雨水が地下に浸透しにくくなった。かつて田畑だった土地が
+        舗装されると、地下への供給（涵養）が激減する。
+      </div>
+    </div>
+    <div style="flex:1; min-width:200px; background:#FEF3C7; border-radius:8px; padding:1em;">
+      <div style="font-weight:600; color:#B45309; margin-bottom:0.4em;">② 熱水貯留層の圧力低下</div>
+      <div style="font-size:0.88em; color:#78350F; line-height:1.7;">
+        深部の熱水貯留層から長年にわたって温泉水が採取されることで、
+        貯留層の圧力が低下。すると上部の冷地下水が下方向へ
+        引っ張られ、不圧水位が低下すると考えられている（由佐, 2001）。
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+この2つの原因を区別して評価するためには、地下水位の**周期的な変動パターン**を詳しく解析する必要がある。そこで登場するのが、今回の研究で用いた**FFT（高速フーリエ変換）と相互相関解析**だ。
+
+------------------------------------------------------------------------
+
+## 不圧地下水位を観測する意味
+
+「なぜ温泉水頭を直接測らず、不圧地下水位を見るのか？」という疑問が浮かぶかもしれない。理由は明快だ。
+
+```{=html}
+<div style="background:#F0F4FF; border:1px solid #93C5FD; border-radius:10px; padding:1.3em 1.5em; margin:1.5em 0;">
+  <div style="font-weight:700; color:#1E3A8A; margin-bottom:0.6em;">不圧地下水位を観測する3つの理由</div>
+  <ol style="color:#1E40AF; font-size:0.92em; line-height:2.0; margin:0; padding-left:1.4em;">
+    <li><strong>間接的な温泉水頭の代理指標</strong>——不圧層と熱水貯留層は垂直方向に水理的に繋がっており、深部の圧力変化が浅部の水位変動として現れる。</li>
+    <li><strong>地層の透水性を評価できる</strong>——水位の変動パターンから、帯水層の水理拡散係数（≈ 透水係数 × 厚さ ÷ 貯留係数）を推定できる。</li>
+    <li><strong>観測が容易で連続記録が可能</strong>——深部の熱水は高温高圧で計器が傷みやすいが、浅部の冷地下水位は CTD-Diver（圧力式自動記録計）で安全に長期計測できる。</li>
+  </ol>
+</div>
+```
+
+------------------------------------------------------------------------
+
+## 観測設定：どこで、何を、どのように測ったか
+
+今回の解析に用いたデータは、京大地球熱学研究施設（別府市野口元町）の敷地内に設置した**2本の観測井**で収集した。
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5em 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.9em;">
+  <thead>
+    <tr style="background:#374151; color:white;">
+      <th style="padding:10px 14px; text-align:left;"></th>
+      <th style="padding:10px 14px; text-align:center;">観測井 1</th>
+      <th style="padding:10px 14px; text-align:center;">観測井 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#F9FAFB;">
+      <td style="padding:9px 14px; font-weight:600; color:#374151;">地表標高</td>
+      <td style="padding:9px 14px; text-align:center;">73 m</td>
+      <td style="padding:9px 14px; text-align:center;">80 m</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 14px; font-weight:600; color:#374151;">観測井間距離</td>
+      <td colspan="2" style="padding:9px 14px; text-align:center;">110 m</td>
+    </tr>
+    <tr style="background:#F9FAFB;">
+      <td style="padding:9px 14px; font-weight:600; color:#374151;">平均水位（海抜）</td>
+      <td style="padding:9px 14px; text-align:center;">41.06 m</td>
+      <td style="padding:9px 14px; text-align:center;">41.25 m</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 14px; font-weight:600; color:#374151;">観測期間</td>
+      <td colspan="2" style="padding:9px 14px; text-align:center;">2017年8月19日〜2018年7月23日</td>
+    </tr>
+    <tr style="background:#F9FAFB;">
+      <td style="padding:9px 14px; font-weight:600; color:#374151;">サンプリング間隔</td>
+      <td colspan="2" style="padding:9px 14px; text-align:center;">1時間（計 8,136 点）</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 14px; font-weight:600; color:#374151;">計器</td>
+      <td colspan="2" style="padding:9px 14px; text-align:center;">CTD-Diver（分解能 2 mm）</td>
+    </tr>
+    <tr style="background:#F9FAFB;">
+      <td style="padding:9px 14px; font-weight:600; color:#374151;">観測項目</td>
+      <td colspan="2" style="padding:9px 14px; text-align:center;">地下水位・気圧・降水量</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+2井は約110m離れているが、**平均水位はほぼ同じ（海抜41m前後）**で、不圧帯水層の水面が水平に近いことを示している。しかし細かく見ると、気圧変動に対する応答が2井で異なる——この謎が#4で明らかになる。
+
+------------------------------------------------------------------------
+
+## Pythonでデータを読み込んで最初の一歩
+
+では早速、Pythonで観測データの読み込みと可視化をしてみよう。ここでは仮想データを使った例を示す（実データがある場合はCSVを差し替えるだけでよい）。
+
+``` python
+#  観測データの読み込みと概観プロット
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+# フォント設定
+plt.rcParams.update({
+    "font.family": "sans-serif",
+    "font.sans-serif": ["MS Gothic", "Noto Sans CJK JP", "DejaVu Sans"],
+    "axes.unicode_minus": False,
+    "figure.dpi": 150,
+})
+
+# ---- 仮想データ生成（実データがある場合はここをpd.read_csv()に差し替え） ----
+np.random.seed(42)
+n = 8136   # 1時間×8136 = 約1年
+
+t = pd.date_range("2017-08-19", periods=n, freq="h")
+
+# 季節変動（正弦波）＋気圧応答（高周波）＋ノイズ
+seasonal   = 2.0 * np.sin(2 * np.pi * np.arange(n) / (24 * 365))
+barometric = 0.03 * np.sin(2 * np.pi * np.arange(n) / 24)
+noise_ow1  = 0.005 * np.random.randn(n)
+noise_ow2  = 0.020 * np.random.randn(n)
+
+gwl_ow1 = 41.06 + seasonal + barometric + noise_ow1
+gwl_ow2 = 41.25 + seasonal + 1.05 * barometric + noise_ow2  # OW2は応答が少し大きい
+
+baro = 1010 + 8 * np.sin(2 * np.pi * np.arange(n) / (24 * 14)) \
+            + 3 * np.random.randn(n)
+
+# Figure
+fig, axes = plt.subplots(2, 1, figsize=(13, 7), sharex=True)
+fig.patch.set_facecolor("#F8F9FA")
+
+# 上：地下水位
+ax1 = axes[0]
+ax1.set_facecolor("#F0F4F8")
+ax1.plot(t, gwl_ow1, lw=0.8, color="#2563EB", label="観測井 1", alpha=0.9)
+ax1.plot(t, gwl_ow2, lw=0.8, color="#DC2626", label="観測井 2", alpha=0.9)
+ax1.set_ylabel("地下水位 (m a.s.l.)", fontsize=10)
+ax1.legend(fontsize=9, loc="upper right")
+ax1.grid(True, ls="--", lw=0.4, color="#CBD5E1")
+ax1.set_title("別府南部 不圧地下水位（2017–2018年）", fontsize=12)
+
+# 下：気圧
+ax2 = axes[1]
+ax2.set_facecolor("#F0F4F8")
+ax2.plot(t, baro, lw=0.8, color="#374151", label="気圧", alpha=0.85)
+ax2.set_ylabel("気圧 (hPa)", fontsize=10)
+ax2.set_xlabel("日付", fontsize=10)
+ax2.legend(fontsize=9, loc="upper right")
+ax2.grid(True, ls="--", lw=0.4, color="#CBD5E1")
+ax2.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d\n%Y"))
+
+plt.tight_layout()
+plt.savefig("beppu_gwl_overview.png", bbox_inches="tight")
+plt.show()
+```
+
+::: callout-tip
+## 実データで動かすには
+
+CTD-Diver の出力（CSVまたはExcel）をそのまま読み込む場合：
+
+``` python
+df = pd.read_csv("gwl_data.csv", parse_dates=["datetime"], index_col="datetime")
+gwl_ow1 = df["OW1_m"]
+gwl_ow2 = df["OW2_m"]
+baro    = df["pressure_hPa"]
+```
+
+列名は実際のファイルに合わせて変更すること。
+:::
+
+------------------------------------------------------------------------
+
+## 1年分のデータで見えてきたこと
+
+生データを眺めるだけでも、いくつかのことが読み取れる。
+
+```{=html}
+<div style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.5em; margin:1.5em 0;">
+<svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;" role="img">
+  <title>別府地下水位の変動パターンまとめ</title>
+
+  <!-- 背景 -->
+  <rect x="0" y="0" width="680" height="200" rx="12" fill="#FAFAFA"/>
+
+  <!-- Box 1: 季節変動 -->
+  <rect x="20" y="20" width="190" height="160" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="115" y="48" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="700" fill="#1D4ED8">季節変動</text>
+  <text x="115" y="68" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#1E40AF">冬に高く、夏に低い</text>
+  <text x="115" y="88" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#1E40AF">振幅 ≈ 4 m</text>
+  <text x="115" y="115" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#3B82F6" font-style="italic">降水浸透・蒸発散</text>
+  <text x="115" y="133" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#3B82F6" font-style="italic">のサイクルを反映</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="212" y1="100" x2="238" y2="100" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Box 2: 短周期変動 -->
+  <rect x="240" y="20" width="200" height="160" rx="10" fill="#FFF7ED" stroke="#D97706" stroke-width="1.5"/>
+  <text x="340" y="48" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="700" fill="#92400E">短周期変動</text>
+  <text x="340" y="68" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#78350F">振幅 1〜5 cm</text>
+  <text x="340" y="88" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#78350F">8 h・12 h・24 h 周期</text>
+  <text x="340" y="115" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#D97706" font-style="italic">気圧変動・地球潮汐</text>
+  <text x="340" y="133" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#D97706" font-style="italic">が混在。FFTで分離！</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="442" y1="100" x2="468" y2="100" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Box 3: 科学的問い -->
+  <rect x="470" y="20" width="190" height="160" rx="10" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="565" y="48" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="13" font-weight="700" fill="#15803D">科学的問い</text>
+  <text x="565" y="70" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#166534">どの周期が支配的？</text>
+  <text x="565" y="90" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" fill="#166534">原因は気圧か潮汐か？</text>
+  <text x="565" y="115" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="10" fill="#16A34A" font-style="italic">→ #2・#3 で解明</text>
+
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#9CA3AF"
+            stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+  </defs>
+</svg>
+</div>
+```
+
+1〜5 cm という振幅は非常に小さい。しかしこの「わずかな揺れ」の中に、帯水層の性質や地球潮汐・気圧応答の情報が詰まっている。次回はこの小さな変動を**FFT（高速フーリエ変換）**で周波数ごとに分解し、何が起きているかを「見える化」する。
+
+------------------------------------------------------------------------
+
+## まとめ
+
+```{=html}
+<div style="background:#F9FAFB; border:1px solid #E5E7EB; border-radius:10px; padding:1.3em 1.5em; margin:1.5em 0;">
+  <ul style="color:#374151; font-size:0.93em; line-height:2.0; margin:0; padding-left:1.4em;">
+    <li>別府の地下には深度・水質の異なる複数の温泉水が流れており、断層が流れを支配している。</li>
+    <li>不圧地下水位は都市化と熱水貯留層の圧力低下により年々低下している。</li>
+    <li>不圧水位を観測することで、温泉水頭の変動を間接的に把握できる。</li>
+    <li>観測データには季節スケールの大きな変動と、1〜5 cm の短周期変動が重なっている。</li>
+    <li>短周期変動の原因（気圧？地球潮汐？）を分離するには、<strong>FFTと相互相関解析</strong>が必要。</li>
+  </ul>
+</div>
+```
+
+::: callout-tip
+## 次回予告 — #2「FFTで周期変動を見える化する」
+
+8,136点の時系列データにFFTをかけると、肉眼では見えない周期成分が一目瞭然になる。O₁・K₁・M₂・S₂という潮汐分潮の名前と、それが不圧帯水層でどう現れるか（あるいは現れないか）を解説する。
+:::
+
+- **#1（本記事）別府の地下水はなぜ下がるのか**
+- [#2 FFTで周期変動を見える化する](../beppu-gwl-part2/)
+- [#3 気圧と地下水位の相互相関解析](../beppu-gwl-part3/)
+- [#4 2つの観測井でなぜ時間差が違うのか](../beppu-gwl-part4/)
+- [#5 市民に伝える地下水科学](../beppu-gwl-part5/)
+
+------------------------------------------------------------------------
+
+*DeepFlow \| 地球科学シミュレーションの深みへ*

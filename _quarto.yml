@@ -2,16 +2,19 @@ project:
   type: website
   output-dir: _site
   resources:
-    - "apps/"   # ← これを追加
+    - "apps/"
+    - "_headers"
+    - "ads.txt"
 
 # サイトの言語を日本語に設定
 lang: ja
 
 website:
-  title: "DeepFlow"
+  title: "DeepFlows"
   description: "Science beneath the surface. 地下水・地球化学解析（MODFLOW/PHREEQC）から温泉の科学、自然地理学、Python・AIを用いたデータ分析まで、深く探求する知見を共有します。"
   
-  site-url: "https://your-domain.com" # デプロイ後に設定してください
+  site-url: "https://deepflows.net"
+  google-analytics: "G-WYF8CN3PMT"
 
   open-graph: true
   twitter-card: 
@@ -24,11 +27,11 @@ website:
       - href: index.qmd
         text: Home  
       - href: blog.qmd
-        text: Main  
+        text: Simulations  
       - href: onsen.qmd
-        text: 温泉・地理        
+        text: Geo & Onsen        
       - href: note.qmd
-        text: ノート
+        text: Lab Notes
       - href: apps.qmd      
         text: Apps          
       - href: about.qmd
@@ -44,11 +47,13 @@ format:
   html:
     # --- ライト/ダーク切り替えの標準的な設定 ---
     theme:
-      light: flatly
-         
+      light: flatly         
     css: styles.css
-      
-    # 読みやすさを向上させるハイライト設定
+    include-in-header:
+      - text: |
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1900441978503848"
+          crossorigin="anonymous"></script>
+  
     highlight-style: 
       light: arrow
        

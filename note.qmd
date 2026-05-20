@@ -1,5 +1,5 @@
 ---
-title: "研究ノート"
+title: "Lab Notes"
 number-sections: false
 crossref:
   chapters: false
@@ -12,7 +12,7 @@ listing:
   categories: true 
 ---
 
-今行っている研究を時系列で記録します。計算失敗などもそのまま載せます。なお、統計に関する身近な事例と取り扱います。ここでは「なぜ統計を使うのか」に焦点を合わせます。
+今行っている研究を時系列で記録します。計算失敗などもそのまま載せます。なお、最近のTopicもできるだけ扱います。
 
 :::: grid
 ::: g-col-12
@@ -28,13 +28,11 @@ listing:
 
 :::: grid
 ::: g-col-12
-### 🌊 統計の話
+### 🌊 Topics
 
 **記事一覧**
 
 - [「平均42℃」なのに凍えた?!](/posts/note/intro/)
-
-- [「普通の人でいい」は、上位2.5%への求婚だった](/posts/note/nomal_part1/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::

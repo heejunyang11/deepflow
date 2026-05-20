@@ -1,5 +1,5 @@
 ---
-title: "温泉・地理"
+title: "Geo & Onsen"
 number-sections: false
 crossref:
   chapters: false
@@ -33,11 +33,9 @@ listing:
 ::: g-col-12
 ### ⚗️ 地理
 
-地形やGISについて。
+- [関ヶ原の謎：徳川家康はなぜ「虎の口」へ躊躇なく進軍できたのか？](/posts/onsen/sekigahara/)
 
 **記事一覧**
-
-- \[別府温泉の地形\]
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::

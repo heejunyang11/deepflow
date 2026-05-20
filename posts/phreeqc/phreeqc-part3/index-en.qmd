@@ -1,0 +1,284 @@
+---
+title: "PHREEQC from Scratch #3: Mineral Equilibrium and Temperature Effects"
+date: 2026-04-09
+categories: [Geochemistry, PHREEQC, Groundwater, English]
+series: "PHREEQC from Scratch"
+description: "Learn how to use the EQUILIBRIUM_PHASES block using Gypsum and Anhydrite as examples. We simulate heating from 25°C to 75°C to reproduce the thermodynamic stability inversion of these two minerals."
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+include-in-header:
+  - text: |
+      <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part3/" />
+      <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part3/index-en.html" />
+---
+
+## Today's Theme
+
+In previous speciation calculations, we investigated "what chemical forms existing ions take in a solution." Today, we take a step further and calculate "**what dissolves and what precipitates when solid minerals come into contact with water.**"
+
+The key to this calculation is the **EQUILIBRIUM_PHASES** block.
+
+Our case study involves two calcium sulfate minerals: **Gypsum** and **Anhydrite**.
+
+```{=html}
+<div style="display:flex; gap:1rem; margin:1.5rem 0; flex-wrap:wrap;">
+  <div style="flex:1; min-width:200px; background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-left:4px solid #3B82F6; border-radius:0 8px 8px 0; padding:1rem;">
+    <div style="font-weight:500; color:var(--color-text-primary); margin-bottom:0.4rem;">Gypsum</div>
+    <div style="font-size:0.9rem; color:#3B82F6; font-family:monospace; margin-bottom:0.3rem;">CaSO₄·2H₂O</div>
+    <div style="font-size:0.85rem; color:var(--color-text-secondary);">Contains two water molecules. Stable at lower temperatures.</div>
+  </div>
+  <div style="flex:1; min-width:200px; background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-left:4px solid #D97706; border-radius:0 8px 8px 0; padding:1rem;">
+    <div style="font-weight:500; color:var(--color-text-primary); margin-bottom:0.4rem;">Anhydrite</div>
+    <div style="font-size:0.9rem; color:#D97706; font-family:monospace; margin-bottom:0.3rem;">CaSO₄</div>
+    <div style="font-size:0.85rem; color:var(--color-text-secondary);">Anhydrous (no water). Stable at higher temperatures.</div>
+  </div>
+</div>
+```
+
+These two minerals share the same chemical components (Ca, S, O), but they possess a fascinating property: **their thermodynamic stability flips depending on the temperature.** Let's verify this using PHREEQC.
+
+------------------------------------------------------------------------
+
+## What is EQUILIBRIUM_PHASES?
+
+The `EQUILIBRIUM_PHASES` block is an instruction to "react this mineral with water until it reaches equilibrium."
+
+PHREEQC automatically calculates: - The amount of mineral to dissolve or precipitate until the **Saturation Index (SI)** becomes zero. - The resulting changes in pH, ion concentrations, and final mineral mass.
+
+```{=html}
+<div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:1.2rem 1.5rem; margin:1.5rem 0; font-family:monospace; font-size:0.88rem; color:var(--color-text-primary);">
+  <div style="color:var(--color-text-secondary); margin-bottom:0.5rem; font-family:sans-serif; font-size:0.8rem;">Basic Syntax for EQUILIBRIUM_PHASES</div>
+  <div><span style="color:#D97706;">EQUILIBRIUM_PHASES</span> 1</div>
+  <div style="margin-left:1.5rem;"><span style="color:#2563EB;">Mineral_Name</span>&nbsp;&nbsp;<span style="color:#059669;">Target_SI</span>&nbsp;&nbsp;<span style="color:#7C3AED;">Initial_Amount (mol)</span></div>
+  <div style="margin-top:0.5rem; color:var(--color-text-secondary); font-family:sans-serif; font-size:0.8rem;">
+    Target_SI = 0: Aims for equilibrium state.<br>
+    Initial_Amount = 10: Ensures enough mineral is "present" to saturate the water.
+  </div>
+</div>
+```
+
+------------------------------------------------------------------------
+
+## Simulation Scenario
+
+The simulation follows these steps:
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+  <thead>
+    <tr style="background:var(--color-background-secondary);">
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Step</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Content</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">PHREEQC Block</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">1</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Define Pure Water (pH 7, 25°C)</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706;">SOLUTION</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">2</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Add excess Gypsum and Anhydrite</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706;">EQUILIBRIUM_PHASES</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">3</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Heat from 25°C to 75°C (1°C increments)</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706;">REACTION_TEMPERATURE</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">4</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Record and Graph SI at each temperature</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706;">SELECTED_OUTPUT / USER_GRAPH</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+------------------------------------------------------------------------
+
+## GUI Procedure
+
+### Step 1: Define Pure Water
+
+Using the same steps as before, set up default pure water (pH 7, pe 4, 25°C) via the **SOLUTION icon**.
+
+``` phreeqc
+SOLUTION 1
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+```
+
+### Step 2: Configure EQUILIBRIUM_PHASES
+
+Click the **EQUILIBRIUM_PHASES icon** on the left icon bar.
+
+In the configuration window: 1. Check **Anhydrite** and **Gypsum** in the list. 2. Enter **`0.0`** for the **Saturation Index (Target SI)** of both. 3. Enter **`10`** for the **Amount (Initial moles)**.
+
+::: callout-note
+## Meaning of Amount = 10
+
+`Amount` is the initial quantity of the mineral in moles. `10 mol` is a large excess, ensuring that enough mineral exists to saturate the water without completely dissolving.
+:::
+
+### Step 3: Configure REACTION_TEMPERATURE
+
+To vary the temperature, click the **REACTION_TEMPERATURE icon**.
+
+In the window: 1. Check **Linear step**. 2. Enter start temperature `25`, end temperature `75`, and number of steps `51` (for 1°C increments).
+
+------------------------------------------------------------------------
+
+## Full PHREEQC Code
+
+The complete code generated by the GUI is as follows. You can copy and paste this directly into PHREEQC to run the simulation.
+
+``` phreeqc
+SOLUTION 1  Pure water
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    Anhydrite   0.0   10   # Aim for SI=0, with 10 mol initial
+    Gypsum      0.0   10   # Aim for SI=0, with 10 mol initial
+
+REACTION_TEMPERATURE 1
+    25.0  75.0  in 51 steps   # From 25°C to 75°C in 1°C steps
+
+SELECTED_OUTPUT 1
+    -file             gypsum_anhydrite.sel
+    -temperature      true
+    -saturation_indices  Anhydrite  Gypsum
+
+USER_GRAPH 1
+    -headings  Temperature  SI_Anhydrite  SI_Gypsum
+    -chart_title  "Gypsum vs Anhydrite: SI vs Temperature"
+    -axis_titles  "Temperature (°C)"  "Saturation Index (SI)"
+    -initial_solutions  false
+    -start
+    10  graph_x  TC
+    20  graph_y  SI("Anhydrite")  SI("Gypsum")
+    -end
+
+END
+```
+
+::: callout-important
+## About the USER_GRAPH Block
+
+`USER_GRAPH` is a feature exclusive to the GUI (Interactive) version of PHREEQC. `graph_x` specifies the X-axis value, and `graph_y` specifies the Y-axis values. `TC` is a built-in variable for temperature in Celsius.
+:::
+
+------------------------------------------------------------------------
+
+## Reading the Results
+
+Upon execution, PHREEQC displays a graph of SI vs. Temperature. The `.sel` file output from `SELECTED_OUTPUT` contains a structured dataset like this:
+
+```         
+temp    si_Gypsum    si_Anhydrite
+25       0            -0.305 
+30       0            -0.250 
+35       0            -0.197 
+40       0            -0.145 
+45       0            -0.093 
+50       0            -0.043 
+55      -0.006         0
+60      -0.054         0
+65      -0.102         0
+70      -0.148         0
+75      -0.194         0
+```
+
+![Result of Phreeqc](Result.png)
+
+------------------------------------------------------------------------
+
+## Discussion: Why Stability Flips with Temperature
+
+The Saturation Index (SI) is defined as:
+
+$$SI = \log \frac{IAP}{K_{sp}}$$
+
+- $SI$: Saturation Index $[-]$
+- $IAP$: Ion Activity Product of the mineral components $[-]$
+- $K_{sp}$: Thermodynamic Solubility Product at specific $T$ and $P$ $[-]$
+
+### 1. Gypsum is Stable at 25°C
+
+At low temperatures, Gypsum ($\mathrm{CaSO_4·2H_2O}$), which incorporates water molecules into its crystal lattice, is more thermodynamically stable. Its SI is zero (equilibrium), while Anhydrite has a negative SI (undersaturated).
+
+### 2. Inversion around 55°C
+
+As temperature rises, the SI of Anhydrite increases toward zero, meaning its relative stability increases. Under these conditions, the stability of Gypsum and Anhydrite flips around 50–60°C.
+
+### 3. Anhydrite is Stable at 75°C
+
+At high temperatures, water molecules are released from the lattice, making $\mathrm{CaSO_4}$ (Anhydrite) thermodynamically stable. This is a key reason why Anhydrite predominates in geothermal environments and deep geological formations used for CCS (Carbon Capture and Storage).
+
+::: callout-note
+## Geological Significance
+
+This phase transition corresponds to real-world geological phenomena. Anhydrite is dominant in deep sedimentary basins (high temperature), while Gypsum is more common in shallower environments (low temperature). In high-temperature CCS environments, CO₂ injection might cause temporary dissolution of Gypsum due to acidification, followed by the reprecipitation of Anhydrite depending on the temperature and water activity.
+:::
+
+------------------------------------------------------------------------
+
+## Key Points of EQUILIBRIUM_PHASES
+
+Let's summarize what we've learned from this calculation:
+
+```{=html}
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:0.8rem; margin:1.5rem 0;">
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-top:3px solid #3B82F6; border-radius:0 0 8px 8px; padding:1rem;">
+    <div style="font-weight:500; color:var(--color-text-primary); margin-bottom:0.4rem; font-size:0.9rem;">Target SI = 0</div>
+    <div style="font-size:0.82rem; color:var(--color-text-secondary);">Indicates a goal of thermodynamic equilibrium through dissolution or precipitation.</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-top:3px solid #D97706; border-radius:0 0 8px 8px; padding:1rem;">
+    <div style="font-weight:500; color:var(--color-text-primary); margin-bottom:0.4rem; font-size:0.9rem;">Amount = 10</div>
+    <div style="font-size:0.82rem; color:var(--color-text-secondary);">Ensures a sufficient quantity of mineral to prevent complete dissolution.</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-top:3px solid #059669; border-radius:0 0 8px 8px; padding:1rem;">
+    <div style="font-weight:500; color:var(--color-text-primary); margin-bottom:0.4rem; font-size:0.9rem;">REACTION_TEMPERATURE</div>
+    <div style="font-size:0.82rem; color:var(--color-text-secondary);">Steps through temperatures to track thermodynamic behavior.</div>
+  </div>
+</div>
+```
+
+------------------------------------------------------------------------
+
+## Next Time: Calcite–CO₂ Interaction
+
+In the next tutorial, we will explore the difference between **Open and Closed Systems** by calculating the reaction between Calcite and CO₂ gas. We will track how the final pH changes depending on whether the system is open or closed to CO₂—one of the most critical reactions in understanding groundwater chemistry.
+
+------------------------------------------------------------------------
+
+*Other articles in this series:*
+
+- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
+- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
+- **#3 Mineral Equilibrium and Temperature Effects** (This article)
+- [#4 Calcite–CO₂ Interaction](../phreeqc-part4/index-en.html)
+
+------------------------------------------------------------------------
+
+*DeepFlow \| Science beneath the surface*

@@ -11,6 +11,12 @@ toc-depth: 3
 number-sections: false
 code-fold: false
 lang: ja
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part5/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part5/index-en.html" />
 ---
 
 ## 混合腐食とは何か
@@ -102,7 +108,7 @@ lang: ja
 
 ## S1：炭酸地下水の定義
 
-石灰岩地帯の地下水を、純水を Pco₂ = 10⁻² atm とカルサイトで平衡させることで定義する。前回（Part 4）の「開放系」に似た設定だが、今回は CO₂分圧を 10⁻² atm（土壌に近い高めの値）にしている。
+石灰岩地帯の地下水を、純水を Pco₂ = 10⁻² atm とカルサイトで平衡させることで定義する。[前回（Part 4）](../phreeqc-part4/index.html)の「開放系」に似た設定だが、今回は CO₂分圧を 10⁻² atm（土壌に近い高めの値）にしている。
 
 ``` phreeqc
 SOLUTION 1  Carbonate groundwater
@@ -310,6 +316,16 @@ END
 
 各ステップの計算後、pH・Ca²⁺・Mg²⁺・Calcite SI・Dolomite SI を確認する。
 
+下記のコードをSOLUTION 1下に貼り付けて、ex5.txtファイルを確認することもできる。しかし、結果（OUTPUT）データに慣れるためにも下記の表と比較することが望まれる。
+
+``` phreeqc
+SELECTED_OUTPUT
+    -file ex5.txt
+    -pH true
+    -molalities Ca+2 Mg+2
+    -saturation_indices Calcite Dolomite
+```
+
 ### 各ステップの結果比較
 
 ```{=html}
@@ -329,7 +345,7 @@ END
     <tr style="border-bottom:1px solid #F3F4F6;">
       <td style="padding:0.5rem 0.8rem; color:#1D4ED8; font-weight:500;">S1 地下水</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.29</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">1.62</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">1.59</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.00</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">−</td>
@@ -337,32 +353,32 @@ END
     <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
       <td style="padding:0.5rem 0.8rem; color:#1D9E75; font-weight:500;">S2 海水</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">8.22</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">9.96</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">49.79</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.78</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">2.45</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">9.63</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">47.5</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.75</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">2.38</td>
     </tr>
     <tr style="border-bottom:1px solid #F3F4F6;">
       <td style="padding:0.5rem 0.8rem; color:#D97706; font-weight:500;">S3 混合水</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.32</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">4.05</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">14.87</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#D97706; font-weight:500;">−0.12 !</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.47</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">3.96</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">14.6</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#D97706; font-weight:500;">−0.10 !</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.51</td>
     </tr>
     <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
       <td style="padding:0.5rem 0.8rem; color:#7C3AED; font-weight:500;">S4 +Cal+Dol</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.04</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">11.17</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.85</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.05</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">10.9</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.68</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
     </tr>
     <tr>
       <td style="padding:0.5rem 0.8rem; color:#D85A30; font-weight:500;">S5 +Cal のみ</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.43</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">4.09</td>
-      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">14.87</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">4.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">14.6</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
       <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.71</td>
     </tr>
@@ -371,7 +387,7 @@ END
 </div>
 ```
 
-**S3（混合水）のCalcite SI = −0.12** ── これが混合腐食のシグナルである。両端点（S1・S2）は、CalciteのSIがゼロと過飽和付近なのに、混合後にマイナスになっている。
+**S3（混合水）のCalcite SI = −0.10** ── これが混合腐食のシグナルである。両端点（S1・S2）は、CalciteのSIがゼロと過飽和付近なのに、混合後にマイナスになっている。
 
 ------------------------------------------------------------------------
 

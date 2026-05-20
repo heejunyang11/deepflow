@@ -1,0 +1,338 @@
+---
+title: "PHREEQC from Scratch #4: Calcite–CO₂ Interaction (Open vs. Closed Systems)"
+date: 2026-04-10
+categories: [Geochemistry, PHREEQC, Groundwater, English]
+series: "PHREEQC from Scratch"
+description: "Simulate the reaction between soil CO₂, pure water, and calcite in both open and closed systems. We quantitatively demonstrate how CO₂ availability influences pH and dissolved Ca²⁺ concentrations in groundwater formation."
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+include-in-header:
+  - text: |
+      <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part4/" />
+      <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part4/index-en.html" />
+---
+
+## Introduction: Why This Reaction Matters
+
+In the study of groundwater geochemistry, the interaction between **calcite (calcium carbonate) and CO₂-charged water** is perhaps the most fundamental and significant process.
+
+As rainwater infiltrates through the soil, it absorbs CO₂ produced by biological activity, becoming slightly acidic. When this acidic water comes into contact with carbonate rocks (such as limestone), calcite dissolves, releasing $\mathrm{Ca^{2+}}$ and $\mathrm{HCO_3^-}$ into the water. This is the primary reason why much of the world's groundwater is "hard water."
+
+Crucially, the progression of this reaction depends heavily on whether the **system is "open" or "closed" to CO₂ gas.**
+
+```{=html}
+<div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:10px; padding:1.2rem 1.5rem; margin:1.5rem 0;">
+  <div style="font-weight:500; color:var(--color-text-primary); margin-bottom:0.8rem;">Two Scenarios Compared in This Tutorial</div>
+  <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px; border-left:3px solid #3B82F6; padding-left:0.8rem;">
+      <div style="font-weight:500; color:#1D4ED8; margin-bottom:0.3rem;">Open System</div>
+      <div style="font-size:0.85rem; color:var(--color-text-secondary);">Constant equilibrium with CO₂ gas. CO₂ is continuously replenished during the reaction. Typical of the soil zone.</div>
+    </div>
+    <div style="flex:1; min-width:200px; border-left:3px solid #D97706; padding-left:0.8rem;">
+      <div style="font-weight:500; color:#92400E; margin-bottom:0.3rem;">Closed System</div>
+      <div style="font-size:0.85rem; color:var(--color-text-secondary);">Water is equilibrated with CO₂ and then isolated from the gas phase. Typical of deep, confined aquifers.</div>
+    </div>
+  </div>
+</div>
+```
+
+---
+
+## Chemical Equations
+
+Let's summarize the chemistry involved in this system.
+
+**Dissolution of CO₂:**
+
+$$\mathrm{CO_2(g) + H_2O \rightleftharpoons H_2CO_3^* \rightleftharpoons H^+ + HCO_3^-}$$
+
+**Dissolution of Calcite:**
+
+$$\mathrm{CaCO_3 + H^+ \rightleftharpoons Ca^{2+} + HCO_3^-}$$
+
+**Net Reaction (Open System):**
+
+$$\mathrm{CaCO_3 + CO_2(g) + H_2O \rightleftharpoons Ca^{2+} + 2HCO_3^-}$$
+
+- $\mathrm{H_2CO_3^*}$: Sum of dissolved $\mathrm{CO_2(aq)}$ and true carbonic acid $\mathrm{H_2CO_3}$ $[mol/kg]$
+- $\mathrm{CaCO_3}$: Calcite (solid phase)
+- $\mathrm{CO_2(g)}$: Carbon dioxide in the gas phase
+
+In an open system, the continuous supply of CO₂ drives the reaction to the right, promoting dissolution. In a closed system, the limited amount of dissolved CO₂ is quickly consumed, often resulting in a higher final pH and lower mineral dissolution.
+
+---
+
+## Setting the Partial Pressure of CO₂
+
+The partial pressure of CO₂ ($P_{CO_2}$) in soil can reach 30 to 100 times that of the atmosphere. In this tutorial, we will use a representative value:
+
+$$P_{CO_2} = 10^{-1.5} \approx 0.032 \text{ atm}$$
+
+This is a typical value for soil in limestone regions (roughly 100 times the atmospheric value of $10^{-3.5}$ atm).
+
+In PHREEQC, CO₂ gas is identified as `CO2(g)`. By writing `CO2(g) -1.5` in the `EQUILIBRIUM_PHASES` block, we specify the condition $\log P_{CO_2} = -1.5$.
+
+---
+
+## Configuration of Simulation Scenarios
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+  <thead>
+    <tr style="background:var(--color-background-secondary);">
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Scenario</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">CO₂ Condition</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Calcite Condition</th>
+      <th style="padding:0.6rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">PHREEQC Block</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:#1D4ED8; font-weight:500;">Open System</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Constant equilibrium with CO₂(g)<br>(P = 10⁻¹·⁵ atm)</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Calcite (SI=0, 10 mol)</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706; font-size:0.82rem;">SOLUTION 1<br>EQUILIBRIUM_PHASES 1<br>(Simultaneous CO2 + Calcite)</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:#92400E; font-weight:500;">Closed System</td>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary);">Pre-equilibrate with CO₂(g)<br>→ Then isolate from gas</td>
+      <td style="padding:0.5rem 1rem; color:var(--text-primary);">Separate EQ_PHASES for<br>Calcite only</td>
+      <td style="padding:0.5rem 1rem; font-family:monospace; color:#D97706; font-size:0.82rem;">SOLUTION 2<br>EQUILIBRIUM_PHASES 1<br>SAVE → USE<br>EQUILIBRIUM_PHASES 2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+---
+
+## GUI Procedure
+
+### Open System Configuration
+
+**Step 1:** Define pure water (SOLUTION 1).
+
+**Step 2:** Click the **EQUILIBRIUM_PHASES icon** and set the following:
+- `CO2(g)`: Target SI = **-1.5**, Amount = **10**
+- `Calcite`: Target SI = **0**, Amount = **10**
+
+::: callout-note
+## Meaning of Target SI = -1.5 for CO2(g)
+The instruction `CO2(g) -1.5` means "dissolve CO₂ until the water reaches equilibrium with $\log P_{CO_2} = -1.5$." In an open system, CO₂ is maintained at this partial pressure throughout the reaction.
+:::
+
+---
+
+### Closed System Configuration
+
+A closed system is simulated in two stages:
+
+**Stage 1: Dissolve CO₂ (Gas phase present)**
+Define SOLUTION 2, equilibrate with CO₂ only using EQUILIBRIUM_PHASES, and save the state using `SAVE solution 2`.
+
+**Stage 2: React with Calcite (No gas phase)**
+Use `USE solution 2` to recall the carbonated water, then equilibrate with Calcite only in a new EQUILIBRIUM_PHASES block. Do **not** include `CO2(g)` in this second block.
+
+---
+
+## Full PHREEQC Code
+
+``` phreeqc
+# ===================================
+# Open System
+# Simultaneous equilibrium with CO2 and Calcite
+# ===================================
+SOLUTION 1  Open system - Pure water
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)   -1.5   10   # log P(CO2) = -1.5 atm, constant supply
+    Calcite   0     10   # Equilibrium with calcite
+
+END
+
+# ===================================
+# Closed System
+# Stage 1: Initial CO2 dissolution
+# ===================================
+SOLUTION 2  Closed system - Pure water
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)   -1.5   10   # Equilibrate with CO2 only (no calcite yet)
+
+SAVE solution 2          # Save water after CO2 dissolution
+
+END
+
+# ===================================
+# Closed System Stage 2:
+# Reaction with Calcite after isolation from gas
+# ===================================
+USE solution 2           # Use the saved carbonated water
+
+EQUILIBRIUM_PHASES 2
+    Calcite   0     10   # Equilibrate with calcite only (no gas phase)
+
+END
+```
+
+::: callout-important
+## Understanding `SAVE` and `USE`
+The `SAVE solution 2` command stores the current state of the water (pH, ion concentrations, temperature, etc.) in memory. `USE solution 2` recalls that state for further calculations. This is essential for simulating "step-wise reactions" like the closed system scenario.
+:::
+
+---
+
+## Reading the Results
+
+After running the calculation, you can compare the outputs for the two scenarios.
+
+### Open System Results (SOLUTION 1 after)
+```         
+pH                 =   6.97
+Ca²⁺ (mol/kgw)    =   2.39e-03
+HCO₃⁻ (mol/kgw)  =   4.88e-03
+Calcite SI        =   0.00     ← Equilibrium reached
+CO2(g) SI         =   -1.5     ← CO2(g) maintained at -1.5
+```
+
+### Closed System Results (SOLUTION 2 after Stage 2)
+```         
+pH                 =   7.68
+Ca²⁺ (mol/kgw)    =   9.94e-04
+HCO₃⁻ (mol/kgw)  =   1.99e-03
+Calcite SI        =   0.00     ← Equilibrium reached
+CO2(g) SI         =  -2.58     ← CO2 is undersaturated (consumed)
+```
+
+---
+
+### Comparison Summary
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+  <thead>
+    <tr style="background:var(--color-background-secondary);">
+      <th style="padding:0.7rem 1rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Parameter</th>
+      <th style="padding:0.7rem 1rem; text-align:center; border-bottom:2px solid var(--color-border-primary); color:#1D4ED8;">Open System</th>
+      <th style="padding:0.7rem 1rem; text-align:center; border-bottom:2px solid var(--color-border-primary); color:#92400E;">Closed System</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary); font-weight:500;">Final pH</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8; font-weight:500;">6.97</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E; font-weight:500;">7.68</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary); font-weight:500;">Ca²⁺ Concentration</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8;">2.39×10⁻³ mol/kg<br><span style="font-size:0.82rem; color:var(--color-text-secondary);">≈ 96 mg/L</span></td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E;">9.94×10⁻⁴ mol/kg<br><span style="font-size:0.82rem; color:var(--color-text-secondary);">≈ 40 mg/L</span></td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary); font-weight:500;">HCO₃⁻ Concentration</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8;">4.88×10⁻³ mol/kg</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E;">1.99×10⁻³ mol/kg</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary); font-weight:500;">Calcite Dissolved</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8;">High (~2.5x)</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E;">Low</td>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem 1rem; color:var(--color-text-primary); font-weight:500;">CO₂(g) SI</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#1D4ED8;">-1.5 (Input condition)</td>
+      <td style="padding:0.5rem 1rem; text-align:center; color:#92400E;">−2.58 (Consumed)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+---
+
+## Discussion
+
+### 1. Why the Open System has a Lower pH
+In an open system, CO₂ is maintained at $P_{CO_2} = 10^{-1.5}$ atm. Even as calcite dissolves and consumes $\mathrm{H^+}$, **additional CO₂ is supplied from the gas phase** to regenerate $\mathrm{H^+}$. This maintains the acidity and promotes further dissolution of calcite. Consequently, the final Calcium concentration (2.39×10⁻³ mol/kgw) is significantly higher than in the closed system.
+
+$$\mathrm{CO_2(g) \rightarrow CO_2(aq) \rightarrow H^+ + HCO_3^- \xrightarrow{Calcite} Ca^{2+} + 2HCO_3^-}$$
+
+### 2. Why the Closed System has a Higher pH
+In a closed system, the amount of CO₂ dissolved in Stage 1 is the total available carbon. As calcite dissolves, $\mathrm{H^+}$ is consumed. However, because the system is **isolated**, there is no new supply of CO₂. The acidity is quickly neutralized, the solution pH rises, and the reaction halts much earlier.
+
+### 3. Application to Natural Groundwater
+
+::: callout-tip
+## Which System is More Realistic?
+Natural groundwater systems often transition between these two states:
+- **Soil Zone (Shallow)**: Rich in soil CO₂ with constant replenishment → Approaches an **Open System**.
+- **Deep Aquifers**: Isolated from the atmosphere and soil gas → Approaches a **Closed System**.
+
+As groundwater moves deeper, it often becomes more alkaline (higher pH) and can become supersaturated with respect to calcite. In cave environments, when this deep groundwater emerges and comes into contact with low-CO₂ air, it "degasses" CO₂, causing calcite to precipitate and form speleothems like stalagmites.
+:::
+
+---
+
+## Key Mechanism Comparison
+
+```{=html}
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0;">
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:1rem;">
+    <div style="font-weight:500; color:#1E40AF; margin-bottom:0.5rem;">Open System Mechanism</div>
+    <div style="font-size:0.85rem; color:#1D4ED8; line-height:1.7;">
+      CO₂ Supply → H⁺ Generation → Calcite Dissolution → H⁺ Consumption → CO₂ Supply → ... (Cycle)
+    </div>
+    <div style="margin-top:0.5rem; font-size:0.82rem; color:#3B82F6;">→ Dissolution continues to equilibrium at constant P_CO2.</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:1rem;">
+    <div style="font-weight:500; color:#92400E; margin-bottom:0.5rem;">Closed System Mechanism</div>
+    <div style="font-size:0.85rem; color:#B45309; line-height:1.7;">
+      Dissolved CO₂ (Limited) → H⁺ Generation → Calcite Dissolution → H⁺ Consumption → CO₂ Depletion → Stop
+    </div>
+    <div style="margin-top:0.5rem; font-size:0.82rem; color:#D97706;">→ Reaction stops once initial CO₂ is exhausted.</div>
+  </div>
+</div>
+```
+
+---
+
+## Next Time: Mixing Groundwater and Seawater
+
+In the next tutorial, we will calculate what happens when **carbonated groundwater (from limestone areas) meets seawater**. 
+
+We will explore the phenomenon of "**Mixing Corrosion**"—where the simple mixture of two calcite-saturated solutions becomes undersaturated (corrosive). This process is vital for understanding the formation of coastal limestone caves.
+
+---
+
+*Other articles in this series:*
+
+- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
+- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
+- [#3 Mineral Equilibrium and Temperature Effects](../phreeqc-part3/index-en.html)
+- **#4 Calcite–CO₂ Interaction (Open vs. Closed Systems)** (This article)
+- [#5 Mixing Groundwater and Seawater](../phreeqc-part5/index-en.html)
+
+---
+
+*DeepFlow | Science beneath the surface*

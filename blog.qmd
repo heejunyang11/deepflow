@@ -189,8 +189,6 @@ MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
 **記事一覧**
 
-- [地下水流動解析入門：MODFLOWとFloPyの基本](/posts/groundwater/groundwater-intro/)
-
 - [ダルシーの法則を理解する：FloPyで作る最初の地下水モデル](/posts/groundwater/groundwater-darcy/)
 
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編](/posts/groundwater/flopy-phreeqc-part1/)
@@ -198,6 +196,8 @@ MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #2：カップリングの概念](/posts/groundwater/flopy-phreeqc-part2/)
 
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編](/posts/groundwater/flopy-phreeqc-part3/)
+
+- [地下水はなぜ変化するのか #1：別府温泉と冷地下水の関係](http://localhost:3502/posts/groundwater/fft-part1/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
@@ -220,6 +220,16 @@ PHREEQCとPythonで水質・地球化学反応をモデリングする。
 - [PHREEQCをゼロから始める #5：炭酸地下水と海水の混合（混合腐食 or 混合溶解）](/posts/phreeqc/phreeqc-part5/)
 
 - [PHREEQCをゼロから始める #6：黄鉄鉱の酸化とAMD](/posts/phreeqc/phreeqc-part6/)
+
+- [PHREEQCをゼロから始める #7：溶解度ダイアグラム（Gibbsite）](/posts/phreeqc/phreeqc-part7/)
+
+- [PHREEQCをゼロから始める #8：PythonでPHREEQCの結果を解析・可視化する](/posts/phreeqc/phreeqc-part8/)
+
+- [PHREEQCをゼロから始める #9：イオン強度と活量係数 — 海水と真水で計算結果が変わる理由](/posts/phreeqc/phreeqc-part9/)
+
+- [PHREEQCをゼロから始める #10：飽和指数（SI）の使いこなし — 鉱物は溶けているか、沈殿しているか](/posts/phreeqc/phreeqc-part10/)
+
+- [PHREEQCをゼロから始める #11：反応経路モデリング — 雨水が地下水になるまで](/posts/phreeqc/phreeqc-part11/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::

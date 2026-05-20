@@ -11,6 +11,12 @@ toc-depth: 3
 number-sections: false
 code-fold: false
 lang: ja
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part3/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part3/index-en.html" />
 ---
 
 ## 今回のテーマ

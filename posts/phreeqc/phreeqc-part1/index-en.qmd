@@ -1,0 +1,325 @@
+---
+title: "PHREEQC from Scratch #1: Installation and Initial Calculation"
+date: 2026-04-07
+categories: [Geochemistry, PHREEQC, Groundwater, Tutorial, English]
+series: "PHREEQC from Scratch"
+description: "A step-by-step guide to installing the geochemical modeling software PHREEQC, launching it for the first time, and running a pure water calculation. Every step is explained in detail so you can follow along easily."
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+include-in-header:
+  - text: |
+      <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part1/" />
+      <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part1/index-en.html" />
+---
+
+## What Is PHREEQC?
+
+**PHREEQC** (pronounced "freek") is a geochemical modeling software developed and freely distributed by the United States Geological Survey (USGS). The name stands for **pH-REdox-EQuilibrium C**, reflecting its core capability of computing pH and redox equilibria in water–rock systems.
+
+Here are some of the things PHREEQC can do:
+
+- Aqueous speciation (species distribution in solution)
+- Mineral dissolution and precipitation (`EQUILIBRIUM_PHASES`)
+- Water mixing (`MIX`)
+- Kinetic rate calculations (`KINETICS`)
+- Redox sequences
+
+PHREEQC is used across a wide range of fields—groundwater quality analysis, hydrothermal alteration modeling, CO₂ geological storage (CCS), seawater–freshwater mixing, and more. Another major advantage is that it is **completely free and open-source**, making it highly accessible for researchers and students alike.
+
+---
+
+## Step 1: Downloading PHREEQC
+
+### Go to the Official USGS Page
+
+Open your browser and navigate to the following URL:
+
+```         
+https://www.usgs.gov/software/phreeqc-version-3
+```
+
+In the **Downloads** section near the middle of the page, select the installer that matches your operating system. For Windows, download the `phreeqci-3.8.6-17100.msi` file (as of May 2026).
+
+::: callout-important
+## Always Download from the Official Site
+Because PHREEQC is widely known, unofficial distribution sites do exist. To ensure the integrity of the thermodynamic databases (`.dat` files), always download directly from the official USGS page.
+:::
+
+### Running the Installer
+
+Double-click the downloaded `phreeqci-3.8.6-17100.msi` file and follow the installation wizard. The default settings will work just fine. Once installation is complete, the files will be located in a folder such as:
+
+```         
+C:\Program Files (x86)\USGS\Phreeqc Interactive 3.x.x-xxxxx\
+```
+
+The executable you need is `phreeqci.exe` (the GUI version of PHREEQC), found inside the `bin` folder.
+
+---
+
+## Step 2: Launching PHREEQC and Preparing a Working Folder
+
+### Create a Working Folder (Important)
+
+Before you start using PHREEQC, it is strongly recommended to **create a dedicated folder on your Desktop**.
+
+```         
+Example: C:\Users\YourName\Desktop\PHREEQC_work\
+```
+
+::: callout-important
+## Use Only English Characters in the Folder Name
+PHREEQC may not handle non-ASCII paths correctly. Folder names containing Japanese characters, spaces, or special symbols can cause errors when saving or loading files. Use alphanumeric-only names such as `PHREEQC_work` or `phreeqc`.
+:::
+
+### Launch PHREEQC
+
+Double-click `phreeqci.exe` inside the `bin` folder. Alternatively, you can create a desktop shortcut for quick access.
+
+Once the PHREEQC window opens, you have successfully launched the program. You will see an icon bar on the left side of the screen—these icons serve as shortcuts to various calculation blocks (SOLUTION, EQUILIBRIUM_PHASES, etc.).
+
+---
+
+## Step 3: Defining Pure Water (SOLUTION)
+
+### What Is SOLUTION?
+
+The first thing you do in PHREEQC is define the "water (solution)" you want to analyze. This definition block is called **SOLUTION**.
+
+Pure water (distilled water) is water with no dissolved solutes. To define pure water in PHREEQC, you can simply use the default values in the SOLUTION block.
+
+### GUI Procedure
+
+Click the **SOLUTION icon** in the icon bar on the left. The SOLUTION settings window will appear.
+
+For pure water, click **OK** without making any changes. The following code will be auto-generated in the text area on the left:
+
+``` phreeqc
+SOLUTION 1
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+```
+
+Here is what each parameter means:
+
+```{=html}
+<div style="overflow-x:auto; margin: 1.5em 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.9em;">
+  <thead>
+    <tr style="background:#D97706; color:white;">
+      <th style="padding:10px 14px; text-align:left;">Parameter</th>
+      <th style="padding:10px 14px; text-align:left;">Value</th>
+      <th style="padding:10px 14px; text-align:left;">Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 14px; font-family:monospace; font-weight:600;">temp</td>
+      <td style="padding:9px 14px;">25</td>
+      <td style="padding:9px 14px;">Temperature [°C]</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 14px; font-family:monospace; font-weight:600;">pH</td>
+      <td style="padding:9px 14px;">7</td>
+      <td style="padding:9px 14px;">pH (neutral)</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 14px; font-family:monospace; font-weight:600;">pe</td>
+      <td style="padding:9px 14px;">4</td>
+      <td style="padding:9px 14px;">Redox potential (pe value)</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 14px; font-family:monospace; font-weight:600;">redox</td>
+      <td style="padding:9px 14px;">pe</td>
+      <td style="padding:9px 14px;">Defines the redox reference as pe</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 14px; font-family:monospace; font-weight:600;">units</td>
+      <td style="padding:9px 14px;">mmol/kgw</td>
+      <td style="padding:9px 14px;">Concentration units (mmol per kg water)</td>
+    </tr>
+    <tr style="background:#FDFDFD;">
+      <td style="padding:9px 14px; font-family:monospace; font-weight:600;">density</td>
+      <td style="padding:9px 14px;">1</td>
+      <td style="padding:9px 14px;">Density [g/cm³]</td>
+    </tr>
+    <tr style="background:#FFF7ED;">
+      <td style="padding:9px 14px; font-family:monospace; font-weight:600;">-water</td>
+      <td style="padding:9px 14px;">1</td>
+      <td style="padding:9px 14px;">Amount of water [kg]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+::: callout-note
+## What Is pe (Redox Potential)?
+pe = 4 corresponds to the typical redox conditions at Earth's surface (a mildly oxidizing environment). Higher pe values indicate more oxidizing conditions, while lower values indicate more reducing conditions. This will be covered in detail in a future article on redox reactions.
+:::
+
+---
+
+## Step 4: Entering END to Close the Calculation Block
+
+In PHREEQC, every calculation block must end with the keyword **END**.
+
+Click at the end of the text area and type `END` on a new line:
+
+``` phreeqc
+SOLUTION 1
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+END
+```
+
+Without `END`, PHREEQC cannot determine where one calculation ends when multiple blocks are present. Make it a habit to always include it.
+
+---
+
+## Step 5: Running the Calculation
+
+### Select SOLUTION 1
+
+Click **SOLUTION 1** in the tree view on the left side of the screen. The row will be highlighted when selected.
+
+Next, click the dot (・) next to the row. This will automatically append **END** (if you have already typed it manually, this step is not necessary).
+
+### Execute with RUN
+
+Click the **Run** button in the menu bar or toolbar.
+
+### File Save Dialog
+
+When the save dialog appears, navigate to the working folder you created in Step 2 and enter a filename.
+
+```         
+Example: pure_water.pqi
+```
+
+### Choose the Thermodynamic Database
+
+From the Database files dropdown, select **phreeqc.dat**. This is the standard thermodynamic database for PHREEQC. For geothermal systems involving many minerals and chemical species, or for high-temperature conditions, use **llnl.dat** instead.
+
+Then click **Start** to begin the calculation. Once the calculation is complete, click **Dismiss** to close the dialog.
+
+---
+
+## Step 6: Reading the Output
+
+When the calculation finishes, the **Output** is displayed on screen. The beginning of the pure water output looks like this:
+
+```         
+-----------------------------Solution composition------------------------------
+
+    Elements           Molality       Moles
+
+    Pure water
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000
+                                       pe  =   4.000
+      Specific Conductance (µS/cm,  25°C)  =     0
+                        Density (g/cm³)  =   0.99706
+                     Volume (L)          =   1.00297
+                     Activity of water   =   1.000
+                 Ionic strength (mol/kg) =   1.007e-07
+                       Mass of water (kg)=   1.000
+          Total alkalinity (eq/kg)       =   1.070e-07
+                         Temperature (°C)=  25.000
+```
+
+### Key Points for Interpretation
+
+- **pH = 7.000** — Neutral, exactly as specified in the input.
+- **Specific Conductance = 0** — Pure water contains no electrolytes, so electrical conductivity is zero.
+- **Ionic strength = 1.007e-07** — Even in pure water, $\mathrm{H^+}$ and $\mathrm{OH^-}$ are present, so ionic strength is not zero but an extremely small value.
+
+The output also includes the species distribution:
+
+```         
+----------------------------Distribution of species----------------------------
+
+                                                Log       Log       Log    mole V
+   Species          Molality    Activity  Molality  Activity     Gamma    cm³/mol
+
+H2O               5.551e+01   1.000e+00     1.744     0.000     0.000     18.073
+H+                1.001e-07   1.000e-07    -7.000    -7.000     0.000      0.00
+OH-               1.001e-07   1.000e-07    -7.000    -7.000     0.000     -4.15
+```
+
+In pure water, you can confirm that both $\mathrm{H^+}$ and $\mathrm{OH^-}$ have concentrations of $10^{-7}$ mol/kg (= pH 7).
+
+---
+
+## First Calculation Complete
+
+You have now completed the entire workflow—from installing PHREEQC to running a pure water calculation and interpreting the results.
+
+Here is a summary of the key points:
+
+```{=html}
+<div style="overflow-x:auto; margin: 1.5em 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.9em;">
+  <thead>
+    <tr style="background:var(--color-background-secondary);">
+      <th style="padding:10px 14px; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Step</th>
+      <th style="padding:10px 14px; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Key Point</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:9px 14px; color:var(--color-text-primary); font-weight:500;">Folder Name</td>
+      <td style="padding:9px 14px; color:var(--color-text-secondary);">Always use English characters (no spaces/symbols).</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:9px 14px; color:var(--color-text-primary); font-weight:500;">SOLUTION</td>
+      <td style="padding:9px 14px; color:var(--color-text-secondary);">Use default settings to define pure water.</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:9px 14px; color:var(--color-text-primary); font-weight:500;">END</td>
+      <td style="padding:9px 14px; color:var(--color-text-secondary);">Mandatory at the end of every execution block.</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary); background:var(--color-background-secondary);">
+      <td style="padding:9px 14px; color:var(--color-text-primary); font-weight:500;">Output</td>
+      <td style="padding:9px 14px; color:var(--color-text-secondary);">Check pH, conductivity, and ionic strength for verification.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+In the next article, we will input real seawater data and calculate **Speciation (species distribution)**. We will enter major ions such as Na, Ca, Mg, and SO₄ to examine what chemical species are present in the water.
+
+---
+
+*Other articles in this series:*
+
+- **#1 Installation and Initial Calculation** (This article)
+- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
+- [#3 Mineral Equilibrium and Temperature Effects](../phreeqc-part3/index-en.html)
+- [#4 Calcite–CO₂ Interaction (Open vs. Closed Systems)](../phreeqc-part4/index-en.html)
+- [#5 Mixing Groundwater and Seawater](../phreeqc-part5/index-en.html)
+- [#6 Pyrite Oxidation and AMD Formation](../phreeqc-part6/index-en.html)
+- [#7 Solubility Diagrams (Gibbsite)](../phreeqc-part7/index-en.html)
+
+---
+
+*DeepFlow | Science beneath the surface*

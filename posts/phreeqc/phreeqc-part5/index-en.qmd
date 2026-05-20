@@ -1,0 +1,475 @@
+---
+title: "PHREEQC from Scratch #5: Mixing Groundwater and Seawater (Mixing Corrosion)"
+date: 2026-04-11
+categories: [Geochemistry, PHREEQC, Groundwater, Tutorial, English]
+series: "PHREEQC from Scratch"
+description: "Simulate 'mixing corrosion'—where mixing two calcite-saturated waters creates an undersaturated solution. We calculate the mixing of 70% carbonate groundwater and 30% seawater in 5 steps, exploring the kinetic constraints of dolomite."
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+include-in-header:
+  - text: |
+      <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part5/" />
+      <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part5/index-en.html" />
+---
+
+## What is Mixing Corrosion?
+
+"When two waters, both initially in equilibrium with calcite, are mixed together, the resulting mixture becomes **undersaturated** with respect to calcite." — This phenomenon is known as **Mixing Corrosion (or Freshwater-Seawater Mixing Dissolution)**.
+
+This counter-intuitive effect arises from the **non-linear nature** of carbonate equilibria. Parameters like pH and ionic strength do not average linearly when solutions are mixed.
+
+```{=html}
+<div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-left:4px solid #D97706; border-radius:0 8px 8px 0; padding:1.1rem 1.5rem; margin:1.5rem 0;">
+  <div style="font-weight:500; color:var(--color-text-primary); margin-bottom:0.4rem;">Why is it Counter-Intuitive?</div>
+  <div style="font-size:0.88rem; color:var(--color-text-secondary); line-height:1.75;">
+    Since both the groundwater and the seawater are nearly at equilibrium with calcite (SI ≈ 0), one might assume their mixture would also have an SI ≈ 0. However, because the solubility product of the carbonate system depends non-linearly on temperature, ionic strength, and partial pressure of CO₂, the Saturation Index (SI) of the mixture dips below the weighted average of the two end-members.
+  </div>
+</div>
+```
+
+This phenomenon is geologically significant as it causes calcite dissolution in coastal limestone aquifers and mixing zones. It is a primary driver in the formation of coastal karst caves.
+
+------------------------------------------------------------------------
+
+## The 5 Steps of Calculation
+
+Our simulation is structured into 5 distinct steps, referred to as S1 through S5.
+
+```{=html}
+<div style="margin:1.5rem 0;">
+  <div style="display:flex; flex-direction:column; gap:0;">
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#3B82F6; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S1</div>
+        <div style="width:2px; flex:1; background:#E5E7EB; margin:2px 0;"></div>
+      </div>
+      <div style="padding:0 0 1rem 0.8rem;">
+        <div style="font-weight:500; color:var(--color-text-primary); font-size:0.9rem;">Define Carbonate Groundwater</div>
+        <div style="font-size:0.83rem; color:var(--color-text-secondary); margin-top:2px;">Equilibrate pure water with Pco₂ = 10⁻² atm and Calcite → Save Solution 1</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#1D9E75; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S2</div>
+        <div style="width:2px; flex:1; background:#E5E7EB; margin:2px 0;"></div>
+      </div>
+      <div style="padding:0 0 1rem 0.8rem;">
+        <div style="font-weight:500; color:var(--color-text-primary); font-size:0.9rem;">Define Seawater</div>
+        <div style="font-size:0.83rem; color:var(--color-text-secondary); margin-top:2px;">Input the seawater data from Part 2 → Save Solution 2</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#D97706; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S3</div>
+        <div style="width:2px; flex:1; background:#E5E7EB; margin:2px 0;"></div>
+      </div>
+      <div style="padding:0 0 1rem 0.8rem;">
+        <div style="font-weight:500; color:var(--color-text-primary); font-size:0.9rem;">Mix 70% Groundwater + 30% Seawater</div>
+        <div style="font-size:0.83rem; color:var(--color-text-secondary); margin-top:2px;">Use the MIX block to specify the ratio → Save Solution 3</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#7C3AED; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S4</div>
+        <div style="width:2px; flex:1; background:#E5E7EB; margin:2px 0;"></div>
+      </div>
+      <div style="padding:0 0 1rem 0.8rem;">
+        <div style="font-weight:500; color:var(--color-text-primary); font-size:0.9rem;">Equilibrate Mixture with Calcite + Dolomite</div>
+        <div style="font-size:0.83rem; color:var(--color-text-secondary); margin-top:2px;">USE solution 3 → EQUILIBRIUM_PHASES (Ideal thermodynamic case)</div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="width:36px; display:flex; flex-direction:column; align-items:center;">
+        <div style="width:28px; height:28px; background:#D85A30; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:500; font-size:0.85rem; flex-shrink:0;">S5</div>
+      </div>
+      <div style="padding:0 0 0 0.8rem;">
+        <div style="font-weight:500; color:var(--color-text-primary); font-size:0.9rem;">Equilibrate Mixture with Calcite Only</div>
+        <div style="font-size:0.83rem; color:var(--color-text-secondary); margin-top:2px;">Exclude Dolomite due to its slow reaction kinetics (Realistic case)</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+```
+
+------------------------------------------------------------------------
+
+## S1: Define Carbonate Groundwater
+
+We define the groundwater of a limestone region by equilibrating pure water with calcite at $P_{CO_2} = 10^{-2}$ atm. This is similar to the "Open System" in [Part 4](../phreeqc-part4/index-en.html), but with a slightly higher CO₂ pressure typical of deep soil.
+
+``` phreeqc
+SOLUTION 1  Carbonate groundwater
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)   -2.0   10   # Pco2 = 10^-2 atm
+    Calcite   0.0   10   # Equilibrate with Calcite
+
+SAVE solution 1          # Save calculation result
+
+END
+```
+
+::: callout-note
+## Characteristics of the Generated Groundwater
+
+After this calculation, the groundwater will be saturated with calcium (pH ≈ 7.0, $\mathrm{Ca^{2+}}$ ≈ 3 to 4 mmol/kg). Verify in the Output that the Calcite SI = 0 (equilibrium).
+:::
+
+------------------------------------------------------------------------
+
+## S2: Define Seawater
+
+We will reuse the seawater composition data from Part 2 (Speciation).
+
+``` phreeqc
+SOLUTION 2  Seawater
+    temp      25
+    pH        8.22
+    pe        8.451
+    redox     pe
+    units     ppm
+    density   1.023
+    Ca        412.3
+    Alkalinity 141.682  as HCO3-
+    Cl        19353
+    K         399.1
+    Mg        1291.8
+    S(6)      2712
+    Si        4.28      as SiO2
+    Na        10768
+    -water    1 # kg
+
+SAVE solution 2
+
+END
+```
+
+------------------------------------------------------------------------
+
+## S3: Mix 70% Groundwater + 30% Seawater
+
+We use the **MIX block** to physically mix the two solutions.
+
+### GUI Procedure
+
+1.  Click the **MIX icon**.
+2.  Enter **0.70** for SOLUTION 1 and **0.30** for SOLUTION 2.
+3.  Add `SAVE solution 3` and `END` to store the mixed state.
+
+``` phreeqc
+MIX 1
+    1    0.70   # 70% Solution 1 (Groundwater)
+    2    0.30   # 30% Solution 2 (Seawater)
+
+SAVE solution 3
+
+END
+```
+
+::: callout-important
+## Note on the MIX Block
+
+The values in the MIX block represent **mixing fractions (0 to 1)**. Ensure they sum to exactly 1.0. If they do not, PHREEQC will still run, but the total mass of water in the mixture will be altered.
+:::
+
+------------------------------------------------------------------------
+
+## S4: Equilibrate Mixture with Calcite + Dolomite
+
+Here, we equilibrate the resulting mixture (Solution 3) with both calcite and dolomite ($\mathrm{CaMg(CO_3)_2}$).
+
+``` phreeqc
+USE solution 3
+
+EQUILIBRIUM_PHASES 2
+    Calcite   0.0   10   # Equilibrate with Calcite
+    Dolomite  0.0   10   # Equilibrate with Dolomite (Ideal Case)
+
+END
+```
+
+------------------------------------------------------------------------
+
+## S5: Equilibrate Mixture with Calcite Only (Realistic Case)
+
+Because dolomite has **extremely slow precipitation kinetics** at low temperatures, it generally does not precipitate on the short timescales of groundwater mixing. Thus, equilibrating with calcite *only* provides a more realistic scenario.
+
+``` phreeqc
+USE solution 3
+
+EQUILIBRIUM_PHASES 3
+    Calcite   0.0   10   # Equilibrate with Calcite only (No Dolomite)
+
+END
+```
+
+::: callout-note
+## The Dolomite Problem
+
+Thermodynamically, dolomite is supersaturated in many modern groundwaters and seawaters, yet it almost never precipitates directly in near-surface environments today. This is a classic geochemical enigma known as the **"Dolomite Problem,"** caused by kinetic barriers. By comparing S4 (ideal thermodynamic equilibrium) and S5 (kinetic constraint applied), we can observe the impact of this phenomenon.
+:::
+
+------------------------------------------------------------------------
+
+## Full PHREEQC Code
+
+``` phreeqc
+# =============================================
+# S1: Carbonate Groundwater
+# Pure water + CO2(g) at Pco2=10^-2 + Calcite
+# =============================================
+SOLUTION 1  Carbonate groundwater
+    temp      25
+    pH        7
+    pe        4
+    redox     pe
+    units     mmol/kgw
+    density   1
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)   -2.0   10
+    Calcite   0.0   10
+
+SAVE solution 1
+END
+
+# =============================================
+# S2: Seawater
+# =============================================
+SOLUTION 2  Seawater
+    temp      25
+    pH        8.22
+    pe        8.451
+    redox     pe
+    units     ppm
+    density   1.023
+    Ca        412.3
+    Alkalinity 141.682  as HCO3-
+    Cl        19353
+    K         399.1
+    Mg        1291.8
+    S(6)      2712
+    Si        4.28      as SiO2
+    Na        10768
+    -water    1 # kg
+
+SAVE solution 2
+END
+
+# =============================================
+# S3: Mix 70% Groundwater + 30% Seawater
+# =============================================
+MIX 1
+    1    0.70
+    2    0.30
+
+SAVE solution 3
+END
+
+# =============================================
+# S4: Mixture + Calcite + Dolomite (Ideal Case)
+# =============================================
+USE solution 3
+
+EQUILIBRIUM_PHASES 2
+    Calcite   0.0   10
+    Dolomite  0.0   10
+
+END
+
+# =============================================
+# S5: Mixture + Calcite Only (Realistic Case)
+# =============================================
+USE solution 3
+
+EQUILIBRIUM_PHASES 3
+    Calcite   0.0   10
+
+END
+```
+
+------------------------------------------------------------------------
+
+## Reading the Results
+
+Review the pH, $\mathrm{Ca^{2+}}$, $\mathrm{Mg^{2+}}$, Calcite SI, and Dolomite SI after each step.
+
+You can also paste the following code in the **SOLUTION 1** to verify the `ex5.txt` file. However, to get familiar with the output data file, it's highly recommended to compare it with the **Comparison** table below.
+
+``` phreeqc
+SELECTED_OUTPUT
+    -file ex5.txt
+    -pH true
+    -molalities Ca+2 Mg+2
+    -saturation_indices Calcite Dolomite
+```
+
+### Comparison of Results Across Steps
+
+```{=html}
+<div style="overflow-x:auto; margin:1.5rem 0;">
+<table style="width:100%; border-collapse:collapse; font-size:0.87rem;">
+  <thead>
+    <tr style="background:var(--color-background-secondary);">
+      <th style="padding:0.6rem 0.8rem; text-align:left; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Step</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">pH</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Ca²⁺<br>(mmol/kg)</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">Mg²⁺<br>(mmol/kg)</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">SI Calcite</th>
+      <th style="padding:0.6rem 0.8rem; text-align:center; border-bottom:2px solid var(--color-border-primary); color:var(--color-text-primary);">SI Dolomite</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--color-border-tertiary);">
+      <td style="padding:0.5rem 0.8rem; color:#1D4ED8; font-weight:500;">S1 Groundwater</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.29</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">1.59</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">−</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+      <td style="padding:0.5rem 0.8rem; color:#1D9E75; font-weight:500;">S2 Seawater</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">8.22</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">9.63</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">47.5</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.75</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">2.38</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6;">
+      <td style="padding:0.5rem 0.8rem; color:#D97706; font-weight:500;">S3 Mixed Water</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.32</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">3.96</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">14.6</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#D97706; font-weight:500;">−0.10 !</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.51</td>
+    </tr>
+    <tr style="border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+      <td style="padding:0.5rem 0.8rem; color:#7C3AED; font-weight:500;">S4 +Cal+Dol</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.05</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">10.9</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.68</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
+    </tr>
+    <tr>
+      <td style="padding:0.5rem 0.8rem; color:#D85A30; font-weight:500;">S5 +Cal Only</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">7.43</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">4.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">14.6</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#059669; font-weight:500;">0.00</td>
+      <td style="padding:0.5rem 0.8rem; text-align:center; color:#374151;">0.71</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+**Notice S3 (Mixed Water): Calcite SI = −0.10** — This is the signature of mixing corrosion. Even though the two end-members (S1 and S2) were saturated or supersaturated with calcite, the resulting mixture has a negative SI (undersaturated).
+
+------------------------------------------------------------------------
+
+## Discussion
+
+### 1. Mechanism of Mixing Corrosion
+
+The essence of mixing corrosion lies in the **non-linearity of carbonate equilibria**.
+
+When you mix fresh groundwater (low salinity, low pH, high $P_{CO_2}$) with seawater (high salinity, high pH, low $P_{CO_2}$): - The increased salinity raises the **ionic strength**, which lowers the activity coefficients ($\gamma$) of the ions. - The balance between pH and $P_{CO_2}$ shifts non-linearly. - Consequently, the mixture becomes undersaturated with respect to calcite.
+
+```{=html}
+<div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:1.1rem 1.5rem; margin:1.5rem 0;">
+  <div style="font-weight:500; color:var(--color-text-primary); margin-bottom:0.5rem;">Understanding via the Mixing Corrosion Equation</div>
+  <div style="font-size:0.88rem; color:var(--color-text-secondary); line-height:1.8;">
+    SI = log(IAP / K<sub>sp</sub>)<br>
+    IAP = a(Ca²⁺) × a(CO₃²⁻) = γ(Ca²⁺)·[Ca²⁺] × γ(CO₃²⁻)·[CO₃²⁻]<br><br>
+    Mixing increases ionic strength → γ decreases → IAP decreases → SI drops below zero.
+  </div>
+</div>
+```
+
+- $SI$: Saturation Index $[-]$
+- $IAP$: Ion Activity Product $[-]$
+- $K_{sp}$: Solubility Product $[-]$
+- $a(i)$: Chemical activity of ion $i$ $[-]$
+- $\gamma(i)$: Activity coefficient of ion $i$ $[-]$
+- $[i]$: Molal concentration of ion $i$ $[mol/kg]$
+
+### 2. S4 vs S5 (The Impact of Dolomite)
+
+In S4 (Calcite + Dolomite), $\mathrm{Mg^{2+}}$ is consumed to precipitate dolomite, which forces $\mathrm{Ca^{2+}}$ into solution (a process called dolomitization: replacement of Ca with Mg). In S5 (Calcite only), $\mathrm{Mg^{2+}}$ remains unchanged, and only calcite dissolution occurs.
+
+The fact that the Dolomite SI remains at 0.71 (supersaturated) in S5 reflects the reality that it is kinetically hindered from precipitating.
+
+### 3. Geological and Environmental Significance
+
+::: callout-tip
+## Where Does Mixing Corrosion Occur?
+
+Mixing corrosion plays a pivotal role in various environments: - **Coastal Limestone Aquifers**: Dissolution of calcite in the transition zone where groundwater meets the saltwater wedge increases aquifer porosity. - **Speleogenesis (Cave Formation)**: Caves often expand at the intersection of two distinct water flow paths with different $P_{CO_2}$ values. - **Petroleum Reservoir Diagenesis**: Dissolution of carbonate cements in zones where ancient marine and meteoric waters mixed.
+:::
+
+------------------------------------------------------------------------
+
+## Summary of New PHREEQC Commands
+
+```{=html}
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.8rem; margin:1.5rem 0;">
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.9rem;">
+    <div style="font-family:monospace; font-weight:500; color:#1E40AF; margin-bottom:0.3rem;">MIX</div>
+    <div style="font-size:0.82rem; color:var(--color-text-secondary);">Physically mixes two solutions at a specified ratio.</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.9rem;">
+    <div style="font-family:monospace; font-weight:500; color:#166534; margin-bottom:0.3rem;">SAVE</div>
+    <div style="font-size:0.82rem; color:var(--color-text-secondary);">Stores the computed solution state into memory.</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.9rem;">
+    <div style="font-family:monospace; font-weight:500; color:#92400E; margin-bottom:0.3rem;">USE</div>
+    <div style="font-size:0.82rem; color:var(--color-text-secondary);">Recalls a saved solution for subsequent reactions.</div>
+  </div>
+  <div style="background:var(--color-background-secondary); border:1px solid var(--color-border-tertiary); border-radius:8px; padding:0.9rem;">
+    <div style="font-family:monospace; font-weight:500; color:#6B21A8; margin-bottom:0.3rem;">EQUILIBRIUM_PHASES</div>
+    <div style="font-size:0.82rem; color:var(--color-text-secondary);">Reacts the solution until mineral equilibrium is reached.</div>
+  </div>
+</div>
+```
+
+------------------------------------------------------------------------
+
+## Next Time: Pyrite Oxidation
+
+In the next tutorial, we step into **Irreversible Reactions**. We will simulate the process of pyrite ($\mathrm{FeS_2}$) oxidizing in the presence of oxygen—the fundamental mechanism behind Acid Mine Drainage (AMD). We will tackle more advanced modeling by combining `EQUILIBRIUM_PHASES` with the `REACTION` block.
+
+------------------------------------------------------------------------
+
+*Other articles in this series:*
+
+- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
+- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
+- [#3 Mineral Equilibrium and Temperature Effects](../phreeqc-part3/index-en.html)
+- [#4 Calcite–CO₂ Interaction (Open vs. Closed Systems)](../phreeqc-part4/index-en.html)
+- **#5 Mixing Groundwater and Seawater** (This article)
+- [#6 Pyrite Oxidation (AMD) (Coming Soon)](../phreeqc-part6/index-en.html)
+
+------------------------------------------------------------------------
+
+*DeepFlow \| Science beneath the surface*

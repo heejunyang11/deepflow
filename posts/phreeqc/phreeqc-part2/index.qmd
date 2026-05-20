@@ -11,6 +11,12 @@ toc-depth: 3
 number-sections: false
 code-fold: false
 lang: ja
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part2/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part2/index-en.html" />
 ---
 
 ## Speciationとは何か
@@ -231,9 +237,9 @@ Outputの冒頭に溶液の概要が表示される：
       Specific Conductance (µS/cm,  25°C)  =   52634
                         Density (g/cm³)    =   1.02282
                      Activity of water     =   0.981
-                 Ionic strength (mol/kg)   =   6.651e-01
+                 Ionic strength (mol/kg)   =   6.748e-01
                        Mass of water (kg)  =   1.000
-          Total alkalinity (eq/kg)         =   2.379e-03
+            　　　　　　　　　　　　　　　　　...
 ```
 
 **Ionic strength（イオン強度）= 0.665 mol/kg** ── これは非常に高い値である。淡水の地下水では 0.001 mol/kg 以下のことが多い。海水のようにイオン強度が高いと、各イオンの活量係数（γ）が大きく1からずれるため、Speciation計算の意義が大きい。

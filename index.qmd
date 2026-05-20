@@ -1,5 +1,5 @@
 ---
-title: "DeepFlow"
+title: "DeepFlows"
 subtitle: "Science beneath the surface"
 listing:
   contents: posts
@@ -59,9 +59,9 @@ title-block-banner: true
 
 **・Main** : MODFLOW・PHREEQC・Pythonで、**水**の謎をコードで解く。数式と実装の世界へ。
 
-**・温泉・地理** : 温泉の成分と源を科学する。地理と地球化学で、泉質の秘密を読み解く。
+**・温泉・地理** : 温泉の成分と源を科学的にアプローチ。地理と地球化学で、泉質の秘密を読み解く。
 
-**・研究ノート** : 研究課程を時系列で記録する。統計に関する身近な事例を紹介。
+**・ノート** : 研究課程を時系列で記録。Topicに関する事例を紹介。
 
 **・Apps** : 地球化学計算や分子量計算など、研究にちょいと必要なツール。
 
