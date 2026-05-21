@@ -41,9 +41,7 @@ format:
 
 ブラウザで以下のURLにアクセスしてください：
 
-```         
-https://www.usgs.gov/software/phreeqc-version-3
-```
+[PHREEQC Version 3: https://www.usgs.gov/software/phreeqc-version-3](https://www.usgs.gov/software/phreeqc-version-3){target="_blank"}
 
 ページ中ほどの **Downloads** セクションから、OSに合ったインストーラーをお選びください。Windowsの場合は `phreeqci-3.8.6-17100.msi` ファイルをダウンロードします（2026年5月現在）。
 

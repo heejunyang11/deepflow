@@ -27,7 +27,7 @@ website:
       - href: index.qmd
         text: Home  
       - href: blog.qmd
-        text: Simulations  
+        text: Series  
       - href: onsen.qmd
         text: Geo & Onsen        
       - href: note.qmd
@@ -36,6 +36,10 @@ website:
         text: Apps          
       - href: about.qmd
         text: About
+    right:
+      - icon: globe
+        text: "EN / JP"
+        href: "javascript:switchLanguage()"
 
   page-footer:
     center: "© 2026 DeepFlow · Science beneath the surface"
@@ -53,6 +57,7 @@ format:
       - text: |
           <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1900441978503848"
           crossorigin="anonymous"></script>
+      - file: switch-lang.html
   
     highlight-style: 
       light: arrow

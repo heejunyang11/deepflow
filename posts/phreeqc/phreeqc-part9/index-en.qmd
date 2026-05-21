@@ -23,7 +23,7 @@ From analyzing seawater speciation in Part 2 to calculating Gibbsite solubility 
 
 > **"Why do seawater and freshwater yield different calculation results even when the pH and temperature are identical?"**
 
-The answer lies in **Activity**. PHREEQC does not use concentration (mol/kgw) directly to calculate chemical equilibrium; instead, it uses **activity**, which is concentration multiplied by a "correction factor." This correction factor is known as the **activity coefficient, $\gamma$ (gamma)**.
+The answer lies in **Activity**. PHREEQC does not use concentration (mol/kgw) directly to calculate chemical equilibrium; instead, it uses **activity**, which is concentration multiplied by a "correction factor." This correction factor is known as the **activity coefficient,** $\gamma$ (gamma).
 
 ```{=html}
 <div style="background:#FFF7ED; border-left:4px solid #D97706; padding:1.2em 1.5em; margin:1.5em 0; border-radius:0 8px 8px 0;">
@@ -43,20 +43,21 @@ In dilute solutions, $\gamma \approx 1$, meaning activity $\approx$ concentratio
 
 ::: callout-note
 ## What You Will Learn in This Article
-- The definition and calculation of **Ionic Strength ($I$)**
+
+- The definition and calculation of **Ionic Strength (**$I$)
 - The mechanics and applications of the four activity models: Debye-Hückel, Extended Debye-Hückel, Davies, and Pitzer
 - How to configure activity coefficient models in PHREEQC (`-activity_coefficients`)
 - Python code to compare results across the four models for the same solution
 - A decision flow for choosing the right model
 :::
 
----
+------------------------------------------------------------------------
 
 ## Theory Part 1: What is Ionic Strength?
 
 ### Definition
 
-**Ionic strength ($I$)** is a measure of the "charge-weighted concentration" of all ions in a solution:
+**Ionic strength (**$I$) is a measure of the "charge-weighted concentration" of all ions in a solution:
 
 $$I = \frac{1}{2} \sum_i m_i z_i^2$$
 
@@ -126,7 +127,7 @@ Sum                              = 1.3900<br>
 </div>
 ```
 
----
+------------------------------------------------------------------------
 
 ## Theory Part 2: The Four Activity Coefficient Models
 
@@ -136,7 +137,7 @@ The simplest theoretical equation, considering only the Coulombic attraction bet
 
 $$\log \gamma_i = -A z_i^2 \sqrt{I}$$
 
-$A = 0.509$ (for water at 25°C). This is valid only for extremely dilute solutions where **$I < 0.005$ mol/kg**.
+$A = 0.509$ (for water at 25°C). This is valid only for extremely dilute solutions where $I < 0.005$ mol/kg.
 
 ### Model 2: Extended Debye-Hückel (LLNL form)
 
@@ -144,7 +145,7 @@ An improved version that incorporates the effective ionic radius ($a_i$):
 
 $$\log \gamma_i = \frac{-A z_i^2 \sqrt{I}}{1 + B a_i \sqrt{I}}$$
 
-Where $a_i$ is the effective radius (in Å) and $B = 0.328$. Valid for **$I < 0.1$ mol/kg**. This model is used by the standard PHREEQC databases (`phreeqc.dat`, `llnl.dat`).
+Where $a_i$ is the effective radius (in Å) and $B = 0.328$. Valid for $I < 0.1$ mol/kg. This model is used by the standard PHREEQC databases (`phreeqc.dat`, `llnl.dat`).
 
 ### Model 3: Davies
 
@@ -152,7 +153,7 @@ Adds an empirical correction term for higher ionic strengths:
 
 $$\log \gamma_i = -A z_i^2 \left( \frac{\sqrt{I}}{1 + \sqrt{I}} - 0.3 I \right)$$
 
-Valid up to **$I < 0.5$ mol/kg**. It is highly suitable for brackish waters and soil waters. In PHREEQC, you can manually specify it using `-activity_model davies`.
+Valid up to $I < 0.5$ mol/kg. It is highly suitable for brackish waters and soil waters. In PHREEQC, you can manually specify it using `-activity_model davies`.
 
 ### Model 4: Pitzer
 
@@ -160,11 +161,23 @@ A highly accurate model using empirically derived interaction parameters ($\beta
 
 $$\ln \gamma_{\pm} = f(I) + \sum_{ij} B_{ij}(I) m_j + \sum_{ijk} C_{ijk} m_j m_k + \cdots$$
 
-Mandatory for brines, salt lakes, and geothermal fluids where **$I > 0.5$ mol/kg**. In PHREEQC, you must load the `pitzer.dat` database to use this model.
+Mandatory for brines, salt lakes, and geothermal fluids where $I > 0.5$ mol/kg. In PHREEQC, you must load the `pitzer.dat` database to use this model.
 
----
+------------------------------------------------------------------------
 
 ## Comparing the Four Models with Python
+
+The code below performs calculations using `phreeqc.dat` and `llnl.dat`.
+
+However, an error occurs with `phreeqc.dat` when using **Phreeqc Interactive 3.8.6-17100**. Therefore, it is recommended to use `wateq4f.dat` or the newly added `PHREEQC_ThermoddemV1.10_15Dec2020.dat` instead. (Note that this issue does not occur in **Phreeqc Interactive 3.7.3-15968**.)
+
+The following code assumes the use of **Phreeqc Interactive 3.8.6-17100** and utilizes `wateq4f.dat`. Please pay close attention to the database file paths on your system.
+
+For example, if `llnl.dat` is located in a folder named `Phreeqc` on your Desktop, the path would be specified as follows:
+
+`r"C:\Users\Desktop\Phreeqc\llnl.dat"`
+
+Please modify the file paths for `DB_PHREEQC` and `DB_LLNL` in the code below accordingly.
 
 ``` python
 import os
@@ -176,9 +189,9 @@ from phreeqpy.iphreeqc.phreeqc_dll import IPhreeqc
 # ==============================
 # 1. Database Paths Configuration
 # ==============================
-# *Please modify these to match your local paths
-DB_PHREEQC = r"phreeqc.dat" 
-DB_LLNL    = r"llnl.dat"    
+# ***Please modify these to match your local paths***
+DB_PHREEQC = r"C:\...\wateq4f.dat" 
+DB_LLNL    = r"C:\...\llnl.dat"    
 
 # ==============================
 # 2. PHREEQC Input String
@@ -286,7 +299,7 @@ if __name__ == "__main__":
         # Plot Data
         ax.plot(I_theory, gamma_dh, color='#6B7280', linestyle=':', linewidth=2, label='Debye-Hückel (Theoretical)')
         ax.plot(I_theory, gamma_davies, color='#16A34A', linestyle='--', linewidth=2, label='Davies (Theoretical)')
-        ax.plot(df_phreeqc['I'], df_phreeqc['Gamma_Na'], color='#2563EB', linestyle='-', linewidth=2, label='Extended D-H (phreeqc.dat)')
+        ax.plot(df_phreeqc['I'], df_phreeqc['Gamma_Na'], color='#2563EB', linestyle='-', linewidth=2, label='WATEQ Eq (Extended D-H (wateq4f.dat))')
         ax.plot(df_llnl['I'], df_llnl['Gamma_Na'], color='#CA8A04', linestyle='-', linewidth=2, label='B-dot Eq (llnl.dat)')
 
         ax.set_xlabel('Ionic Strength I (mol/kgw)', fontsize=12, color='#374151')
@@ -314,7 +327,7 @@ if __name__ == "__main__":
 
 As ionic strength increases, the divergence between the activity coefficient models becomes significant.
 
----
+------------------------------------------------------------------------
 
 ## Verifying Activity Coefficients in PHREEQC
 
@@ -405,10 +418,11 @@ END
 
 ::: callout-note
 ## Why is $\gamma$ so low for Divalent (Charge=2) Ions?
+
 Because the Debye-Hückel equation contains $z^2$, a divalent ion is suppressed by a factor of 4 compared to a monovalent ion. It may seem counterintuitive that sulfate in seawater behaves as if only 1/4th of it is present, but this is exactly why neglecting activity leads to massive errors. The solubility product of Calcite ($K_{sp}$) is defined as $a_{\mathrm{Ca^{2+}}} \cdot a_{\mathrm{CO_3^{2-}}}$. Evaluating it strictly by concentration leads to fundamentally flawed thermodynamic interpretations.
 :::
 
----
+------------------------------------------------------------------------
 
 ## Visualizing Activity vs. Ionic Strength in Python
 
@@ -485,7 +499,7 @@ plt.show()
 
 ![Activity Coefficients vs. Ionic Strength](Figure_2.png)
 
----
+------------------------------------------------------------------------
 
 ## Summary: The Importance of Recognizing "Activity"
 
@@ -523,7 +537,8 @@ plt.show()
 
 ::: callout-tip
 ## Coming Up Next — Part 10: "Mastering the Saturation Index (SI)"
-With a solid understanding of how to correctly compute activity, we can properly interpret the **Saturation Index: $SI = \log(IAP/K_{sp})$** for various minerals. If $SI > 0$, precipitation occurs; if $SI < 0$, dissolution happens. It turns out that every calculation we made from Part 2 to Part 7 was secretly relying on this exact logic!
+
+With a solid understanding of how to correctly compute activity, we can properly interpret the **Saturation Index:** $SI = \log(IAP/K_{sp})$ for various minerals. If $SI > 0$, precipitation occurs; if $SI < 0$, dissolution happens. It turns out that every calculation we made from Part 2 to Part 7 was secretly relying on this exact logic!
 :::
 
 By completing this article, the persistent "why?" that has been building up since Part 2 should finally be resolved. Knowing that PHREEQC automatically handles these complex corrections under the hood will entirely change how you read your simulation results.
@@ -539,6 +554,6 @@ By completing this article, the persistent "why?" that has been building up sinc
 - **#9 Ionic Strength and Activity Coefficients** (This article)
 - [#10 Mastering the Saturation Index (SI)](../phreeqc-part10/index-en.html)
 
----
+------------------------------------------------------------------------
 
-*DeepFlow | Science beneath the surface*
+*DeepFlow \| Science beneath the surface*

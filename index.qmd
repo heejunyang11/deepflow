@@ -1,68 +1,268 @@
 ---
 title: "DeepFlows"
 subtitle: "Science beneath the surface"
-listing:
-  contents: posts
-  sort: "date desc"
-  type: default
-  categories: true
-  sort-ui: false
-  filter-ui: false
 page-layout: full
 title-block-banner: true
+listing:
+  - id: latest-posts
+    contents: posts
+    sort: "date desc"
+    type: default
+    max-items: 5
+    categories: false
+    sort-ui: false
+    filter-ui: false
 ---
 
 ```{=html}
-<div style="text-align:center; padding: 0.5rem 0 2rem;">
-  <div style="display:inline-block; font-size:18px; padding:4px 16px;
-    border-radius:999px; background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-    color:#4B5563; margin-bottom:16px; letter-spacing:0.08em;">
+<style>
+/* 優しい雰囲気のカスタムスタイル */
+.hero-container {
+  max-width: 900px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.badge-item {
+  font-size: 14px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, 0.05);
+  border: 1px solid rgba(217, 119, 6, 0.15);
+  color: #6B7280;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.badge-item:hover {
+  background: rgba(217, 119, 6, 0.12);
+  transform: translateY(-2px);
+  color: #D97706;
+  border-color: rgba(217, 119, 6, 0.3);
+}
+.badge-main {
+  font-size: 16px;
+  padding: 8px 24px;
+  border-radius: 999px;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #B45309;
+  margin-bottom: 24px;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.08);
+}
+.hero-catchphrase {
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
+}
+.catchphrase-en {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #D97706;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+.catchphrase-jp {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1F2937;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+.hero-divider {
+  width: 50px;
+  height: 4px;
+  background: linear-gradient(90deg, #D97706, #F59E0B);
+  margin: 0 auto 1.8rem;
+  border-radius: 4px;
+}
+.hero-text {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  color: #4B5563;
+  margin-bottom: 2.5rem;
+}
+.series-card {
+  background: #FFFFFF;
+  border: 1px solid #F3F4F6;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  height: 100%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+.series-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, #F59E0B, #D97706);
+  opacity: 0.9;
+}
+.series-card:hover {
+  box-shadow: 0 15px 30px rgba(217, 119, 6, 0.1);
+  transform: translateY(-5px);
+  border-color: #FDE68A;
+}
+.series-icon {
+  font-size: 2.8rem;
+  margin-bottom: 1.2rem;
+  display: inline-block;
+  padding: 12px;
+  background: #FFFBEB;
+  border-radius: 16px;
+  line-height: 1;
+}
+.series-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+.series-desc {
+  font-size: 1.05rem;
+  color: #6B7280;
+  margin-bottom: 1.8rem;
+  line-height: 1.7;
+}
+.btn-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none !important;
+  transition: all 0.2s;
+}
+.btn-en {
+  background: #F3F4F6;
+  color: #4B5563 !important;
+  border: 1px solid #E5E7EB;
+}
+.btn-en:hover {
+  background: #E5E7EB;
+  color: #111827 !important;
+  transform: translateY(-1px);
+}
+.btn-jp {
+  background: #FFFBEB;
+  color: #D97706 !important;
+  border: 1px solid #FDE68A;
+}
+.btn-jp:hover {
+  background: #FEF3C7;
+  color: #B45309 !important;
+  transform: translateY(-1px);
+}
+.btn-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.section-heading {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 4rem 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-heading::after {
+  content: '';
+  flex-grow: 1;
+  height: 2px;
+  background: #F3F4F6;
+  border-radius: 2px;
+}
+</style>
+
+<div class="hero-container">
+  <div class="badge-main">
     SCIENCE · CODE · INSIGHT · WATER
   </div>
-  <div style="width:48px; height:3px; background:#8B5CF6;
-    margin:0 auto 20px; border-radius:2px;"></div>
-  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;">Groundwater</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;">Geochemistry</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;">Hydrology</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;">AI & Python</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;">MODFLOW</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;">PHREEQC</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;">地理学</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;">温泉の科学</span>
-    <span style="font-size:14px; padding:3px 12px; border-radius:999px;
-      background:rgba(217,119,6,0.05); border:1px solid rgba(217,119,6,0.2);
-      color:#4B5563;"><strong>水</strong></span>
+  
+  <div class="hero-catchphrase">
+    <div class="catchphrase-en">Science beneath the surface</div>
+    <div class="catchphrase-jp">水は、地表の下でも動いている。</div>
+  </div>
+  
+  <div class="hero-divider"></div>
+  
+  <div class="hero-text">
+    <strong>環境問題や水資源</strong>の評価に役立つ地下水・地球化学解析（<strong>MODFLOW, PHREEQC</strong>）と、<br>
+    <strong>Python・AI・Vibe Coding</strong>を用いたデータ分析のノウハウを共有します。<br>
+    科学・コード・多様な観点で、水の世界を探求し、<strong>「データから自然現象を読み解く」</strong>サイトです。
+  </div>
+  
+  <div class="hero-badges">
+    <span class="badge-item">Groundwater</span>
+    <span class="badge-item">Geochemistry</span>
+    <span class="badge-item">Hydrology</span>
+    <span class="badge-item">AI & Python</span>
+    <span class="badge-item">MODFLOW</span>
+    <span class="badge-item">PHREEQC</span>
+    <span class="badge-item">地理学</span>
+    <span class="badge-item">温泉の科学</span>
+  </div>
+</div>
+
+<div class="section-heading">🌟 Featured Series</div>
+```
+
+:::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+```{=html}
+<div class="series-card">
+  <div class="series-icon">⚗️</div>
+  <div class="series-title">PHREEQC Tutorial</div>
+  <div class="series-desc">
+    水と岩石の化学反応を解き明かす、地球化学モデリングの完全ガイド。インストールから反応経路モデリングまで全11回。
+  </div>
+  <div class="btn-group">
+    <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en">🇺🇸 Read in English</a>
+    <a href="/posts/phreeqc/phreeqc-part1/" class="btn-lang btn-jp">🇯🇵 日本語で読む</a>
   </div>
 </div>
 ```
+:::
 
-<strong>環境問題や水資源</strong>の評価に役立つ地下水・地球化学解析（<strong>MODFLOW, PHREEQC</strong>）と、<strong>Python・AI・Vibe Coding</strong>を用いたデータ分析のノウハウを共有します。
+::: {.g-col-12 .g-col-md-6}
+```{=html}
+<div class="series-card">
+  <div class="series-icon">🌊</div>
+  <div class="series-title">Groundwater Modeling</div>
+  <div class="series-desc">
+    MODFLOWとFloPyを用いた地下水流動解析や、熱水地球化学シミュレーションの実践的なノウハウ。
+  </div>
+  <div class="btn-group">
+    <a href="/blog.html" class="btn-lang btn-jp">🇯🇵 シリーズを見る</a>
+  </div>
+</div>
+```
+:::
 
-科学・コード・多様な観点で、水の世界を探求し、**「データから自然現象を読み解く」**サイトです。
+::::
 
-**・Main** : MODFLOW・PHREEQC・Pythonで、**水**の謎をコードで解く。数式と実装の世界へ。
+```{=html}
+<div class="section-heading">🆕 Latest Posts</div>
+```
 
-**・温泉・地理** : 温泉の成分と源を科学的にアプローチ。地理と地球化学で、泉質の秘密を読み解く。
-
-**・ノート** : 研究課程を時系列で記録。Topicに関する事例を紹介。
-
-**・Apps** : 地球化学計算や分子量計算など、研究にちょいと必要なツール。
-
-------------------------------------------------------------------------
+:::{#latest-posts}
+:::

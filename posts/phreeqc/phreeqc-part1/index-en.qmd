@@ -31,7 +31,7 @@ Here are some of the things PHREEQC can do:
 
 PHREEQC is used across a wide range of fields—groundwater quality analysis, hydrothermal alteration modeling, CO₂ geological storage (CCS), seawater–freshwater mixing, and more. Another major advantage is that it is **completely free and open-source**, making it highly accessible for researchers and students alike.
 
----
+------------------------------------------------------------------------
 
 ## Step 1: Downloading PHREEQC
 
@@ -39,14 +39,13 @@ PHREEQC is used across a wide range of fields—groundwater quality analysis, hy
 
 Open your browser and navigate to the following URL:
 
-```         
-https://www.usgs.gov/software/phreeqc-version-3
-```
+[PHREEQC Version 3: https://www.usgs.gov/software/phreeqc-version-3](https://www.usgs.gov/software/phreeqc-version-3){target="_blank"}
 
 In the **Downloads** section near the middle of the page, select the installer that matches your operating system. For Windows, download the `phreeqci-3.8.6-17100.msi` file (as of May 2026).
 
 ::: callout-important
 ## Always Download from the Official Site
+
 Because PHREEQC is widely known, unofficial distribution sites do exist. To ensure the integrity of the thermodynamic databases (`.dat` files), always download directly from the official USGS page.
 :::
 
@@ -60,7 +59,7 @@ C:\Program Files (x86)\USGS\Phreeqc Interactive 3.x.x-xxxxx\
 
 The executable you need is `phreeqci.exe` (the GUI version of PHREEQC), found inside the `bin` folder.
 
----
+------------------------------------------------------------------------
 
 ## Step 2: Launching PHREEQC and Preparing a Working Folder
 
@@ -74,6 +73,7 @@ Example: C:\Users\YourName\Desktop\PHREEQC_work\
 
 ::: callout-important
 ## Use Only English Characters in the Folder Name
+
 PHREEQC may not handle non-ASCII paths correctly. Folder names containing Japanese characters, spaces, or special symbols can cause errors when saving or loading files. Use alphanumeric-only names such as `PHREEQC_work` or `phreeqc`.
 :::
 
@@ -83,7 +83,7 @@ Double-click `phreeqci.exe` inside the `bin` folder. Alternatively, you can crea
 
 Once the PHREEQC window opens, you have successfully launched the program. You will see an icon bar on the left side of the screen—these icons serve as shortcuts to various calculation blocks (SOLUTION, EQUILIBRIUM_PHASES, etc.).
 
----
+------------------------------------------------------------------------
 
 ## Step 3: Defining Pure Water (SOLUTION)
 
@@ -165,10 +165,11 @@ Here is what each parameter means:
 
 ::: callout-note
 ## What Is pe (Redox Potential)?
+
 pe = 4 corresponds to the typical redox conditions at Earth's surface (a mildly oxidizing environment). Higher pe values indicate more oxidizing conditions, while lower values indicate more reducing conditions. This will be covered in detail in a future article on redox reactions.
 :::
 
----
+------------------------------------------------------------------------
 
 ## Step 4: Entering END to Close the Calculation Block
 
@@ -191,7 +192,7 @@ END
 
 Without `END`, PHREEQC cannot determine where one calculation ends when multiple blocks are present. Make it a habit to always include it.
 
----
+------------------------------------------------------------------------
 
 ## Step 5: Running the Calculation
 
@@ -219,7 +220,7 @@ From the Database files dropdown, select **phreeqc.dat**. This is the standard t
 
 Then click **Start** to begin the calculation. Once the calculation is complete, click **Dismiss** to close the dialog.
 
----
+------------------------------------------------------------------------
 
 ## Step 6: Reading the Output
 
@@ -267,7 +268,7 @@ OH-               1.001e-07   1.000e-07    -7.000    -7.000     0.000     -4.15
 
 In pure water, you can confirm that both $\mathrm{H^+}$ and $\mathrm{OH^-}$ have concentrations of $10^{-7}$ mol/kg (= pH 7).
 
----
+------------------------------------------------------------------------
 
 ## First Calculation Complete
 
@@ -308,7 +309,7 @@ Here is a summary of the key points:
 
 In the next article, we will input real seawater data and calculate **Speciation (species distribution)**. We will enter major ions such as Na, Ca, Mg, and SO₄ to examine what chemical species are present in the water.
 
----
+------------------------------------------------------------------------
 
 *Other articles in this series:*
 
@@ -320,6 +321,6 @@ In the next article, we will input real seawater data and calculate **Speciation
 - [#6 Pyrite Oxidation and AMD Formation](../phreeqc-part6/index-en.html)
 - [#7 Solubility Diagrams (Gibbsite)](../phreeqc-part7/index-en.html)
 
----
+------------------------------------------------------------------------
 
-*DeepFlow | Science beneath the surface*
+*DeepFlow \| Science beneath the surface*

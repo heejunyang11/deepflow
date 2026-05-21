@@ -1,0 +1,63 @@
+<script>
+  function switchLanguage() {
+    let url = window.location.href;
+    // URLからクエリパラメータやハッシュ(#)を除いたベースURLを取得
+    let cleanUrl = url.split('?')[0].split('#')[0];
+    
+    // 1. 英語版 (-en.html) の場合 -> 日本語版 (.html) へ
+    if (cleanUrl.endsWith('-en.html')) {
+      window.location.href = url.replace('-en.html', '.html');
+    } 
+    // 2. 日本語版 (.html) の場合 -> 英語版 (-en.html) へ
+    else if (cleanUrl.endsWith('.html')) {
+      window.location.href = url.replace('.html', '-en.html');
+    } 
+    // 3. ディレクトリのルート (スラッシュ終わり) の場合 -> 英語版へ
+    else if (cleanUrl.endsWith('/')) {
+      window.location.href = url.replace(cleanUrl, cleanUrl + 'index-en.html');
+    } 
+    // 4. スラッシュなしのURLの場合 -> 英語版へ
+    else {
+      window.location.href = url.replace(cleanUrl, cleanUrl + '/index-en.html');
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // Navbar のリンクから "EN / JP" またはアイコンを探す
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link, .navbar-nav a');
+    let langLink = null;
+    for (let link of navLinks) {
+      if (link.textContent.includes("EN / JP") || link.querySelector('.bi-globe')) {
+        langLink = link;
+        break;
+      }
+    }
+
+    if (langLink) {
+      // 現在のURLから英語か日本語かを判定
+      let url = window.location.href;
+      let cleanUrl = url.split('?')[0].split('#')[0];
+      let isEn = cleanUrl.endsWith('-en.html') || cleanUrl.endsWith('-en/');
+      
+      const toggleContainer = document.createElement('li');
+      toggleContainer.className = 'nav-item lang-toggle-wrapper';
+      toggleContainer.innerHTML = `
+        <div class="lang-switch-container ${isEn ? 'is-en' : 'is-jp'}" onclick="switchLanguage()" title="Switch Language">
+          <span class="lang-text jp-text">JAPANESE</span>
+          <div class="lang-mini-toggle">
+            <div class="lang-mini-slider"></div>
+          </div>
+          <span class="lang-text en-text">ENGLISH</span>
+        </div>
+      `;
+      
+      // 元の <a> タグを含む <li> を置換する
+      const parentLi = langLink.closest('li.nav-item');
+      if (parentLi) {
+        parentLi.parentElement.replaceChild(toggleContainer, parentLi);
+      } else {
+        langLink.parentElement.replaceChild(toggleContainer, langLink);
+      }
+    }
+  });
+</script>

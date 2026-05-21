@@ -168,6 +168,26 @@ $$\ln \gamma_{\pm} = f(I) + \sum_{ij} B_{ij}(I) m_j + \sum_{ijk} C_{ijk} m_j m_k
 
 ## 4 モデルの比較
 
+下記のコードは、`phreeqc.dat`と`llnl.dat`を使用して計算を行う。
+
+しかし、`Phreeqc Interactive 3.8.6-17100`の場合、`phreeqc.dat`でエラーが起きている。なので、`wateq4f.dat`および今回新たに追加された`PHREEQC_ThermoddemV1.10_15Dec2020.dat`を使用した方がいい。`Phreeqc Interactive 3.7.3-15968`の場合は問題ない。
+
+以下のコードはPhreeqc Interactive 3.8.6-17100を想定し、`wateq4f.dat`を使用した。 なお、データベースのファイルPATHにはご注意を。
+
+例えば、デスクトップの`Phreeqc`フォルダに`llnl.dat`がある場合：
+
+``` python
+r"C:\Users\Desktop\Phreeqc\llnl.dat"
+```
+
+**このようにして下記のコードの`DB_PHREEQC`と`DB_LLNL`のパスを修正してください。**
+
+phreeqpyがインストールされてない方はターミナルで
+
+``` python
+pip install phreeqpy
+```
+
 ``` python
 import os
 import numpy as np
@@ -178,8 +198,8 @@ from phreeqpy.iphreeqc.phreeqc_dll import IPhreeqc
 # ==============================
 # 1. データベースのパス設定
 # ==============================
-# ※ご自身の環境に合わせて修正してください
-DB_PHREEQC = r"C:\あなたのPATH\phreeqc.dat"　#phreeqc.datは同じフォルダに置いてください
+# ※ご自身の環境に合わせて修正してください(例：r"C:\Users\フォルダ名\llnl.dat")
+DB_PHREEQC = r"C:\あなたのPATH\wateq4f.dat"  #同じフォルダに置いてください
 DB_LLNL    = r"C:\あなたのPATH\llnl.dat"  　 #llnl.datは同じフォルダに置いてください  
 
 # ==============================
@@ -287,7 +307,7 @@ if __name__ == "__main__":
         # プロット
         ax.plot(I_theory, gamma_dh, color='#6B7280', linestyle=':', linewidth=2, label='Debye-Hückel 極限則 (理論式)')
         ax.plot(I_theory, gamma_davies, color='#16A34A', linestyle='--', linewidth=2, label='Davies 則 (理論式)')
-        ax.plot(df_phreeqc['I'], df_phreeqc['Gamma_Na'], color='#2563EB', linestyle='-', linewidth=2, label='拡張 D-H (phreeqc.dat)')
+        ax.plot(df_phreeqc['I'], df_phreeqc['Gamma_Na'], color='#2563EB', linestyle='-', linewidth=2, label='WATEQ式 (拡張 D-H (wateq4f.dat))')
         ax.plot(df_llnl['I'], df_llnl['Gamma_Na'], color='#CA8A04', linestyle='-', linewidth=2, label='B-dot方程式 (llnl.dat)')
 
         ax.set_xlabel('イオン強度 I (mol/kgw)', fontsize=12, color='#374151')
