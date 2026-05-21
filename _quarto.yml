@@ -11,6 +11,7 @@ lang: ja
 
 website:
   title: "DeepFlows"
+  favicon: "profile.png"
   description: "Science beneath the surface. 地下水・地球化学解析（MODFLOW/PHREEQC）から温泉の科学、自然地理学、Python・AIを用いたデータ分析まで、深く探求する知見を共有します。"
   
   site-url: "https://deepflows.net"

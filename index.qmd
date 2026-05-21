@@ -63,7 +63,7 @@ listing:
   margin-bottom: 2.5rem;
 }
 .catchphrase-en {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #D97706;
   letter-spacing: 0.2em;
@@ -71,7 +71,7 @@ listing:
   margin-bottom: 0.8rem;
 }
 .catchphrase-jp {
-  font-size: 2.2rem;
+  font-size: 2.0rem;
   font-weight: 800;
   color: #1F2937;
   letter-spacing: -0.02em;
@@ -93,102 +93,109 @@ listing:
 .series-card {
   background: #FFFFFF;
   border: 1px solid #F3F4F6;
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
+  border-radius: 28px;
+  padding: 3rem 2rem;
   height: 100%;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .series-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 5px;
+  width: 8px;
   height: 100%;
-  background: linear-gradient(180deg, #F59E0B, #D97706);
-  opacity: 0.9;
+  background: linear-gradient(180deg, #EAB308, #D97706);
 }
 .series-card:hover {
-  box-shadow: 0 15px 30px rgba(217, 119, 6, 0.1);
-  transform: translateY(-5px);
-  border-color: #FDE68A;
+  box-shadow: 0 20px 40px rgba(217, 119, 6, 0.12);
+  transform: translateY(-8px);
 }
 .series-icon {
-  font-size: 2.8rem;
-  margin-bottom: 1.2rem;
-  display: inline-block;
-  padding: 12px;
-  background: #FFFBEB;
-  border-radius: 16px;
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
   line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
 }
 .series-title {
-  font-size: 1.45rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  color: #1F2937;
-  margin-bottom: 1rem;
-  letter-spacing: -0.02em;
+  color: #111827;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.02em;
 }
 .series-desc {
   font-size: 1.05rem;
   color: #6B7280;
-  margin-bottom: 1.8rem;
+  margin-bottom: 2rem;
   line-height: 1.7;
+  max-width: 90%;
 }
 .btn-lang {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 12px 28px;
+  border-radius: 999px;
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none !important;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .btn-en {
-  background: #F3F4F6;
-  color: #4B5563 !important;
-  border: 1px solid #E5E7EB;
+  background: #FFFFFF;
+  color: #B45309 !important;
+  border: 2px solid #FDE68A;
 }
 .btn-en:hover {
-  background: #E5E7EB;
-  color: #111827 !important;
-  transform: translateY(-1px);
+  background: #FFFBEB;
+  border-color: #D97706;
+  transform: scale(1.05);
 }
 .btn-jp {
-  background: #FFFBEB;
-  color: #D97706 !important;
-  border: 1px solid #FDE68A;
+  background: #D97706;
+  color: #FFFFFF !important;
+  border: 2px solid #D97706;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
 }
 .btn-jp:hover {
-  background: #FEF3C7;
-  color: #B45309 !important;
-  transform: translateY(-1px);
+  background: #B45309;
+  border-color: #B45309;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.3);
 }
 .btn-group {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  width: 100%;
+  margin-top: auto;
 }
 .section-heading {
-  font-size: 1.8rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 2rem;
   font-weight: 700;
-  color: #1F2937;
-  margin: 4rem 0 2rem;
+  color: #111827;
+  margin: 5rem 0 3rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
+  letter-spacing: 0.05em;
 }
-.section-heading::after {
-  content: '';
-  flex-grow: 1;
-  height: 2px;
-  background: #F3F4F6;
-  border-radius: 2px;
+.section-heading-icon {
+  font-size: 2.2rem;
 }
 </style>
 
@@ -222,7 +229,10 @@ listing:
   </div>
 </div>
 
-<div class="section-heading">🌟 Featured Series</div>
+<div class="section-heading">
+  <span class="section-heading-icon">☀️</span>
+  <span>Featured Series</span>
+</div>
 ```
 
 :::: {.grid}
@@ -230,14 +240,14 @@ listing:
 ::: {.g-col-12 .g-col-md-6}
 ```{=html}
 <div class="series-card">
-  <div class="series-icon">⚗️</div>
+  <div class="series-icon">💎</div>
   <div class="series-title">PHREEQC Tutorial</div>
   <div class="series-desc">
-    水と岩石の化学反応を解き明かす、地球化学モデリングの完全ガイド。インストールから反応経路モデリングまで全11回。
+    水と岩石の化学反応を解き明かす、地球化学モデリングの完全ガイド。インストールから反応経路モデリングまで。
   </div>
   <div class="btn-group">
-    <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en">🇺🇸 Read in English</a>
-    <a href="/posts/phreeqc/phreeqc-part1/" class="btn-lang btn-jp">🇯🇵 日本語で読む</a>
+    <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en">Read in English</a>
+    <a href="/posts/phreeqc/phreeqc-part1/" class="btn-lang btn-jp">日本語で読む</a>
   </div>
 </div>
 ```
@@ -246,13 +256,13 @@ listing:
 ::: {.g-col-12 .g-col-md-6}
 ```{=html}
 <div class="series-card">
-  <div class="series-icon">🌊</div>
+  <div class="series-icon">💧</div>
   <div class="series-title">Groundwater Modeling</div>
   <div class="series-desc">
     MODFLOWとFloPyを用いた地下水流動解析や、熱水地球化学シミュレーションの実践的なノウハウ。
   </div>
   <div class="btn-group">
-    <a href="/blog.html" class="btn-lang btn-jp">🇯🇵 シリーズを見る</a>
+    <a href="/blog.html" class="btn-lang btn-jp">シリーズを見る</a>
   </div>
 </div>
 ```
@@ -261,7 +271,9 @@ listing:
 ::::
 
 ```{=html}
-<div class="section-heading">🆕 Latest Posts</div>
+<div class="section-heading">
+  <span>Latest Posts</span>
+</div>
 ```
 
 :::{#latest-posts}

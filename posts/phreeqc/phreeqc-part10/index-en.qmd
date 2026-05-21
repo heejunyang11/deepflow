@@ -539,7 +539,7 @@ Ensure `phreeqc.dat` is in the same directory as your script. Avoid special char
 Calcite is known for its **retrograde solubility**, meaning it usually becomes *less* soluble as temperature increases, and *more* soluble as it cools. 
 However, in our Python code, we only provided an initial `Alkalinity` of 12 mmol/L as the carbon source. **We did not add excess `C(4)` (like CO₂ gas from the atmosphere).**
 
-Under these closed conditions, as the water cools, CO₂ becomes more soluble (Henry's Law), causing the balance to shift towards aqueous $\text{H}_2\text{CO}_3^*$ and pulling $\text{CO}_3^{2-}$ back into $\text{HCO}_3^-$. The loss of available carbonate ions causes the IAP to drop, resulting in the **SI decreasing alongside temperature** (which looks like normal solubility).
+Under these closed conditions, as the water cools, CO₂ becomes more soluble (Henry's Law), causing the balance to shift towards aqueous $\text{H}_2\text{CO}_3^*$. This causes $\text{CO}_3^{2-}$ to shift toward the $\text{HCO}_3^-$ side (association) and decrease in concentration. The resulting drop in IAP leads to the **SI decreasing alongside temperature** (which looks like normal solubility).
 
 Retrograde behavior becomes strongly apparent in **open systems with fixed $p\text{CO}_2$** (e.g., exposed to the atmosphere) or in **closed systems with very high initial total carbon**. Accurate scale diagnosis requires precise knowledge of the field's $p\text{CO}_2$ conditions!
 :::
