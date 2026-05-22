@@ -23,9 +23,9 @@ format:
 
 #2 から #11 まで、私たちは「ある場所・ある瞬間」の化学を計算してきた。
 
-- **Speciation**（#2）：1点の溶液組成
-- **EQUILIBRIUM_PHASES**（#3〜#5）：1点での鉱物平衡
-- **REACTION**（#11）：時間方向への変化
+- **Speciation**（[#2](../phreeqc-part2/)）：1点の溶液組成
+- **EQUILIBRIUM_PHASES**（[#3](../phreeqc-part3/)〜[#5](../phreeqc-part5/)）：1点での鉱物平衡
+- **REACTION**（[#11](../phreeqc-part11/)）：時間方向への変化
 
 今回の **TRANSPORT ブロック**はこれに**空間の次元**を加える。 地下水が帯水層の中を流れながら、鉱物と反応し、汚染物質を運び、濃度前線を形成する—— その全プロセスを一度に計算する。
 
@@ -203,12 +203,12 @@ SOLUTION 1-20  "初期帯水層（純水）"
 # ---- TRANSPORT 設定 ----
 TRANSPORT
     -cells            20
-    -length           0.5       # 各セル 0.5 m → 総延長 10 m
+    -lengths          20*0.5    # 0.5 m を 20セル分繰り返す（※掛け算ではなく、0.5を20回並べるPHREEQC特有の記法）
     -shifts           40        # 40 タイムステップ
     -time_step        86400     # 1 日/ステップ　単純計算(見かけの移動速度)で0.5 m / 86400 s = 5.8 * 10^-6 m/s
     -flow_direction   forward
     -boundary_conditions  flux  flux
-    -dispersivity     0.5       # 分散長 0.5 m（セル長と同じ）
+    -dispersivities   20*0.05   # 分散長 0.05 m を 20セル分繰り返す（同上）
     -diffusion_coefficient 1e-9
     -punch_cells      1-20
     -punch_frequency  10        # 10・20・30・40 ステップで出力
@@ -224,6 +224,18 @@ USER_PUNCH 1
     -headings  dist_m  time_d  Na_mM  Cl_mM
     -start
     10 PUNCH DIST, TIME/86400, TOT("Na")*1000, TOT("Cl")*1000
+    -end
+# ---- グラフ描画設定 ----
+USER_GRAPH 1
+    -headings         Distance Na_mM Cl_mM
+    -chart_title      "Salt Front Movement"
+    -axis_titles      "Distance (m)" "Concentration (mM)"
+    -axis_scale x_axis 0 10
+    -axis_scale y_axis 0 120
+    -initial_solutions false
+    -start
+    10 GRAPH_X DIST
+    20 GRAPH_Y TOT("Na")*1000, TOT("Cl")*1000
     -end
 END
 ```
@@ -263,23 +275,23 @@ SOLUTION 1-20  "初期地下水"
     -water    1
 
 EQUILIBRIUM_PHASES 1-20
-    Calcite   0.0   0.5
+    Calcite   0.0   0.005   
     CO2(g)   -2.0   10
 
-# ---- 移流分散 ----
+# ---- Advection-Dispersion ----
 TRANSPORT
     -cells            20
-    -length           0.5
+    -lengths          20*0.5    # 0.5 m を 20セル分繰り返す（※掛け算ではなく、PHREEQC特有の配列記法）
     -shifts           60
     -time_step        86400
     -flow_direction   forward
     -boundary_conditions  flux flux
-    -dispersivity     0.3
+    -dispersivities   20*0.05   # 分散長 0.05 m を 20セル分繰り返す
     -diffusion_coefficient 1e-9
     -punch_cells      1-20
     -punch_frequency  20
 
-# ---- 出力 ----
+# ---- Output ----
 SELECTED_OUTPUT 1
     -file calcite_front.txt
     -distance true
@@ -293,6 +305,32 @@ USER_PUNCH 1
     -headings dist_m time_d pH Ca_mM SI_Calcite Calcite_mol
     -start
     10 PUNCH DIST, TIME/86400, -LA("H+"), TOT("Ca")*1000, SI("Calcite"), EQUI("Calcite")
+    -end
+
+# ---- グラフ描画設定 (1: 水質) ----
+USER_GRAPH 1
+    -headings         Distance pH Ca_mM
+    -chart_title      "Calcite Dissolution Front (Water Chemistry)"
+    -axis_titles      "Distance (m)" "pH" "Ca (mM)"
+    -axis_scale x_axis 0 10
+    -initial_solutions false
+    -start
+    10 GRAPH_X DIST
+    20 GRAPH_Y -LA("H+")
+    30 GRAPH_SY TOT("Ca")*1000
+    -end
+
+# ---- グラフ描画設定 (2: 鉱物) ----
+USER_GRAPH 2
+    -headings         Distance SI_Calcite Calcite_mol
+    -chart_title      "Calcite Dissolution Front (Mineral)"
+    -axis_titles      "Distance (m)" "SI (Calcite)" "Calcite (mol)"
+    -axis_scale x_axis 0 10
+    -initial_solutions false
+    -start
+    10 GRAPH_X DIST
+    20 GRAPH_Y SI("Calcite")
+    30 GRAPH_SY EQUI("Calcite")
     -end
 END
 ```
@@ -377,12 +415,12 @@ EXCHANGE 1-20
 # ---- TRANSPORT ----
 TRANSPORT
     -cells            20
-    -length           0.5
+    -lengths          20*0.5    # 0.5 m を 20セル分繰り返す（※掛け算ではなく、PHREEQC特有の配列記法）
     -shifts           80
     -time_step        86400
     -flow_direction   forward
     -boundary_conditions  flux  flux
-    -dispersivity     0.3
+    -dispersivities   20*0.05   # 分散長 0.05 m を 20セル分繰り返す
     -diffusion_coefficient 1e-9
     -punch_cells      1-20
     -punch_frequency  20
@@ -398,6 +436,18 @@ USER_PUNCH 3
     -headings  dist_m  time_d  Cd_umol  Cd2_activity  Na_mM
     -start
     10 PUNCH DIST, TIME/86400, TOT("Cd")*1e6, ACT("Cd+2"), TOT("Na")*1000
+    -end
+
+USER_GRAPH 1
+    -headings         Distance Cd_umol Na_mM
+    -chart_title      "Heavy Metal Transport with Ion Exchange"
+    -axis_titles      "Distance (m)" "Cd (umol/L)" "Na (mM)"
+    -axis_scale x_axis 0 10
+    -initial_solutions false
+    -start
+    10 GRAPH_X DIST
+    20 GRAPH_Y TOT("Cd")*1e6
+    30 GRAPH_SY TOT("Na")*1000
     -end
 END
 ```
@@ -503,40 +553,49 @@ def adv_disp(nx, dx, alpha, n_shifts, C0, C_init,
 
 
 def ph_front(nx, dx, alpha, n_shifts, pH_in, pH_init,
-             punch_freq):
-    """
-    pH 前線のシミュレータ（移流分散 ＋ カルサイト緩衝の近似）
-
-    カルサイト緩衝の近似：
-      pH < 6.5 の領域で 30% の中和（CaCO3 溶解による H+ 消費）
-    """
-    pH = np.full(nx, float(pH_init))
+             punch_freq, calcite_init=0.005, acid_in=0.002):
+    acid = np.zeros(nx)                        # セル内の酸の濃度 (mol/L)
+    calcite = np.full(nx, float(calcite_init)) # カルサイト残量 (mol/L)    
     f_mix = alpha / (dx + alpha)
     results = []
 
     for s in range(1, n_shifts + 1):
-        # ① 移流
-        pH_adv = np.empty(nx)
-        pH_adv[0] = pH_in
-        pH_adv[1:] = pH[:-1]
+        # ① 移流（酸の移動）
+        acid_adv = np.empty(nx)
+        acid_adv[0] = acid_in      # 注入水は一定の酸を含む
+        acid_adv[1:] = acid[:-1]
 
-        # ② 分散
-        pH_d = pH_adv.copy()
+        # ② 分散（酸の混合）
+        acid_d = acid_adv.copy()
         for i in range(nx):
-            L = pH_adv[i - 1] if i > 0      else pH_in
-            R = pH_adv[i + 1] if i < nx - 1 else pH_adv[i]
-            pH_d[i] = pH_adv[i] + f_mix * (L - 2 * pH_adv[i] + R) / 2
+            L = acid_adv[i - 1] if i > 0      else acid_in
+            R = acid_adv[i + 1] if i < nx - 1 else acid_adv[i]
+            acid_d[i] = acid_adv[i] + f_mix * (L - 2 * acid_adv[i] + R) / 2
 
-        # ③ カルサイト緩衝（pH < 6.5 の領域を部分中和）
-        pH_buf = pH_d.copy()
+        # ③ 化学反応（カルサイトによる酸の中和と枯渇）
+        acid_new = acid_d.copy()
         for i in range(nx):
-            if pH_d[i] < 6.5:
-                pH_buf[i] = pH_d[i] + 0.30 * (6.5 - pH_d[i])
+            if acid_new[i] > 0:
+                # 中和できる量は、存在する酸とカルサイト残量の少ない方
+                reacted = min(acid_new[i], calcite[i])
+                acid_new[i] -= reacted
+                calcite[i] -= reacted
 
-        pH = pH_buf.clip(pH_in, pH_init)
+        acid = acid_new.copy()
+
+        # ④ pH の計算
+        pH_out = np.empty(nx)
+        for i in range(nx):
+            if calcite[i] > 0:
+                # カルサイトが残っていれば緩衝されて初期pHを維持
+                pH_out[i] = pH_init
+            else:
+                # 枯渇ゾーンでは酸の濃度に応じてpHが低下
+                ratio = min(acid[i] / acid_in, 1.0)
+                pH_out[i] = pH_init - ratio * (pH_init - pH_in)
 
         if s % punch_freq == 0:
-            results.append((s, pH.copy()))
+            results.append((s, pH_out.copy()))
 
     return results
 
@@ -553,7 +612,8 @@ res1 = adv_disp(
 # シナリオ2：カルサイト溶解前線（pH）
 res2 = ph_front(
     nx=20, dx=0.5, alpha=0.3, n_shifts=60,
-    pH_in=4.5, pH_init=7.4, punch_freq=20
+    pH_in=4.5, pH_init=7.4, punch_freq=20,
+    calcite_init=0.005, acid_in=0.002
 )
 
 # シナリオ3：Cd²⁺ 汚染（保守的トレーサー + 吸着遅延 R=5）
@@ -637,76 +697,23 @@ print("transport_profiles.png を保存しました")
 
 ------------------------------------------------------------------------
 
-## 3シナリオの比較
+## シナリオ1, 2, 3の結果比較（Pythonコードの結果）
 
-```{=html}
-<div style="background:#FDFDFD; border:1px solid #E5E7EB; border-radius:12px; padding:1.5em; margin:1.5em 0;">
-<svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:0 auto;" role="img">
-  <title>3シナリオの概念的な濃度プロファイル比較</title>
-  <defs>
-    <marker id="arrTR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </marker>
-  </defs>
+![](Figure_1.png)
 
-  <!-- === シナリオ1：塩水フロント === -->
-  <rect x="20" y="20" width="195" height="250" rx="10" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
-  <text x="117" y="42" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#1E3A5F">シナリオ1：塩水フロント</text>
+上図は、各シナリオにおける物質の濃度プロファイル（前線の形状と移動）を比較したものです。単なる移流・分散に加え、化学反応や吸着が作用することで、物質の移動メカニズムがどのように変化するかを視覚的に確認できます。
 
-  <!-- プロット軸 -->
-  <line x1="45" y1="200" x2="200" y2="200" stroke="#9CA3AF" stroke-width="1"/>
-  <line x1="45" y1="60"  x2="45"  y2="200" stroke="#9CA3AF" stroke-width="1"/>
-  <text x="122" y="218" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#6B7280">距離 →</text>
-  <text x="35" y="130" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#6B7280" transform="rotate(-90 35 130)">C/C₀</text>
+### 1. 塩水フロント（純粋な移流・分散）
 
-  <!-- S字カーブ（早・中・遅） -->
-  <path d="M45,75 C65,75 70,195 90,195" fill="none" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <path d="M45,75 C80,75 95,195 120,195" fill="none" stroke="#3B82F6" stroke-width="2"/>
-  <path d="M45,75 C100,75 120,195 150,195" fill="none" stroke="#1E3A5F" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <text x="155" y="88" font-family="'Segoe UI',sans-serif" font-size="8" fill="#93C5FD">10d</text>
-  <text x="155" y="103" font-family="'Segoe UI',sans-serif" font-size="8" fill="#3B82F6">20d</text>
-  <text x="155" y="118" font-family="'Segoe UI',sans-serif" font-size="8" fill="#1E3A5F">40d</text>
-  <text x="117" y="240" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#6B7280">S字曲線が移流＋分散の特徴</text>
+左図（シナリオ1）は、保守的（非反応性）な溶質である NaCl の移動を示しています。 前線の濃度プロファイルがなだらかな **「S字曲線」** を描いているのが特徴です。地下水流による「移流」が前線の中心位置を下流へ押し流しつつ、「分散」が時間経過とともに濃度勾配を均して前線の幅を広げていくという、最も基本的な物質移動の挙動が現れています。
 
-  <!-- === シナリオ2：pH 前線 === -->
-  <rect x="242" y="20" width="195" height="250" rx="10" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
-  <text x="339" y="42" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#92400E">シナリオ2：pH 前線</text>
+### 2. pH 前線（移流・分散 ＋ 溶解・緩衝反応）
 
-  <line x1="267" y1="200" x2="422" y2="200" stroke="#9CA3AF" stroke-width="1"/>
-  <line x1="267" y1="60"  x2="267" y2="200" stroke="#9CA3AF" stroke-width="1"/>
-  <text x="344" y="218" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#6B7280">距離 →</text>
-  <text x="257" y="130" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#6B7280" transform="rotate(-90 257 130)">pH</text>
+中央図（シナリオ2）は、酸性水の侵入に伴う pH 前線です。シナリオ1のようななだらかなS字曲線ではなく、極めてシャープな **「垂直の段差（ステップ関数）」** になっていることが分かります。 これは、侵入した酸が帯水層内のカルサイトを溶解し尽くすまでは pH が初期値（7.4）に完全に緩衝・維持され、カルサイトが枯渇した瞬間に pH が注入水の値（4.5）まで急激に低下するためです。化学反応によって前線が鋭く変形する典型的な反応前線の例です。
 
-  <!-- pH プロファイル（段差あり） -->
-  <path d="M267,80 L290,80 C310,80 320,190 340,190 L422,190" fill="none" stroke="#EA580C" stroke-width="2"/>
-  <path d="M267,80 L310,80 C330,80 345,190 365,190 L422,190" fill="none" stroke="#D97706" stroke-width="1.5" stroke-dasharray="5 3"/>
-  <!-- 緩衝ゾーン注記 -->
-  <rect x="295" y="120" width="60" height="22" rx="4" fill="#FEF3C7" stroke="#D97706" stroke-width="0.8"/>
-  <text x="325" y="135" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="8" fill="#92400E">緩衝ゾーン</text>
-  <text x="339" y="240" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#6B7280">反応が前線形状を変える</text>
+### 3. Cd²⁺ 汚染（移流・分散 ＋ 吸着遅延）
 
-  <!-- === シナリオ3：Cd²⁺ 遅延 === -->
-  <rect x="464" y="20" width="195" height="250" rx="10" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
-  <text x="561" y="42" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="600" fill="#991B1B">シナリオ3：Cd²⁺ 遅延</text>
-
-  <line x1="489" y1="200" x2="644" y2="200" stroke="#9CA3AF" stroke-width="1"/>
-  <line x1="489" y1="60"  x2="489" y2="200" stroke="#9CA3AF" stroke-width="1"/>
-  <text x="566" y="218" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#6B7280">距離 →</text>
-
-  <!-- 保守的トレーサー（破線） -->
-  <path d="M489,75 C530,75 555,195 580,195 L644,195" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="5 3"/>
-  <!-- Cd²⁺（実線・遅い） -->
-  <path d="M489,75 C510,75 520,195 540,195 L644,195" fill="none" stroke="#DC2626" stroke-width="2"/>
-  <!-- 遅延を示す矢印 -->
-  <line x1="556" y1="155" x2="528" y2="155" stroke="#9CA3AF" stroke-width="1.2" marker-end="url(#arrTR)"/>
-  <text x="560" y="159" font-family="'Segoe UI',sans-serif" font-size="8" fill="#9CA3AF">遅延</text>
-  <text x="600" y="90" font-family="'Segoe UI',sans-serif" font-size="8" fill="#9CA3AF">保守的</text>
-  <text x="600" y="102" font-family="'Segoe UI',sans-serif" font-size="8" fill="#DC2626">Cd²⁺</text>
-  <text x="561" y="240" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="9" fill="#6B7280">吸着が移動を遅らせる</text>
-</svg>
-<p style="text-align:center; font-size:0.82em; color:#6B7280; margin-top:0.5em;">図1. 3シナリオの概念的な濃度プロファイル — 移流・分散・反応・吸着がそれぞれ前線形状を変える</p>
-</div>
-```
+右図（シナリオ3）は、土壌への陽イオン交換（吸着）を伴う重金属 Cd²⁺ の移動です。 水と一緒に移動する保守的トレーサー（破線、R=1）と比較すると、Cd²⁺ のプロファイル（実線）は前線の形状自体はS字曲線で似ているものの、到達位置が大きく手前に留まっています。これが **「遅延（Retardation）」** であり、吸着反応が汚染物質の移動速度を物理的に遅らせる効果を明確に示しています。
 
 ------------------------------------------------------------------------
 
@@ -836,7 +843,7 @@ print("transport_profiles.png を保存しました")
 - [#10 飽和指数（SI）の使いこなし](../phreeqc-part10/)
 - [#11 反応経路モデリング（REACTION block の応用）](../phreeqc-part11/)
 - **#12 移流分散モデル（TRANSPORT block の応用）** ← 今回
-- [#13 酸化還元シークエンス — 地下水が「還元」されていく順番](../phreeqc-part13/)
+- [#13 酸化還元シークエンス — 地下水が「還元」されていく順番](coming%20soon)
 
 ------------------------------------------------------------------------
 

@@ -231,6 +231,8 @@ PHREEQCとPythonで水質・地球化学反応をモデリングする。
 
 - [PHREEQCをゼロから始める #11：反応経路モデリング — 雨水が地下水になるまで](/posts/phreeqc/phreeqc-part11/)
 
+- [PHREEQCをゼロから始める #12：移流分散モデル — 地下水中の物質移動](/posts/phreeqc/phreeqc-part12/)
+
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
 
