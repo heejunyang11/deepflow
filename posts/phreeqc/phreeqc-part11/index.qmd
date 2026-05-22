@@ -249,16 +249,15 @@ USER_PUNCH 1
              SI("Calcite"), SI("CO2(g)")
     -end
 
-USER_GRAPH 1
-    -chart_title  "石灰岩溶解：反応経路"
-    -axis_titles  "添加 CaCO₃ (mmol/kgw)"  "pH"
-    -axis_scale   x_axis  0  100
-    -axis_scale   y_axis  4  8.5
-    -plot_concentration_vs reaction
+USER_GRAPH 2
+    -chart_title  "Limestone Dissolution: Reaction Path"
+    -axis_titles  "Ca dissolved (mmol/kgw)"  "pH"  "SI"
+    -axis_scale   y_axis  4  9.5
+    -headings     Ca_mmol  pH  SI(Calcite)
     -start
-    10 GRAPH_X  STEP_NO * 0.1       # 近似的に mmol 換算
-    20 GRAPH_Y  -LA("H+"),       "pH"
-    30 GRAPH_SY SI("Calcite"),   "SI(Calcite)"
+    10 GRAPH_X  TOT("Ca") * 1000
+    20 GRAPH_Y  -LA("H+")
+    30 GRAPH_SY SI("Calcite")
     -end
 END
 ```
@@ -316,8 +315,8 @@ USER_PUNCH 2
 
 USER_GRAPH 2
     -chart_title  "花崗岩風化：反応経路"
-    -axis_titles  "溶解ステップ"  "log 活量"
-    -plot_concentration_vs step
+    -axis_titles  "溶解ステップ"  "log 活量"  "SI"
+    -headings     Step  Al3+  H4SiO4  SI(Gibbsite)  SI(Kaolinite)
     -start
     10 GRAPH_X  STEP_NO
     20 GRAPH_Y  LA("Al+3"),    "Al³⁺"
@@ -416,13 +415,25 @@ SELECTED_OUTPUT 3
     -pH                 true
     -totals             Fe S(6) Al
     -activities         Fe+2  Fe+3  SO4-2
-    -saturation_indices Goethite  Jarosite  Schwertmannite  Calcite  Gypsum
+    -saturation_indices Goethite  Calcite  Gypsum
 
 USER_PUNCH 3
-    -headings  Step  pH  Fe_mM  SO4_mM  SI_Goethite  SI_Jarosite
+    -headings  Step  pH  Fe_mM  SO4_mM  SI_Goethite
     -start
     10 PUNCH STEP_NO, -LA("H+"), TOT("Fe")*1000, TOT("S(6)")*1000, \
-             SI("Goethite"), SI("Jarosite")
+             SI("Goethite")
+    -end
+
+USER_GRAPH 3
+    -chart_title  "Pyrite Oxidation: Reaction Path (AMD)"
+    -axis_titles  "Reaction step"  "pH / log activity"  "SI"
+    -headings     Step  pH  Fe2+  SO4_2-  SI(Goethite)
+    -start
+    10 GRAPH_X  STEP_NO
+    20 GRAPH_Y  -LA("H+")
+    30 GRAPH_Y  LA("Fe+2")
+    40 GRAPH_Y  LA("SO4-2")
+    50 GRAPH_SY SI("Goethite")
     -end
 END
 ```
