@@ -3,6 +3,12 @@ title: "-Science Beneath the Surface-"
 number-sections: false
 crossref:
   chapters: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/blog.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/blog-en.html" />
 ---
 
 ```{=html}
@@ -197,7 +203,7 @@ MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編](/posts/groundwater/flopy-phreeqc-part3/)
 
-- [地下水はなぜ変化するのか #1：別府温泉と冷地下水の関係](http://localhost:3502/posts/groundwater/fft-part1/)
+- [地下水はなぜ変化するのか #1：別府温泉と冷地下水の関係](/posts/groundwater/fft-part1/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
@@ -232,6 +238,8 @@ PHREEQCとPythonで水質・地球化学反応をモデリングする。
 - [PHREEQCをゼロから始める #11：反応経路モデリング — 雨水が地下水になるまで](/posts/phreeqc/phreeqc-part11/)
 
 - [PHREEQCをゼロから始める #12：移流分散モデル — 地下水中の物質移動](/posts/phreeqc/phreeqc-part12/)
+
+- [PHREEQCをゼロから始める #13：酸化還元シークエンス — 地下水が「還元」されていく順番](/posts/phreeqc/phreeqc-part13/)
 
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::

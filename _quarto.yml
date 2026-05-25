@@ -11,7 +11,7 @@ lang: ja
 
 website:
   title: "DeepFlows"
-  favicon: "profile.png"
+  favicon: "favicon.png"
   description: "Science beneath the surface. 地下水・地球化学解析（MODFLOW/PHREEQC）から温泉の科学、自然地理学、Python・AIを用いたデータ分析まで、深く探求する知見を共有します。"
   
   site-url: "https://deepflows.net"
@@ -29,10 +29,8 @@ website:
         text: Home  
       - href: blog.qmd
         text: Series  
-      - href: onsen.qmd
-        text: Geo & Onsen        
       - href: note.qmd
-        text: Lab Notes
+        text: Essays & Notes
       - href: apps.qmd      
         text: Apps          
       - href: about.qmd
@@ -43,7 +41,7 @@ website:
         href: "javascript:switchLanguage()"
 
   page-footer:
-    center: "© 2026 DeepFlow · Science beneath the surface"
+    center: "© 2026 DeepFlows - Science beneath the surface,  Operated by Heejun Yang Ph.D.-"
     right:
       - text: "Privacy Policy"
         href: privacy.qmd # AdSense審査に必須のプライバシーポリシー

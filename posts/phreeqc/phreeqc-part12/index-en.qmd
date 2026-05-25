@@ -552,7 +552,6 @@ def adv_disp(nx, dx, alpha, n_shifts, C0, C_init,
 
     return results
 
-
 def ph_front(nx, dx, alpha, n_shifts, pH_in, pH_init,
              punch_freq, calcite_init=0.005, acid_in=0.002):
     """
@@ -837,6 +836,18 @@ Starting from installation in #1, walking through speciation, mixing, equilibriu
 
 Your next steps could open doors to **inverse modeling** (the `INVERSE_MODELING` block) using actual field data (water quality analysis values), or moving forward to **FloPy × PHREEQC coupling** (like the hydrothermal simulation showcased at the beginning of the series).
 :::
+
+------------------------------------------------------------------------
+
+## References
+
+1. **PHREEQC Official Documentation**
+   Parkhurst, D.L., and Appelo, C.A.J., 2013. Description of input and examples for PHREEQC version 3—A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43, 497 p.
+2. **Standard Textbook on Geochemical Modeling**
+   Appelo, C., Postma, D., 2005. *Geochemistry, Groundwater and Pollution*, second ed. Balkema, Rotterdam, p. 634.
+3. **Applied Research using this Tutorial's Methods (Author's Publication)**
+   Yang H., Mishima T., Katazakai S., Kagabu M., 2023. Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry* 148:105535.
+   👉 For more research publications, please visit the [About page](/about.html).
 
 - [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
 - [#2 Speciation Analysis of Seawater](../phreeqc-part2/index-en.html)

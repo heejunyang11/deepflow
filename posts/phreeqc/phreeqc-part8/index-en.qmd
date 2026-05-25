@@ -340,7 +340,6 @@ SP_NAMES  = [r"Al$^{3+}$", r"AlOH$^{2+}$", r"Al(OH)$_2^+$",
              r"Al(OH)$_3$(aq)", r"Al(OH)$_4^-$"]
 SP_COLORS = ["#DC2626", "#EA580C", "#CA8A04", "#16A34A", "#2563EB"]
 
-
 def load_data(filepath: str) -> pd.DataFrame:
     """Load and format SELECTED_OUTPUT."""
     df = pd.read_csv(filepath, sep="\t", comment="#", skipinitialspace=True)
@@ -351,7 +350,6 @@ def load_data(filepath: str) -> pd.DataFrame:
     })
     df["log_Al_total"] = np.log10(df["Al_total_mol"].clip(lower=1e-15))
     return df
-
 
 def plot_solubility(df: pd.DataFrame, save: bool = True):
     """Render the Solubility Diagram."""
@@ -389,7 +387,6 @@ def plot_solubility(df: pd.DataFrame, save: bool = True):
         print("✅ Saved gibbsite_solubility.svg")
     plt.show()
 
-
 def plot_speciation_map(df: pd.DataFrame, save: bool = True):
     """Render the Dominant Species Map."""
     df_act = df[ACT_COLS].replace([np.inf, -np.inf], np.nan).fillna(-99)
@@ -421,7 +418,6 @@ def plot_speciation_map(df: pd.DataFrame, save: bool = True):
         fig.savefig("al_speciation_map.svg", bbox_inches="tight")
         print("✅ Saved al_speciation_map.svg")
     plt.show()
-
 
 # ---- Main ----
 if __name__ == "__main__":
@@ -494,6 +490,18 @@ python gibbsite_full_analysis.py gibbsite_solubility.txt
 ```
 
 Next time, in Part 9, we will dive into Ionic Strength and Activity Coefficients—the reasons why calculation results differ between seawater and freshwater.
+
+------------------------------------------------------------------------
+
+## References
+
+1. **PHREEQC Official Documentation**
+   Parkhurst, D.L., and Appelo, C.A.J., 2013. Description of input and examples for PHREEQC version 3—A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43, 497 p.
+2. **Standard Textbook on Geochemical Modeling**
+   Appelo, C., Postma, D., 2005. *Geochemistry, Groundwater and Pollution*, second ed. Balkema, Rotterdam, p. 634.
+3. **Applied Research using this Tutorial's Methods (Author's Publication)**
+   Yang H., Mishima T., Katazakai S., Kagabu M., 2023. Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry* 148:105535.
+   👉 For more research publications, please visit the [About page](/about.html).
 
 - [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
 - [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)

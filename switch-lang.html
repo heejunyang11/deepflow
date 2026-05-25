@@ -22,7 +22,7 @@
     }
   }
 
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", async function() {
     // Navbar のリンクから "EN / JP" またはアイコンを探す
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link, .navbar-nav a');
     let langLink = null;
@@ -34,11 +34,47 @@
     }
 
     if (langLink) {
-      // 現在のURLから英語か日本語かを判定
+      // 現在のURLから英語か日本語かを判定し、遷移先のURLを作成
       let url = window.location.href;
       let cleanUrl = url.split('?')[0].split('#')[0];
       let isEn = cleanUrl.endsWith('-en.html') || cleanUrl.endsWith('-en/');
       
+      let targetUrl = '';
+      if (cleanUrl.endsWith('-en.html')) {
+        targetUrl = cleanUrl.replace('-en.html', '.html');
+      } else if (cleanUrl.endsWith('.html')) {
+        targetUrl = cleanUrl.replace('.html', '-en.html');
+      } else if (cleanUrl.endsWith('/')) {
+        targetUrl = cleanUrl + 'index-en.html';
+      } else {
+        targetUrl = cleanUrl + '/index-en.html';
+      }
+
+      try {
+        // 遷移先URLの存在を確認 (HEADリクエスト)
+        const response = await fetch(targetUrl, { method: 'HEAD' });
+        
+        // 遷移先が存在しない場合、トグルを表示しない (既存の要素を削除)
+        if (!response.ok) {
+          const parentLi = langLink.closest('li.nav-item');
+          if (parentLi) {
+            parentLi.remove();
+          } else {
+            langLink.remove();
+          }
+          return;
+        }
+      } catch (error) {
+        // fetchエラー時(CORS等)も安全のためトグルを非表示にする
+        const parentLi = langLink.closest('li.nav-item');
+        if (parentLi) {
+          parentLi.remove();
+        } else {
+          langLink.remove();
+        }
+        return;
+      }
+
       const toggleContainer = document.createElement('li');
       toggleContainer.className = 'nav-item lang-toggle-wrapper';
       toggleContainer.innerHTML = `

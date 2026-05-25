@@ -614,9 +614,21 @@ A field measurement error of ±0.1 in pH translates directly to roughly ±0.1 un
 | **SI > +1** | Strongly Supersaturated | High scaling risk / Extreme thermodynamic drive (though kinetics may still limit actual precipitation) |
 :::
 
----
+------------------------------------------------------------------------
 
-## Conclusion: SI is the "Ruler" of this Series
+## References
+
+1. **PHREEQC Official Documentation**
+   Parkhurst, D.L., and Appelo, C.A.J., 2013. Description of input and examples for PHREEQC version 3—A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43, 497 p.
+2. **Standard Textbook on Geochemical Modeling**
+   Appelo, C., Postma, D., 2005. *Geochemistry, Groundwater and Pollution*, second ed. Balkema, Rotterdam, p. 634.
+3. **Applied Research using this Tutorial's Methods (Author's Publication)**
+   Yang H., Mishima T., Katazakai S., Kagabu M., 2023. Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry* 148:105535.
+   👉 For more research publications, please visit the [About page](/about.html).
+
+------------------------------------------------------------------------
+
+*Other articles in this series:*
 
 ```{=html}
 <div style="background:var(--color-background-primary); border:1px solid var(--color-border-tertiary); border-radius:12px; padding:1.5em; margin:1.5em 0;">
@@ -672,6 +684,10 @@ A field measurement error of ±0.1 in pH translates directly to roughly ±0.1 un
 Using the `REACTION` block, we will incrementally dissolve rock fragments and track how pH, SI, and species concentrations evolve. It's a simulation of "rainwater contacting limestone and transforming into groundwater." This will integrate all the knowledge we've built up from Part 3 through 10.
 :::
 
+---
+
+*Other articles in this series:*
+
 - [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
 - [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
 - [#3 Mineral Equilibrium and Temperature Effects](../phreeqc-part3/index-en.html)
@@ -683,7 +699,6 @@ Using the `REACTION` block, we will incrementally dissolve rock fragments and tr
 - [#9 Ionic Strength and Activity Coefficients](../phreeqc-part9/index-en.html)
 - **#10 Mastering the Saturation Index (SI)** (This article)
 - [#11 Reaction Path Modeling](../phreeqc-part11/index-en.html)
-
 
 ---
 

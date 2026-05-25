@@ -323,6 +323,18 @@ In the next tutorial, we will calculate what happens when **carbonated groundwat
 
 We will explore the phenomenon of "**Mixing Corrosion**"—where the simple mixture of two calcite-saturated solutions becomes undersaturated (corrosive). This process is vital for understanding the formation of coastal limestone caves.
 
+------------------------------------------------------------------------
+
+## References
+
+1. **PHREEQC Official Documentation**
+   Parkhurst, D.L., and Appelo, C.A.J., 2013. Description of input and examples for PHREEQC version 3—A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43, 497 p.
+2. **Standard Textbook on Geochemical Modeling**
+   Appelo, C., Postma, D., 2005. *Geochemistry, Groundwater and Pollution*, second ed. Balkema, Rotterdam, p. 634.
+3. **Applied Research using this Tutorial's Methods (Author's Publication)**
+   Yang H., Mishima T., Katazakai S., Kagabu M., 2023. Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry* 148:105535.
+   👉 For more research publications, please visit the [About page](/about.html).
+
 ---
 
 *Other articles in this series:*

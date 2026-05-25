@@ -1,39 +1,42 @@
 ---
-title: "Lab Notes"
+title: "Essays & Notes"
 number-sections: false
 crossref:
   chapters: false
 listing:
-  contents: posts   # サブフォルダも自動で拾う
+  contents: posts
   sort: "date desc"
   type: default
-  filter-ui: true       # ← 検索・フィルタ追加
+  filter-ui: true
   sort-ui: true
   categories: true 
 ---
 
-今行っている研究を時系列で記録します。計算失敗などもそのまま載せます。なお、最近のTopicもできるだけ扱います。
+**「データとコードの奥にある、自然界のドラマと試行錯誤の記録」**
+
+このページは、本格的な技術チュートリアル（[Series](/blog.qmd)）の枠には収まりきらない、多角的な視点から綴るエッセイおよび研究ノートです。
+
+温泉の泉質を科学的に読み解くコラムや、地形・地理が歴史に与えた影響の考察から、日々のシミュレーションで直面した失敗談、泥臭いトラブルシューティングまで。研究者の「思考の過程」と「自然界への好奇心」を、飾らずに記録しています。
 
 :::: grid
-::: g-col-12
-### 🌊 ノート
 
-**記事一覧**
+::: g-col-12
+### 🌋 Geo & Onsen（温泉と地理の科学）
+
+地球科学的なアプローチで、温泉の形成メカニズムや化学的特徴、そして特異な地形が歴史的な出来事にもたらした背景などを紐解きます。
+
+- [別府温泉の化学的特徴](/posts/onsen/onsen-part1/)
+- [HexaDiagram（ヘキサダイアグラム）とは？](/posts/onsen/onsen-part2/)
+- [関ヶ原の謎：徳川家康はなぜ「虎の口」へ躊躇なく進軍できたのか？](/posts/onsen/sekigahara/)
+:::
+
+::: g-col-12
+### 🔬 Lab Notes（研究と試行錯誤の軌跡）
+
+日々のシミュレーション開発の裏側、計算の失敗やトラブル対応、フィールドワークでの出来事など、試行錯誤のリアルなプロセスをオープンに共有します。
 
 - [高温水熱条件下における地球化学的反応輸送シミュレーション（第1回）：概要とシステム設計](/posts/note/reactive-transport-part1/)
-
-[もっと見る →](/index.qmd){.btn .btn-outline-primary}
-:::
-::::
-
-:::: grid
-::: g-col-12
-### 🌊 Topics
-
-**記事一覧**
-
 - [「平均42℃」なのに凍えた?!](/posts/note/intro/)
-
-[もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
+
 ::::

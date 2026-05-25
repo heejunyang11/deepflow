@@ -1,0 +1,270 @@
+---
+title: "-Science Beneath the Surface-"
+number-sections: false
+crossref:
+  chapters: false
+lang: en
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/blog.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/blog-en.html" />
+---
+
+```{=html}
+<div class="blog-intro">
+
+  <div class="intro-lead">
+    <div class="intro-lead-line"></div>
+    <p class="intro-lead-text">Water moves, even deep beneath the surface.</p>
+  </div>
+
+  <p class="intro-body">
+    Where does the rain go after it seeps underground? How do fresh water and seawater mix beneath the coast? When and how are nitrates decomposed? This blog aims to reproduce these "invisible movements of water" inside a computer.
+  </p>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon">⬛</div>
+      <div class="tool-content">
+        <div class="tool-name">MODFLOW / SEAWAT</div>
+        <div class="tool-desc">The industry-standard simulator for solving groundwater flow numerically. It calculates flow based on Darcy's law, density-driven convection, and even tidal effects. Essential for analyzing the Ghyben-Herzberg interface and SGD in coastal areas.</div>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">⚗️</div>
+      <div class="tool-content">
+        <div class="tool-name">PHREEQC</div>
+        <div class="tool-desc">The engine for geochemical calculations. It solves the "chemistry of water" at the level of reaction equations—chemical reactions between water and rock, saturation indices of mixed waters, and the progression of denitrification.</div>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🐍</div>
+      <div class="tool-content">
+        <div class="tool-name">Python（FloPy・PhreeqPy）</div>
+        <div class="tool-desc">The glue that connects the two. Fully automates everything from grid generation and boundary condition setup to result visualization. Change one line of parameter, and another scenario runs instantly.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="themes-block">
+    <div class="themes-label">Themes</div>
+    <div class="themes-list">
+      <div class="theme-item">Formation of the freshwater-seawater interface in the Ryukyu limestone aquifer</div>
+      <div class="theme-item">Rock-water interaction analysis (under varying conditions of solution concentration, temperature, etc.)</div>
+      <div class="theme-item">Groundwater nitrate contamination and denitrification diagnosis</div>
+      <div class="theme-item">Limestone dissolution potential analysis by mixing corrosion</div>
+    </div>
+  </div>
+
+  <p class="intro-footer">
+    This blog is not a place to present completed research results, but a <strong>record of trial and error</strong>. The story of when the code didn't work, the hesitation in deciding parameters, the process of struggling with corrections using Vibe Coding—I will write down these "processes" as much as possible.
+  </p>
+
+</div>
+
+<style>
+.blog-intro {
+  max-width: 720px;
+  margin: 0 0 2.5rem 0;
+  font-family: inherit;
+}
+
+/* リード文 */
+.intro-lead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.2rem;
+}
+.intro-lead-line {
+  width: 3px;
+  height: 28px;
+  background: #C96A28;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.intro-lead-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* 本文 */
+.intro-body {
+  font-size: 0.93rem;
+  line-height: 1.85;
+  color: #3a3a3a;
+  margin-bottom: 1.6rem;
+}
+
+/* ツールカード */
+.tools-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1.6rem;
+}
+.tool-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #FDFAF6;
+  border: 1px solid #E8E4DC;
+  border-left: 3px solid #E07B39;
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.tool-icon {
+  font-size: 18px;
+  line-height: 1;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.tool-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin-bottom: 4px;
+  font-family: 'SF Mono', 'Consolas', monospace;
+  letter-spacing: 0.01em;
+}
+.tool-desc {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: #5a5a5a;
+}
+
+/* テーマ */
+.themes-block {
+  background: #F7F5F0;
+  border: 1px solid #E8E4DC;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 1.4rem;
+}
+.themes-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #7A746A;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.themes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.theme-item {
+  font-size: 0.88rem;
+  color: #3a3a3a;
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.6;
+}
+.theme-item::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: #C96A28;
+  font-weight: 700;
+}
+
+/* フッター文 */
+.intro-footer {
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: #5a5a5a;
+  border-top: 1px solid #E8E4DC;
+  padding-top: 1rem;
+}
+.intro-footer strong {
+  color: #1A1A1A;
+}
+
+/* 言語バッジ */
+.badge-ja {
+  font-size: 0.75em;
+  background-color: #FFF7ED;
+  color: #D97706;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  border: 1px solid #FDBA74;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+</style>
+```
+
+:::::: grid
+::: g-col-12
+### 🌊 Groundwater Series
+
+Practical know-how for analyzing groundwater flow with MODFLOW and FloPy.
+
+**Article List**
+
+- [Understanding Darcy's Law: Building Your First Groundwater Model with FloPy <span class="badge-ja">Japanese Only</span>](/posts/groundwater/groundwater-darcy/)
+
+- [Hydrothermal Geochemical Simulation with FloPy and PHREEQC #1: Model Design <span class="badge-ja">Japanese Only</span>](/posts/groundwater/flopy-phreeqc-part1/)
+
+- [Hydrothermal Geochemical Simulation with FloPy and PHREEQC #2: Coupling Concepts <span class="badge-ja">Japanese Only</span>](/posts/groundwater/flopy-phreeqc-part2/)
+
+- [Hydrothermal Geochemical Simulation with FloPy and PHREEQC #3: Analysis and Visualization <span class="badge-ja">Japanese Only</span>](/posts/groundwater/flopy-phreeqc-part3/)
+
+- [Why Does Groundwater Change? #1: Relationship Between Beppu Hot Springs and Cold Groundwater <span class="badge-ja">Japanese Only</span>](/posts/groundwater/fft-part1/)
+
+[Read More →](/index-en.html){.btn .btn-outline-primary}
+:::
+
+::: g-col-12
+### ⚗️ Geochemistry Series
+
+Modeling water quality and geochemical reactions using PHREEQC and Python.
+
+**Article List**
+
+- [PHREEQC from Scratch #1: Installation and Initial Calculation](/posts/phreeqc/phreeqc-part1/index-en.html)
+
+- [PHREEQC from Scratch #2: Analyzing Seawater with Speciation](/posts/phreeqc/phreeqc-part2/index-en.html)
+
+- [PHREEQC from Scratch #3: Mixing and EQUILIBRIUM_PHASES](/posts/phreeqc/phreeqc-part3/index-en.html)
+
+- [PHREEQC from Scratch #4: Considering Reaction Rates with KINETICS](/posts/phreeqc/phreeqc-part4/index-en.html)
+
+- [PHREEQC from Scratch #5: Mixing Groundwater and Seawater (Mixing Corrosion vs. Mixing Dissolution)](/posts/phreeqc/phreeqc-part5/index-en.html)
+
+- [PHREEQC from Scratch #6: Pyrite Oxidation and AMD](/posts/phreeqc/phreeqc-part6/index-en.html)
+
+- [PHREEQC from Scratch #7: Solubility Diagrams (Gibbsite)](/posts/phreeqc/phreeqc-part7/index-en.html)
+
+- [PHREEQC from Scratch #8: Analyzing and Visualizing PHREEQC Results with Python](/posts/phreeqc/phreeqc-part8/index-en.html)
+
+- [PHREEQC from Scratch #9: Ionic Strength and Activity Coefficients — Why Results Change Between Seawater and Freshwater](/posts/phreeqc/phreeqc-part9/index-en.html)
+
+- [PHREEQC from Scratch #10: Mastering the Saturation Index (SI) — Are Minerals Dissolving or Precipitating?](/posts/phreeqc/phreeqc-part10/index-en.html)
+
+- [PHREEQC from Scratch #11: Reaction Path Modeling — From Rainwater to Groundwater](/posts/phreeqc/phreeqc-part11/index-en.html)
+
+- [PHREEQC from Scratch #12: Advection-Dispersion Model — Solute Transport in Groundwater](/posts/phreeqc/phreeqc-part12/index-en.html)
+
+- [PHREEQC from Scratch #13: Redox Sequences — The Order of Groundwater Reduction](/posts/phreeqc/phreeqc-part13/index-en.html)
+
+[Read More →](/index-en.html){.btn .btn-outline-primary}
+:::
+
+::: g-col-12
+### 🤖 AI & Python Series
+
+Study notes on utilizing machine learning and AI tools for research and business.
+
+- [Solving Partial Differential Equations in Python: Intro to the 1D Heat Equation <span class="badge-ja">Japanese Only</span>](/posts/groundwater/pde-part1/)
+
+[Read More →](/index-en.html){.btn .btn-outline-primary}
+:::
+::::::

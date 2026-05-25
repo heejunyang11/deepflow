@@ -207,15 +207,14 @@ listing:
 <div class="hero-container">
   <div class="hero-catchphrase">
     <div class="catchphrase-en">Science beneath the surface</div>
-    <div class="catchphrase-jp">水は、地表の下でも動いている。</div>
+    <div class="catchphrase-jp" style="font-size: 1.6rem; font-weight: 600; color: #4B5563;">Water moves, even deep beneath the surface.</div>
   </div>
   
   <div class="hero-divider"></div>
   
   <div class="hero-text">
-    <strong>環境問題や水資源</strong>の評価に役立つ地下水・地球化学解析（<strong>MODFLOW, PHREEQC</strong>）と、<br>
-    <strong>Python・AI・Vibe Coding</strong>を用いたデータ分析のノウハウを共有します。<br>
-    科学・コード・多様な観点で、水の世界を探求し、<strong>「データから自然現象を読み解く」</strong>サイトです。
+    We share practical expertise in groundwater and geochemical modeling (<strong>MODFLOW, PHREEQC</strong>) for environmental and water resource assessment, along with data analysis using <strong>Python, AI, and Vibe Coding</strong>.<br>
+    Exploring the world of water through science, code, and diverse perspectives—this is a platform to <strong>decipher natural phenomena from data</strong>.
   </div>
   
   <div class="badge-main">
@@ -229,8 +228,8 @@ listing:
     <span class="badge-item">AI & Python</span>
     <span class="badge-item">MODFLOW</span>
     <span class="badge-item">PHREEQC</span>
-    <span class="badge-item">地理学</span>
-    <span class="badge-item">温泉の科学</span>
+    <span class="badge-item">Geography</span>
+    <span class="badge-item">Geothermal Science</span>
   </div>
 </div>
 
@@ -248,11 +247,10 @@ listing:
   <div class="series-icon">💎</div>
   <div class="series-title">PHREEQC Tutorial</div>
   <div class="series-desc">
-    水と岩石の化学反応を解き明かす、地球化学モデリングの完全ガイド。インストールから反応経路モデリングまで。
+    A complete guide to geochemical modeling, deciphering chemical reactions between water and rock. From installation to reaction path modeling.
   </div>
   <div class="btn-group">
-    <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en">Read in English</a>
-    <a href="/posts/phreeqc/phreeqc-part1/" class="btn-lang btn-jp">日本語で読む</a>
+    <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en" style="background: #D97706; color: #FFFFFF !important; border: 2px solid #D97706;">Read in English</a>
   </div>
 </div>
 ```
@@ -264,10 +262,10 @@ listing:
   <div class="series-icon">💧</div>
   <div class="series-title">Groundwater Modeling</div>
   <div class="series-desc">
-    MODFLOWとFloPyを用いた地下水流動解析や、熱水地球化学シミュレーションの実践的なノウハウ。
+    Practical know-how for groundwater flow analysis and hydrothermal geochemical simulations using MODFLOW and FloPy.
   </div>
   <div class="btn-group">
-    <a href="/blog.html" class="btn-lang btn-jp">シリーズを見る</a>
+    <a href="/blog-en.html" class="btn-lang btn-en" style="background: #D97706; color: #FFFFFF !important; border: 2px solid #D97706;">View Series</a>
   </div>
 </div>
 ```
