@@ -1,29 +1,50 @@
 <script>
-  function switchLanguage() {
-    let url = window.location.href;
-    // URLからクエリパラメータやハッシュ(#)を除いたベースURLを取得
+  function getTargetUrl(url) {
     let cleanUrl = url.split('?')[0].split('#')[0];
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(cleanUrl);
+    } catch(e) {
+      parsedUrl = { pathname: cleanUrl }; // Fallback
+    }
+    let path = parsedUrl.pathname;
     
-    // 1. 英語版 (-en.html) の場合 -> 日本語版 (.html) へ
+    // 1. すでに .html がついている場合
     if (cleanUrl.endsWith('-en.html')) {
-      window.location.href = url.replace('-en.html', '.html');
-    } 
-    // 2. 日本語版 (.html) の場合 -> 英語版 (-en.html) へ
-    else if (cleanUrl.endsWith('.html')) {
-      window.location.href = url.replace('.html', '-en.html');
-    } 
-    // 3. ディレクトリのルート (スラッシュ終わり) の場合 -> 英語版へ
-    else if (cleanUrl.endsWith('/')) {
-      window.location.href = url.replace(cleanUrl, cleanUrl + 'index-en.html');
-    } 
-    // 4. スラッシュなしのURLの場合 -> 英語版へ
-    else {
-      window.location.href = url.replace(cleanUrl, cleanUrl + '/index-en.html');
+      return cleanUrl.replace('-en.html', '.html');
+    } else if (cleanUrl.endsWith('.html')) {
+      return cleanUrl.replace('.html', '-en.html');
+    }
+    
+    // 2. 固定ページの Pretty URL 対応 (/blog, /about, /apps, /note)
+    const rootPages = ['/blog', '/about', '/apps', '/note'];
+    let matchedPage = rootPages.find(p => path === p || path === p + '/');
+    if (matchedPage) {
+      let base = cleanUrl;
+      if (base.endsWith('/')) base = base.slice(0, -1);
+      return base + '-en.html';
+    }
+    
+    // (英語版固定ページからの戻り: /blog-en/ -> /blog.html)
+    if (path.includes('-en') && !cleanUrl.endsWith('.html')) {
+      let base = cleanUrl;
+      if (base.endsWith('/')) base = base.slice(0, -1);
+      return base.replace('-en', '.html');
+    }
+
+    // 3. 各記事のディレクトリ等の場合 (index-en.html を付加)
+    if (cleanUrl.endsWith('/')) {
+      return cleanUrl + 'index-en.html';
+    } else {
+      return cleanUrl + '/index-en.html';
     }
   }
 
+  function switchLanguage() {
+    window.location.href = getTargetUrl(window.location.href);
+  }
+
   document.addEventListener("DOMContentLoaded", async function() {
-    // Navbar のリンクから "EN / JP" またはアイコンを探す
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link, .navbar-nav a');
     let langLink = null;
     for (let link of navLinks) {
@@ -34,44 +55,24 @@
     }
 
     if (langLink) {
-      // 現在のURLから英語か日本語かを判定し、遷移先のURLを作成
       let url = window.location.href;
       let cleanUrl = url.split('?')[0].split('#')[0];
-      let isEn = cleanUrl.endsWith('-en.html') || cleanUrl.endsWith('-en/');
+      let isEn = cleanUrl.endsWith('-en.html') || cleanUrl.endsWith('-en/') || cleanUrl.includes('-en.html');
       
-      let targetUrl = '';
-      if (cleanUrl.endsWith('-en.html')) {
-        targetUrl = cleanUrl.replace('-en.html', '.html');
-      } else if (cleanUrl.endsWith('.html')) {
-        targetUrl = cleanUrl.replace('.html', '-en.html');
-      } else if (cleanUrl.endsWith('/')) {
-        targetUrl = cleanUrl + 'index-en.html';
-      } else {
-        targetUrl = cleanUrl + '/index-en.html';
-      }
+      let targetUrl = getTargetUrl(url);
 
       try {
-        // 遷移先URLの存在を確認 (HEADリクエスト)
         const response = await fetch(targetUrl, { method: 'HEAD' });
-        
-        // 遷移先が存在しない場合、トグルを表示しない (既存の要素を削除)
         if (!response.ok) {
           const parentLi = langLink.closest('li.nav-item');
-          if (parentLi) {
-            parentLi.remove();
-          } else {
-            langLink.remove();
-          }
+          if (parentLi) parentLi.remove();
+          else langLink.remove();
           return;
         }
       } catch (error) {
-        // fetchエラー時(CORS等)も安全のためトグルを非表示にする
         const parentLi = langLink.closest('li.nav-item');
-        if (parentLi) {
-          parentLi.remove();
-        } else {
-          langLink.remove();
-        }
+        if (parentLi) parentLi.remove();
+        else langLink.remove();
         return;
       }
 
@@ -87,7 +88,6 @@
         </div>
       `;
       
-      // 元の <a> タグを含む <li> を置換する
       const parentLi = langLink.closest('li.nav-item');
       if (parentLi) {
         parentLi.parentElement.replaceChild(toggleContainer, parentLi);
