@@ -16,6 +16,9 @@ format:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part8/" />
           <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part8/index-en.html" />
+bibliography: ../phreeqc_refs.bib
+nocite: |
+  @*
 ---
 
 ## はじめに：なぜ Python と連携するのか
@@ -509,13 +512,8 @@ python gibbsite_full_analysis.py gibbsite_solubility.txt
 
 ## 参考文献（References）
 
-1. **PHREEQC公式ドキュメント**
-   Parkhurst, D.L., and Appelo, C.A.J., 2013. Description of input and examples for PHREEQC version 3—A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43, 497 p.
-2. **地球化学モデリングの標準的専門書**
-   Appelo, C., Postma, D., 2005. *Geochemistry, Groundwater and Pollution*, second ed. Balkema, Rotterdam, p. 634.
-3. **本チュートリアルの手法を用いた研究例（著者論文）**
-   Yang H., Mishima T., Katazakai S., Kagabu M., 2023. Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry* 148:105535.
-   👉 著者のその他の研究業績については [Aboutページ](/about.html) をご覧ください。
+::: {#refs}
+:::
 
 - [#1 インストールと最初の計算](../phreeqc-part1/)
 - [#2 Speciationで海水を解析する](../phreeqc-part2/)

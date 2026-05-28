@@ -17,6 +17,9 @@ format:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part7/" />
           <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part7/index-en.html" />
+bibliography: ../phreeqc_refs.bib
+nocite: |
+  @*
 ---
 
 ## はじめに：なぜ「溶解度ダイアグラム」が重要か
@@ -745,13 +748,8 @@ pH \> 12 のコンクリート孔隙水では Al(OH)₄⁻ として再溶解し
 
 ## 参考文献（References）
 
-1. **PHREEQC公式ドキュメント**
-   Parkhurst, D.L., and Appelo, C.A.J., 2013. Description of input and examples for PHREEQC version 3—A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43, 497 p.
-2. **地球化学モデリングの標準的専門書**
-   Appelo, C., Postma, D., 2005. *Geochemistry, Groundwater and Pollution*, second ed. Balkema, Rotterdam, p. 634.
-3. **本チュートリアルの手法を用いた研究例（著者論文）**
-   Yang H., Mishima T., Katazakai S., Kagabu M., 2023. Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry* 148:105535.
-   👉 著者のその他の研究業績については [Aboutページ](/about.html) をご覧ください。
+::: {#refs}
+:::
 
 *このシリーズの他の記事：*
 

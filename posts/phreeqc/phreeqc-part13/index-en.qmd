@@ -17,6 +17,9 @@ format:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part13/" />
           <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part13/index-en.html" />
+bibliography: ../phreeqc_refs.bib
+nocite: |
+  @*
 ---
 
 ## Introduction: The Order in Which Groundwater "Decays" (Reduces)
@@ -437,9 +440,8 @@ We will input actual water quality analysis data (from an upstream and a downstr
 
 ## References
 
-1.  **PHREEQC Official Documentation** Parkhurst, D.L., and Appelo, C.A.J., 2013. Description of input and examples for PHREEQC version 3—A computer program for speciation, batch-reaction, one-dimensional transport, and inverse geochemical calculations: U.S. Geological Survey Techniques and Methods, book 6, chap. A43, 497 p.
-2.  **Standard Textbook on Geochemical Modeling** Appelo, C., Postma, D., 2005. *Geochemistry, Groundwater and Pollution*, second ed. Balkema, Rotterdam, p. 634.
-3.  **Applied Research using this Tutorial's Methods (Author's Publication)** Yang H., Mishima T., Katazakai S., Kagabu M., 2023. Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry* 148:105535. 👉 For more research publications, please visit the [About page](/about.html).
+::: {#refs}
+:::
 
 ------------------------------------------------------------------------
 

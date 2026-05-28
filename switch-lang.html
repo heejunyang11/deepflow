@@ -57,7 +57,7 @@
     if (langLink) {
       let url = window.location.href;
       let cleanUrl = url.split('?')[0].split('#')[0];
-      let isEn = cleanUrl.endsWith('-en.html') || cleanUrl.endsWith('-en/') || cleanUrl.includes('-en.html');
+      let isEn = document.documentElement.lang.startsWith('en') || cleanUrl.match(/-en(\.html|\/)?$/) || cleanUrl.includes('-en.html') || cleanUrl.includes('/-en/');
       
       let targetUrl = getTargetUrl(url);
 
