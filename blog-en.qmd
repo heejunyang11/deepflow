@@ -9,7 +9,7 @@ format:
     include-in-header:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/blog.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/blog-en.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/blog-en" />
 ---
 
 ```{=html}

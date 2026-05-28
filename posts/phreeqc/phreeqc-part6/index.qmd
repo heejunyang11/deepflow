@@ -16,7 +16,7 @@ format:
     include-in-header:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part6/" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part6/index-en.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part6/index-en" />
 bibliography: ../phreeqc_refs.bib
 nocite: |
   @*

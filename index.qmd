@@ -8,7 +8,7 @@ format:
     include-in-header:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/index-en.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/index-en" />
 listing:
   - id: latest-posts
     contents: posts

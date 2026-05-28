@@ -1,6 +1,7 @@
 project:
   type: website
   output-dir: _site
+  post-render: python fix_sitemap.py
   resources:
     - "apps/"
     - "_headers"
