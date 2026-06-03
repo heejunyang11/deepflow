@@ -1,8 +1,8 @@
 ---
 title: "Introduction to Groundwater Science #1: What is the Water Cycle? — Where Does the Rain Go?"
-description: "Understand the basics of the water cycle and water budget, and visualize why groundwater is special using Python."
+description: "Groundwater makes up 99% of the unfrozen freshwater on Earth. This article explains the fundamental mechanisms of the water cycle and the global water budget. Discover why groundwater is a uniquely vital resource and learn the basics of hydrology."
 author: "Heejun Yang"
-date: "2026-06-03"
+date: "2026-06-02"
 date-modified: last-modified
 categories: [Groundwater, Water Cycle, Hydrology, Python, Tutorial, English]
 lang: en
@@ -44,7 +44,7 @@ The theme of Part 1 is the **Water Cycle**. As a starting point to understand gr
 
 Earth is called the "Water Planet," but the amount of water actually available for human use is surprisingly small.
 
-About **97.5% of the water on Earth is seawater (saltwater)**, and freshwater accounts for only a mere **2.5%**. Furthermore, about 68.7% of that freshwater is locked up in glaciers and ice caps, leaving very little existing as liquid freshwater.
+About **97.5% of the water on Earth is seawater (saltwater)**, and freshwater accounts for only a mere **2.5%**. The total volume of water on Earth reaches **about 1.36 billion km³**, but about 68.7% of the freshwater is locked up in glaciers and ice caps, leaving very little existing as liquid freshwater (overall, it is estimated that the oceans hold 97.2%, glaciers 2.15%, and the rest 0.65%).
 
 ![Distribution of water on Earth. Most freshwater is locked in glaciers and ice caps, making groundwater the largest reservoir of liquid freshwater, accounting for about 30% of all freshwater.](fig-water-distribution-en.png){#fig-water-distribution}
 
@@ -117,6 +117,11 @@ plt.show()
 
 Here lies an important fact. **Groundwater accounts for about 30% of freshwater, making it the largest liquid freshwater reservoir on Earth** [@gleick1996]. Compared to rivers and lakes (0.3%), it becomes clear just how massive an amount of water is stored underground.
 
+::: {.callout-note}
+#### Column: Glaciers and Climate Change
+Although glaciers and ice caps are the largest reservoirs of freshwater on Earth, if they were to melt entirely, sea levels would rise by tens of meters. Throughout Earth's history, during glacial and interglacial periods, the amount of water locked as ice on land and the volume of seawater have fluctuated dramatically, having a profound impact on the global water cycle balance.
+:::
+
 ---
 
 ### The 5 Processes of the Water Cycle {#sec-processes}
@@ -129,7 +134,7 @@ The main five processes are as follows:
 Water evaporates from the oceans, lakes, and soil into the atmosphere, while water vapor is also released from plant leaves (transpiration). Together, these are called "Evapotranspiration (ET)". Globally, about 60% of precipitation returns to the atmosphere as evapotranspiration.
 
 **2. Precipitation**  
-Water vapor in the atmosphere condenses and falls to the surface as rain or snow. Japan's annual precipitation is about 1,700 mm, roughly twice the global average (about 800 mm).
+Water vapor in the atmosphere condenses and falls to the surface as rain or snow. The total volume of water moving through the atmosphere globally reaches **about 380,000 km³** per year, an enormous scale equivalent to a uniform rainfall of about 1,000 mm over the entire surface of the Earth. Incidentally, Japan's annual precipitation is about 1,700 mm, roughly twice the global average (about 800 mm).
 
 **3. Surface Runoff**  
 Water that flows over the land surface toward rivers and the ocean. In urban areas, the abundance of impermeable surfaces (asphalt and concrete) increases surface runoff and reduces infiltration into the ground.
@@ -214,7 +219,9 @@ plt.show()
 ```
 </details>
 
-In Japan, it is estimated that about **8%** of precipitation recharges as groundwater. This figure varies greatly depending on the region, geology, and land use—which connects directly to our upcoming topics.
+In Japan, it is estimated that about **8%** of precipitation recharges as groundwater. This figure varies greatly depending on the region, geology, and land use.
+
+Furthermore, on a global scale, **about 36,000 km³** of water from precipitation on land eventually flows back to the sea annually through surface and subsurface pathways. As this massive volume of water moves under the influence of gravity, it deeply carves the earth's surface and creates the diverse **topography** we see today. Water does not merely flow; it is the "main driving force" that sculpts the land—which connects directly to our next theme.
 
 ---
 
@@ -340,3 +347,11 @@ The theme for the next article will be "**Topography and Geology**".
 
 ::: {#refs}
 :::
+
+---
+
+## Introduction to Groundwater Science Series
+
+1. [Part 1: What is the Water Cycle? — Where Does the Rain Go?](../groundwater-sci01/index-en.qmd) (This article)
+2. [Part 2: Where Does Groundwater Exist and How Does It Move?](../groundwater-sci02/index-en.qmd)
+3. Part 3: Darcy's Law and Groundwater Flow (Coming soon)
