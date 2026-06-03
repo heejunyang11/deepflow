@@ -31,7 +31,7 @@ website:
       - href: blog.qmd
         text: Series  
       - href: note.qmd
-        text: Essays & Notes
+        text: Field Notes
       - href: about.qmd
         text: About
     right:

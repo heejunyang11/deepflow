@@ -195,6 +195,10 @@ MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
 **記事一覧**
 
+- [地下水科学入門 #2：地下水はどんな「器」にいるのか？— 地形と地質が作る見えない地下の川](/posts/groundwater/groundwater-sci02/)
+
+- [地下水科学入門 #1：水循環とは？— 雨はどこへ行くのか](/posts/groundwater/groundwater-sci01/)
+
 - [ダルシーの法則を理解する：FloPyで作る最初の地下水モデル](/posts/groundwater/groundwater-darcy/)
 
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編](/posts/groundwater/flopy-phreeqc-part1/)
@@ -248,13 +252,5 @@ PHREEQCとPythonで水質・地球化学反応をモデリングする。
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
 
-::: g-col-12
-### 🤖 AI & Python Series
 
-機械学習とAIツールを研究やビジネスに活用するための勉強ノート。
-
-- [偏微分方程式をPythonで解く：1次元熱方程式入門](/posts/groundwater/pde-part1/)
-
-[記事を見る →](/index.qmd){.btn .btn-outline-primary}
-:::
 ::::::
