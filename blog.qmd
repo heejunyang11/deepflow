@@ -242,6 +242,9 @@ PHREEQCとPythonで水質・地球化学反応をモデリングする。
 - [PHREEQCをゼロから始める #13：酸化還元シークエンス — 地下水が「還元」されていく順番](/posts/phreeqc/phreeqc-part13/)
 - [PHREEQCをゼロから始める（応用編）#14：硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか](/posts/phreeqc/phreeqc-part14/)
 
+- [PHREEQCをゼロから始める #15：インバースモデリング — 水質データから「見えない地下のプロセス」を逆算する](/posts/phreeqc/phreeqc-part15/)
+
+
 [もっと見る →](/index.qmd){.btn .btn-outline-primary}
 :::
 

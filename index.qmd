@@ -11,7 +11,9 @@ format:
           <link rel="alternate" hreflang="en" href="https://deepflows.net/index-en" />
 listing:
   - id: latest-posts
-    contents: posts
+    contents:
+      - posts
+      - "!posts/**/index-en.qmd"
     sort: "date desc"
     type: default
     max-items: 5

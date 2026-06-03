@@ -1,0 +1,469 @@
+---
+title: "PHREEQCをゼロから始める #15：インバースモデリング — 水質データから「見えない地下のプロセス」を逆算する"
+date: 2026-06-10
+categories: [Geochemistry, PHREEQC, Python]
+series: "PHREEQCをゼロから始める"
+description: "「結果」から「原因」を解き明かす究極のツール、インバースモデリング（逆解析）。地下水と海水の混合や、陽イオン交換、泉質進化のメカニズムを推理ゲームのように解明する。"
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part15/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part15/index-en" />
+bibliography: ../phreeqc_refs.bib
+nocite: |
+  @*
+---
+
+## はじめに：インバースモデリング（逆解析）とは何か？
+
+これまで本シリーズでは、「ある水（A）と別の水（B）を混ぜたらどんな水（C）になるか？」や、「この水に石灰岩を溶かしたらどうなるか？」といった計算を行ってきた。
+これは**「原因」から「結果」を予測する**計算であり、**フォワードモデリング（順解析）**と呼ばれる。
+
+しかし、実際の地下水調査や温泉の現場では、状況が全く逆だ。
+私たちの手元にあるのは、すでに混ざって湧き出してきた**「結果の水質データ（C）」**だけであり、地下の奥深くで何が起きていたのかを直接見ることはできない。
+
+**「この温泉（C）は、元々どんな水（A）と水（B）が何対何で混ざり、その間にどんな鉱物がどれだけ溶けた（または沈殿した）結果として出来上がったのか？」**
+
+この「結果」から「原因（レシピ）」を推理する計算を、**インバースモデリング（Inverse Modeling：逆解析）**と呼ぶ。
+
+### フォワードモデリングとインバースモデリングの違い
+
+下の図を見てほしい。2つのアプローチの根本的な違いが一目でわかる。
+
+```{=html}
+<figure style="margin: 2em 0;">
+<svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;font-family:'Helvetica Neue',Arial,sans-serif;">
+
+  <!-- Background -->
+  <rect width="760" height="340" fill="#f8fafc" rx="12"/>
+
+  <!-- ===== TOP HALF: Forward Modeling ===== -->
+  <text x="380" y="28" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e3a5f">フォワードモデリング（順解析）</text>
+
+  <!-- Sol A box -->
+  <rect x="30" y="42" width="110" height="64" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="85" y="68" text-anchor="middle" font-size="11" font-weight="bold" fill="#1d4ed8">水 A（出発）</text>
+  <text x="85" y="84" text-anchor="middle" font-size="9.5" fill="#1e40af">Na: 54 mg/L</text>
+  <text x="85" y="96" text-anchor="middle" font-size="9.5" fill="#1e40af">Cl: 3 mg/L</text>
+
+  <!-- Sol B box -->
+  <rect x="30" y="118" width="110" height="64" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="85" y="144" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803d">水 B（海水）</text>
+  <text x="85" y="160" text-anchor="middle" font-size="9.5" fill="#166534">Na: 10760 mg/L</text>
+  <text x="85" y="172" text-anchor="middle" font-size="9.5" fill="#166534">Cl: 19350 mg/L</text>
+
+  <!-- Arrow forward -->
+  <path d="M 145 105 L 305 105" stroke="#6366f1" stroke-width="2" marker-end="url(#arrF)"/>
+  <rect x="160" y="84" width="130" height="42" rx="6" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="225" y="101" text-anchor="middle" font-size="10" fill="#5b21b6">混合比 + 鉱物反応</text>
+  <text x="225" y="116" text-anchor="middle" font-size="10" fill="#5b21b6">を指定（既知）</text>
+
+  <!-- Sol C result box -->
+  <rect x="310" y="78" width="110" height="56" rx="8" fill="#fef9c3" stroke="#eab308" stroke-width="1.5"/>
+  <text x="365" y="101" text-anchor="middle" font-size="11" font-weight="bold" fill="#854d0e">水 C（結果）</text>
+  <text x="365" y="117" text-anchor="middle" font-size="9.5" fill="#92400e">← 計算で予測</text>
+  <text x="365" y="129" text-anchor="middle" font-size="9" fill="#92400e">（未知→既知）</text>
+
+  <!-- known/unknown labels -->
+  <text x="85" y="198" text-anchor="middle" font-size="9" fill="#64748b">✓ 既知</text>
+  <text x="225" y="142" text-anchor="middle" font-size="9" fill="#64748b">✓ 既知</text>
+  <text x="365" y="148" text-anchor="middle" font-size="9" fill="#d97706">? 未知→予測</text>
+
+  <!-- Divider -->
+  <line x1="20" y1="215" x2="740" y2="215" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="6,4"/>
+
+  <!-- ===== BOTTOM HALF: Inverse Modeling ===== -->
+  <text x="380" y="237" text-anchor="middle" font-size="13" font-weight="bold" fill="#7c2d12">インバースモデリング（逆解析）</text>
+
+  <!-- Sol A box bottom -->
+  <rect x="30" y="252" width="110" height="64" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="85" y="278" text-anchor="middle" font-size="11" font-weight="bold" fill="#1d4ed8">水 A（出発）</text>
+  <text x="85" y="294" text-anchor="middle" font-size="9.5" fill="#1e40af">Na: 54 mg/L</text>
+  <text x="85" y="306" text-anchor="middle" font-size="9.5" fill="#1e40af">Cl: 3 mg/L</text>
+
+  <!-- Sol B box bottom -->
+  <rect x="30" y="328" width="110" height="0" rx="8"/><!-- placeholder, layout uses 2-sol case above -->
+
+  <!-- Arrow inverse (right to left) -->
+  <path d="M 305 284 L 145 284" stroke="#ef4444" stroke-width="2.2" marker-end="url(#arrI)"/>
+  <rect x="155" y="264" width="140" height="42" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="1.2"/>
+  <text x="225" y="281" text-anchor="middle" font-size="10" fill="#991b1b">混合比 + 鉱物反応</text>
+  <text x="225" y="296" text-anchor="middle" font-size="10" fill="#991b1b">を逆算（未知）</text>
+
+  <!-- Sol C observed box -->
+  <rect x="310" y="256" width="120" height="64" rx="8" fill="#fce7f3" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="370" y="279" text-anchor="middle" font-size="11" font-weight="bold" fill="#9d174d">水 C（観測）</text>
+  <text x="370" y="295" text-anchor="middle" font-size="9.5" fill="#be185d">Na: 1200 mg/L</text>
+  <text x="370" y="307" text-anchor="middle" font-size="9.5" fill="#be185d">Cl: 2450 mg/L</text>
+
+  <!-- PHREEQC engine box -->
+  <rect x="470" y="252" width="130" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+  <text x="535" y="274" text-anchor="middle" font-size="11" font-weight="bold" fill="#f1f5f9">PHREEQC</text>
+  <text x="535" y="290" text-anchor="middle" font-size="9.5" fill="#94a3b8">質量保存の</text>
+  <text x="535" y="303" text-anchor="middle" font-size="9.5" fill="#94a3b8">連立方程式を解く</text>
+  <text x="535" y="316" text-anchor="middle" font-size="9" fill="#64748b">（最適化）</text>
+
+  <!-- Arrow C to PHREEQC -->
+  <path d="M 434 284 L 466 284" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrG)"/>
+
+  <!-- Output box -->
+  <rect x="620" y="244" width="118" height="86" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="679" y="264" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#15803d">逆算の答え</text>
+  <text x="679" y="281" text-anchor="middle" font-size="9" fill="#166534">混合比: A=88%, B=12%</text>
+  <text x="679" y="295" text-anchor="middle" font-size="9" fill="#166534">Calcite: +6.9e-3 mol</text>
+  <text x="679" y="309" text-anchor="middle" font-size="9" fill="#166534">NaX: −4.4e-2 mol</text>
+  <text x="679" y="323" text-anchor="middle" font-size="9" fill="#166534">（陽イオン交換）</text>
+
+  <!-- Arrow PHREEQC to output -->
+  <path d="M 604 284 L 616 284" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrG)"/>
+
+  <!-- known/unknown labels bottom -->
+  <text x="85" y="332" text-anchor="middle" font-size="9" fill="#64748b">✓ 既知</text>
+  <text x="370" y="332" text-anchor="middle" font-size="9" fill="#db2777">✓ 既知（観測値）</text>
+  <text x="225" y="320" text-anchor="middle" font-size="9" fill="#b91c1c">? 未知→逆算</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrF" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#6366f1"/>
+    </marker>
+    <marker id="arrI" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ef4444"/>
+    </marker>
+    <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+</svg>
+<figcaption style="text-align:center;font-size:0.85em;color:#64748b;margin-top:0.5em;">
+図1. フォワードモデリング（青矢印）とインバースモデリング（赤矢印）の概念比較。<br>
+逆解析では観測された終点水質から、地下での反応プロセスを遡って推定する。
+</figcaption>
+</figure>
+```
+
+上図が示す通り、**フォワード（順解析）では矢印が左→右**（原因→結果）に流れるのに対し、**インバース（逆解析）では矢印が右→左**（結果→原因）に遡る。PHREEQCは質量保存の連立方程式を解くことで、この逆向きの推理を自動で行う。
+
+### 例え話：ミックスジュースのレシピを逆算する
+
+インバースモデリングの概念を、ミックスジュースの分析に例えてみよう。
+
+目の前に「完成したミックスジュース（最終水質）」がある。分析すると、**糖分が10g、ビタミンCが50mg**含まれていた。
+キッチンには、以下の材料（初期水質・鉱物）がある。
+1. **リンゴ果汁**（糖分2g、ビタミンC5mg / 100ml）
+2. **オレンジ果汁**（糖分1g、ビタミンC20mg / 100ml）
+3. **ガムシロップ**（純粋な糖分）
+
+ここでPHREEQCに「このミックスジュースはどうやって作ったの？」と尋ねる（インバースモデリングを実行する）と、PHREEQCは質量保存の法則に基づく連立方程式を解き、次のような答え（モデル）を導き出す。
+
+> **PHREEQCの回答（計算モデル）**
+> 「リンゴ果汁を 200ml、オレンジ果汁を 200ml 混ぜて、最後にガムシロップを 4g 溶かせば、完全に同じ成分になる」
+
+このように、インバースモデリングは**「出発地点の水」と「到達地点の水」の成分差を埋めるために必要な『水の混合比率』と『鉱物の増減量（溶けたか沈殿したか）』を自動計算**してくれる、地球化学における名探偵のようなツールだ。
+
+今回は、地下水研究でよく見られる「雨水が地下に浸透して炭酸塩岩帯水層の地下水になるプロセス」を例に、実際にインバースモデリングを使って地下のドラマを解き明かしてみよう。
+
+------------------------------------------------------------------------
+
+## 実践ケーススタディ：雨水から炭酸塩岩帯水層地下水への進化
+
+インバースモデリングの強力さを体感するために、「雨水が地下に浸透し、炭酸塩岩（石灰岩など）の帯水層を通って水質が進化する」というシナリオを解析する。
+
+地下水が流動する過程で、以下の反応が起きたと仮定しよう。
+
+1.  土壌中の **CO₂** を取り込む
+2.  石灰岩の **Calcite**（方解石）、**Dolomite**（苦灰石）が溶解する
+3.  地層中の **Gypsum**（石膏）や **Halite**（岩塩）が微量溶解する
+
+### PHREEQCコードと水質データ
+
+まずは、これらを計算するための入力ファイル（PHREEQCコード）を見てみよう。出発溶液（SOLUTION 1）に初期の雨水、終点溶液（SOLUTION 2）に観測された地下水のデータを入力する。
+
+```phreeqc
+TITLE Carbonate aquifer inverse model
+
+# 1. 出発溶液：雨水
+SOLUTION 1 Rainwater
+    temp      15
+    pH        5.6
+    units     mg/L
+    Ca        2
+    Mg        0.5
+    Na        2
+    Cl        3.08
+    S(6)      2
+    Alkalinity 5 as HCO3
+
+# 2. 終点溶液：帯水層の地下水
+SOLUTION 2 Groundwater
+    temp      15
+    pH        7.3
+    units     mg/L
+    Ca        55.2
+    Mg        4.87
+    Na        10
+    Cl        15.42
+    S(6)      21.2
+    Alkalinity 165 as HCO3
+
+# インバースモデリングの設定
+INVERSE_MODELING 1
+    -solutions 1 2
+    -phases
+        Calcite
+        Dolomite
+        Gypsum
+        Halite
+        CO2(g)
+    -uncertainty 0.10
+END
+```
+
+::: {.callout-tip}
+**誤差（uncertainty）の設定について**
+実務で分析誤差によるエラー（`No models found` 等）を防ぐため、`-uncertainty`（許容誤差）をデフォルトの0.05（5%）から **0.10（10%）** に広げて設定している。実際の分析データで電荷バランスが崩れている場合は、これを広げたり特定イオンに `charge` キーワードを付けるなどの微調整が必要になる。
+:::
+
+------------------------------------------------------------------------
+
+## INVERSE_MODELING の結果の読み方と地球化学的解釈
+
+上記のコードを実行すると、PHREEQCは質量収支計算を行い、複数の出力ブロックを返す。その中でも逆解析の核心部分である **「Phase mole transfers」** に着目して、結果を読み解いていこう。
+
+### 実行結果の抽出
+
+```text
+Phase mole transfers:                 Minimum        Maximum   Formula             (Approximate SI in solution 1, 2 at 288 K,   1 atm)
+        Calcite      9.481e-04      0.000e+00      0.000e+00   CaCO3                      ( -4.83, -0.31)
+       Dolomite      1.798e-04      0.000e+00      0.000e+00   CaMg(CO3)2                 ( -9.95, -1.37)
+         Gypsum      1.999e-04      0.000e+00      0.000e+00   CaSO4:2H2O                 ( -4.47, -2.26)
+         Halite      3.482e-04      0.000e+00      0.000e+00   NaCl                       ( -9.70, -8.35)
+         CO2(g)      1.089e-03      0.000e+00      0.000e+00   CO2                        ( -1.92, -2.14)
+```
+
+※出力値の単位は `mol/kgw` (水1kgあたりのモル数) だ。たとえば `9.481e-04` は $9.481 \times 10^{-4}$ つまり **0.000948 mol** (約0.95 mmol) を意味する。
+
+### 符号（プラス・マイナス）の意味
+
+Phase mole transfers を読む際に最も重要なのは、**符号（プラス・マイナス）** だ。
+
+| 符号 | 物理的な意味 | 水質への影響 |
+|:---:|:---|:---|
+| **＋（正）** | 鉱物が**溶解**、またはガスが**吸収**される | その成分が水中で**増加** |
+| **−（負）** | 鉱物が**沈殿**、またはガスが**脱ガス**（放出）される | その成分が水中で**減少** |
+
+今回の出力された値はすべて**正（＋）**である。つまり、指定したすべての鉱物やガスが「**水に溶解・吸収された**」という結果になった。
+
+### 各鉱物の詳細な解釈
+
+それぞれの結果がどのような地球化学的ストーリーを語っているのか、一つずつ解説する。
+
+**① Calcite（方解石）: 約 0.95 mmol 溶解**
+- **反応**: $\text{CaCO}_3 \rightarrow \text{Ca}^{2+} + \text{CO}_3^{2-}$
+- **解釈**: 地下水中のCa濃度とアルカリ度（HCO3）上昇のメイン要因だ。右端のSI（飽和指数）を見ると、Solution 1 (-4.83) から Solution 2 (-0.31) へと0に近づいており、「Calciteが溶け込んで飽和状態に達しつつある」という自然な現象と一致する。
+
+**② Dolomite（苦灰石）: 約 0.18 mmol 溶解**
+- **反応**: $\text{CaMg}(\text{CO}_3)_2 \rightarrow \text{Ca}^{2+} + \text{Mg}^{2+} + 2\text{CO}_3^{2-}$
+- **解釈**: 観測されたMg濃度上昇を説明するものだ。Dolomiteも未飽和状態（SI: -9.95 → -1.37）であるため、溶解反応が起きたという結果は熱力学的にも妥当である。
+
+**③ Gypsum（石膏）: 約 0.20 mmol 溶解**
+- **反応**: $\text{CaSO}_4\cdot 2\text{H}_2\text{O} \rightarrow \text{Ca}^{2+} + \text{SO}_4^{2-} + 2\text{H}_2\text{O}$
+- **解釈**: 地下水に含まれる硫酸イオン（SO4）の増加分を補っている。地層中に挟まる石膏レンズや、微量の硫酸塩鉱物が溶けたことを示唆する。
+
+**④ Halite（岩塩）: 約 0.35 mmol 溶解**
+- **解釈**: NaとClの増加分を説明する。
+
+**⑤ CO2(g): 約 1.1 mmol 吸収**
+- **反応**: $\text{CO}_2 + \text{H}_2\text{O} \rightarrow \text{H}_2\text{CO}_3$
+- **解釈**: 雨水が土壌を通過する際、植物根の呼吸や微生物活動による土壌CO2を大量に吸収したことを示している。このCO2が水に溶けて炭酸となり、上記のCalciteやDolomiteを溶かす「酸」の役割を果たしている。
+
+### モデルが成立しない（No models found）場合の対処法
+
+今回の例では意図的に質量収支が合うようにデータを調整しているが、実際の観測データを入れると最初は `Number of models found: 0` (解が見つからない) となることが非常に多い。
+
+主な原因と対処法は以下の通りだ。
+
+1.  **候補の鉱物が足りない**
+    - 例えばNaやClが増加しているのに `-phases` にHaliteを入れ忘れると、計算の辻褄が合わずエラーになる。水質の変化を見て、不足している成分を補う鉱物を追加しよう。
+2.  **分析データの誤差（電荷バランスの崩れ）**
+    - イオンの分析誤差により電荷バランスが崩れている場合、PHREEQCは解を見つけられない。この場合、`-uncertainty` を0.10〜0.20に広げたり、特定のイオン（例：ClやAlkalinity）に `charge` キーワードを付けてPHREEQCに電荷バランスを微調整させるなどの対策が必要になる。
+
+------------------------------------------------------------------------
+
+## ケーススタディ②：沿岸地下水における海水侵入と逆イオン交換
+
+沿岸部の地下水研究で非常によく使われるのが、「淡水と海水の混合」に加え、「混合後に生じた水−岩石反応やイオン交換」を同時に解明するモデルだ。
+
+ここでは、仮想的な沿岸井戸の観測データを使って、**単純な混合だけでは説明できない水質進化**をインバースモデリングで解析してみよう。
+
+### 1. 観測データと「Cl⁻による海水混合率」の概算
+
+以下の3つの水質データ（淡水、海水、観測された沿岸地下水）を用意した。
+
+| 項目 (mg/L) | 淡水 (Freshwater) | 海水 (Seawater) | 観測地下水 (Coastal_Well) |
+| :--- | :--- | :--- | :--- |
+| pH | 7.2 | 8.1 | 7.4 |
+| Na | 20 | 10500 | 500 |
+| Ca | 40 | 400 | 180 |
+| Mg | 10 | 1300 | 45 |
+| Cl | 30 | 19000 | 1000 |
+| SO4 | 15 | 2700 | 120 |
+| Alkalinity | 180 | 140 | 240 |
+
+実務では、まず保存性トレーサーである塩化物イオン（Cl⁻）を使って、海水の混合率 $f$ を概算する。
+$$ f = \frac{Cl_{sample} - Cl_{fresh}}{Cl_{sea} - Cl_{fresh}} = \frac{1000 - 30}{19000 - 30} \approx 0.051 $$
+つまり、**海水が約5.1%、淡水が約94.9%** 混ざっていると推定できる。
+
+### 2. 単純混合モデルの限界と「逆イオン交換」の疑い
+
+もし単純に混ざっただけなら、NaとCaの濃度はどうなるはずだろうか？
+
+- **Naの理論値** = (0.949 × 20) + (0.051 × 10500) = **554 mg/L**
+- **Caの理論値** = (0.949 × 40) + (0.051 × 400) = **58 mg/L**
+
+しかし、観測値は **Na=500 mg/L**（理論値より少ない）、**Ca=180 mg/L**（理論値より異常に多い）である。
+これは沿岸帯水層で有名な **「逆イオン交換（Reverse Ion Exchange）」** が起きている強い証拠だ。海水由来の大量のNa⁺が地層の粘土鉱物に吸着し、代わりに地層中のCa²⁺が水中に押し出されたと考えられる。
+
+### 3. PHREEQCでのインバースモデリング
+
+この推測を定量的に証明するため、PHREEQCに以下のコードを入力する。陽イオン交換を考慮するため、仮想的な交換鉱物（`NaX`, `CaX2`）を `PHASES` に定義して組み込むのがポイントだ。
+
+```phreeqc
+TITLE Coastal groundwater
+
+# 仮想的な陽イオン交換Phaseの定義
+PHASES
+    NaX
+        NaX = Na+ + X-
+        log_k 0.0
+    CaX2
+        CaX2 = Ca+2 + 2X-
+        log_k 0.0
+
+# 1. 淡水端成分
+SOLUTION 1 Freshwater
+    units mg/L
+    pH 7.2
+    Na 20; Ca 40; Mg 10; Cl 30; S(6) 15; Alkalinity 180 as HCO3
+
+# 2. 海水端成分
+SOLUTION 2 Seawater
+    units mg/L
+    pH 8.1
+    Na 10500; Ca 400; Mg 1300; Cl 19000; S(6) 2700; Alkalinity 140 as HCO3
+
+# 3. 観測地下水
+SOLUTION 3 Coastal_Well
+    units mg/L
+    pH 7.4
+    Na 500; Ca 180; Mg 45; Cl 1000; S(6) 120; Alkalinity 240 as HCO3
+
+# インバースモデリング
+INVERSE_MODELING 1
+    -solutions 1 2 3
+    -phases
+        Calcite
+        Dolomite
+        Gypsum
+        CO2(g)
+        NaX
+        CaX2
+    -mineral_water true
+    -uncertainty 0.10
+    -balances
+        Cl
+END
+```
+
+::: {.callout-note}
+**重要な2つのオプション**
+
+- **`-mineral_water true`**: 通常の逆解析は「Solution 1 → 終点」を解くが、このオプションを入れることで「Solution 1 + Solution 2 + 鉱物反応 = 終点」という混合を伴う反応モデルを明示的に解かせることができる。沿岸地下水解析では必須だ。
+- **`-balances Cl`**: 指定した成分（ここでは塩化物イオンCl）について、鉱物の溶解・沈殿とは無関係に**「単なる混合による質量保存のみで収支を閉じる」**ことを指示する。Clは岩石と反応しない保存性トレーサーとして扱われるため、この設定を入れておくと混合比率の計算がより安定する。
+:::
+
+### 4. 実行結果の解釈
+
+計算結果の出力から、該当するモデルのPhase mole transfersを読み解いてみよう。
+
+```text
+Solution fractions:                   Fraction
+   Solution   1 (Freshwater)         9.499e-01
+   Solution   2 (Seawater)           5.014e-02
+
+Phase mole transfers:               Moles
+   Calcite                         3.273e-03
+   Dolomite                       -1.311e-03
+   Gypsum                         -3.554e-04
+   CO2(g)                          2.748e-04
+   NaX                            -2.738e-03
+   CaX2                            1.369e-03
+```
+
+**① 海水混合率の証明**
+Solution 2（海水）の割合が `5.014e-02`（約5.0%）となり、最初にCl⁻から手計算した5.1%と見事に一致した。
+
+**② 逆イオン交換の定量化**
+`NaX` がマイナス（**吸着**）、`CaX2` がプラス（**脱離**）となっている。
+具体的には、約 2.74 mmol のNa⁺が水から地層へ吸着され、代わりにその半分の電荷に相当する 約 1.37 mmol のCa²⁺が水中に放出されたことが証明された。
+
+**③ 炭酸塩鉱物の複雑な反応とCa増加の真相**
+観測された「異常なCa濃度の増加（理論値58 mg/L → 観測値180 mg/L）」は、**逆イオン交換によるCa²⁺の放出**だけでなく、**Calcite（方解石）の溶解（+3.27 mmol）**も大きく寄与していることがわかった。
+また、水中にCa²⁺が大量に供給された結果、水はMgを含む炭酸塩や硫酸塩に対して過飽和になりがちだ。そのため、Calciteが溶解する一方で、`Dolomite` や `Gypsum` は沈殿（-）に転じている。
+単純な混合や「逆イオン交換だけ」では決して説明できないこの複雑な連鎖反応が、PHREEQCの質量収支計算によって見事に辻褄を合わせて解明されたことになる。
+
+------------------------------------------------------------------------
+
+## まとめ
+
+今回紹介したインバースモデリングのポイントをまとめる。
+
+| 項目 | 内容 |
+|:---|:---|
+| **目的** | 観測された終点水質から、地下での混合比率・鉱物反応を逆算する |
+| **出力の核心** | Phase mole transfers の符号（+が溶解、−が沈殿）と量 |
+| **複数モデルの選択** | 地質的根拠＋最小残差＋minimal model を優先 |
+| **uncertainty の設定** | 誤差が大きい問題では 0.10〜0.20 から始める |
+| **独自の強み** | 「水質がどう進化したか」を熱力学的に検証・証明できる |
+
+インバースモデリングは、「カルサイトの沈殿を疑ってみよう」「ここは石膏が溶けたはずだ」という仮説を立て、モデルを与えながら試行錯誤する**推理ゲーム**だ。
+しかし、解が見つかったとき、それは単なる計算結果ではなく**「見えない地下の反応プロセスを論理的に見破った」**という確固たる証明になる。
+
+次回は、この「沈殿」や「溶解」といった化学反応が、時間の経過とともにどのように進んでいくかをシミュレーションする **KINETICS（反応速度論）** や **REACTION（反応経路モデリング）** の世界へ足を踏み入れる。
+
+------------------------------------------------------------------------
+
+## 参考文献（References）
+
+::: {#refs}
+:::
+
+--------
+
+- [#1 インストールと最初の計算](../phreeqc-part1/)
+- [#2 Speciationで海水を解析する](../phreeqc-part2/)
+- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)
+- [#4 カルサイト−CO₂水反応](../phreeqc-part4/)
+- [#5 炭酸地下水と海水の混合](../phreeqc-part5/)
+- [#6 黄鉄鉱の酸化（AMD）](../phreeqc-part6/)
+- [#7 溶解度ダイアグラム（Gibbsite）](../phreeqc-part7/)
+- [#8 Pythonでの可視化](../phreeqc-part8/)
+- [#9 イオン強度と活量係数](../phreeqc-part9/)
+- [#10 飽和指数（SI）の使いこなし](../phreeqc-part10/)
+- [#11 反応経路モデリング（REACTION block の応用）](../phreeqc-part11/)
+- [#12 移流分散モデル（TRANSPORT block の応用）](../phreeqc-part12/)
+- [#13 酸化還元シークエンス — 地下水が「還元」されていく順番](../phreeqc-part13/)
+- [#14 硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか](../phreeqc-part14/)
+- **\[#15 インバースモデリング — 水質データから「見えない地下のプロセス」を逆算する\]**
+
+------------------------------------------------------------------------
+
+*DeepFlow \| 地球科学シミュレーションの深みへ*

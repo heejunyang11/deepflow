@@ -32,8 +32,6 @@ website:
         text: Series  
       - href: note.qmd
         text: Essays & Notes
-      - href: apps.qmd      
-        text: Apps          
       - href: about.qmd
         text: About
     right:

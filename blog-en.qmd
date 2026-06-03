@@ -255,7 +255,8 @@ Modeling water quality and geochemical reactions using PHREEQC and Python.
 
 - [PHREEQC from Scratch #13: Redox Sequences — The Order of Groundwater Reduction](/posts/phreeqc/phreeqc-part13/index-en.html)
 
-- [PHREEQC from Scratch #14: Groundwater Diagnosis of Nitrate Pollution — Where and How Much Denitrification Occurs](/posts/phreeqc/phreeqc-part14/index-en.html)
+- [PHREEQC from Scratch (Advanced) #14: Groundwater Diagnosis of Nitrate Pollution — Where and How Much Denitrification Occurs](/posts/phreeqc/phreeqc-part14/index-en.html)
+
 
 [Read More →](/index-en.html){.btn .btn-outline-primary}
 :::

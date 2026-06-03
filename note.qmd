@@ -4,7 +4,9 @@ number-sections: false
 crossref:
   chapters: false
 listing:
-  contents: posts
+  contents:
+    - posts
+    - "!posts/**/index-en.qmd"
   sort: "date desc"
   type: default
   filter-ui: true

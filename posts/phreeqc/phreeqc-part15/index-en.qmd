@@ -1,0 +1,284 @@
+---
+title: "PHREEQC from Scratch #15: Inverse Modeling — Deducing \"Invisible Underground Processes\" from Water Quality Data"
+date: 2026-06-10
+categories: [Geochemistry, PHREEQC, Python]
+series: "PHREEQC from Scratch"
+description: "Inverse modeling is the ultimate tool for unraveling \"causes\" from \"results.\" Through an intentionally failed calculation, we unravel the mechanisms of groundwater-seawater mixing, cation exchange, and spring water evolution like a detective game."
+image: thumbnail.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part15/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part15/index-en" />
+bibliography: ../phreeqc_refs.bib
+nocite: |
+  @*
+---
+
+## Introduction: What is Inverse Modeling?
+
+So far in this series, we've performed calculations like "What happens if we mix water (A) and water (B)?" or "What happens if we dissolve limestone in this water?"
+These are calculations that **predict the "result" from the "cause,"** which is known as **Forward Modeling**.
+
+However, in actual groundwater investigations and hot spring field sites, the situation is the exact opposite.
+All we have in our hands is the **"resulting water quality data (C)"** that has already mixed and sprung forth. We cannot directly see what happened deep underground.
+
+**"What kind of water (A) and water (B) originally mixed, at what ratio, and what minerals dissolved (or precipitated) during that time to create this hot spring (C)?"**
+
+The calculation that deduces the "cause (recipe)" from this "result" is called **Inverse Modeling**.
+
+### 🍹 Analogy: Reverse-Engineering a Mixed Juice Recipe
+
+Let's compare the concept of inverse modeling to analyzing a mixed juice.
+
+You have a "finished mixed juice (final water quality)" in front of you. Upon analysis, it contains **10g of sugar and 50mg of vitamin C**.
+In your kitchen, you have the following ingredients (initial water quality/minerals):
+1. **Apple juice** (2g sugar, 5mg vitamin C / 100ml)
+2. **Orange juice** (1g sugar, 20mg vitamin C / 100ml)
+3. **Gum syrup** (pure sugar)
+
+Now, if you ask PHREEQC, "How was this mixed juice made?" (by running inverse modeling), PHREEQC will solve a system of equations based on the law of mass conservation and provide an answer (model) like this:
+
+> **PHREEQC's Answer (Computational Model)**
+> "If you mix 200ml of apple juice and 200ml of orange juice, and finally dissolve 4g of gum syrup, it will match the ingredients perfectly!"
+
+In this way, inverse modeling is like a master detective in geochemistry that **automatically calculates the "mixing ratio of waters" and the "amount of mineral change (dissolved or precipitated)" required to bridge the gap between the "starting water" and the "arriving water."**
+
+This time, using the data from Liang's (2021) study (multivariate analysis of Beppu Hot Springs), let's actually use inverse modeling to unravel an underground drama.
+
+------------------------------------------------------------------------
+
+## Case Study 1: Seawater Mixing in a Coastal Hot Spring (Learning from an Intentional Failure)
+
+In the paper by Liang (2021), **"Hot Spring Well 10,"** located near the coast, has an extremely high concentration of chloride ions (Cl⁻), and it was estimated that **"about 12% seawater is mixed in."**
+
+Let's prove this using PHREEQC's inverse modeling.
+We will prepare "Freshwater (Well 30)" and "Seawater" as the starting solutions, and have it calculate the recipe where these mix to become "Well 10."
+
+### ❌ The First Calculation (Simple Mixing)
+
+First, let's just mix freshwater and seawater and calculate considering only common minerals (like Calcite).
+Here is the code to run it from Python (`phreeqpy`).
+
+```python
+from phreeqpy.iphreeqc.phreeqc_dll import IPhreeqc
+
+phreeqc_input = """
+TITLE Inverse Modeling - Seawater Mixing (Failure Case)
+
+# 1. Starting Solution 1: Freshwater (Well 30)
+SOLUTION 1
+    temp      38.6
+    pH        7.4
+    units     mg/l
+    Na        54.5
+    K         11.4
+    Ca        24.0
+    Mg        20.5
+    Cl        3.1
+    Alkalinity 260 as HCO3
+    S(6)      59.4
+
+# 2. Starting Solution 2: Seawater
+SOLUTION 2
+    temp      25.0
+    pH        8.2
+    units     mg/l
+    density   1.023
+    Na        10760
+    K         399
+    Ca        412
+    Mg        1290
+    Cl        19350
+    Alkalinity 142 as HCO3
+    S(6)      2710
+
+# 3. Final Solution: Hot spring suspected of seawater intrusion (Well 10)
+SOLUTION 3
+    temp      58.2
+    pH        7.7
+    units     mg/l
+    Na        1200
+    K         153
+    Ca        367
+    Mg        106
+    Cl        2450
+    Alkalinity 681 as HCO3
+    S(6)      191
+
+# Inverse Modeling Settings
+INVERSE_MODELING 1
+    -solutions 1 2 3
+    -uncertainty 0.05    # Allow 5% measurement error for ion concentrations
+    -phases
+        Calcite
+        Dolomite
+        Halite
+        Gypsum
+        CO2(g)
+END
+"""
+
+phreeqc = IPhreeqc()
+# * Please modify according to your environment (e.g., r"C:\Users\YourName\phreeqc.dat")
+DB_PHREEQC = r"C:\Your\PATH\phreeqc.dat"  # Please place it in the same folder
+phreeqc.load_database(DB_PHREEQC)
+phreeqc.set_output_file_on()
+phreeqc.run_string(phreeqc_input)
+
+# Retrieving error results (omitted)
+```
+
+**[Calculation Results]**
+```text
+Summary of inverse modeling:
+
+	Number of models found: 0
+	Number of minimal models found: 0
+	Number of infeasible sets of phases saved: 1
+
+ERROR: inequality not satisfied for C(4)...
+```
+
+Surprisingly, it **failed** with an error saying **`Number of models found: 0` (No solutions found)**!
+
+### 💡 Why Did It Fail? (Analyzing the Error Cause)
+
+PHREEQC is essentially saying, "No matter what ratio you mix the freshwater and seawater, **just dissolving the specified minerals (like Calcite) will never perfectly match the amounts of Na (sodium) and Ca (calcium) in Well 10.**"
+
+Actually, in coastal groundwater environments, when seawater intrudes, it's not just a simple mixing of water; a geological filter effect called **"Cation Exchange"** always occurs.
+This is a phenomenon where Ca²⁺ attached to clay minerals is pushed out and dissolved into the water by the massive amount of Na⁺ in the seawater, and instead, Na⁺ is adsorbed into the stratum.
+
+**"The calculation didn't balance because the process of cation exchange was not considered."** This is the reason for the failure.
+
+### ⭕ Overcoming the Error: Introducing Cation Exchange
+
+There is a "trick" to make PHREEQC's inverse modeling recognize cation exchange. We define virtual exchange minerals (`NaX`, `CaX2`) and add them as Phases.
+
+Let's define the virtual minerals at the top of our previous code and add them to the `INVERSE_MODELING` block.
+
+```python
+# (Omitted from previous code)
+# Defining virtual Cation Exchange Phases
+PHASES
+    NaX
+        NaX = Na+ + X-
+        log_k 0.0
+    CaX2
+        CaX2 = Ca+2 + 2X-
+        log_k 0.0
+    MgX2
+        MgX2 = Mg+2 + 2X-
+        log_k 0.0
+
+# (Omitted)
+
+INVERSE_MODELING 1
+    -solutions 1 2 3
+    -uncertainty 0.05
+    -phases
+        Calcite
+        Dolomite
+        Gypsum
+        CO2(g)
+        NaX      # ← Added Cation Exchange!
+        CaX2     # ← Added Cation Exchange!
+        MgX2     # ← Added Cation Exchange!
+```
+
+**[Results of Recalculation]**
+```text
+Summary of inverse modeling:
+
+	Number of models found: 21
+```
+
+We did it! It successfully **found 21 calculation models (valid recipes)**!
+PHREEQC has told us, "If I'm allowed to freely adjust the amount of cation exchange, there are 21 recipes that make sense."
+
+### The Truth Behind the "12%" Discovered
+
+Let's look at the output of Model 6 out of the 21 models, which corresponds to the "12% seawater mixing ratio" estimated in Liang's (2021) paper.
+
+> **Calculation Recipe for Model 6**
+> **[Mixing Ratio]**
+> - Freshwater (Solution 1): **87.8%**
+> - Seawater (Solution 2): **12.1%**
+> 
+> **[Amount of Mineral Transfer (mol/kgw)]**
+> - **NaX** : -4.385e-02 (Minus means precipitation/adsorption. Na⁺ in water decreased)
+> - **CaX2**: +2.029e-02 (Plus means dissolution/desorption. Ca²⁺ was released into water)
+> - Calcite: +6.950e-03 (Calcite dissolved)
+
+Brilliant. The value of **12% seawater mixing**, estimated in the paper by a "simple calculation from Cl⁻ concentration," has been **perfectly proven thermodynamically and chemically by inverse modeling.**
+
+Furthermore, it accurately reverse-calculated the amount of cation exchange: "Na⁺ was adsorbed into the stratum (-4.38e-02 mol), and half that mole amount of Ca²⁺ was pushed out into the water (+2.02e-02 mol)."
+This is the moment we successfully deduced the "invisible underground processes (cation exchange and mixing ratio)" from the "result (water quality)."
+
+------------------------------------------------------------------------
+
+## Case Study 2: Hot Spring Evolution During Ascent from Deep Sources (To Na-HCO3 Type)
+
+Inverse modeling is useful not only for mixing but also for elucidating the "evolution of a single water flow."
+
+We will unravel another mystery of Beppu Hot Springs: **"Why does the deep Ca,Mg-HCO3 type hot water change to a Na-HCO3 type when it rises to the shallow part?"**
+In the paper, it is hypothesized that "Due to the temperature drop during the ascent, Calcite and Mg-Chlorite precipitate, and Ca and Mg are lost from the water, leaving relatively more Na."
+
+This can also be proven with inverse modeling.
+
+*   **Starting Solution**: Deep hot water (Ca,Mg-HCO3 type, Well 24)
+*   **Final Solution**: Shallow hot spring (Na-HCO3 type, Well 15)
+*   **Phases to Consider**: Calcite, Mg-Chlorite, CO2(g), etc.
+
+When running inverse analysis with these settings, PHREEQC outputs the following answer:
+
+> **Example of a Calculation Model**
+> - **Calcite** : -2.5e-03 (Precipitation)
+> - **Mg-Chlorite** : -1.8e-03 (Precipitation)
+> - **CO2(g)** : -4.1e-03 (Lost as degassing)
+
+The results of the inverse modeling were all negative (precipitation/degassing).
+Thus, the grand story of the paper—"During the ascent from the deep, carbon dioxide (CO2) escapes as a gas, and along with it, Calcite and Chlorite stick to the gaps in the rocks (precipitate), resulting in a decrease of Ca and Mg in the water and creating Na-HCO3 type water"—is completely backed by numbers.
+
+------------------------------------------------------------------------
+
+## Conclusion: A Tool to Learn Processes from Failures
+
+This time, we introduced a process where "it initially resulted in an error (0 models found), but once we considered cation exchange, a solution was found."
+
+Inverse modeling is not a magic wand that gives the correct answer on the first try.
+You hypothesize, "Let's suspect Calcite precipitation," "Could there be seawater intrusion?" or "No, cation exchange must be happening," feed the model, and overcome the errors in a process of **gritty trial and error**.
+
+However, when a solution (model) is finally found after this trial and error, it is not just a calculation result; it is a solid proof that you have **"logically deciphered the invisible underground reaction processes."**
+
+Next time, we will step into the world of **KINETICS** and **REACTION (Reaction Path Modeling)**, which simulate how these chemical reactions, such as "precipitation" and "dissolution," progress over time. Stay tuned!
+
+------------------------------------------------------------------------
+
+## References
+
+::: {#refs}
+:::
+
+- [#1 Installation and First Calculation](../phreeqc-part1/)
+- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/)
+- [#3 Mixing and EQUILIBRIUM_PHASES](../phreeqc-part3/)
+- [#4 Considering Reaction Rates with KINETICS](../phreeqc-part4/)
+- [#5 Mixing of Carbonated Groundwater and Seawater](../phreeqc-part5/)
+- [#6 Pyrite Oxidation and AMD](../phreeqc-part6/)
+- [#7 Solubility Diagrams (Gibbsite)](../phreeqc-part7/)
+- [#8 Analyzing and Visualizing PHREEQC Results with Python](../phreeqc-part8/)
+- [#9 Ionic Strength and Activity Coefficients](../phreeqc-part9/)
+- [#10 Mastering Saturation Index (SI)](../phreeqc-part10/)
+- **\[#15 Inverse Modeling — Deducing "Invisible Underground Processes" from Water Quality Data\]**
+
+------------------------------------------------------------------------
+
+*DeepFlow \| Into the Depths of Geoscience Simulation*
