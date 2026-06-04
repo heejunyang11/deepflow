@@ -98,39 +98,56 @@ listing:
   color: #4B5563;
   margin-bottom: 2.5rem;
 }
-.series-card {
-  background: #FFFFFF;
-  border: 1px solid #F3F4F6;
-  border-radius: 28px;
-  padding: 3rem 2rem;
+/* カード全体を包むラッパー（背景なし） */
+.series-wrapper {
   height: 100%;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+/* ダイアモンドなどのメインアイコン（外に独立させる） */
+.series-icon {
+  font-size: 3.5rem;
+  z-index: 2;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+/* 添付画像のような独立した小さなインナーカード */
+.inner-card {
+  background: #FEFCF8; /* 暖かみのある白 */
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  box-shadow: 0 10px 30px rgba(217, 119, 6, 0.06);
+  border: 1px solid rgba(217, 119, 6, 0.08);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  flex-grow: 1;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
 }
-.series-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 100%;
-  background: linear-gradient(180deg, #EAB308, #D97706);
-}
-.series-card:hover {
+.series-wrapper:hover .inner-card {
   box-shadow: 0 20px 40px rgba(217, 119, 6, 0.12);
-  transform: translateY(-8px);
+  transform: translateY(-5px);
 }
-.series-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  line-height: 1;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+/* 猫はインナーカードから飛び出す */
+.cute-cat {
+  position: absolute;
+  top: -55px;
+  right: 25px;
+  width: 85px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  z-index: -1;
+}
+.series-wrapper:hover .cute-cat {
+  opacity: 1;
+  transform: translateY(0);
 }
 .series-title {
   font-size: 1.6rem;
@@ -144,49 +161,50 @@ listing:
   color: #6B7280;
   margin-bottom: 2rem;
   line-height: 1.7;
-  max-width: 90%;
+  max-width: 95%;
 }
+/* 添付画像のような全幅の角丸ボタン */
 .btn-lang {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 28px;
-  border-radius: 999px;
-  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 14px;
+  font-weight: 700;
   font-size: 0.95rem;
   text-decoration: none !important;
   transition: all 0.3s ease;
-  min-width: 180px;
-  letter-spacing: 0.06em;
+  width: 100%;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 .btn-en {
-  background: #FFFFFF;
-  color: #B45309 !important;
-  border: 2px solid #FDE68A;
+  background: transparent;
+  color: #ea580c !important;
+  border: 2px solid #fdba74;
 }
 .btn-en:hover {
-  background: #FFFBEB;
-  border-color: #D97706;
-  transform: scale(1.05);
+  background: #fff7ed;
+  border-color: #ea580c;
+  transform: translateY(-2px);
 }
 .btn-jp {
-  background: #D97706;
+  background: #f97316;
   color: #FFFFFF !important;
-  border: 2px solid #D97706;
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
+  border: 2px solid #f97316;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
 .btn-jp:hover {
-  background: #B45309;
-  border-color: #B45309;
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.3);
+  background: #ea580c;
+  border-color: #ea580c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
 }
 .btn-group {
   display: flex;
-  gap: 16px;
-  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
   width: 100%;
   margin-top: auto;
 }
@@ -246,15 +264,17 @@ listing:
 
 ::: {.g-col-12 .g-col-md-6}
 ```{=html}
-<div class="series-card">
-  <div class="series-icon">💎</div>
-  <div class="series-title">PHREEQC Tutorial</div>
-  <div class="series-desc">
-    水と岩石の化学反応を解き明かす、地球化学モデリングの完全ガイド。インストールから反応経路モデリングまで。
-  </div>
-  <div class="btn-group">
-    <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en">Read in English</a>
-    <a href="/posts/phreeqc/phreeqc-part1/" class="btn-lang btn-jp">日本語で読む</a>
+<div class="series-wrapper">
+  <div class="inner-card">
+    <img src="/cute_cat.png" class="cute-cat" alt="Cute Cat">
+    <div class="series-title">PHREEQC Tutorial</div>
+    <div class="series-desc">
+      水と岩石の化学反応を解き明かす、地球化学モデリングの完全ガイド。インストールから反応経路モデリングまで。
+    </div>
+    <div class="btn-group">
+      <a href="/posts/phreeqc/phreeqc-part1/" class="btn-lang btn-jp">日本語で読む &gt;</a>
+      <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
+    </div>
   </div>
 </div>
 ```
@@ -262,14 +282,17 @@ listing:
 
 ::: {.g-col-12 .g-col-md-6}
 ```{=html}
-<div class="series-card">
-  <div class="series-icon">💧</div>
-  <div class="series-title">Groundwater Modeling</div>
-  <div class="series-desc">
-    MODFLOWとFloPyを用いた地下水流動解析や、熱水地球化学シミュレーションの実践的なノウハウ。
-  </div>
-  <div class="btn-group">
-    <a href="/blog.html" class="btn-lang btn-jp">シリーズを見る</a>
+<div class="series-wrapper">
+  <div class="inner-card">
+    <img src="/cute_cat.png" class="cute-cat" alt="Cute Cat">
+    <div class="series-title">Groundwater Modeling</div>
+    <div class="series-desc">
+      MODFLOWとFloPyを用いた地下水流動解析や、熱水地球化学シミュレーションの実践的なノウハウ。
+    </div>
+    <div class="btn-group">
+      <a href="/posts/groundwater/groundwater-sci01/" class="btn-lang btn-jp">日本語で読む &gt;</a>
+      <a href="/posts/groundwater/groundwater-sci01/index-en.html" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
+    </div>
   </div>
 </div>
 ```
@@ -285,3 +308,4 @@ listing:
 
 :::{#latest-posts}
 :::
+

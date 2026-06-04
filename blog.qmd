@@ -195,9 +195,9 @@ MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
 **記事一覧**
 
-- [地下水科学入門 #2：地下水はどんな「器」にいるのか？— 地形と地質が作る見えない地下の川](/posts/groundwater/groundwater-sci02/)
-
 - [地下水科学入門 #1：水循環とは？— 雨はどこへ行くのか](/posts/groundwater/groundwater-sci01/)
+
+- [地下水科学入門 #2：地下水はどこに存在し、どう動くのか？— 地層という器と地形というエンジン](/posts/groundwater/groundwater-sci02/)
 
 - [ダルシーの法則を理解する：FloPyで作る最初の地下水モデル](/posts/groundwater/groundwater-darcy/)
 

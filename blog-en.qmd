@@ -209,9 +209,9 @@ Practical know-how for analyzing groundwater flow with MODFLOW and FloPy.
 
 **Article List**
 
-- [Introduction to Groundwater Science #2: What "Container" Does Groundwater Live In? — Invisible Underground Rivers Shaped by Topography and Geology](/posts/groundwater/groundwater-sci02/index-en.html)
-
 - [Introduction to Groundwater Science #1: What is the Water Cycle? — Where Does the Rain Go?](/posts/groundwater/groundwater-sci01/index-en.html)
+
+- [Introduction to Groundwater Science #2: Where Does Groundwater Exist and How Does It Move? — The Geological Container and Topographical Engine](/posts/groundwater/groundwater-sci02/index-en.html)
 
 - [Understanding Darcy's Law: Building Your First Groundwater Model with FloPy <span class="badge-ja">Japanese Only</span>](/posts/groundwater/groundwater-darcy/)
 
@@ -260,6 +260,8 @@ Modeling water quality and geochemical reactions using PHREEQC and Python.
 - [PHREEQC from Scratch #13: Redox Sequences — The Order of Groundwater Reduction](/posts/phreeqc/phreeqc-part13/index-en.html)
 
 - [PHREEQC from Scratch (Advanced) #14: Groundwater Diagnosis of Nitrate Pollution — Where and How Much Denitrification Occurs](/posts/phreeqc/phreeqc-part14/index-en.html)
+
+- [PHREEQC from Scratch #15: Inverse Modeling — Back-calculating "Invisible Underground Processes" from Water Quality Data](/posts/phreeqc/phreeqc-part15/index-en.html)
 
 
 [Read More →](/index-en.html){.btn .btn-outline-primary}

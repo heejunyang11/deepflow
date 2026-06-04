@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="auto">
+
+<style>
+    .grid { stroke: rgba(255, 255, 255, 0.05); stroke-width: 1; }
+    .well-point { fill: #38bdf8; }
+    .well-text { fill: #f8fafc; font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; }
+    .well-elev { fill: #94a3b8; font-family: 'Inter', sans-serif; font-size: 14px; }
+    .line-dash { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 6,6; }
+    .tick-mark { stroke: #cbd5e1; stroke-width: 3; }
+    .calc-text { fill: #f43f5e; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: bold; }
+    .contour-line { stroke: #10b981; stroke-width: 4; fill: none; stroke-linecap: round; }
+    .contour-line-dash { stroke: #10b981; stroke-width: 4; fill: none; stroke-dasharray: 8,8; stroke-linecap: round; }
+    .flow-line { stroke: #f59e0b; stroke-width: 4; marker-end: url(#arrow); fill: none; }
+    .bg { fill: #0f172a; }
+</style>
+<defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+    </marker>
+    <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" class="grid"/>
+    </pattern>
+</defs>
+<rect width="600" height="400" rx="12" class="bg" />
+<rect width="600" height="400" rx="12" fill="url(#grid-pattern)" />
+
+<text x="30" y="40" fill="#f8fafc" font-family="Inter" font-size="20px" font-weight="bold">Step 2: 2点間（A-B）の比例配分</text>
+<line x1="100" y1="300" x2="500" y2="100" class="line-dash" />
+<line x1="136" y1="272" x2="144" y2="288" class="tick-mark" />
+<line x1="176" y1="252" x2="184" y2="268" class="tick-mark" />
+<line x1="216" y1="232" x2="224" y2="248" class="tick-mark" />
+<line x1="256" y1="212" x2="264" y2="228" class="tick-mark" />
+<line x1="296" y1="192" x2="304" y2="208" class="tick-mark" />
+<line x1="336" y1="172" x2="344" y2="188" class="tick-mark" />
+<line x1="376" y1="152" x2="384" y2="168" class="tick-mark" />
+<line x1="416" y1="132" x2="424" y2="148" class="tick-mark" />
+<line x1="456" y1="112" x2="464" y2="128" class="tick-mark" />
+
+<circle cx="300" cy="200" r="6" fill="#f43f5e" />
+<text x="240" y="180" class="calc-text">中点 (15 m)</text>
+<!-- Moved text to bottom-right to avoid the line -->
+<text x="280" y="240" fill="#e2e8f0" font-family="Inter" font-size="14px">20mと10mの間を10等分し、15m地点を特定</text>
+
+<circle cx="100" cy="300" r="8" class="well-point" />
+<text x="75" y="285" class="well-text">A</text>
+<text x="70" y="330" class="well-elev">10 m</text>
+
+<circle cx="500" cy="100" r="8" class="well-point" />
+<text x="515" y="105" class="well-text">B</text>
+<text x="510" y="130" class="well-elev">20 m</text>
+
+<circle cx="450" cy="300" r="8" class="well-point" />
+<text x="465" y="305" class="well-text">C</text>
+<text x="460" y="330" class="well-elev">15 m</text>
+
+</svg>

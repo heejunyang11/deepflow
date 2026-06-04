@@ -42,4 +42,12 @@ listing:
 - [偏微分方程式をPythonで解く：1次元熱方程式入門](/posts/note/pde-part1/)
 :::
 
+::: g-col-12
+### 🌊 Groundwater & Hydrology（地下水と水文学）
+
+地下水位データから流動を読み解く基礎的な手法などを解説します。
+
+- [地下水面等高線図の書き方（3点法）と流動方向の推定](/posts/note/groundwater-contour/)
+:::
+
 ::::

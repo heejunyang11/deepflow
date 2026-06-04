@@ -5,6 +5,7 @@ author: "Heejun Yang"
 date: "2026-06-02"
 date-modified: last-modified
 categories: [Groundwater, Water Cycle, Hydrology, Python, Tutorial, English]
+image: "thumbnail.png"
 lang: en
 include-in-header:
   - text: |

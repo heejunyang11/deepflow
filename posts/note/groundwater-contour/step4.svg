@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="auto">
+
+<style>
+    .grid { stroke: rgba(255, 255, 255, 0.05); stroke-width: 1; }
+    .well-point { fill: #38bdf8; }
+    .well-text { fill: #f8fafc; font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; }
+    .well-elev { fill: #94a3b8; font-family: 'Inter', sans-serif; font-size: 14px; }
+    .line-dash { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 6,6; }
+    .tick-mark { stroke: #cbd5e1; stroke-width: 3; }
+    .calc-text { fill: #f43f5e; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: bold; }
+    .contour-line { stroke: #10b981; stroke-width: 4; fill: none; stroke-linecap: round; }
+    .contour-line-dash { stroke: #10b981; stroke-width: 4; fill: none; stroke-dasharray: 8,8; stroke-linecap: round; }
+    .flow-line { stroke: #f59e0b; stroke-width: 4; marker-end: url(#arrow); fill: none; }
+    .bg { fill: #0f172a; }
+</style>
+<defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+    </marker>
+    <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" class="grid"/>
+    </pattern>
+</defs>
+<rect width="600" height="400" rx="12" class="bg" />
+<rect width="600" height="400" rx="12" fill="url(#grid-pattern)" />
+
+<text x="30" y="40" fill="#f8fafc" font-family="Inter" font-size="20px" font-weight="bold">Step 4: 等高線に直交する流線を引く</text>
+<line x1="100" y1="300" x2="500" y2="100" class="line-dash" opacity="0.3" />
+<circle cx="300" cy="200" r="6" fill="#f43f5e" opacity="0.5" />
+
+<line x1="300" y1="200" x2="450" y2="300" class="contour-line" />
+<line x1="150" y1="100" x2="300" y2="200" class="contour-line-dash" />
+<line x1="450" y1="300" x2="525" y2="350" class="contour-line-dash" />
+
+<text x="180" y="110" fill="#10b981" font-family="Inter" font-weight="bold" font-size="16px">推定領域（点線）</text>
+<path d="M 400 130 L 290 295" class="flow-line" />
+<!-- Made text horizontal (0 deg) and moved below the arrow -->
+<text x="210" y="325" fill="#f59e0b" font-family="Inter" font-weight="bold" font-size="16px">流線（高い方→低い方）</text>
+
+<circle cx="100" cy="300" r="8" class="well-point" />
+<text x="75" y="285" class="well-text">A</text>
+<text x="70" y="330" class="well-elev">10 m</text>
+
+<circle cx="500" cy="100" r="8" class="well-point" />
+<text x="515" y="105" class="well-text">B</text>
+<text x="510" y="130" class="well-elev">20 m</text>
+
+<circle cx="450" cy="300" r="8" class="well-point" />
+<text x="465" y="305" class="well-text">C</text>
+<text x="460" y="330" class="well-elev">15 m</text>
+
+</svg>
