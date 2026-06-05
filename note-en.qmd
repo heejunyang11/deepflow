@@ -1,0 +1,76 @@
+---
+title: "Field Notes (Currently Japanese Only)"
+number-sections: false
+crossref:
+  chapters: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/note.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/note-en.html" />
+listing:
+  contents:
+    - posts
+    - "!posts/**/index-en.qmd"
+  sort: "date desc"
+  type: default
+  filter-ui: true
+  sort-ui: true
+  categories: true 
+---
+
+**"Records of the dramas of nature and trial-and-error behind the data and code."**
+
+This page is a collection of essays and research notes from various perspectives that do not fit into the framework of full-fledged technical tutorials ([Series](/blog-en.qmd)).
+
+From columns scientifically deciphering the chemical properties of hot springs, to considerations of the impact of topography and geography on history, to records of failures encountered in daily simulations, and down-to-earth troubleshooting. It unpretentiously records the "thought process" and "curiosity about nature" of a researcher.
+
+```{=html}
+<style>
+/* 言語バッジ */
+.badge-ja {
+  font-size: 0.75em;
+  background-color: #FFF7ED;
+  color: #D97706;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  border: 1px solid #FDBA74;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+</style>
+```
+
+:::: grid
+
+::: g-col-12
+### 🌋 Geo & Onsen (Science of Hot Springs and Geography)
+
+Using an earth science approach, we unravel the formation mechanisms and chemical characteristics of hot springs, as well as the background of historical events brought about by unique topographies.
+
+- [Chemical Characteristics of Beppu Hot Springs <span class="badge-ja">Japanese Only</span>](/posts/note/onsen-part1/)
+- [What is a HexaDiagram? <span class="badge-ja">Japanese Only</span>](/posts/note/onsen-part2/)
+- [The Mystery of Sekigahara: Why could Tokugawa Ieyasu march into the "Tiger's Mouth" without hesitation? <span class="badge-ja">Japanese Only</span>](/posts/note/sekigahara/)
+:::
+
+::: g-col-12
+### 🔬 Lab Notes & Python (Trajectory of Research and Trial-and-Error)
+
+We openly share the behind-the-scenes of daily simulation development, calculation failures, troubleshooting, and the realistic process of data science.
+
+- [Geochemical Reactive Transport Simulation under High-Temperature Hydrothermal Conditions (Part 1): Overview and System Design <span class="badge-ja">Japanese Only</span>](/posts/note/reactive-transport-part1/)
+- [Freezing despite an "average 42°C"?! <span class="badge-ja">Japanese Only</span>](/posts/note/intro/)
+- [Solving Partial Differential Equations with Python: Introduction to 1D Heat Equation <span class="badge-ja">Japanese Only</span>](/posts/note/pde-part1/)
+:::
+
+::: g-col-12
+### 🌊 Groundwater & Hydrology
+
+Explains fundamental methods such as deciphering groundwater flow from water level data.
+
+- [How to Draw Groundwater Contour Maps (3-Point Method) and Estimating Flow Direction <span class="badge-ja">Japanese Only</span>](/posts/note/groundwater-contour/)
+:::
+
+::::

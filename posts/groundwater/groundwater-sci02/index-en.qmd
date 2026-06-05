@@ -138,4 +138,4 @@ Next time, in Part 3, we will explore "**Darcy's Law and Groundwater Flow**." We
 
 1. [Part 1: What is the Water Cycle? — Where Does the Rain Go?](../groundwater-sci01/index-en.qmd)
 2. [Part 2: Where Does Groundwater Exist and How Does It Move?](../groundwater-sci02/index-en.qmd) (This article)
-3. Part 3: Darcy's Law and Groundwater Flow (Coming soon)
+3. [Part 3: Why Does Groundwater Move? — Darcy's Law and the Physics of Head](../groundwater-sci03/index-en.qmd)

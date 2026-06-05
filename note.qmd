@@ -3,6 +3,12 @@ title: "Field Notes (Japanese Only)"
 number-sections: false
 crossref:
   chapters: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/note.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/note-en.html" />
 listing:
   contents:
     - posts

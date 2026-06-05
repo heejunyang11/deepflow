@@ -106,55 +106,54 @@ format:
 </style>
 ```
 
-### プロフィール
+### Profile
 
-地下水流動解析・地化学モデリング・水文学を専門とする研究者・フリーランス。\
-AI・機械学習を研究ツールとして活用し、自然界の水の動きをコードで解き明かすことを追求している。
+Researcher and freelance specialist in groundwater flow analysis,\
+geochemical modeling, and hydrology.\
+Passionate about decoding the movement of water in nature through code and AI.
 
-### 専門分野
+### Expertise
 
-- 🌊 地下水流動解析（MODFLOW / FloPy）
-- ⚗️ 地化学モデリング（PHREEQC）
-- 💧 水文学
-- 🤖 AI・機械学習の研究応用
+- 🌊 Groundwater Flow Analysis（MODFLOW / FloPy）
+- ⚗️ Geochemical Modeling（PHREEQC）
+- 💧 Hydrology
+- 🤖 AI & Machine Learning for Research
 
-### スキル・ツール
+### Skills & Tools
 
 Python · GitHub · MODFLOW · PHREEQC · AI Tools
 
-### 言語
+### Languages
 
-日本語 · English · Korean
+Japanese · English · Korean
 
-### お問い合わせ
+### Contact
 
-サイトに関するお問い合わせはこちらまでお願いします。
+For inquiries about this site, please contact me at:
 
 📧 [heejun1105\@gmail.com](mailto:heejun1105@gmail.com)
-
-### 業績
 
 ```{=html}
 <a class="scholar-btn" href="https://scholar.google.co.jp/citations?hl=ja&user=aTONqwkAAAAJ" target="_blank" rel="noopener">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5h4.5v9H9v-6h6v6h4.5V9.5L12 0z"/>
   </svg>
-  Google Scholar でまとめて見る
+  View Publications on Google Scholar
 </a>
 <a class="scholar-btn" href="https://www.researchgate.net/profile/Heejun-Yang" target="_blank" rel="noopener" style="background:#00CCBB;">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M19.586 0H4.414A4.414 4.414 0 0 0 0 4.414v15.172A4.414 4.414 0 0 0 4.414 24h15.172A4.414 4.414 0 0 0 24 19.586V4.414A4.414 4.414 0 0 0 19.586 0zm-7.473 5.86h2.172c.957 0 1.72.223 2.29.668.568.446.853 1.06.853 1.84 0 .55-.14 1.02-.42 1.41-.28.39-.68.67-1.2.84.3.12.55.31.76.57.21.26.45.7.73 1.32l1.13 2.49h-2.13l-.96-2.27c-.23-.55-.45-.91-.65-1.08-.2-.17-.46-.26-.77-.26h-.57v3.61h-1.96V5.86zm1.96 1.61v2.28h.7c.47 0 .83-.11 1.08-.32.25-.21.37-.51.37-.9 0-.37-.12-.66-.36-.86-.24-.2-.59-.2-1.05-.2h-.74zm-4.83 5.45c.28.47.42 1 .42 1.6 0 .9-.28 1.62-.85 2.17-.57.55-1.32.82-2.26.82-.87 0-1.58-.25-2.13-.76-.55-.51-.82-1.19-.82-2.05h1.82c0 .38.1.68.3.89.2.21.47.32.82.32.38 0 .67-.13.88-.38.21-.25.32-.6.32-1.04 0-.43-.11-.77-.32-1.02-.21-.25-.5-.37-.87-.37-.19 0-.37.04-.52.11-.15.07-.31.19-.47.35l-1.54-.32.52-4.6h4.74v1.66h-3.14l-.22 1.81c.16-.09.33-.16.5-.21.17-.05.37-.07.6-.07.6 0 1.12.19 1.55.56.19.16.36.35.49.56z"/>
   </svg>
-  ResearchGate でプロフィールを見る
+  View Profile on ResearchGate
 </a>
 
 <div class="pub-accordion">
 
-  <!-- 学術論文（査読付） -->
+  <!--  Peer-Reviewed Papers -->
   <div class="pub-section open">
     <div class="pub-header" onclick="togglePub(this)">
-      <span>📄 学術論文（査読付）</span>
-      <span class="pub-count">26編（第１著者 14編 · 最近5年間 14編）</span>
+      <span>📄 Peer-Reviewed Papers </span>
+      <span class="pub-count">26 papers（First author: 14, last 5 years: 14）</span>
       <span class="pub-arrow">▼</span>
     </div>
     <div class="pub-body">
@@ -192,8 +191,8 @@ Python · GitHub · MODFLOW · PHREEQC · AI Tools
   <!-- Proceeding -->
   <div class="pub-section">
     <div class="pub-header" onclick="togglePub(this)">
-      <span>📋 Proceeding（査読付）</span>
-      <span class="pub-count">4編（第１著者 1編 · 最近5年間 3編）</span>
+      <span>📋 Proceeding（Peer-Reviewed）</span>
+      <span class="pub-count"> 4（First author: 1,  last 5 years: 3）</span>
       <span class="pub-arrow">▼</span>
     </div>
     <div class="pub-body">
@@ -206,11 +205,11 @@ Python · GitHub · MODFLOW · PHREEQC · AI Tools
     </div>
   </div>
 
-  <!-- その他の論文 -->
+  <!-- Other Papers -->
   <div class="pub-section">
     <div class="pub-header" onclick="togglePub(this)">
-      <span>📝 その他の論文</span>
-      <span class="pub-count">15編（第１著者 5編 · 責任著者 5編）</span>
+      <span>📝 Other Papers</span>
+      <span class="pub-count">15（First author: 5,  Corresponding author: 5）</span>
       <span class="pub-arrow">▼</span>
     </div>
     <div class="pub-body">
@@ -234,11 +233,11 @@ Python · GitHub · MODFLOW · PHREEQC · AI Tools
     </div>
   </div>
 
-  <!-- 著書 -->
+  <!-- Books -->
   <div class="pub-section">
     <div class="pub-header" onclick="togglePub(this)">
-      <span>📚 著書</span>
-      <span class="pub-count">4編（第１著者 1編 · 最近5年間 3編）</span>
+      <span>📚 Books</span>
+      <span class="pub-count">4（First author: 1,  last 5 years: 3）</span>
       <span class="pub-arrow">▼</span>
     </div>
     <div class="pub-body">
@@ -248,19 +247,12 @@ Python · GitHub · MODFLOW · PHREEQC · AI Tools
     </div>
   </div>
 
-  <!-- 招待講演・学会発表 -->
+  <!-- Conference Presentation -->
   <div class="pub-section">
     <div class="pub-header" onclick="togglePub(this)">
-      <span>🎤 招待講演・学会発表</span>
-      <span class="pub-count">招待講演 8編 · 国内会議 22編 · 国際会議 15編</span>
+      <span>🎤 Conference Presentation</span>
+      <span class="pub-count">Invited Talks and Conference Presentations: 8, Domestic Conference: 22,  International Conference: 15</span>
       <span class="pub-arrow">▼</span>
-    </div>
-    <div class="pub-body">
-      <ul>
-        <li><strong>招待講演・報告会</strong>：8編（第１著者 7編，最近5年間 3編）</li>
-        <li><strong>国内会議</strong>：22編（第１著者 12編，最近5年間 12編，内ポスター3編）</li>
-        <li><strong>国際会議</strong>：15編（第１著者 4編，最近5年間 4編，内ポスター5編）</li>
-      </ul>
     </div>
   </div>
 

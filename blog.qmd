@@ -199,7 +199,9 @@ MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
 - [地下水科学入門 #2：地下水はどこに存在し、どう動くのか？— 地層という器と地形というエンジン](/posts/groundwater/groundwater-sci02/)
 
-- [ダルシーの法則を理解する：FloPyで作る最初の地下水モデル](/posts/groundwater/groundwater-darcy/)
+- [地下水科学入門 #3：地下水はなぜ動くのか？— ダルシーの法則と水頭の物理](/posts/groundwater/groundwater-sci03/)
+
+- [地下水科学入門 #4：室内透水試験・揚水試験と井戸のモデル化 — 地層の性質をどう測るか？](/posts/groundwater/groundwater-sci04/)
 
 - [FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編](/posts/groundwater/flopy-phreeqc-part1/)
 

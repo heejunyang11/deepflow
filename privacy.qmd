@@ -1,60 +1,53 @@
 ---
-title: "Privacy Policy / プライバシーポリシー"
+title: "プライバシーポリシーおよび免責事項"
 number-sections: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/privacy.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/privacy-en.html" />
 ---
 
-::: panel-tabset
-## 日本語
+**最終更新日: 2026年6月4日**
 
-**最終更新日: 2026年5月1日**
+当サイト（DeepFlows）におけるプライバシーポリシーおよび免責事項、リンク・著作権に関する規定を以下に定めます。
 
-### はじめに
-DeepFlows（以下「当サイト」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めています。本ポリシーでは、当サイトにおける情報の収集・使用・保護方法について説明します。
+### 個人情報の利用目的
+当サイトでは、お問い合わせの際などに、名前やメールアドレス等の個人情報をご入力いただく場合がございます。
+取得した個人情報は、お問い合わせに対する回答や必要な情報を電子メールなどでご連絡する場合に利用させていただくものであり、これらの目的以外では利用いたしません。
 
-### 広告の配信について
-当サイトでは、第三者配信の広告サービス「Google AdSense」を利用しています。
-- **Cookieの使用:** Googleなどの第三者広告配信事業者は、Cookieを使用して、ユーザーが当サイトや他のウェブサイトに過去にアクセスした際の情報に基づき、適切な広告を配信します。
-- **パーソナライズ広告の無効化:** ユーザーは、[Google広告設定](https://adssettings.google.com/)でパーソナライズ広告を無効にできます。また、[www.aboutads.info](https://www.aboutads.info)にアクセスすることで、第三者配信事業者がパーソナライズ広告の掲載に使用する Cookie を無効にできます。
+### Cookieの利用
+当サイトでは、アクセス解析ツールや広告配信サービスのためにCookieを使用しています。Cookieとは、サイトにアクセスした際にブラウザに保存される情報ですが、お名前やメールアドレス等の個人情報は含まれません。
+ユーザーは、ブラウザの設定によりCookieを無効にすることが可能です。
 
-### アクセス解析ツールについて
-当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。このGoogleアナリティクスはトラフィックデータの収集のためにクッキー（Cookie）を使用しています。このトラフィックデータは匿名で収集されており、個人を特定するものではありません。この機能はクッキー（Cookie）を無効にすることで収集を拒否することが出来ますので、お使いのブラウザの設定をご確認ください。
+### Google AdSenseについて
+当サイトは、第三者配信の広告サービス「Google AdSense」を利用しています。
+- Googleなどの第三者広告配信事業者は、Cookieを使用して、ユーザーが当サイトや他のウェブサイトに過去にアクセスした際の情報に基づき、適切な広告を配信します。
+- ユーザーは、[Google広告設定](https://adssettings.google.com/)でパーソナライズ広告を無効にできます。また、第三者配信事業者によるパーソナライズ広告を無効にするには、[aboutads.info](https://www.aboutads.info) をご覧ください。
+- Googleによる広告でのCookieの利用については、[Googleの広告ポリシー](https://policies.google.com/technologies/ads?hl=ja)をご確認ください。
 
-### 情報の利用目的
-収集した情報は、以下の目的で利用します。
-- サイトの利用状況分析およびサービス改善
-- ユーザーの利便性向上
-- 適切な広告の配信
+### Google Analyticsについて
+当サイトでは、Googleによるアクセス解析ツール「Google Analytics（Googleアナリティクス）」を利用しています。
+Google Analyticsはトラフィックデータの収集のためにCookieを使用しています。このトラフィックデータは匿名で収集されており、個人を特定するものではありません。この機能はCookieを無効にすることで収集を拒否することが出来ますので、お使いのブラウザの設定をご確認ください。
 
 ### 免責事項
-当サイトに掲載されている情報は、可能な限り正確な内容を提供するよう努めていますが、その正確性や安全性を保証するものではありません。当サイトの情報に基づいて生じた損害等について、一切の責任を負いかねます。また、当サイトからリンクやバナーなどによって他のサイトへ移動された場合、移動先サイトで提供される情報やサービスについても責任を負いません。
+当サイトに掲載されている情報やシミュレーションのソースコードについては、可能な限り正確な内容を提供するよう努めていますが、その正確性や安全性を保証するものではありません。
+当サイトの情報やコードを利用したことによって生じたトラブルや損害等について、一切の責任を負いかねます。
+当サイトで公開しているプログラムやソースコードの利用については、利用者自身の責任で行ってください。
+また、当サイトからリンクやバナーなどによって他のサイトへ移動された場合、移動先サイトで提供される情報やサービスについても責任を負いません。
 
-### 策定・改定日
-制定：2026年5月1日
+### お問い合わせ窓口
+当サイトに関するお問い合わせ、記事の内容やプライバシーポリシーに関するご質問は、以下のアドレスまでお願いいたします。
+内容によっては回答できない場合がありますので、あらかじめご了承ください。
 
-## English
+📧 [heejun1105\@gmail.com](mailto:heejun1105@gmail.com)
 
-**Last Updated: May 1, 2026**
+### 著作権
+当サイトに存在する文章、画像、ソースコード、シミュレーション結果等の著作権は、当サイトの管理者に帰属します（ただし、引用元が明記されている外部コンテンツやオープンソースライブラリを除きます）。
+私的利用の範囲を超えた無断転載・複製・改変を禁じます。
+引用を行う場合は、著作権法上認められた範囲内で、引用元を明示してください。
 
-### Introduction
-DeepFlows ("this website") respects user privacy and is committed to protecting personal information. This policy describes how we collect, use, and protect information on this website.
-
-### Advertising
-This website uses Google AdSense, a third-party advertising service.
-- **Use of Cookies:** Third-party ad servers, including Google, use cookies to serve ads based on a user's prior visits to this website and other websites.
-- **Opting Out of Personalized Ads:** Users can opt out of personalized advertising by visiting [Google Ads Settings](https://adssettings.google.com/). Alternatively, users can opt out of third-party cookies for personalized advertising at [www.aboutads.info](https://www.aboutads.info).
-
-### Analytics
-This website uses Google Analytics to collect traffic data. Google Analytics uses cookies for this purpose. The traffic data collected is anonymous and does not identify individuals. You can refuse data collection by disabling cookies in your browser settings.
-
-### Use of Information
-The information collected is used for the following purposes:
-- Analyzing site usage and improving services
-- Enhancing user convenience
-- Delivering appropriate advertisements
-
-### Disclaimer
-While we strive to provide accurate information on this website, we do not guarantee its accuracy or safety. We are not responsible for any damages arising from the use of information on this website. We are also not responsible for information or services provided by external websites linked from this website.
-
-### Effective Date
-Established: May 1, 2026
-:::
+### リンクポリシー
+当サイトは基本的にリンクフリーです。リンクを行う場合の許可や連絡は不要です。
+ただし、画像ファイルへの直リンクや、インラインフレームを使用したHTMLページ内で表示する形でのリンクはご遠慮ください。

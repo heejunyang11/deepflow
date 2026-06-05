@@ -1,0 +1,316 @@
+---
+title: "Introduction to Groundwater Science #4: Permeability & Pumping Tests and Well Modeling — How Do We Measure Aquifer Properties?"
+description: "How does the groundwater level drop when we pump water from a well? We'll intuitively understand transient flow using the Theis equation and Jacob's method, visualized with Python. Later, we explore Peaceman's well model to see how to bridge the gap between actual wells and simulations."
+date: "2026-06-05"
+date-modified: last-modified
+categories: [Groundwater, Pumping Test, Theis Equation, MODFLOW, Python, Tutorial]
+image: "thumbnail.jpg"
+lang: en
+include-in-header:
+  - text: |
+      <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci04/index.html" />
+      <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci04/index-en.html" />
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "Table of Contents"
+    code-fold: true
+    code-summary: "Show the code"
+    highlight-style: github
+    fig-align: center
+bibliography: ../references.bib
+---
+
+In [Episode 3](../groundwater-sci03/index-en.qmd), we learned about Darcy's Law and the physics of head in steady-state conditions to understand which way and how fast groundwater moves.
+
+In this episode, we will explore one of the most important field tests in groundwater development and environmental surveys: the **Pumping Test**, and the theory of **Transient Flow** behind it.
+
+Although there are some math formulas, just like in Episode 3, they aren't too difficult if we follow their meaning step by step. We'll use Python visualizations to build an intuitive understanding.
+
+---
+
+## Introduction: Like Sucking Water Through a Straw {#sec-intro}
+
+Have you ever noticed how the surface of a drink dips slightly around a straw when you suck up the liquid vigorously?
+
+When you pump groundwater from a well, the exact same thing happens underground. The water pressure around the well drops, and the water table forms a funnel-like shape. This shape of lowered water levels is called a **Cone of Depression**.
+
+As pumping continues, this cone gradually expands outward and deepens over time. A flow where the state (like water level) keeps changing over time is called **Transient Flow**.
+
+## How Do We Measure Aquifer Properties? (Lab vs. Field Tests) {#sec-lab-vs-field}
+
+Why do hydrogeologists spend so much money and effort to conduct large-scale "pumping tests"? 
+To deeply understand the reason, let's compare them with small-scale indoor experiments (laboratory permeability tests).
+
+### Darcy's Experiment: Constant-Head Test
+The apparatus Darcy used, which we learned about in [Episode 3](../groundwater-sci03/index-en.qmd), is still widely used today as the **Constant-head test**.
+By continuously supplying water at a constant head and measuring the volume of water passing through a cylindrical sand sample, we can calculate the soil's "ability to transmit water" (Hydraulic Conductivity $K$). Because the water level does not change, this is an experiment of **Steady Flow**.
+
+### Water Level Drops Over Time: Falling-Head Test
+On the other hand, for soils that don't let water pass easily, like clay or silt, the **Falling-head test** is often used. In this test, a narrow pipe is filled with water, and we measure how fast the water level drops as it slowly seeps through the soil.
+
+Because the water level changes over time, this is the simplest example of **Transient Flow**. Let's simulate the test results for sand and silt using Python.
+
+![Falling-head test in the laboratory (the simplest example of transient flow)](falling_head_test.png)
+
+Because the orange "Sand" has high permeability, the water drains out quickly, and the water level approaches zero in no time. Meanwhile, the blue "Silt" sees its water level drop very gradually. This state of changing over time, drawing a curve, is exactly what transient flow looks like.
+
+<details>
+<summary>Show Python Code (Falling-Head Test Simulation)</summary>
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Parameters for Falling-head test
+h0 = 1.0        # Initial head (m)
+L = 0.1         # Sample length (m)
+A = np.pi * (0.05)**2   # Sample cross-sectional area
+a = np.pi * (0.005)**2  # Pipe cross-sectional area
+
+# Hydraulic Conductivity K (m/s)
+K_sand = 1e-4   # Sand
+K_silt = 1e-7   # Silt
+
+t = np.linspace(0, 600, 200) # Time t (0 to 600 seconds)
+
+# Head drop calculation h(t) = h0 * exp(- (K*A)/(a*L) * t)
+def falling_head(K, t):
+    alpha = (K * A) / (a * L)
+    return h0 * np.exp(-alpha * t)
+
+h_sand = falling_head(K_sand, t)
+h_silt = falling_head(K_silt, t)
+
+# (Plotting code omitted: plot t and h using matplotlib)
+```
+</details>
+
+### Why Aren't Lab Tests Enough? (The Problem of Heterogeneity)
+Lab tests are cheap and easy, but they can only measure a "point" data from a small, often disturbed soil sample of a few centimeters in diameter. Real geological formations are rarely perfectly homogeneous; they contain macro-scale **Heterogeneity** such as cracks, fractures, and complex interbedded layers of gravel lenses and clay. These tiny lab samples completely miss the impact of such large-scale features.
+
+Therefore, to measure the average properties of the actual formation as an **area** (capturing realistic hydraulic properties including the scale effect), we take our tests out to the massive outdoor field—this is the **Pumping Test**.
+Only through this test can we obtain the two indispensable parameters for predictive simulation: the formation's **ability to transmit water (Transmissivity $T$)** and its **ability to store water (Storativity $S$)**.
+
+---
+
+## Theory of Pumping Tests: Theis Equation {#sec-theis}
+
+### Inspiration from Heat Conduction
+
+Before the 1930s, pumping test data were analyzed using equations that assumed the water level had perfectly stabilized (steady state). However, in reality, water levels rarely reach a perfect equilibrium during short-term tests.
+
+C.V. Theis, a hydrologist at the USGS, struggled with this problem. One day, he realized that there is a deep physical and mathematical analogy between groundwater flow and **heat conduction**, and he wrote to his mathematician friend [@freeze1979].
+
+> "There is a close analogy between the flow of groundwater and the flow of heat. The quantities corresponding to the temperature gradient, thermal conductivity, and specific heat... Can a problem already solved in heat conduction approximate our problem?"
+
+From this brilliant insight, Theis applied a known solution for heat conduction to groundwater, publishing the groundbreaking **Theis Non-Equilibrium Equation** in 1935 [@theis1935].
+
+### Following the Math
+
+When water is pumped at a constant rate from a fully confined, infinite aquifer, the drawdown $s$ is described by the Theis equation:
+
+$$
+s = \frac{Q}{4 \pi T} W(u)
+$$
+
+$$
+u = \frac{r^2 S}{4 T t}
+$$
+
+It looks a bit complicated, but let's break it down piece by piece.
+
+- $s$ : How much the water level dropped (**Drawdown**) [m]
+- $Q$ : How much water the pump extracts (**Pumping Rate**) [m³/day]
+- $T$ : The aquifer's ability to transmit water (**Transmissivity**) [m²/day]
+- $S$ : The aquifer's ability to store water (**Storativity**) [-]
+- $r$ : **Distance** from the well to the observation point [m]
+- $t$ : **Time** elapsed since pumping started [day]
+
+$W(u)$ is a slightly special mathematical function (an exponential integral) called the **Theis Well Function**. 
+The most important part is what's inside $u$.
+
+$$u = \frac{\text{Distance } r^2 \times \text{Storage } S}{4 \times \text{Transmissivity } T \times \text{Time } t}$$
+
+The value of $u$ becomes larger when the distance $r$ is large, or the time $t$ is small. 
+Conversely, as $u$ gets smaller, $W(u)$ gets larger, resulting in a larger drawdown $s$. Intuitively, this perfectly matches our natural sense: the closer you are to the well, or the longer you keep pumping, the more the water level drops.
+
+---
+
+## An Easier Way: Cooper-Jacob Straight-Line Method {#sec-jacob}
+
+While the Theis equation is powerful, calculating $T$ and $S$ backward by hand was incredibly tedious due to the special $W(u)$ function.
+
+In 1946, Cooper and Jacob discovered that if **enough time has passed, and you are close enough to the well (specifically when $u$ is less than 0.01)**, you can skip the complex function calculation and approximate it with a much simpler equation [@cooper1946]. 
+This is the **Cooper-Jacob Method**.
+
+$$
+s \approx \frac{2.303 Q}{4 \pi T} \log_{10} \left( \frac{2.25 T t}{r^2 S} \right)
+$$
+
+The beauty of this equation is that the drawdown $s$ becomes a **linear function** of the logarithm of time ($\log_{10} t$). 
+This means if you plot the time on a logarithmic axis (scaling up like 1, 10, 100) and the drawdown on a regular vertical axis, the data points will **line up perfectly straight**.
+
+### Visualizing Pumping Tests with Python
+
+Let's use Python to see the "Cone of Depression" drawn by the Theis equation, and the "Straight Line" shown by Jacob's law.
+
+![Analysis of a pumping test (Left: Spatial Cone of Depression, Right: Cooper-Jacob semi-log plot)](pumping_test_analysis.png)
+
+The left panel shows how the cone of depression deepens and widens over time—from 0.1 days, to 1 day, to 10 days after pumping begins.
+
+The right panel plots the drawdown over time at an observation well 30 meters away. Notice how the horizontal axis is on a log scale. The data points to the right of the dashed line (after $u < 0.01$ is satisfied) form a beautiful straight line. 
+In practice, hydrogeologists calculate the transmissivity $T$ from the "slope of this line," and the storativity $S$ from the "time it intersects the horizontal axis ($t_0$)."
+
+<details>
+<summary>Show Python Code (Theis function & Jacob method)</summary>
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.special import exp1
+
+# 1. Parameter Definition
+Q = 1000.0   # Pumping rate (m3/day)
+T = 200.0    # Transmissivity (m2/day)
+S = 0.001    # Storativity (-)
+
+def theis_drawdown(r, t, Q, T, S):
+    """Calculate drawdown based on the Theis equation"""
+    u = (r**2 * S) / (4.0 * T * t)
+    # Scipy's exp1 corresponds to the Theis Well Function W(u)
+    s = (Q / (4.0 * np.pi * T)) * exp1(u)
+    return s
+
+# 2. Jacob Method Analysis (Distance 30m)
+r_obs = 30.0 
+t_times = np.logspace(-3, 1, 50)
+s_time = theis_drawdown(r_obs, t_times, Q, T, S)
+
+# Add noise to simulate real field data
+np.random.seed(42)
+s_noisy = s_time + np.random.normal(0, 0.02, size=len(s_time))
+
+# Draw a line for data where u < 0.01
+t_crit = (r_obs**2 * S) / (0.04 * T)
+valid_idx = np.where(t_times > t_crit)[0]
+
+if len(valid_idx) > 2:
+    log_t_valid = np.log10(t_times[valid_idx])
+    s_valid = s_noisy[valid_idx]
+    coeffs = np.polyfit(log_t_valid, s_valid, 1) # Least squares fit
+    
+    # Extract T and S from the slope (delta_s)
+    delta_s = coeffs[0]
+    t0 = 10**(-coeffs[1] / coeffs[0]) # Time when s=0
+    
+    T_est = (2.303 * Q) / (4 * np.pi * delta_s)
+    S_est = (2.25 * T_est * t0) / (r_obs**2)
+    
+    print(f"Results: T = {T_est:.1f} m2/d, S = {S_est:.2e}")
+```
+</details>
+
+---
+
+## Modeling Wall: Peaceman's Well Model {#sec-peaceman}
+
+So far, we've looked at the beautiful mathematics of Theis. But when we try to simulate a well in a numerical grid simulation like MODFLOW, we hit a massive wall.
+
+That wall is the **"Scale Gap."**
+
+A real well is only a few dozen centimeters in diameter. Meanwhile, a simulation grid cell is typically 10 to 100 meters across. 
+The water level that MODFLOW calculates is "the average water level of that entire giant cell." However, what we really want to know is "how deep the water level drops inside the narrow wellbore itself." The two are definitely not the same.
+
+### The Idea of Equivalent Well Radius
+
+D.W. Peaceman solved this problem in 1983 [@peaceman1983]. 
+He mathematically proved the answer to the question: "At what radial distance $r$ from the well does the analytical water level match the cell's average water level?"
+
+For a square cell (with sides of length $\Delta x$), he proved that the average cell head equals the head at a distance of **$r_e \approx 0.2 \Delta x$** from the well center. This $r_e$ is called the **Equivalent Well Radius**.
+
+Seeing is believing. I plotted this scale difference in Python.
+
+![The Scale Gap and Equivalent Well Radius (Well size relative to a 100m cell)](well_scale.png)
+
+A real well is located in the center of the massive 100m x 100m MODFLOW cell (blue dashed line). However, the real well (about 15cm radius) is **so small it just looks like a tiny black speck**.
+Peaceman figured out that the average head of this entire MODFLOW cell corresponds to the head at the edge of the orange circle (a virtual well with a radius of about 20m).
+
+Using this concept, the relationship between the cell's average head $h_{i,j}$ and the actual wellbore water level $h_w$ is bridged by a coefficient called the **Well Index ($WI$)**.
+
+$$
+Q = WI \times (h_{i,j} - h_w)
+$$
+$$
+WI = \frac{2 \pi T}{\ln(r_e / r_w)}
+$$
+
+When you use the WEL (Well) package in MODFLOW, Peaceman's theory quietly works behind the scenes, bridging the immense "scale gap" between the giant grid and the tiny well.
+
+<details>
+<summary>Show Python Code (Plotting the Scale Gap)</summary>
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+# Cell size 100m
+dx, dy = 100.0, 100.0
+cx, cy = 0.0, 0.0
+
+fig, ax = plt.subplots(figsize=(8, 8))
+
+# MODFLOW Cell
+rect = patches.Rectangle((cx - dx/2, cy - dy/2), dx, dy, 
+                         linewidth=2, edgecolor='#1E64C8', facecolor='#1E64C8', alpha=0.1)
+ax.add_patch(rect)
+ax.plot([cx - dx/2, cx + dx/2, cx + dx/2, cx - dx/2, cx - dx/2],
+        [cy - dy/2, cy - dy/2, cy + dy/2, cy + dy/2, cy - dy/2], 
+        color='#1E64C8', lw=2.5, linestyle='--')
+
+# Actual Well (Too small to see!)
+well = patches.Circle((cx, cy), 0.3, linewidth=2, edgecolor='black', facecolor='black', zorder=5)
+ax.add_patch(well)
+
+# Peaceman's Equivalent Well Radius
+r_e = 0.198 * dx
+eq_well = patches.Circle((cx, cy), r_e, linewidth=2.5, edgecolor='#D95F02', facecolor='none', linestyle='-', zorder=4)
+ax.add_patch(eq_well)
+
+ax.set_aspect('equal')
+ax.set_xlim(-60, 60)
+ax.set_ylim(-60, 60)
+ax.axis('off')
+plt.title("The Scale Gap in Well Modeling", fontsize=16)
+plt.show()
+```
+</details>
+
+---
+
+## Conclusion {#sec-summary}
+
+In this episode, we explored the world of **transient flow**, which changes over time, using pumping tests as our theme.
+
+The Theis non-equilibrium equation is a monumental achievement in groundwater science, born from a beautiful analogy with heat conduction. With the Cooper-Jacob straight-line method, we can intuitively decipher the properties of geologic formations from field data. 
+Finally, by learning about Peaceman's well model, we saw just how cleverly our simulation software (MODFLOW) corrects the "discrepancies with reality" behind the scenes.
+
+Next time, we will explore the places where groundwater emerges back to the surface—the **relationship between rivers and groundwater**. We'll unravel the simple yet profound question: "Why doesn't the river run dry when it hasn't rained?"
+
+---
+
+## References {#sec-references}
+
+::: {#refs}
+:::
+
+---
+
+## Series List (Introduction to Groundwater Science)
+
+- [Part 1: What is the Water Cycle? — Where Does the Rain Go?](../groundwater-sci01/index-en.qmd)
+- [Part 2: Where Does Groundwater Exist and How Does It Move? — Geological Vessels and Topographic Engines](../groundwater-sci02/index-en.qmd)
+- [Part 3: Why Does Groundwater Move? — Darcy's Law and the Physics of Head](../groundwater-sci03/index-en.qmd)
+- [Part 4: Permeability & Pumping Tests and Well Modeling — How Do We Measure Aquifer Properties?](../groundwater-sci04/index-en.qmd) (This article)
+- Part 5: The Relationship Between Rivers and Groundwater (Forthcoming)

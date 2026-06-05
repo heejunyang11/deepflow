@@ -1,0 +1,53 @@
+---
+title: "Privacy Policy & Terms of Use"
+number-sections: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/privacy.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/privacy-en.html" />
+---
+
+**Last Updated: June 4, 2026**
+
+This page outlines the privacy policy, disclaimers, linking policy, and copyright terms for this website (DeepFlows).
+
+### Purpose of Using Personal Information
+On this website, you may be asked to enter personal information such as your name and email address when making an inquiry.
+The acquired personal information will only be used to respond to your inquiries and contact you with necessary information via email, and will not be used for any other purposes.
+
+### Use of Cookies
+This website uses cookies for analytics tools and advertising services. Cookies are information saved in your browser when you access a site, but they do not contain personal information such as your name or email address.
+Users can disable cookies through their browser settings.
+
+### About Google AdSense
+This website uses the third-party advertising service "Google AdSense."
+- **Use of Cookies:** Third-party ad servers, including Google, use cookies to serve ads based on a user's prior visits to this website and other websites.
+- **Opting Out of Personalized Ads:** Users can opt out of personalized advertising by visiting [Google Ads Settings](https://adssettings.google.com/). To opt out of personalized advertising by third-party vendors, please visit [aboutads.info](https://www.aboutads.info).
+- For more information on how Google uses cookies in advertising, please refer to [Google's Advertising Policies](https://policies.google.com/technologies/ads).
+
+### About Google Analytics
+This website uses "Google Analytics," an access analytics tool provided by Google.
+Google Analytics uses cookies to collect traffic data. The traffic data collected is anonymous and does not identify individuals. You can refuse data collection by disabling cookies in your browser settings.
+
+### Disclaimer
+While we strive to provide accurate information and simulation source codes on this website, we do not guarantee their accuracy or safety.
+We are not responsible for any trouble or damages arising from the use of information or code on this website.
+The use of programs and source codes published on this website is at the user's own risk.
+We are also not responsible for information or services provided by external websites linked from this website.
+
+### Contact Information
+For inquiries regarding this website, article content, or this privacy policy, please contact the address below.
+Please note that we may not be able to respond to all inquiries.
+
+📧 [heejun1105\@gmail.com](mailto:heejun1105@gmail.com)
+
+### Copyright
+The copyright of the text, images, source codes, and simulation results on this website belongs to the site administrator (excluding external contents with specified sources and open-source libraries).
+Unauthorized reproduction, copying, or modification beyond the scope of private use is prohibited.
+When quoting content, please clearly attribute the source within the scope permitted by copyright law.
+
+### Linking Policy
+This website is generally link-free. No permission or contact is required when linking to this site.
+However, please refrain from direct linking to image files or displaying the site within inline frames (iframes).

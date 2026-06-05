@@ -138,4 +138,4 @@ bibliography: ../references.bib
 
 1. [第1回：水循環とは？— 雨はどこへ行くのか](../groundwater-sci01/index.qmd)
 2. [第2回：地下水はどこに存在し、どう動くのか？— 地層という器と地形というエンジン](../groundwater-sci02/index.qmd) （本記事）
-3. 第3回：Darcy（ダルシー）の法則と地下水の流れ（予定）
+3. [第3回：地下水はなぜ動くのか？ — ダルシーの法則と水頭の物理](../groundwater-sci03/index.qmd)

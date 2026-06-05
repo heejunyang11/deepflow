@@ -213,7 +213,9 @@ Practical know-how for analyzing groundwater flow with MODFLOW and FloPy.
 
 - [Introduction to Groundwater Science #2: Where Does Groundwater Exist and How Does It Move? — The Geological Container and Topographical Engine](/posts/groundwater/groundwater-sci02/index-en.html)
 
-- [Understanding Darcy's Law: Building Your First Groundwater Model with FloPy <span class="badge-ja">Japanese Only</span>](/posts/groundwater/groundwater-darcy/)
+- [Introduction to Groundwater Science #3: Why Does Groundwater Move? — Darcy's Law and the Physics of Head](/posts/groundwater/groundwater-sci03/index-en.html)
+
+- [Introduction to Groundwater Science #4: Permeability & Pumping Tests and Well Modeling — How Do We Measure Aquifer Properties?](/posts/groundwater/groundwater-sci04/index-en.html)
 
 - [Hydrothermal Geochemical Simulation with FloPy and PHREEQC #1: Model Design <span class="badge-ja">Japanese Only</span>](/posts/groundwater/flopy-phreeqc-part1/)
 
