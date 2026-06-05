@@ -16,8 +16,8 @@
       return cleanUrl.replace('.html', '-en.html');
     }
     
-    // 2. 固定ページの Pretty URL 対応 (/blog, /about, /apps, /note)
-    const rootPages = ['/blog', '/about', '/apps', '/note'];
+    // 2. 固定ページの Pretty URL 対応 (/blog, /about, /apps, /note, /privacy)
+    const rootPages = ['/blog', '/about', '/apps', '/note', '/privacy'];
     let matchedPage = rootPages.find(p => path === p || path === p + '/');
     if (matchedPage) {
       let base = cleanUrl;

@@ -1,6 +1,7 @@
 ---
 title: "Introduction to Groundwater Science #4: Permeability & Pumping Tests and Well Modeling — How Do We Measure Aquifer Properties?"
 description: "How does the groundwater level drop when we pump water from a well? We'll intuitively understand transient flow using the Theis equation and Jacob's method, visualized with Python. Later, we explore Peaceman's well model to see how to bridge the gap between actual wells and simulations."
+author: "Heejun Yang"
 date: "2026-06-05"
 date-modified: last-modified
 categories: [Groundwater, Pumping Test, Theis Equation, MODFLOW, Python, Tutorial]
@@ -47,43 +48,178 @@ To deeply understand the reason, let's compare them with small-scale indoor expe
 The apparatus Darcy used, which we learned about in [Episode 3](../groundwater-sci03/index-en.qmd), is still widely used today as the **Constant-head test**.
 By continuously supplying water at a constant head and measuring the volume of water passing through a cylindrical sand sample, we can calculate the soil's "ability to transmit water" (Hydraulic Conductivity $K$). Because the water level does not change, this is an experiment of **Steady Flow**.
 
-### Water Level Drops Over Time: Falling-Head Test
-On the other hand, for soils that don't let water pass easily, like clay or silt, the **Falling-head test** is often used. In this test, a narrow pipe is filled with water, and we measure how fast the water level drops as it slowly seeps through the soil.
+### Water Level Drops Over Time: Falling-Head Test {#sec-falling-head}
 
-Because the water level changes over time, this is the simplest example of **Transient Flow**. Let's simulate the test results for sand and silt using Python.
+On the other hand, for soils that don't let water pass easily, like clay or silt, the **Falling-head test** is often used. In this test, a narrow pipe (standpipe) is filled with water, and we measure how fast the water level drops as it slowly seeps through the soil sample.
+
+Because the water level changes over time, this is the simplest example of **Transient Flow**.
+
+In an actual laboratory test, the **Saturated Hydraulic Conductivity $K$** is calculated using the following formula:
+
+$$
+K = \frac{2.3 \cdot a \cdot L}{A \cdot t} \log_{10} \frac{h_1}{h_2} \quad (\text{cm/sec})
+$$
+
+Here, the variables are defined as:
+
+- $a$: Cross-sectional area of the standpipe ($\text{cm}^2$)
+- $A$: Cross-sectional area of the soil sample ($\text{cm}^2$)
+- $L$: Length of the soil sample ($\text{cm}$)
+- $t$: Measurement time ($\text{sec}$)
+- $h_1$: Initial water level (height from the bottom of the sample) ($\text{cm}$)
+- $h_2$: Final water level (height from the bottom of the sample) ($\text{cm}$)
+
+#### Temperature Correction for Hydraulic Conductivity (15°C)
+
+Furthermore, the ability of water to flow is influenced by its viscosity, meaning the hydraulic conductivity changes with water temperature. Therefore, it is standard practice to correct the measured value to a standard temperature, typically 15°C ($K_{15}$).
+
+$$
+K_{15} = K_T \times \frac{\eta_T}{\eta_{15}}
+$$
+
+- $K_T$: Hydraulic conductivity at temperature $T$°C
+- $\eta_T$: Viscosity of water at temperature $T$°C
+- $\eta_{15}$: Viscosity of water at 15°C
+
+The viscosity of water $\eta_T$ at a given temperature $W_t$ (°C) can be accurately estimated using the following empirical formula:
+
+$$
+\eta_T = \frac{100}{2.1482 \left[ (W_t - 8.435) + \sqrt{8078.4 + (W_t - 8.435)^2} \right] - 120}
+$$
+
+#### Calculation Example
+
+To make it easier to grasp, let's manually calculate the hydraulic conductivity using actual laboratory dimensions.
+
+**[Measurement Conditions (Example)]**
+- Standpipe cross-sectional area $a = 0.503 \, \text{cm}^2$
+- Sample cross-sectional area $A = 19.6 \, \text{cm}^2$
+- Sample length $L = 5.1 \, \text{cm}$
+- Initial water level $h_1 = 18.0 \, \text{cm}$
+- Final water level (after 360 seconds) $h_2 = 8.0 \, \text{cm}$
+- Measurement time $t = 360 \, \text{sec}$ (6 minutes)
+- Water temperature $W_t = 20 \, \text{°C}$
+
+**1. Calculating Saturated Hydraulic Conductivity $K_{20}$**
+First, we substitute the measured values into the formula:
+
+$$
+\begin{align*}
+K_{20} &= \frac{2.3 \times 0.503 \times 5.1}{19.6 \times 360} \log_{10} \left( \frac{18.0}{8.0} \right) \\
+&= \frac{5.90019}{7056} \times \log_{10}(2.25) \\
+&\approx 0.00083618 \times 0.35218 \\
+&\approx 2.94 \times 10^{-4} \quad (\text{cm/sec})
+\end{align*}
+$$
+
+**2. Temperature Correction to 15°C**
+Next, we calculate the viscosity of water at 20°C and 15°C ($\eta_{20}$, $\eta_{15}$) using the empirical formula.
+
+[Calculating $\eta_{20}$ at 20°C]
+$$
+\begin{align*}
+\eta_{20} &= \frac{100}{2.1482 \left[ (20 - 8.435) + \sqrt{8078.4 + (20 - 8.435)^2} \right] - 120} \\
+&= \frac{100}{2.1482 \left[ 11.565 + \sqrt{8078.4 + 133.75} \right] - 120} \\
+&\approx \frac{100}{2.1482 \times 102.186 - 120} \\
+&\approx \frac{100}{99.516} \approx 1.0049
+\end{align*}
+$$
+
+[Calculating $\eta_{15}$ at 15°C]
+$$
+\begin{align*}
+\eta_{15} &= \frac{100}{2.1482 \left[ (15 - 8.435) + \sqrt{8078.4 + (15 - 8.435)^2} \right] - 120} \\
+&\approx \frac{100}{2.1482 \times 96.684 - 120} \\
+&\approx \frac{100}{87.697} \approx 1.1403
+\end{align*}
+$$
+
+By substituting these into the correction formula, we obtain the hydraulic conductivity at the standard temperature of 15°C:
+
+$$
+\begin{align*}
+K_{15} &= 2.94 \times 10^{-4} \times \frac{1.0049}{1.1403} \\
+&\approx 2.60 \times 10^{-4} \quad (\text{cm/sec})
+\end{align*}
+$$
+
+By properly correcting for this difference in viscosity (about a 14% change), we can obtain standardized geological parameters that are independent of the season or the day of measurement.
+
+::: {.callout-note title="Column: Can a mere 5°C difference change permeability? (Bingham's Viscosity Formula)"}
+In the calculation example above, the viscosities of water at 20°C and 15°C were approximately 1.00 and 1.14, respectively. You might be surprised: "Does a mere 5°C difference really change the viscosity by 0.14 (about 14%)?"
+
+In fact, water has a property where its "thickness" (viscosity) changes dramatically with temperature. If we were to perform a permeability test on the exact same soil in mid-winter (water temp 5°C) versus mid-summer (water temp 25°C) without temperature correction, the winter test would yield a hydraulic conductivity that is nearly half as large, simply because the cold water is stickier and harder to flow through. To prevent such seasonal data discrepancies, correction to a standard temperature (15°C) is absolutely essential.
+
+By the way, the empirical formula with its unique coefficients like "$2.1482$" and "$8078.4$" is a famous approximation originating from research by Eugene C. Bingham and others around 1922. Even today, it continues to be widely used as a standard formula to instantly determine viscosity from water temperature in various fields, including fluid dynamics simulations and geotechnical engineering.
+:::
+
+#### Simulation and Calculation with Python
+
+Using these equations, let's define the actual dimensions of the laboratory apparatus (height, radius, etc.) as variables and perform the calculation of hydraulic conductivity and the simulation of falling head in Python.
 
 ![Falling-head test in the laboratory (the simplest example of transient flow)](falling_head_test.png)
 
 Because the orange "Sand" has high permeability, the water drains out quickly, and the water level approaches zero in no time. Meanwhile, the blue "Silt" sees its water level drop very gradually. This state of changing over time, drawing a curve, is exactly what transient flow looks like.
 
 <details>
-<summary>Show Python Code (Falling-Head Test Simulation)</summary>
+<summary>Show Python Code (Calculation and Simulation of Falling-Head Test)</summary>
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Parameters for Falling-head test
-h0 = 1.0        # Initial head (m)
-L = 0.1         # Sample length (m)
-A = np.pi * (0.05)**2   # Sample cross-sectional area
-a = np.pi * (0.005)**2  # Pipe cross-sectional area
+# 1. Apparatus dimensions (defining variables)
+r_pipe = 0.4      # Standpipe radius (cm)
+r_sample = 2.5    # Sample radius (cm)
 
-# Hydraulic Conductivity K (m/s)
-K_sand = 1e-4   # Sand
-K_silt = 1e-7   # Silt
+a = np.pi * r_pipe**2    # Standpipe area a (approx. 0.503 cm2)
+A = np.pi * r_sample**2  # Sample area A (approx. 19.6 cm2)
+L = 5.1                  # Sample length (cm)
 
-t = np.linspace(0, 600, 200) # Time t (0 to 600 seconds)
+h1 = 18.0                # Initial head (cm)
+h2 = 8.0                 # Head after t seconds (cm)
+t_meas = 360.0           # Measurement time (6 minutes = 360 seconds)
 
-# Head drop calculation h(t) = h0 * exp(- (K*A)/(a*L) * t)
-def falling_head(K, t):
-    alpha = (K * A) / (a * L)
-    return h0 * np.exp(-alpha * t)
+# 2. Formula for Saturated Hydraulic Conductivity
+def calc_K(a, A, L, t, h1, h2):
+    # K = (2.3 * a * L) / (A * t) * log10(h1 / h2)
+    # (Note: 2.3 * log10 is an approximation for natural log ln)
+    K = (2.3 * a * L) / (A * t) * np.log10(h1 / h2)
+    return K
 
-h_sand = falling_head(K_sand, t)
-h_silt = falling_head(K_silt, t)
+K_sample = calc_K(a, A, L, t_meas, h1, h2)
+print(f"Calculated K: {K_sample:.2e} cm/sec")
 
-# (Plotting code omitted: plot t and h using matplotlib)
+# 3. Water viscosity and temperature correction (15°C)
+def calc_viscosity(Wt):
+    """Calculate water viscosity η at temperature Wt (°C)"""
+    term1 = Wt - 8.435
+    term2 = np.sqrt(8078.4 + term1**2)
+    eta = 100 / (2.1482 * (term1 + term2) - 120)
+    return eta
+
+Wt_measure = 20.0  # Water temperature during measurement (e.g., 20°C)
+eta_T = calc_viscosity(Wt_measure)
+eta_15 = calc_viscosity(15.0)
+
+K_15 = K_sample * (eta_T / eta_15)
+print(f"Corrected K at 15°C: {K_15:.2e} cm/sec")
+
+# 4. Simulation of falling head
+# Calculate head change over time h(t) for a given K_sim
+def simulate_falling_head(K_sim, t_array):
+    alpha = (K_sim * A) / (a * L)
+    # Analytical solution: h(t) = h1 * exp(-alpha * t)
+    return h1 * np.exp(-alpha * t_array)
+
+t_array = np.linspace(0, 600, 200) # 0 to 600 seconds
+K_sand = 1e-3   # K for sand (cm/sec)
+K_silt = 1e-5   # K for silt (cm/sec)
+
+h_sand = simulate_falling_head(K_sand, t_array)
+h_silt = simulate_falling_head(K_silt, t_array)
+
+# (Plotting code omitted: plot t_array and h using matplotlib)
 ```
 </details>
 

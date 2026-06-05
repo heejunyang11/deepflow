@@ -2,7 +2,8 @@
 title: "【地下水科学】地下水面等高線図の書き方（3点法）と流動方向の推定"
 description: "大学生向けに、地下水位データから手書きで「地下水面等高線図」を作成し、地下水流動方向（流線）を推定する基本的な方法（3点法）を図解で分かりやすく解説します。"
 categories: [Groundwater, Tutorial, Hydrology]
-date: 2026-06-03
+author: "Heejun Yang"
+date: "2026-06-03"
 image: "step4.svg"
 ---
 

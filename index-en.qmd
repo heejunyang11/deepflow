@@ -222,6 +222,30 @@ listing:
 .section-heading-icon {
   font-size: 2.2rem;
 }
+#listing-latest-posts .quarto-post {
+  position: relative;
+  z-index: 1;
+}
+#listing-latest-posts .quarto-post::before {
+  content: "";
+  position: absolute;
+  top: 90px;
+  left: 20px;
+  width: 85px;
+  height: 85px;
+  background-image: url('/cute_cat.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  z-index: 2;
+}
+#listing-latest-posts .quarto-post:hover::before {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
 
 <div class="hero-container">
