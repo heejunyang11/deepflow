@@ -386,15 +386,3 @@ In the next tutorial, we will combine **Mixing** (merging two solutions) and **E
 
 ::: {#refs}
 :::
-
-------------------------------------------------------------------------
-
-*Other articles in this series:*
-
-- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
-- **#2 Analyzing Seawater with Speciation** (This article)
-- [#3 Mixing and EQUILIBRIUM_PHASES](../phreeqc-part3/index-en.html)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| Science beneath the surface*

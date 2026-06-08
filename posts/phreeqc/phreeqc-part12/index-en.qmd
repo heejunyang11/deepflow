@@ -860,7 +860,3 @@ Your next steps could open doors to **inverse modeling** (the `INVERSE_MODELING`
 - [#11 Reaction Path Modeling (REACTION block)](../phreeqc-part11/index-en.html)
 - **#12 Advection-Dispersion Model (TRANSPORT block)** ← Current
 - [#13 Redox Sequences — The Order of Groundwater "Reduction"](../phreeqc-part13/index-en.html)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| Science beneath the surface*

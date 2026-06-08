@@ -10,6 +10,23 @@ format:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/blog.html" />
           <link rel="alternate" hreflang="en" href="https://deepflows.net/blog-en" />
+listing:
+  - id: groundwater-series
+    contents:
+      - "posts/groundwater/**/index-en.qmd"
+    type: grid
+    sort: "date asc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
+  - id: phreeqc-series
+    contents:
+      - "posts/phreeqc/**/index-en.qmd"
+    type: grid
+    sort: "date asc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
 ---
 
 ```{=html}
@@ -198,76 +215,80 @@ format:
   margin-left: 6px;
   vertical-align: middle;
 }
+
+/* Series Section Headers */
+.series-section-header {
+  text-align: center;
+  margin: 4rem 0 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px dashed #E8E4DC;
+}
+.series-heading {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.8rem;
+}
+.series-icon {
+  font-size: 2.5rem;
+}
+.series-subheading {
+  font-size: 1.05rem;
+  color: #6B7280;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Card Design and Hover effects */
+.quarto-grid-item.card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 6px rgba(217, 119, 6, 0.05);
+  border: 1px solid rgba(217, 119, 6, 0.4) !important;
+  background-color: #FFFAF0 !important;
+}
+.quarto-grid-item.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(217, 119, 6, 0.2);
+  border-color: rgba(217, 119, 6, 0.8) !important;
+}
 </style>
 ```
 
-:::::: grid
-::: g-col-12
-### 🌊 Groundwater Series
+:::: {.grid}
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">🌊</span>
+    <span>Groundwater Series</span>
+  </div>
+  <p class="series-subheading">Practical know-how for analyzing groundwater flow with MODFLOW and FloPy.</p>
+</div>
+```
 
-Practical know-how for analyzing groundwater flow with MODFLOW and FloPy.
-
-**Article List**
-
-- [Introduction to Groundwater Science #1: What is the Water Cycle? — Where Does the Rain Go?](/posts/groundwater/groundwater-sci01/index-en.html)
-
-- [Introduction to Groundwater Science #2: Where Does Groundwater Exist and How Does It Move? — The Geological Container and Topographical Engine](/posts/groundwater/groundwater-sci02/index-en.html)
-
-- [Introduction to Groundwater Science #3: Why Does Groundwater Move? — Darcy's Law and the Physics of Head](/posts/groundwater/groundwater-sci03/index-en.html)
-
-- [Introduction to Groundwater Science #4: Permeability & Pumping Tests and Well Modeling — How Do We Measure Aquifer Properties?](/posts/groundwater/groundwater-sci04/index-en.html)
-
-- [Hydrothermal Geochemical Simulation with FloPy and PHREEQC #1: Model Design <span class="badge-ja">Japanese Only</span>](/posts/groundwater/flopy-phreeqc-part1/)
-
-- [Hydrothermal Geochemical Simulation with FloPy and PHREEQC #2: Coupling Concepts <span class="badge-ja">Japanese Only</span>](/posts/groundwater/flopy-phreeqc-part2/)
-
-- [Hydrothermal Geochemical Simulation with FloPy and PHREEQC #3: Analysis and Visualization <span class="badge-ja">Japanese Only</span>](/posts/groundwater/flopy-phreeqc-part3/)
-
-- [Why Does Groundwater Change? #1: Relationship Between Beppu Hot Springs and Cold Groundwater <span class="badge-ja">Japanese Only</span>](/posts/groundwater/fft-part1/)
-
-[Read More →](/index-en.html){.btn .btn-outline-primary}
+:::{#groundwater-series}
+:::
 :::
 
-::: g-col-12
-### ⚗️ Geochemistry Series
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">⚗️</span>
+    <span>Geochemistry Series</span>
+  </div>
+  <p class="series-subheading">Modeling water quality and geochemical reactions using PHREEQC and Python.</p>
+</div>
+```
 
-Modeling water quality and geochemical reactions using PHREEQC and Python.
-
-**Article List**
-
-- [PHREEQC from Scratch #1: Installation and Initial Calculation](/posts/phreeqc/phreeqc-part1/index-en.html)
-
-- [PHREEQC from Scratch #2: Analyzing Seawater with Speciation](/posts/phreeqc/phreeqc-part2/index-en.html)
-
-- [PHREEQC from Scratch #3: Mixing and EQUILIBRIUM_PHASES](/posts/phreeqc/phreeqc-part3/index-en.html)
-
-- [PHREEQC from Scratch #4: Considering Reaction Rates with KINETICS](/posts/phreeqc/phreeqc-part4/index-en.html)
-
-- [PHREEQC from Scratch #5: Mixing Groundwater and Seawater (Mixing Corrosion vs. Mixing Dissolution)](/posts/phreeqc/phreeqc-part5/index-en.html)
-
-- [PHREEQC from Scratch #6: Pyrite Oxidation and AMD](/posts/phreeqc/phreeqc-part6/index-en.html)
-
-- [PHREEQC from Scratch #7: Solubility Diagrams (Gibbsite)](/posts/phreeqc/phreeqc-part7/index-en.html)
-
-- [PHREEQC from Scratch #8: Analyzing and Visualizing PHREEQC Results with Python](/posts/phreeqc/phreeqc-part8/index-en.html)
-
-- [PHREEQC from Scratch #9: Ionic Strength and Activity Coefficients — Why Results Change Between Seawater and Freshwater](/posts/phreeqc/phreeqc-part9/index-en.html)
-
-- [PHREEQC from Scratch #10: Mastering the Saturation Index (SI) — Are Minerals Dissolving or Precipitating?](/posts/phreeqc/phreeqc-part10/index-en.html)
-
-- [PHREEQC from Scratch #11: Reaction Path Modeling — From Rainwater to Groundwater](/posts/phreeqc/phreeqc-part11/index-en.html)
-
-- [PHREEQC from Scratch #12: Advection-Dispersion Model — Solute Transport in Groundwater](/posts/phreeqc/phreeqc-part12/index-en.html)
-
-- [PHREEQC from Scratch #13: Redox Sequences — The Order of Groundwater Reduction](/posts/phreeqc/phreeqc-part13/index-en.html)
-
-- [PHREEQC from Scratch (Advanced) #14: Groundwater Diagnosis of Nitrate Pollution — Where and How Much Denitrification Occurs](/posts/phreeqc/phreeqc-part14/index-en.html)
-
-- [PHREEQC from Scratch #15: Inverse Modeling — Back-calculating "Invisible Underground Processes" from Water Quality Data](/posts/phreeqc/phreeqc-part15/index-en.html)
-
-
-[Read More →](/index-en.html){.btn .btn-outline-primary}
+:::{#phreeqc-series}
+:::
 :::
 
 
-::::::
+::::

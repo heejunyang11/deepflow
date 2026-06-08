@@ -468,18 +468,3 @@ In the next tutorial, we step into **Irreversible Reactions**. We will simulate 
 
 ::: {#refs}
 :::
-
-------------------------------------------------------------------------
-
-*Other articles in this series:*
-
-- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
-- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
-- [#3 Mineral Equilibrium and Temperature Effects](../phreeqc-part3/index-en.html)
-- [#4 Calcite–CO₂ Interaction (Open vs. Closed Systems)](../phreeqc-part4/index-en.html)
-- **#5 Mixing Groundwater and Seawater** (This article)
-- [#6 Pyrite Oxidation (AMD) (Coming Soon)](../phreeqc-part6/index-en.html)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| Science beneath the surface*

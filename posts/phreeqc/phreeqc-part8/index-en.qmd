@@ -510,7 +510,3 @@ Next time, in Part 9, we will dive into Ionic Strength and Activity Coefficients
 - [#7 Solubility Diagrams (Gibbsite)](../phreeqc-part7/index-en.html)
 - **#8 Visualization with Python** (This article)
 - [#9 Ionic Strength and Activity Coefficients](../phreeqc-part9/index-en.html)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| Science beneath the surface*

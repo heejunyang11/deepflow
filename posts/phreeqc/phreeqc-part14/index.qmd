@@ -877,23 +877,3 @@ for k, label in [(k_A, "Case A"), (k_B, "Case B")]:
 
 ::: {#refs}
 :::
-
---------
-
-- [#1 インストールと最初の計算](../phreeqc-part1/)
-- [#2 Speciationで海水を解析する](../phreeqc-part2/)
-- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)
-- [#4 カルサイト−CO₂水反応](../phreeqc-part4/)
-- [#5 炭酸地下水と海水の混合](../phreeqc-part5/)
-- [#6 黄鉄鉱の酸化（AMD）](../phreeqc-part6/)
-- [#7 溶解度ダイアグラム（Gibbsite）](../phreeqc-part7/)
-- [#8 Pythonでの可視化](../phreeqc-part8/)
-- [#9 イオン強度と活量係数](../phreeqc-part9/)
-- [#10 飽和指数（SI）の使いこなし](../phreeqc-part10/)
-- [#11 反応経路モデリング（REACTION block の応用）](../phreeqc-part11/)
-- [#12 移流分散モデル（TRANSPORT block の応用）](../phreeqc-part12/)
-- [#13 酸化還元シークエンス — 地下水が「還元」されていく順番](../phreeqc-part13/)
-- **\[#14 硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか\]**
-- [#15 インバースモデリング — 水質データから「見えない地下のプロセス」を逆算する](../phreeqc-part15/)
-
-*DeepFlow \| 地球科学シミュレーションの深みへ*

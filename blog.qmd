@@ -9,6 +9,23 @@ format:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/blog.html" />
           <link rel="alternate" hreflang="en" href="https://deepflows.net/blog-en" />
+listing:
+  - id: groundwater-series
+    contents:
+      - "posts/groundwater/**/index.qmd"
+    type: grid
+    sort: "date asc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
+  - id: phreeqc-series
+    contents:
+      - "posts/phreeqc/**/index.qmd"
+    type: grid
+    sort: "date asc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
 ---
 
 ```{=html}
@@ -184,75 +201,82 @@ format:
 .intro-footer strong {
   color: #1A1A1A;
 }
+
+/* シリーズセクションの見出し */
+.series-section-header {
+  text-align: center;
+  margin: 4rem 0 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px dashed #E8E4DC;
+}
+.series-heading {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.8rem;
+}
+.series-icon {
+  font-size: 2.5rem;
+}
+.series-subheading {
+  font-size: 1.05rem;
+  color: #6B7280;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* カードのデザインとホバー時の浮上エフェクト */
+.quarto-grid-item.card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 6px rgba(217, 119, 6, 0.05);
+  border: 1px solid rgba(217, 119, 6, 0.4) !important;
+  background-color: #FFFAF0 !important;
+}
+.quarto-grid-item.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(217, 119, 6, 0.2);
+  border-color: rgba(217, 119, 6, 0.8) !important;
+}
 </style>
 ```
 
-:::::: grid
-::: g-col-12
-### 🌊 Groundwater Series
+:::: {.grid}
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">🌊</span>
+    <span>Groundwater Series</span>
+  </div>
+  <p class="series-subheading">MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。</p>
+</div>
+```
 
-MODFLOWとFloPyで地下水流動を解析する実践的なノウハウ。
 
-**記事一覧**
-
-- [地下水科学入門 #1：水循環とは？— 雨はどこへ行くのか](/posts/groundwater/groundwater-sci01/)
-
-- [地下水科学入門 #2：地下水はどこに存在し、どう動くのか？— 地層という器と地形というエンジン](/posts/groundwater/groundwater-sci02/)
-
-- [地下水科学入門 #3：地下水はなぜ動くのか？— ダルシーの法則と水頭の物理](/posts/groundwater/groundwater-sci03/)
-
-- [地下水科学入門 #4：室内透水試験・揚水試験と井戸のモデル化 — 地層の性質をどう測るか？](/posts/groundwater/groundwater-sci04/)
-
-- [FlopyとPHREEQCで熱水地球化学シミュレーション #1：モデル設計編](/posts/groundwater/flopy-phreeqc-part1/)
-
-- [FlopyとPHREEQCで熱水地球化学シミュレーション #2：カップリングの概念](/posts/groundwater/flopy-phreeqc-part2/)
-
-- [FlopyとPHREEQCで熱水地球化学シミュレーション #3：解析・可視化編](/posts/groundwater/flopy-phreeqc-part3/)
-
-- [地下水はなぜ変化するのか #1：別府温泉と冷地下水の関係](/posts/groundwater/fft-part1/)
-
-[もっと見る →](/index.qmd){.btn .btn-outline-primary}
+:::{#groundwater-series}
+:::
 :::
 
-::: g-col-12
-### ⚗️ Geochemistry Series
-
-PHREEQCとPythonで水質・地球化学反応をモデリングする。
-
-**記事一覧**
-
-- [PHREEQCをゼロから始める #1：インストールと最初の計算](/posts/phreeqc/phreeqc-part1/)
-
-- [PHREEQCをゼロから始める #2：Speciationで海水を解析する](/posts/phreeqc/phreeqc-part2/)
-
-- [PHREEQCをゼロから始める #3：MixingとEQUILIBRIUM_PHASES](/posts/phreeqc/phreeqc-part3/)
-
-- [PHREEQCをゼロから始める #4：KINETICSで反応速度を考慮する](/posts/phreeqc/phreeqc-part4/)
-
-- [PHREEQCをゼロから始める #5：炭酸地下水と海水の混合（混合腐食 or 混合溶解）](/posts/phreeqc/phreeqc-part5/)
-
-- [PHREEQCをゼロから始める #6：黄鉄鉱の酸化とAMD](/posts/phreeqc/phreeqc-part6/)
-
-- [PHREEQCをゼロから始める #7：溶解度ダイアグラム（Gibbsite）](/posts/phreeqc/phreeqc-part7/)
-
-- [PHREEQCをゼロから始める #8：PythonでPHREEQCの結果を解析・可視化する](/posts/phreeqc/phreeqc-part8/)
-
-- [PHREEQCをゼロから始める #9：イオン強度と活量係数 — 海水と真水で計算結果が変わる理由](/posts/phreeqc/phreeqc-part9/)
-
-- [PHREEQCをゼロから始める #10：飽和指数（SI）の使いこなし — 鉱物は溶けているか、沈殿しているか](/posts/phreeqc/phreeqc-part10/)
-
-- [PHREEQCをゼロから始める #11：反応経路モデリング — 雨水が地下水になるまで](/posts/phreeqc/phreeqc-part11/)
-
-- [PHREEQCをゼロから始める #12：移流分散モデル — 地下水中の物質移動](/posts/phreeqc/phreeqc-part12/)
-
-- [PHREEQCをゼロから始める #13：酸化還元シークエンス — 地下水が「還元」されていく順番](/posts/phreeqc/phreeqc-part13/)
-- [PHREEQCをゼロから始める（応用編）#14：硝酸塩汚染の地下水診断 — 脱窒はどこで、どれだけ起きているか](/posts/phreeqc/phreeqc-part14/)
-
-- [PHREEQCをゼロから始める #15：インバースモデリング — 水質データから「見えない地下のプロセス」を逆算する](/posts/phreeqc/phreeqc-part15/)
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">⚗️</span>
+    <span>Geochemistry Series</span>
+  </div>
+  <p class="series-subheading">PHREEQCとPythonで水質・地球化学反応をモデリングする。</p>
+</div>
+```
 
 
-[もっと見る →](/index.qmd){.btn .btn-outline-primary}
+:::{#phreeqc-series}
+:::
 :::
 
 
-::::::
+::::

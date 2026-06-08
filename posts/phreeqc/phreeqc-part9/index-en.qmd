@@ -563,7 +563,3 @@ By completing this article, the persistent "why?" that has been building up sinc
 - [#8 Visualization with Python](../phreeqc-part8/index-en.html)
 - **#9 Ionic Strength and Activity Coefficients** (This article)
 - [#10 Mastering the Saturation Index (SI)](../phreeqc-part10/index-en.html)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| Science beneath the surface*

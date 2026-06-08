@@ -16,7 +16,7 @@ listing:
       - "!posts/**/index-en.qmd"
     sort: "date desc"
     type: default
-    max-items: 5
+    max-items: 10
     categories: false
     sort-ui: false
     filter-ui: false

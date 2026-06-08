@@ -414,17 +414,3 @@ Next, we will explore the `Fix_H+` technique within the `PHASES` block to artifi
 
 ::: {#refs}
 :::
-
-*Other articles in this series:*
-
-- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
-- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
-- [#3 Mineral Equilibrium and Temperature Effects](../phreeqc-part3/index-en.html)
-- [#4 Calcite–CO₂ Interaction (Open vs. Closed Systems)](../phreeqc-part4/index-en.html)
-- [#5 Mixing Groundwater and Seawater](../phreeqc-part5/index-en.html)
-- **#6 Pyrite Oxidation and AMD Formation** (This article)
-- [#7 Solubility Diagrams (Gibbsite)](../phreeqc-part7/index-en.html)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| Science beneath the surface*

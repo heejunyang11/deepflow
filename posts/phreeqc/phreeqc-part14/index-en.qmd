@@ -865,22 +865,3 @@ After nitrates comes heavy metals. We will calculate how As, Pb, and Cd adsorb t
 
 ::: {#refs}
 :::
-
---------
-
-- [#1 Installation and First Calculation](../phreeqc-part1/index-en)
-- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en)
-- [#3 Mixing and EQUILIBRIUM_PHASES](../phreeqc-part3/index-en)
-- [#4 Calcite-CO₂-Water Reaction](../phreeqc-part4/index-en)
-- [#5 Mixing of Carbonated Groundwater and Seawater](../phreeqc-part5/index-en)
-- [#6 Pyrite Oxidation (AMD)](../phreeqc-part6/index-en)
-- [#7 Solubility Diagram (Gibbsite)](../phreeqc-part7/index-en)
-- [#8 Visualization in Python](../phreeqc-part8/index-en)
-- [#9 Ionic Strength and Activity Coefficients](../phreeqc-part9/index-en)
-- [#10 Mastering the Saturation Index (SI)](../phreeqc-part10/index-en)
-- [#11 Reaction Path Modeling (Applied REACTION block)](../phreeqc-part11/index-en)
-- [#12 Advection-Dispersion Model (Applied TRANSPORT block)](../phreeqc-part12/index-en)
-- [#13 Redox Sequence — The Order in which Groundwater is "Reduced"](../phreeqc-part13/index-en)
-- **\[#14 Groundwater Diagnosis of Nitrate Pollution — Where and How Much Denitrification Occurs\]**
-
-*DeepFlow \| Into the Depths of Geoscience Simulation*

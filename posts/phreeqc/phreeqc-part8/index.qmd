@@ -524,7 +524,3 @@ python gibbsite_full_analysis.py gibbsite_solubility.txt
 - [#7 溶解度ダイアグラム（Gibbsite）](../phreeqc-part7/)
 - **\[#8 Pythonでの可視化\]**
 - [#9 イオン強度と活量係数](../phreeqc-part9/)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| 地球科学シミュレーションの深みへ*

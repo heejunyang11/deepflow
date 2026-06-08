@@ -750,18 +750,3 @@ pH \> 12 のコンクリート孔隙水では Al(OH)₄⁻ として再溶解し
 
 ::: {#refs}
 :::
-
-*このシリーズの他の記事：*
-
-- [#1 インストールと最初の計算](../phreeqc-part1/)
-- [#2 Speciationで海水を解析する](../phreeqc-part2/)
-- [#3 MixingとEQUILIBRIUM_PHASES](../phreeqc-part3/)
-- [#4 カルサイト−CO₂水反応](../phreeqc-part4/)
-- [#5 炭酸地下水と海水の混合](../phreeqc-part5/)
-- [#6 黄鉄鉱の酸化（AMD）](../phreeqc-part6/)
-- **#7 溶解度ダイアグラム（Gibbsite）**
-- [#8 Pythonでの可視化](../phreeqc-part8/)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| 地球科学シミュレーションの深みへ*

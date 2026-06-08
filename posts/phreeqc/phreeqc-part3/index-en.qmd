@@ -279,16 +279,3 @@ In the next tutorial, we will explore the difference between **Open and Closed S
 
 ::: {#refs}
 :::
-
-------------------------------------------------------------------------
-
-*Other articles in this series:*
-
-- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
-- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
-- **#3 Mineral Equilibrium and Temperature Effects** (This article)
-- [#4 Calcite–CO₂ Interaction](../phreeqc-part4/index-en.html)
-
-------------------------------------------------------------------------
-
-*DeepFlow \| Science beneath the surface*
