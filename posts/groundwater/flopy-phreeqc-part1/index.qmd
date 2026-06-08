@@ -355,5 +355,3 @@ chd = flopy.mf6.ModflowGwfchd(
 | 温度条件   | 150℃              |
 | 圧力条件   | 100 atm（10 MPa） |
 | 計算期間   | 24時間            |
-
-本シリーズのコードはすべて [GitHubリポジトリ](https://github.com/) で公開予定です。次回の実装編もお楽しみに。

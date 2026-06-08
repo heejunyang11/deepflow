@@ -10,21 +10,122 @@ format:
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/note.html" />
           <link rel="alternate" hreflang="en" href="https://deepflows.net/note-en.html" />
 listing:
-  contents:
-    - posts
-    - "!posts/**/index-en.qmd"
-  sort: "date desc"
-  type: default
-  filter-ui: true
-  sort-ui: true
-  categories: true 
+  - id: geo-onsen
+    contents:
+      - "posts/note/onsen-part1/index.qmd"
+      - "posts/note/onsen-part2/index.qmd"
+      - "posts/note/sekigahara/index.qmd"
+    type: grid
+    sort: "date desc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
+  - id: lab-notes
+    contents:
+      - "posts/note/reactive-transport-part1/index.qmd"
+      - "posts/note/intro/index.qmd"
+      - "posts/note/pde-part1/index.qmd"
+    type: grid
+    sort: "date desc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
+  - id: groundwater
+    contents:
+      - "posts/note/groundwater-contour/index.qmd"
+    type: grid
+    sort: "date desc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
 ---
+
+```{=html}
+<style>
+/* Series Section Headers */
+.series-section-header {
+  text-align: center;
+  margin: 4rem 0 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px dashed #E8E4DC;
+}
+.series-heading {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.8rem;
+}
+.series-icon {
+  font-size: 2.5rem;
+}
+.series-subheading {
+  font-size: 1.05rem;
+  color: #6B7280;
+  font-weight: 500;
+  margin: 0;
+}
+</style>
+```
 
 **"Records of the dramas of nature and trial-and-error behind the data and code."**
 
 This page is a collection of essays and research notes from various perspectives that do not fit into the framework of full-fledged technical tutorials ([Series](/blog-en.qmd)).
 
 From columns scientifically deciphering the chemical properties of hot springs, to considerations of the impact of topography and geography on history, to records of failures encountered in daily simulations, and down-to-earth troubleshooting. It unpretentiously records the "thought process" and "curiosity about nature" of a researcher.
+
+:::: {.grid}
+
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">🌋</span>
+    <span>Geo & Onsen</span>
+  </div>
+  <p class="series-subheading">Science of Hot Springs and Geography <span class="badge-ja">Japanese Only</span></p>
+</div>
+```
+
+:::{#geo-onsen}
+:::
+:::
+
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">🔬</span>
+    <span>Lab Notes & Python</span>
+  </div>
+  <p class="series-subheading">Trajectory of Research and Trial-and-Error <span class="badge-ja">Japanese Only</span></p>
+</div>
+```
+
+:::{#lab-notes}
+:::
+:::
+
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">🌊</span>
+    <span>Groundwater & Hydrology</span>
+  </div>
+  <p class="series-subheading">Fundamental methods and explanations <span class="badge-ja">Japanese Only</span></p>
+</div>
+```
+
+:::{#groundwater}
+:::
+:::
+
+::::
 
 ```{=html}
 <style>
@@ -40,37 +141,20 @@ From columns scientifically deciphering the chemical properties of hot springs, 
   margin-left: 6px;
   vertical-align: middle;
 }
+
+/* Card Design and Hover effects */
+.quarto-grid-item.card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 6px rgba(217, 119, 6, 0.05);
+  border: 1px solid rgba(217, 119, 6, 0.4) !important;
+  background-color: #FFFAF0 !important;
+}
+.quarto-grid-item.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(217, 119, 6, 0.2);
+  border-color: rgba(217, 119, 6, 0.8) !important;
+}
 </style>
 ```
 
-:::: grid
 
-::: g-col-12
-### 🌋 Geo & Onsen (Science of Hot Springs and Geography)
-
-Using an earth science approach, we unravel the formation mechanisms and chemical characteristics of hot springs, as well as the background of historical events brought about by unique topographies.
-
-- [Chemical Characteristics of Beppu Hot Springs <span class="badge-ja">Japanese Only</span>](/posts/note/onsen-part1/)
-- [What is a HexaDiagram? <span class="badge-ja">Japanese Only</span>](/posts/note/onsen-part2/)
-- [The Mystery of Sekigahara: Why could Tokugawa Ieyasu march into the "Tiger's Mouth" without hesitation? <span class="badge-ja">Japanese Only</span>](/posts/note/sekigahara/)
-:::
-
-::: g-col-12
-### 🔬 Lab Notes & Python (Trajectory of Research and Trial-and-Error)
-
-We openly share the behind-the-scenes of daily simulation development, calculation failures, troubleshooting, and the realistic process of data science.
-
-- [Geochemical Reactive Transport Simulation under High-Temperature Hydrothermal Conditions (Part 1): Overview and System Design <span class="badge-ja">Japanese Only</span>](/posts/note/reactive-transport-part1/)
-- [Freezing despite an "average 42°C"?! <span class="badge-ja">Japanese Only</span>](/posts/note/intro/)
-- [Solving Partial Differential Equations with Python: Introduction to 1D Heat Equation <span class="badge-ja">Japanese Only</span>](/posts/note/pde-part1/)
-:::
-
-::: g-col-12
-### 🌊 Groundwater & Hydrology
-
-Explains fundamental methods such as deciphering groundwater flow from water level data.
-
-- [How to Draw Groundwater Contour Maps (3-Point Method) and Estimating Flow Direction <span class="badge-ja">Japanese Only</span>](/posts/note/groundwater-contour/)
-:::
-
-::::

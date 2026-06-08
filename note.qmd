@@ -10,15 +10,79 @@ format:
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/note.html" />
           <link rel="alternate" hreflang="en" href="https://deepflows.net/note-en.html" />
 listing:
-  contents:
-    - posts
-    - "!posts/**/index-en.qmd"
-  sort: "date desc"
-  type: default
-  filter-ui: true
-  sort-ui: true
-  categories: true 
+  - id: geo-onsen
+    contents:
+      - "posts/note/onsen-part1/index.qmd"
+      - "posts/note/onsen-part2/index.qmd"
+      - "posts/note/sekigahara/index.qmd"
+    type: grid
+    sort: "date desc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
+  - id: lab-notes
+    contents:
+      - "posts/note/reactive-transport-part1/index.qmd"
+      - "posts/note/intro/index.qmd"
+      - "posts/note/pde-part1/index.qmd"
+    type: grid
+    sort: "date desc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
+  - id: groundwater
+    contents:
+      - "posts/note/groundwater-contour/index.qmd"
+    type: grid
+    sort: "date desc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
 ---
+
+```{=html}
+<style>
+/* シリーズセクションの見出し */
+.series-section-header {
+  text-align: center;
+  margin: 4rem 0 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px dashed #E8E4DC;
+}
+.series-heading {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.8rem;
+}
+.series-icon {
+  font-size: 2.5rem;
+}
+.series-subheading {
+  font-size: 1.05rem;
+  color: #6B7280;
+  font-weight: 500;
+  margin: 0;
+}
+/* カードのデザインとホバー時の浮上エフェクト */
+.quarto-grid-item.card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 6px rgba(217, 119, 6, 0.05);
+  border: 1px solid rgba(217, 119, 6, 0.4) !important;
+  background-color: #FFFAF0 !important;
+}
+.quarto-grid-item.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(217, 119, 6, 0.2);
+  border-color: rgba(217, 119, 6, 0.8) !important;
+}
+</style>
+```
 
 **「データとコードの奥にある、自然界のドラマと試行錯誤の記録」**
 
@@ -26,34 +90,51 @@ listing:
 
 温泉の泉質を科学的に読み解くコラムや、地形・地理が歴史に与えた影響の考察から、日々のシミュレーションで直面した失敗談、泥臭いトラブルシューティングまで。研究者の「思考の過程」と「自然界への好奇心」を、飾らずに記録しています。
 
-:::: grid
+:::: {.grid}
 
-::: g-col-12
-### 🌋 Geo & Onsen（温泉と地理の科学）
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">🌋</span>
+    <span>Geo & Onsen</span>
+  </div>
+  <p class="series-subheading">地球科学的なアプローチで、温泉の形成メカニズムや特異な地形と歴史を紐解く。</p>
+</div>
+```
 
-地球科学的なアプローチで、温泉の形成メカニズムや化学的特徴、そして特異な地形が歴史的な出来事にもたらした背景などを紐解きます。
-
-- [別府温泉の化学的特徴](/posts/note/onsen-part1/)
-- [HexaDiagram（ヘキサダイアグラム）とは？](/posts/note/onsen-part2/)
-- [関ヶ原の謎：徳川家康はなぜ「虎の口」へ躊躇なく進軍できたのか？](/posts/note/sekigahara/)
+:::{#geo-onsen}
+:::
 :::
 
-::: g-col-12
-### 🔬 Lab Notes & Python（研究と試行錯誤の軌跡）
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">🔬</span>
+    <span>Lab Notes & Python</span>
+  </div>
+  <p class="series-subheading">日々のシミュレーション開発の裏側、計算の失敗やトラブル対応のリアルなプロセス。</p>
+</div>
+```
 
-日々のシミュレーション開発の裏側、計算の失敗やトラブル対応、データサイエンスのリアルなプロセスをオープンに共有します。
-
-- [高温水熱条件下における地球化学的反応輸送シミュレーション（第1回）：概要とシステム設計](/posts/note/reactive-transport-part1/)
-- [「平均42℃」なのに凍えた?!](/posts/note/intro/)
-- [偏微分方程式をPythonで解く：1次元熱方程式入門](/posts/note/pde-part1/)
+:::{#lab-notes}
+:::
 :::
 
-::: g-col-12
-### 🌊 Groundwater & Hydrology（地下水と水文学）
+::: {.g-col-12}
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">🌊</span>
+    <span>Groundwater & Hydrology</span>
+  </div>
+  <p class="series-subheading">地下水位データから流動を読み解く基礎的な手法などを解説します。</p>
+</div>
+```
 
-地下水位データから流動を読み解く基礎的な手法などを解説します。
-
-- [地下水面等高線図の書き方（3点法）と流動方向の推定](/posts/note/groundwater-contour/)
+:::{#groundwater}
+:::
 :::
 
 ::::

@@ -63,24 +63,34 @@ a:hover { color: #1D4ED8 !important; }
 }
 
 /* =========================================
-   記事カード・リスト
+   記事カード・リスト (Latest Posts: .quarto-post, Grid Cards: .quarto-grid-item.card)
 ========================================= */
 .page-layout-full {
     background-color: #F7F4EF !important;
 }
-.quarto-post {
-    background: #FFFFFF !important;
-    border: 1px solid #E5E7EB !important;
-    border-left: 4px solid #D97706 !important; 
+
+/* カードの基本デザイン（暖かみのある白背景＋薄いオレンジ枠） */
+.quarto-post, .quarto-grid-item.card {
+    background-color: #FFFAF0 !important;
+    border: 1px solid rgba(217, 119, 6, 0.4) !important;
     border-radius: 12px !important;
-    transition: transform 0.2s, box-shadow 0.2s !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    box-shadow: 0 4px 6px rgba(217, 119, 6, 0.05) !important;
+}
+
+/* Defaultリストの特別な調整（左側の太線など） */
+.quarto-post {
+    border-left: 4px solid #D97706 !important; 
     overflow: hidden !important;
     padding: 1.5rem !important;
     margin-bottom: 1rem !important;
 }
-.quarto-post:hover {
-    border-color: #D97706 !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+
+/* ホバー時の浮上演出とオレンジの強調 */
+.quarto-post:hover, .quarto-grid-item.card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 12px 20px rgba(217, 119, 6, 0.2) !important;
+    border-color: rgba(217, 119, 6, 0.8) !important;
 }
 .quarto-post .title { color: #1A1A1A !important; }
 .quarto-post .description { color: #4B5563 !important; }
