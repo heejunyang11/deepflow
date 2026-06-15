@@ -19,6 +19,23 @@ bibliography: ../phreeqc_refs.bib
 nocite: |
   @*
 ---
+::: {.callout-tip title="Already Have PHREEQC Installed?"}
+If you are already familiar with the installation process and want to jump straight into specific modeling topics, please use the shortcuts below:
+
+- **Aqueous Speciation & Solution Chemistry**:
+  - [#2 Analyzing Seawater with Speciation](/posts/phreeqc/phreeqc-part2/index-en)
+  - [#9 Ionic Strength and Activity Coefficients](/posts/phreeqc/phreeqc-part9/index-en)
+- **Mixing & Mineral Equilibrium**:
+  - [#3 Mixing and EQUILIBRIUM_PHASES](/posts/phreeqc/phreeqc-part3/index-en)
+  - [#5 Mixing Corrosion vs. Mixing Dissolution](/posts/phreeqc/phreeqc-part5/index-en)
+- **Saturation Index (SI)**:
+  - [#10 Mastering the Saturation Index (SI)](/posts/phreeqc/phreeqc-part10/index-en)
+- **Kinetics & Reaction Rates**:
+  - [#4 Considering Reaction Rates with KINETICS](/posts/phreeqc/phreeqc-part4/index-en)
+  - [#19 Specific Surface Area Pitfalls in Kinetics](/posts/phreeqc/phreeqc-part19/index-en)
+- **Solute Transport & Modeling**:
+  - [#12 Advection-Dispersion Model and Transport](/posts/phreeqc/phreeqc-part12/index-en)
+:::
 
 ## What Is PHREEQC?
 
@@ -311,6 +328,8 @@ Here is a summary of the key points:
 ```
 
 In the next article, we will input real seawater data and calculate **Speciation (species distribution)**. We will enter major ions such as Na, Ca, Mg, and SO₄ to examine what chemical species are present in the water.
+
+**Next Step: [#2 Geochemical Modeling of Seawater: Speciation and Distribution](/posts/phreeqc/phreeqc-part2/index-en)**
 
 ------------------------------------------------------------------------
 

@@ -80,8 +80,33 @@
       
       let targetUrl = getTargetUrl(url);
 
+      // ローカル環境や一部の静的サーバーでの存在チェック（HEADリクエスト）のため、
+      // 拡張子もスラッシュもないURLには .html を補完して fetch を行います。
+      let checkUrl = targetUrl;
+      let checkPath = targetUrl.split('?')[0].split('#')[0];
+      if (!checkPath.endsWith('/') && !checkPath.endsWith('.html')) {
+        try {
+          let urlObj = new URL(targetUrl);
+          checkUrl = urlObj.origin + urlObj.pathname + '.html' + urlObj.search + urlObj.hash;
+        } catch(e) {
+          const queryIndex = targetUrl.indexOf('?');
+          const hashIndex = targetUrl.indexOf('#');
+          let cleanTarget = targetUrl;
+          let suffix = '';
+          if (queryIndex !== -1 || hashIndex !== -1) {
+            let splitIndex = queryIndex !== -1 ? queryIndex : hashIndex;
+            if (hashIndex !== -1 && queryIndex !== -1) {
+              splitIndex = Math.min(queryIndex, hashIndex);
+            }
+            cleanTarget = targetUrl.slice(0, splitIndex);
+            suffix = targetUrl.slice(splitIndex);
+          }
+          checkUrl = cleanTarget + '.html' + suffix;
+        }
+      }
+
       try {
-        const response = await fetch(targetUrl, { method: 'HEAD' });
+        const response = await fetch(checkUrl, { method: 'HEAD' });
         if (!response.ok) {
           const parentLi = langLink.closest('li.nav-item');
           if (parentLi) parentLi.remove();
