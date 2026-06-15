@@ -4,7 +4,7 @@ date: 2026-04-30
 categories: [Python, 偏微分方程式]
 description: "偏微分方程式と聞いて身構えた方へ。熱の拡散を例に、差分法の考え方からPythonコードまでを丁寧に解説します。数式が苦手でも大丈夫。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

@@ -5,7 +5,7 @@ categories: [Groundwater, Python, MODFLOW, Geochemistry, Simulation, 地下水]
 series: "熱水地球化学シミュレーション"
 description: "カップリングシミュレーションで得られたデータを読み解く。破過曲線・鉱物量の空間プロファイル・飽和指数の「意味」と「読み方」を、グラフの見方から丁寧に解説する。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater, Environment, English]
 series: "PHREEQC from Scratch"
 description: "Simulate the formation of Acid Mine Drainage (AMD) caused by the irreversible oxidation of pyrite. Learn how to use the REACTION block and INCREMENTAL_REACTIONS to model stepwise pH drops and goethite precipitation."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

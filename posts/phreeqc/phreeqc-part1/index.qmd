@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater, Tutorial]
 series: "PHREEQCをゼロから始める"
 description: "地球化学計算ソフトPHREEQCのインストールから起動、純水の計算実行まで。スクリーンショットなしでも迷わないよう、各ステップを丁寧に解説します。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

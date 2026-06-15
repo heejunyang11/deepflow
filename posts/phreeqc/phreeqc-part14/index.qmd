@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "PHREEQCをゼロから始める"
 description: "農業地帯の地下水で最も頻繁に問題となる硝酸塩汚染を、Pythonで診断・定量する。Nitrificationで生成されるNO₃⁻がどう移動し、脱窒でどう消えるかを概念から計算・野外診断まで一気通貫で学ぶ。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

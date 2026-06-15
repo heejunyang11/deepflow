@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Python, Kinetics]
 series: "PHREEQCをゼロから始める"
 description: "これまでの「最終的にどうなるか（平衡）」の計算から一歩進み、「どれくらいの時間がかかるのか？」を解き明かす。反応速度論（KINETICS）の基礎と、簡単なCalcite（方解石）の溶解モデルをPHREEQCで実装する方法を解説する。"
 image: fig-kinetics-calcite-en.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

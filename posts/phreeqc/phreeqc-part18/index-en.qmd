@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Kinetics]
 series: "Getting Started with PHREEQC"
 description: "Using the batch reaction experimental data from Satake et al. (2025), a Japanese CO2-EGS study, we explain the process of achieving perfect consistency between experimental values and models. This is done by applying practical modeling techniques not explicitly stated in the paper, such as interpreting units, introducing reactive surface area, and back-calculating initial values from bulk rock composition."
 image: thumb.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

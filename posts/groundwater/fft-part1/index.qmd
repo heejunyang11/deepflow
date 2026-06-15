@@ -4,7 +4,7 @@ description: "別府南部で観測された不圧地下水位の長期低下。
 date: 2026-05-12
 categories: [地下水, 温泉, 地球熱学]
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

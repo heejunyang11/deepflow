@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "PHREEQCをゼロから始める"
 description: "log(IAP/Ksp) で定義される飽和指数 SI を徹底解説。#2〜#9 の計算で毎回登場していた SI の正体を明かし、水質診断・スケール予測・鉱物平衡判定への応用を学ぶ。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

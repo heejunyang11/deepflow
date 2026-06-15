@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater]
 series: "PHREEQCをゼロから始める"
 description: "石膏（Gypsum）と硬石膏（Anhydrite）を例に、EQUILIBRIUM_PHASESブロックの使い方を解説。25℃から75℃への加熱シミュレーションで、温度上昇によって2つの鉱物の安定性が逆転する現象をPHREEQCで再現する。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

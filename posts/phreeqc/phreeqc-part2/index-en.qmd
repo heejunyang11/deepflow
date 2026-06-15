@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater, English]
 series: "PHREEQC from Scratch"
 description: "Calculate the chemical speciation of seawater using PHREEQC. This tutorial covers inputting major ions like Na, Ca, Mg, and SO₄, and interpreting ion complexation and saturation indices."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

@@ -5,7 +5,7 @@ categories: [PHREEQC, Python, Geochemistry, Data Science, English]
 series: "PHREEQC from Scratch"
 description: "Learn how to read the Gibbsite solubility data outputted in Part 7 using pandas, and generate publication-quality interactive diagrams using matplotlib. This completes the PHREEQC-Python workflow."
 image: q9INa5Vi.jfif
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

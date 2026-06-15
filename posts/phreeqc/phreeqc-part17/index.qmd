@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Kinetics]
 series: "PHREEQCをゼロから始める"
 description: "前回のKINETICS入門から一歩進み、Gysi (2016) の論文を題材にして、CO2地中貯留（CarbFix）における複雑な玄武岩の溶解と二次鉱物沈殿のシミュレーションをPHREEQCで実装・再現する。"
 image: thumb.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

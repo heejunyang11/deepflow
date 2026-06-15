@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater, Tutorial, English]
 series: "PHREEQC from Scratch"
 description: "Simulate 'mixing corrosion'—where mixing two calcite-saturated waters creates an undersaturated solution. We calculate the mixing of 70% carbonate groundwater and 30% seawater in 5 steps, exploring the kinetic constraints of dolomite."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

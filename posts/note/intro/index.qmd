@@ -4,7 +4,7 @@ date: 2026-04-24
 categories: [統計学, 温泉]
 description: "平均値だけ見て旅行先を決めたら、水風呂に入らされた。その理不尽さの正体が「標準偏差」です。数式ゼロ、でも本質100%。読み終わったら、会議のデータが怖くなくなります。"
 image: "thumbnail.png"
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

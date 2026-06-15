@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "PHREEQCをゼロから始める"
 description: "PHASESブロックでpHを固定し、pH 3〜14 でのアルミニウム溶解度を計算する。USER_GRAPHで溶解度ダイアグラムを描き、Gibbsiteの両性溶解挙動を可視化する。"
 image: S5KLpHFZ.jfif
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

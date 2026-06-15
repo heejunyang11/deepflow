@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Python, Kinetics]
 series: "Introduction to PHREEQC"
 description: "Moving beyond equilibrium calculations ('what happens eventually?'), this article explores the dimension of time ('how long does it take?'). We introduce the basics of Kinetics and demonstrate how to implement a simple Calcite dissolution model in PHREEQC."
 image: fig-kinetics-calcite-en.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

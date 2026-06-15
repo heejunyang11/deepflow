@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater]
 series: "PHREEQCをゼロから始める"
 description: "PHREEQCのSpeciation計算を使って海水の化学種分布を求める。Na・Ca・Mg・SO₄など主要イオンの入力方法から、錯体形成・飽和指数の読み方まで丁寧に解説する。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

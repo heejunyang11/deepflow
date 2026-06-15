@@ -4,8 +4,8 @@ date: 2026-06-11
 categories: [Geochemistry, PHREEQC, Kinetics]
 series: "Getting Started with PHREEQC"
 description: "We explain the critical pitfalls of unit mismatch and missing molecular weight/initial mineral mass in PHREEQC surface area settings. We mathematically demonstrate how these errors corrupt the physical meaning of calibration parameters and propose a rigorous practice for transparent model reporting."
-image: thumb.png
-author: "DeepFlow"
+image: ssa_comparison.png
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "PHREEQC from Scratch"
 description: "Reproducing redox sequences in PHREEQC, where electron acceptors are consumed in the order of O₂ → NO₃⁻ → Mn²⁺ → Fe²⁺ → SO₄²⁻ → CH₄ in an aquifer containing organic carbon. Calculating the classic Appelo & Postma diagram step by step."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

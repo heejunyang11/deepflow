@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater, English]
 series: "PHREEQC from Scratch"
 description: "Simulate the reaction between soil CO₂, pure water, and calcite in both open and closed systems. We quantitatively demonstrate how CO₂ availability influences pH and dissolved Ca²⁺ concentrations in groundwater formation."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Python]
 series: "PHREEQC from Scratch"
 description: "Inverse modeling is the ultimate tool for unraveling \"causes\" from \"results.\" We unravel the mechanisms of groundwater-seawater mixing, cation exchange, and spring water evolution like a detective game."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

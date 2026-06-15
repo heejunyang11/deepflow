@@ -1,10 +1,19 @@
 ---
-title: "PHREEQC速度論モデリングにおける比表面積の罠：単位換算の落とし穴とフィッティング因子の物理的意味"
-description: "PHREEQCの比表面積設定における「単位不整合」と「分子量・初期重量の掛け忘れ」という致命的な技術的落とし穴を解説する。その上で、フィッティング値が持つ物理的意味の崩壊プロセスを数式で暴き、モデルの限界を透明に開示する実務を提案する。"
+title: "PHREEQCをゼロから始める #19：比表面積の罠 — 単位換算の落とし穴とフィッティング因子の物理的意味"
 date: "2026-06-11"
-categories: [Geochemistry, PHREEQC, Modeling]
+categories: [Geochemistry, PHREEQC, Kinetics]
+series: "PHREEQCをゼロから始める"
+description: "PHREEQCの比表面積設定における「単位不整合」と「分子量・初期重量の掛け忘れ」という致命的な技術的落とし穴を解説する。その上で、フィッティング値が持つ物理的意味の崩壊プロセスを数式で暴き、モデルの限界を透明に開示する実務を提案する。"
+image: ssa_comparison.png
+author: "DeepFlows"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
 format:
   html:
+    lightbox: true
     include-in-header:
       - text: |
           <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part19/" />

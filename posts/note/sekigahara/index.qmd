@@ -4,7 +4,7 @@ date: 2026-04-30
 categories: [地形]
 description: "日本の歴史を決定づけた「関ヶ原の戦い」。地形だけを見れば、東軍（徳川家康）は盆地の底に誘い込まれた「袋のネズミ」なのに、躊躇なく進軍した理由は？"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

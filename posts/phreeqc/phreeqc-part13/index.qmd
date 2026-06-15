@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "PHREEQCをゼロから始める"
 description: "有機炭素が存在する帯水層で、O₂→NO₃⁻→Mn²⁺→Fe²⁺→SO₄²⁻→CH₄ の順に電子受容体が消費される Redox sequences を PHREEQC で再現する。Appelo & Postma の古典図を自分の手で計算する。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

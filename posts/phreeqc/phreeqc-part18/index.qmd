@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Kinetics]
 series: "PHREEQCをゼロから始める"
 description: "日本発のCO2-EGS研究である Satake et al. (2025) のバッチ反応実験データを題材に、論文には明記されていない単位の解釈、有効反応表面積の導入、および岩石バルク組成からの初期値の逆算といった実践的なモデリング技術を駆使し、実験値とモデルの完全な整合性を達成する過程を解説する。"
 image: thumb.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

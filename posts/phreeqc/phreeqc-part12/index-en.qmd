@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "PHREEQC from Scratch"
 description: "Simulating solute transport in groundwater using the TRANSPORT block. Combining advection, dispersion, and reaction to track everything from contaminant diffusion to carbonate dissolution fronts in 2D (space × time)."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

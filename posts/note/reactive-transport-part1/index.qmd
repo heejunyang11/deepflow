@@ -5,7 +5,7 @@ categories: [Groundwater, Python, MODFLOW, Geochemistry, Simulation, 地下水, 
 series: "Python による地球化学的反応輸送シミュレーション"
 description: "水と岩石の化学反応を追いかける「反応輸送モデル」。Python、MODFLOW、PHREEQCを連携させたシミュレーションシステムの全体設計を、図解を交えて初心者にも分かりやすく解説します。"
 image: thumbnail.jpg
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "PHREEQCをゼロから始める"
 description: "黄鉄鉱（FeS₂）が酸素と反応して硫酸を生成し、pH が急落する酸性鉱山廃水（AMD）の形成プロセスをPHREEQCで再現する。REACTIONブロックで不可逆反応を段階的に進め、Goethiteの沈殿条件まで含めた実践的な計算を解説する。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

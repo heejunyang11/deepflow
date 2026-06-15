@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, English]
 series: "PHREEQC from Scratch"
 description: "A thorough explanation of the Saturation Index (SI), defined as log(IAP/Ksp). We reveal the true meaning behind the SI values that have appeared in every calculation since Part 2, and learn how to apply them to water quality diagnosis and scale prediction."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

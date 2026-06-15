@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "PHREEQCをゼロから始める"
 description: "TRANSPORTブロックで地下水中の溶質移動をシミュレート。移流・分散・反応の3つを組み合わせ、汚染物質の拡散から炭酸塩の溶解前線まで、空間×時間の2次元で地球化学を追う。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

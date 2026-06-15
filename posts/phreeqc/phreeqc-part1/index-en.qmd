@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater, Tutorial, English]
 series: "PHREEQC from Scratch"
 description: "A step-by-step guide to installing the geochemical modeling software PHREEQC, launching it for the first time, and running a pure water calculation. Every step is explained in detail so you can follow along easily."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

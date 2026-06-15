@@ -4,7 +4,7 @@ date: 2026-04-23
 categories: [温泉, 地下水]
 description: "温泉・地下水の泉質分類に欠かせないヘキサダイアグラム（Stiff図）の読み方・描き方を解説する。主要8成分の地球化学的意味、および水道水・河川水・地下水・海水・温泉の比較を通じて、水質の「顔」を見る目を養う。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

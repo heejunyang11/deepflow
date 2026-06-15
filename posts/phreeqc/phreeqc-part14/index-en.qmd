@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC]
 series: "Starting PHREEQC from Scratch"
 description: "Diagnose and quantify nitrate pollution, the most frequent problem in agricultural groundwater, using Python. Learn the entire process from the concept to simulation and field diagnosis of how NO3- produced by nitrification moves and how it disappears via denitrification."
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

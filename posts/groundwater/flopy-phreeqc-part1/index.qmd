@@ -5,7 +5,7 @@ categories: [Groundwater, Python, MODFLOW, Geochemistry, Simulation, 地下水, 
 series: "熱水地球化学シミュレーション"
 description: "MODFLOW 6（Flopy）とPHREEQC（phreeqpy）をPythonでカップリングし、1次元カラムの熱水流動と地球化学反応を統合解析するシリーズ。第1回はなぜこのカップリングが必要なのか、モデル全体の設計思想と構成を解説します。"
 image: image3.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

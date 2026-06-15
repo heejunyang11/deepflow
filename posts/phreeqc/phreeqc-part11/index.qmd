@@ -4,7 +4,7 @@ description: "REACTION ブロックで石灰岩・花崗岩を少しずつ溶か
 date: 2026-05-07
 categories: [PHREEQC, Groundwater]
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Kinetics]
 series: "Getting Started with PHREEQC"
 description: "Taking a step forward from the introduction to KINETICS, we use Gysi (2016) as a case study to implement and reproduce the complex simulation of basalt dissolution and secondary mineral precipitation in geologic CO2 sequestration (CarbFix) using PHREEQC."
 image: thumb.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

@@ -32,6 +32,7 @@ listing:
     filter-ui: false
   - id: groundwater
     contents:
+      - "posts/note/groundwater-beppu/index.qmd"
       - "posts/note/groundwater-contour/index.qmd"
     type: grid
     sort: "date desc"

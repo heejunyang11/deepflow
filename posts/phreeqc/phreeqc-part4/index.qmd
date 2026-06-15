@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater]
 series: "PHREEQCをゼロから始める"
 description: "土壌中のCO₂と純水・カルサイト（Calcite）の反応を、開放系(Open system)と閉鎖系(Closed system)の2ケースでシミュレーションする。地下水の水質形成において最も基本的なこの反応が、系のCO₂条件によってpHと溶存Ca²⁺濃度にどう影響するかをPHREEQCで定量的に示す。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

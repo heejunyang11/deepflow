@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Python]
 series: "PHREEQCをゼロから始める"
 description: "「結果」から「原因」を解き明かす究極のツール、インバースモデリング（逆解析）。地下水と海水の混合や、陽イオン交換、泉質進化のメカニズムを推理ゲームのように解明する。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

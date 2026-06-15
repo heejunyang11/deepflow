@@ -4,7 +4,7 @@ description: "#7 で出力した Gibbsite 溶解度データを pandas で読み
 date: "2026-05-04"
 categories: [PHREEQC, Python, 地球化学]
 image: q9INa5Vi.jfif
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false

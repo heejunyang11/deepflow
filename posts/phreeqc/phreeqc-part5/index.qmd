@@ -5,7 +5,7 @@ categories: [Geochemistry, PHREEQC, Groundwater, Tutorial]
 series: "PHREEQCをゼロから始める"
 description: "カルサイトと平衡な2つの水を混ぜると、混合水がカルサイトに対して不飽和になる「混合腐食」or 「混合溶解」をPHREEQCで再現する。炭酸地下水70%と海水30%の混合から、ドロマイトとカルサイトへの影響まで5ステップで計算する。"
 image: thumbnail.png
-author: "DeepFlow"
+author: "DeepFlows"
 toc: true
 toc-depth: 3
 number-sections: false
