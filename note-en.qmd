@@ -7,8 +7,8 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/note.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/note-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/note" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/note-en" />
 listing:
   - id: geo-onsen
     contents:

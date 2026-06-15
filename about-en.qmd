@@ -5,8 +5,8 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/about.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/about-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/about" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/about-en" />
 ---
 
 ```{=html}

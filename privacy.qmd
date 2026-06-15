@@ -5,8 +5,8 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/privacy.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/privacy-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/privacy" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/privacy-en" />
 ---
 
 **最終更新日: 2026年6月4日**

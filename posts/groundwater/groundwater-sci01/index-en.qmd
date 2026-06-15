@@ -9,8 +9,8 @@ image: "thumbnail.png"
 lang: en
 include-in-header:
   - text: |
-      <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci01/index.html" />
-      <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci01/index-en.html" />
+      <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci01/" />
+      <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci01/index-en" />
 format:
   html:
     toc: true

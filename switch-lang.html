@@ -9,34 +9,53 @@
     }
     let path = parsedUrl.pathname;
     
-    // 1. すでに .html がついている場合
-    if (cleanUrl.endsWith('-en.html')) {
-      return cleanUrl.replace('-en.html', '.html');
-    } else if (cleanUrl.endsWith('.html')) {
-      return cleanUrl.replace('.html', '-en.html');
+    // 既に拡張子 .html がついている場合の対策（保険）
+    if (cleanUrl.endsWith('.html')) {
+      cleanUrl = cleanUrl.slice(0, -5);
+      path = path.slice(0, -5);
     }
     
-    // 2. 固定ページの Pretty URL 対応 (/blog, /about, /apps, /note, /privacy)
-    const rootPages = ['/blog', '/about', '/apps', '/note', '/privacy'];
+    // 1. トップページ
+    if (path === '/' || path === '') {
+      let base = cleanUrl;
+      if (base.endsWith('/')) base = base.slice(0, -1);
+      return base + '/index-en';
+    }
+    if (path === '/index-en' || path === '/index-en/') {
+      let base = cleanUrl;
+      if (base.endsWith('/')) base = base.slice(0, -1);
+      return base.replace(/\/index-en$/, '/');
+    }
+    
+    // 2. 固定ページ (/blog, /about, /note, /privacy)
+    const rootPages = ['/blog', '/about', '/note', '/privacy'];
     let matchedPage = rootPages.find(p => path === p || path === p + '/');
     if (matchedPage) {
       let base = cleanUrl;
       if (base.endsWith('/')) base = base.slice(0, -1);
-      return base + '-en.html';
+      return base + '-en';
     }
     
-    // (英語版固定ページからの戻り: /blog-en/ -> /blog.html)
-    if (path.includes('-en') && !cleanUrl.endsWith('.html')) {
+    // 英語の固定ページ (/blog-en, /about-en, /note-en, /privacy-en)
+    const rootPagesEn = ['/blog-en', '/about-en', '/note-en', '/privacy-en'];
+    let matchedPageEn = rootPagesEn.find(p => path === p || path === p + '/');
+    if (matchedPageEn) {
       let base = cleanUrl;
       if (base.endsWith('/')) base = base.slice(0, -1);
-      return base.replace('-en', '.html');
+      return base.slice(0, -3); // "-en" を削除
     }
-
-    // 3. 各記事のディレクトリ等の場合 (index-en.html を付加)
+    
+    // 3. 個別記事
+    if (path.endsWith('/index-en') || path.endsWith('/index-en/')) {
+      let base = cleanUrl;
+      if (base.endsWith('/')) base = base.slice(0, -1);
+      return base.slice(0, -8); // "/index-en" を削って末尾を "/" にする
+    }
+    
     if (cleanUrl.endsWith('/')) {
-      return cleanUrl + 'index-en.html';
+      return cleanUrl + 'index-en';
     } else {
-      return cleanUrl + '/index-en.html';
+      return cleanUrl + '/index-en';
     }
   }
 

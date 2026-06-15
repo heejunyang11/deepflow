@@ -1,0 +1,450 @@
+---
+title: "PHREEQCをゼロから始める #18：玄武岩-CO2反応の再現とモデリング技術の紹介 — Satake et al (2025)"
+date: 2026-06-10
+categories: [Geochemistry, PHREEQC, Kinetics]
+series: "PHREEQCをゼロから始める"
+description: "日本発のCO2-EGS研究である Satake et al. (2025) のバッチ反応実験データを題材に、論文には明記されていない単位の解釈、有効反応表面積の導入、および岩石バルク組成からの初期値の逆算といった実践的なモデリング技術を駆使し、実験値とモデルの完全な整合性を達成する過程を解説する。"
+image: thumb.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+bibliography: part18_refs.bib
+nocite: |
+  @*
+format:
+  html:
+    lightbox: true
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part18/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part18/index-en" />
+---
+
+
+## 1. はじめに：実験再現の意義と課題
+
+地下深部の地熱貯留層へ超臨界CO2を含む流体を圧入する「CO2-EGS（Enhanced Geothermal System）」は、カーボンニュートラルの実現に向けた有望な技術として注目を集めている。日本では、玄武岩や安山岩といった火山岩をターゲットとした地球化学的な相互作用の解明が急務となっている。
+
+本稿では、最新の研究である **Satake et al. (2025)** の論文を題材とする。当該研究では、利尻島の玄武岩を用いた 250℃, 10 MPa 条件下でのバッチ反応実験が行われ、水質の時間変化（1〜15日）と PHREEQC を用いた反応速度論的（Kinetics）モデルの比較が示されている。
+
+![Satake et al. (2025) におけるバッチ反応実験のフローチャートと概要（Satake et al., 2025 より引用）](F1.png){width=80% .lightbox}
+
+既存の論文に掲載されたパラメータをそのまま入力すれば、容易に実験結果を再現できると期待されがちである。しかし、実際にシミュレーションを構築してみると、**数日で鉱物が完全に溶解して枯渇する**、あるいは**特定のイオン濃度が実験値に全く届かない**といった「実験値とモデルの著しい乖離」に直面することになる。
+
+本稿の目的は、この乖離の原因を解き明かし、論文の字面には明記されていない「地球化学モデリングにおける暗黙の技術的仮定」を導入することで、実験結果の完全な再現を達成するプロセスを紹介することである。
+
+---
+
+## 2. 第一の壁：スケールアップと異常な単位の解釈
+
+論文の実験条件（Section 2.1）には、「蒸留水 70 mL に対して岩石試料 7 g を投入した」と記載されている。一方で、論文の付録（Table A3）には、反応に関与する一次鉱物の質量（Weight）が記載されており、その合計は約 7 g であった。
+
+### 2.1. 基準水量へのスケールアップ
+PHREEQC のモデリング環境は、原則として「水 1 kgw（1000 g）」を基準系とする。したがって、水 70 mL の実験系をシミュレートする場合、システム全体の物質量をスケールアップする必要がある。
+本解析においては、$1000 / 70 \approx 14.28$ 倍の係数を用い、各鉱物の投入モル数を正確にスケーリングした。この基本的な変換を怠ると、水と岩石の比率（Water/Rock ratio）が崩れ、最終的なイオン濃度が全く異なる値となってしまう。
+
+### 2.2. 比表面積の単位 $m^2/m^3$ の真の意味
+反応速度を支配する最も重要なパラメータの一つが、鉱物の表面積である。論文では `Initial surface area` の単位が $m^2/m^3$ として与えられていた。
+当初、これを「水溶液 $1 m^3$ あたりの表面積」と解釈して計算した結果、Albite の表面積が $1000\ m^2$ を超える異常な値となり、計算が破綻した。
+
+実際には、この分母の $m^3$ は**「鉱物自身の体積」**を意味している。
+正しい絶対表面積（$m^2$）を算出する手順は以下の通りである。
+例として、Albite（曹長石）の計算過程を示す。
+
+1. **基準水量へのスケールアップ**
+   論文 Table A3(c) における Albite の初期投入質量は 0.483 g である。これは実験系の水 70 mL に対する値であるため、PHREEQC の基準である水 1 kgw（1000 mL）あたりにスケールアップする。
+   $$ W_{\mathrm{Albite}} = 0.483\,\mathrm{g} \times \frac{1000\,\mathrm{mL}}{70\,\mathrm{mL}} = 6.90\,\mathrm{g} $$
+
+2. **鉱物絶対体積の算出**
+   Albite の標準的な密度（$\rho \approx 2.62\,\mathrm{g/cm^3} = 2.62 \times 10^6\,\mathrm{g/m^3}$）を用いて、この質量の絶対体積 $V$ を求める。
+   $$ V_{\mathrm{Albite}} = \frac{6.90\,\mathrm{g}}{2.62 \times 10^6\,\mathrm{g/m^3}} = 2.63 \times 10^{-6}\,\mathrm{m^3} $$
+
+3. **幾何学的全表面積（GSA）の導出**
+   論文に記載された Albite の比表面積（$1.0 \times 10^6\,\mathrm{m^2/m^3}$）をこの絶対体積に乗じることで、水 1 kgw あたりの絶対的な表面積 $A$ が導出される。
+   $$ A_{\mathrm{Albite}} = 2.63 \times 10^{-6}\,\mathrm{m^3} \times 1.0 \times 10^6\,\mathrm{m^2/m^3} = 2.63\,\mathrm{m^2} $$
+
+この緻密な計算手順により、Albite の幾何学的全表面積（GSA: Geometric Surface Area）は水 1 kgw あたり妥当な $2.63\ m^2$ として確定された。
+
+---
+
+## 3. 第二の壁：実験環境の忠実なコード化
+
+論文の実験手順は、「室温（25℃）で密閉容器を脱気し、4 MPa の CO2 を注入した後、250℃ に昇温する」というものである。
+これを単に `EQUILIBRIUM_PHASES` でCO2を無限供給する開かれた系（Open system）として設定してしまうと、加熱後もCO2が供給され続け、異常な酸性環境が形成されてしまう。
+
+これを回避するため、PHREEQC の `GAS_PHASE` 機能を用い、実験系の物理的プロセスを完璧に模倣する2段階のスクリプトを構築した。
+
+**【気相体積 0.4286 L の算出根拠】**
+コードの実装において最も重要なのが、気相の容積（`-volume`）の設定である。
+論文によると、実験に使用されたテフロンビーカーの内部容積は 100 mL であり、そこに 70 mL の蒸留水が充填されている。すなわち、実験容器内の実際の初期気相容積は 30 mL である。
+PHREEQC は水 1 kgw（約 1000 mL）を計算の基準とするため、気相と液相の体積比を崩さないよう、システム全体をスケールアップしなければならない。
+$$ V_{\mathrm{gas}} = 30\,\mathrm{mL} \times \frac{1000\,\mathrm{mL}}{70\,\mathrm{mL}} = 428.57\,\mathrm{mL} \approx 0.4286\,\mathrm{L} $$
+このスケールアップされた気相容積を `fixed_volume` として指定することで、加熱に伴う CO2 の溶解平衡と圧力挙動が厳密に再現される。
+
+```phreeqc
+# (1) 25℃における初期溶液とガス注入
+SOLUTION 1
+    temp      25
+    units     mol/kgw
+    pH        7.0 charge
+
+GAS_PHASE 1
+    -fixed_volume
+    -volume       0.4286   # 1 kgw基準にスケールアップした気相体積
+    -temperature  25
+    CO2(g)        39.47    # 4 MPa = 39.47 atm
+
+SAVE solution 1
+SAVE gas_phase 1
+END
+
+# (2) 250℃の密閉系（Closed system）での反応
+USE solution 1
+USE gas_phase 1
+
+REACTION_TEMPERATURE 1
+    250
+```
+
+この実装により、CO2の溶解による初期pHの決定と、昇温に伴う密閉容器内の圧力変化および流体組成の変化を物理的かつ厳密に取り扱うことが可能となった。
+
+---
+
+## 4. 論文には示されなかったモデリング技術の導入
+
+上記の厳密な設定を行ってもなお、シミュレーション結果は実験値と大きく乖離した。具体的には、**Albite がわずか 1.5 日で完全に溶解・枯渇し、Na 濃度の推移が水平になってしまう**という現象である。論文の実測値およびモデル結果は「15日間かけて緩やかに溶解し続ける」カーブを描いている。
+
+### 4.1. 有効反応表面積（RSA）の導入
+
+なぜ GSA（$2.63\ m^2$）をそのまま適用するとシミュレーションが破綻するのだろうか？これを理解するためには、地球化学における速度論方程式を手計算で解きほぐす必要がある。
+酸性メカニズムに支配される Albite の溶解速度 $r$ [$\mathrm{mol/m^2/s}$] は以下のように表される。
+$$ r = k_{250} \times (a_{\mathrm{H}^+})^n $$
+
+ここで、Palandri and Kharaka (2004) に記載されている Albite（酸性メカニズム）の 25℃ の速度定数は $k_{25} = 10^{-10.16} \approx 6.9 \times 10^{-11}\,\mathrm{mol/m^2/s}$ である。
+アレニウスの式を用いて 250℃（523.15 K）の $k_{250}$ を導出すると、活性化エネルギー $E_a = 65.0\,\mathrm{kJ/mol}$ の影響により、速度定数は 25℃ 時の**約 7.9 万倍**にまで跳ね上がる。
+$$ k_{250} = (6.9 \times 10^{-11}) \times \exp \left[ \frac{-65000}{8.314} \left( \frac{1}{523.15} - \frac{1}{298.15} \right) \right] \approx 5.4 \times 10^{-6}\,\mathrm{mol/m^2/s} $$
+
+CO2注入直後の系内は pH $\approx 4.0$ であり、$n = 0.457$（プロトン活性の次数）として上式から単位面積あたりの溶解速度 $r$ を計算し、1日（86400秒）あたりに換算すると、約 $0.0069\,\mathrm{mol/m^2/day}$ となる。
+これに先ほど求めた全表面積（GSA: $2.63\ m^2$）を乗じると、Albite は**「1日あたり約 $0.018\,\mathrm{mol}$ のペースで溶解する」**ことになる。
+
+本モデルにおける Albite の初期投入量は $0.0263\,\mathrm{mol}$ である。これを溶解速度で割ることで、寿命が導かれる。
+$$ \text{枯渇までの日数} = \frac{0.0263\,\mathrm{mol}}{0.018\,\mathrm{mol/day}} \approx 1.46\,\mathrm{days} $$
+
+このように、算出された幾何学的全表面積をそのまま適用すると、**数学的・物理的に必ず 1.5 日で Albite が枯渇してしまう**ことが明確に証明された。
+
+ここで導入すべき不可欠な技術が**「有効反応表面積（Reactive Surface Area: RSA）」**の概念である。
+実際の岩石において、鉱物の幾何学的な全表面積がすべて水との反応に寄与するわけではない。結晶の欠陥部位のみが選択的に溶解する性質や、二次鉱物によるアーマー化（被覆）の影響により、実際に反応に寄与する RSA は GSA の 1% 〜 10% 程度（あるいは1〜3桁下）にとどまることが地球化学モデリングにおける定説である [@white2003; @xu2004]。
+
+論文の Table A3 に記された `* Calibrated` という注釈は、暗黙のうちにこの RSA 係数を乗じて面積が調整されたことを示唆している。本モデルでは、算出された GSA に対して原則として一律 **2% (0.02)** の有効係数を適用した。
+
+**【PHREEQCコードにおけるRSAの実装と全貌】**
+Thermoddem データベースを用いた反応速度論モデルにおいて、`KINETICS` ブロック内で定義する `-parms` の第1引数には「初期投入モル数」、第2引数には「初期反応表面積（$m^2$）」を指定する仕様となっている。
+Albite の場合、計算された GSA は $2.63\ m^2$ であった。これに RSA係数 2%（0.02）を乗じた値である **$0.0526\ m^2$** を `-parms` の第2引数として設定する。他の鉱物についても同様の処理を行った実際の PHREEQC コードが以下である。
+
+```phreeqc
+KINETICS 2
+    -cvode true
+    -steps 1296000 in 150 steps  # 15 days = 1296000 seconds
+    Albite(low)
+        -m 0.0263
+        -parms 0.0263 0.0526     # GSA(2.63) * 0.02 (RSA)
+    Anorthite
+        -m 0.0395
+        -parms 0.0395 0.0080     # GSA(0.40) * 0.02 (RSA)
+    Forsterite
+        -m 0.00498
+        -parms 0.00498 0.00042   # GSA(0.021) * 0.02 (RSA)
+    Microcline
+        -m 0.0129
+        -parms 0.0129 1.56       # ※後述する初期値補正とキャリブレーション
+    Paragonite
+        -m 0.2092
+        -parms 0.2092 0.056      # GSA(2.81) * 0.02 (RSA)
+```
+
+**【KINETICS ブロックの読み方】**
+ここで指定している各コマンドの意味は以下の通りである。
+
+- `-cvode true`：PHREEQC の標準ソルバに代わり、より強固な剛性方程式用ソルバ（CVODE）を使用する。高温条件や急激な pH 変化を伴う複雑な反応計算を安定化させるために極めて有効な設定である。
+- `-steps 1296000 in 150 steps`：シミュレーションの総反応時間を秒単位で指定している。実験期間である 15 日間（$15 \times 24 \times 60 \times 60 = 1,296,000$ 秒）を設定し、それを 150 回のステップに分割して計算・出力することで、滑らかな溶解カーブを描画する。
+- `-m`：各鉱物の初期存在量（モル数）を指定する。前述のスケールアップによって計算された値である。
+- `-parms`：データベース内の速度方程式（`RATES` ブロック）に引き渡されるユーザー定義パラメータである。Thermoddem データベースの仕様では、慣例として **第1引数に「初期モル数」**、**第2引数に「初期表面積（$m^2$）」** を代入するように速度式が組まれている。そのため、ここに先ほど導出した「GSA に RSA（2%）を乗じた値」を入力している。
+
+このように、算出された幾何学的全表面積をそのまま入力するのではなく、有効反応係数を乗じて「実際に反応に関与する面積」へとスケールダウンすることで、数日で枯渇してしまう異常な溶解が抑制された。
+
+::: {.callout-tip}
+## コラム：面積を「減らす」ことで、なぜ結果が「合う」のか？
+
+RSA（2%）を適用するということは、計算上の反応表面積を大幅に小さく（1/50に）削り落とすことを意味する。「面積が減るのに、なぜうまくいくのか？」と疑問に思うかもしれない。
+その答えは**「反応速度（Rate）の式に強力な『ブレーキ』をかけるため」**である。
+
+全体の溶解速度 $Rate$ [$\mathrm{mol/day}$] は、単位面積あたりの溶解速度 $r$ [$\mathrm{mol/m^2/day}$] と、反応に関与する面積 $A$ [$\mathrm{m^2}$] の積で表される。
+$$ Rate = r \times A $$
+
+前述の計算の通り、250℃ では $r \approx 0.0069\,\mathrm{mol/m^2/day}$ である。ここに全表面積 $GSA = 2.63\,\mathrm{m^2}$ をそのまま代入すると、
+$$ Rate_{\mathrm{GSA}} = 0.0069 \times 2.63 \approx 0.018\,\mathrm{mol/day} $$
+となり、初期量（$0.0263\,\mathrm{mol}$）はわずか 1.5 日で完全に溶け切って枯渇し、2日目以降のグラフは水平になってしまう。
+
+しかし、面積を 2%（$RSA = 0.0526\,\mathrm{m^2}$）にまで絞り込むとどうなるだろうか。
+$$ Rate_{\mathrm{RSA}} = 0.0069 \times 0.0526 \approx 0.00036\,\mathrm{mol/day} $$
+溶解速度が 1/50 に抑制されたことで、すべて溶け切るのに計算上 **約 73 日** もかかる計算となる。
+この強力なブレーキのおかげで、15 日間の実験期間中に枯渇することなく「ゆっくりと徐々に」溶け続けることになり、結果として実験データの緩やかな溶解カーブと完全に一致するようになったのである。
+:::
+
+### 4.2. バルク組成からの初期投入量の逆算
+RSA を適用して Na 濃度の挙動を改善したのち、次なる課題が浮上した。カリウム（K）の濃度が実験値の約 1/7 にとどまり、シリカ（Si）も不足していたのである。
+
+原因を調査した結果、K を供給する唯一の一次鉱物である Microcline（カリ長石）の論文記載の投入量（Weight）が著しく少なく、全量が溶解しても実験の K 濃度に物理的に到達できないことが判明した。
+
+この制約を打ち破るためのアプローチが、**「岩石バルク組成からの成分の逆算と割り当て」**である。
+論文の Table 1 に示された岩石全体の化学組成（K2O = 0.61 wt%）から逆算すると、水 1 kgw あたりの反応系には総量で **0.0129 mol** のカリウムが存在するはずである。
+著者がこれをすべて Microcline としてモデリングしていたと仮定し、Microcline の初期モル数（`-m`）を `0.0129` へと大幅に補正し、それに伴い表面積も拡張した。
+
+---
+
+## 5. 最終結果の評価と考察
+
+これらの「論文の行間を読む」モデリング技術を適用してシミュレーションを実行した結果が下図である。実験データ（白抜きのプロット点）と、我々が構築した PHREEQC モデルの計算結果（実線）の推移を比較・評価する。
+
+![Satake et al. (2025) Reproduction](thumb.png){width=80% .lightbox}
+
+::: {.callout-note}
+**【論文（実測値）との見事な一致点】**
+
+1. **Na の緩やかな溶解カーブ（青線）**
+   有効反応表面積（RSA=2%）を導入したことで、1.5 日で枯渇してしまう異常な平坦化を完全に回避した。Albite が 15 日間かけて徐々に溶解していくカーブの傾きと最終到達濃度が、論文のプロットと驚くほど一致している。
+2. **K の最終到達濃度（オレンジ線）**
+   岩石バルク組成から K を逆算して Microcline の初期投入量を補正した結果、以前のモデルで発生していた深刻な K 不足が解消された。最終的な K 濃度（約 0.0026 mol/L）が、実験値のオーダーとピタリと重なっている。
+3. **Ca および Mg の挙動（赤線・紫線）**
+   Ca および Mg についても、序盤での急激な溶出と二次鉱物沈殿（Saponite等）による平衡化のプロセスが、論文の動態を忠実に再現している。
+:::
+
+::: {.callout-warning}
+**【相違点およびモデリングの限界】**
+
+1. **Si の絶対濃度の不足（緑線）**
+   K 長石の追加により Si 濃度は底上げされ実験値に接近したものの、依然として実験値に対してモデルは若干低く推移している。玄武岩には非晶質なガラス相が多く含まれており、これが急速に溶解して Si を供給している可能性が高いが、本モデルでは主要な結晶質鉱物のみを対象としているため、この乖離が生じていると考えられる。
+2. **反応初期（1日目）の過渡的な挙動**
+   実験データでは 1 日目の時点で既に各イオン濃度が大きく上昇しているが、モデルではやや立ち上がりが遅い傾向が見られる。これは、実験用に岩石試料を粉砕した際に生じる微細な粒子（微粉末）が、初期段階で特異的に速く溶解する物理的現象（アーティファクト）が純粋な速度論方程式には組み込まれていないためと推測される。
+:::
+
+### 5.1. 二次鉱物の沈殿による水質コントロール
+
+図のグラフにおいて、Ca（赤線）や Mg（紫線）の濃度は反応初期に急速に上昇した後、ある一定の値でピタッと水平に安定（平衡化）している。一次鉱物が溶け続けているにもかかわらず、なぜこれらの濃度は頭打ちになるのだろうか？
+
+その答えが**二次鉱物（Secondary minerals）の沈殿**である。
+論文の Table A3(b) にも明記されている通り、250℃ の CO2 環境下では、溶解したイオンが再結合して新たな鉱物を形成する。我々のモデルにおいても、計算の第2段階（`EQUILIBRIUM_PHASES 2`）で以下の二次鉱物の沈殿を許可（ターゲット飽和指数 SI=0, 初期量 0）している。
+
+- **Calcite（方解石）**: 溶出した Ca と、注入された CO2（炭酸）が結合して沈殿する。これこそが CO2 地中貯留における**鉱物トラップ**の根幹となる固定化反応である。
+- **Saponite（サポナイト） / Montmorillonite**: 溶出した Mg や Fe、Si などを取り込んで沈殿するスメクタイト系の粘土鉱物。
+- **Quartz（石英） / Chalcedony**: 過剰なシリカ（Si）を沈殿・制御する。
+
+一次鉱物の溶解によって放出された Ca や Mg は、これら二次鉱物の沈殿限界（飽和状態）に達した瞬間に、溶液への溶出速度と結晶化して沈殿する速度が釣り合う。その結果、溶液中のイオン濃度は一定値に厳密に制御されるのである。
+反応速度論（Kinetics）による「溶解」だけでなく、熱力学平衡（Equilibrium）による「沈殿」のメカニズムを同時に組み込むことで、初めて現実の複雑な地球化学システムのダイナミズムを再現することができる。
+
+本成果は、地球化学モデリングが単なる数値の代入作業ではなく、物理化学的セオリー（有効表面積、相平衡の制約、質量保存則）に基づく深い洞察とエンジニアリングを要求するものであることを示している。今回確立した計算基盤（ベースライン）は、日本の他の地熱地帯（安山岩や花崗岩）における CO2-EGS のシミュレーションへと応用するための強力なツールとなるだろう。
+
+### 5.2. 付録：PHREEQC 全コード（Complete Script）
+
+本記事で解説したモデリング技術を統合した完全な PHREEQC スクリプトは以下の通りである。
+
+::: {.callout-note collapse="true" title="Satake et al. (2025) 再現用 PHREEQC 完全版コード（クリックで展開）"}
+```phreeqc
+DATABASE PHREEQC_ThermoddemV1.10_15Dec2020.dat
+
+# (1) Initial Solution and Gas Injection at 25 C
+SOLUTION 1 Initial water
+    temp      25
+    units     mol/kgw
+    pH        7.0 charge
+    pe        4.0
+    Ca        1.0e-4
+    Na        4.3e-5
+    K         2.5e-5
+    Cl        1.0e-4
+
+GAS_PHASE 1
+    -fixed_volume
+    -volume       0.4286
+    -temperature  25
+    CO2(g)        39.47
+
+SAVE solution 1
+SAVE gas_phase 1
+END
+
+# (2) Reaction at 250 C
+USE solution 1
+USE gas_phase 1
+
+REACTION_TEMPERATURE 1
+    250
+
+EQUILIBRIUM_PHASES 2
+    # Fayalite as primary mineral (equilibrium dissolution)
+    Fayalite 0 0.00343
+    # Secondary minerals (precipitation only)
+    Saponite(FeMg) 0 0
+    Beidellite(Mg) 0 0
+    Montmorillonite(HcMg) 0 0
+    Quartz(alpha) 0 0
+    Calcite 0 0
+    Dolomite 0 0
+    Magnesite(Natur) 0 0
+
+RATES
+Albite(low)
+-start
+  10 k_neut = 10^-12.56 * EXP(-69.8 / 0.008314 * (1/TK - 1/298.15))
+  20 k_acid = 10^-10.16 * EXP(-65.0 / 0.008314 * (1/TK - 1/298.15))
+  30 k_base = 10^-15.6 * EXP(-71.0 / 0.008314 * (1/TK - 1/298.15))
+  40 rate = (k_acid * ACT("H+")^0.457 + k_neut + k_base * ACT("H+")^-0.572) * (1 - SR("Albite(low)"))
+  50 m_init = PARM(1)
+  60 area_init = PARM(2)
+  70 m_curr = M
+  80 if (m_curr <= 0) then goto 200
+  90 area = area_init * (m_curr / m_init)^(2/3)
+  100 moles = rate * area * TIME
+  110 SAVE moles
+  120 END
+  200 SAVE 0
+-end
+
+Anorthite
+-start
+  10 k_neut = 10^-9.12 * EXP(-17.8 / 0.008314 * (1/TK - 1/298.15))
+  20 k_acid = 10^-3.5 * EXP(-16.6 / 0.008314 * (1/TK - 1/298.15))
+  30 rate = (k_acid * ACT("H+")^1.411 + k_neut) * (1 - SR("Anorthite"))
+  40 m_init = PARM(1)
+  50 area_init = PARM(2)
+  60 m_curr = M
+  70 if (m_curr <= 0) then goto 200
+  80 area = area_init * (m_curr / m_init)^(2/3)
+  90 moles = rate * area * TIME
+  100 SAVE moles
+  110 END
+  200 SAVE 0
+-end
+
+Forsterite
+-start
+  10 k_neut = 10^-10.64 * EXP(-79.0 / 0.008314 * (1/TK - 1/298.15))
+  20 k_acid = 10^-6.85 * EXP(-67.2 / 0.008314 * (1/TK - 1/298.15))
+  30 rate = (k_acid * ACT("H+")^0.47 + k_neut) * (1 - SR("Forsterite"))
+  40 m_init = PARM(1)
+  50 area_init = PARM(2)
+  60 m_curr = M
+  70 if (m_curr <= 0) then goto 200
+  80 area = area_init * (m_curr / m_init)^(2/3)
+  90 moles = rate * area * TIME
+  100 SAVE moles
+  110 END
+  200 SAVE 0
+-end
+
+Microcline
+-start
+  10 k_neut = 10^-12.41 * EXP(-38.0 / 0.008314 * (1/TK - 1/298.15))
+  20 k_acid = 10^-10.06 * EXP(-51.7 / 0.008314 * (1/TK - 1/298.15))
+  30 k_base = 10^-21.2 * EXP(-94.1 / 0.008314 * (1/TK - 1/298.15))
+  40 rate = (k_acid * ACT("H+")^0.5 + k_neut + k_base * ACT("H+")^-0.823) * (1 - SR("Microcline"))
+  50 m_init = PARM(1)
+  60 area_init = PARM(2)
+  70 m_curr = M
+  80 if (m_curr <= 0) then goto 200
+  90 area = area_init * (m_curr / m_init)^(2/3)
+  100 moles = rate * area * TIME
+  110 SAVE moles
+  120 END
+  200 SAVE 0
+-end
+
+Paragonite
+-start
+  10 k_neut = 10^-13.0 * EXP(-22.0 / 0.008314 * (1/TK - 1/298.15))
+  20 rate = k_neut * (1 - SR("Paragonite"))
+  30 m_init = PARM(1)
+  40 area_init = PARM(2)
+  50 m_curr = M
+  60 if (m_curr <= 0) then goto 200
+  70 area = area_init * (m_curr / m_init)^(2/3)
+  80 moles = rate * area * TIME
+  90 SAVE moles
+  100 END
+  200 SAVE 0
+-end
+
+KINETICS 2
+    -cvode true
+    # 15 days = 15 * 86400 = 1296000 seconds. Using 150 steps for smooth curves.
+    -steps 1296000 in 150 steps
+    Albite(low)
+        -m 0.0263
+        -parms 0.0263 0.0526
+    Anorthite
+        -m 0.0395
+        -parms 0.0395 0.0080
+    Forsterite
+        -m 0.00498
+        -parms 0.00498 0.00042
+    Microcline
+        -m 0.0129
+        -parms 0.0129 1.56
+    Paragonite
+        -m 0.2092
+        -parms 0.2092 0.056
+
+SELECTED_OUTPUT
+    -file satake2025_kinetics_out.csv
+    -reset false
+    -time true
+    -pH true
+    -totals Na K Ca Mg Si Al Fe Cl C(4)
+    -equilibrium_phases Saponite(FeMg) Beidellite(Mg) Montmorillonite(HcMg) Quartz(alpha) Calcite Dolomite Magnesite(Natur)
+    -kinetic_reactants Albite(low) Anorthite Forsterite Microcline Paragonite
+    -gases CO2(g)
+
+END
+```
+:::
+
+### 5.3. スクリプトの実行方法と注意点
+
+上記の完全版スクリプトを手元の環境で実行し、結果を再現するための手順は以下の通りである。
+
+1. **データベースの配置**: 
+   本スクリプトでは Thermoddem データベースを使用している。スクリプト内の1行目で指定されている `PHREEQC_ThermoddemV1.10_15Dec2020.dat` を [Thermoddem 公式サイト](https://thermoddem.brgm.fr/)等からダウンロードし、実行するPQIファイル（例: `satake2025_kinetics.pqi`）と同じフォルダに配置する。
+2. **計算の実行**: 
+   ターミナル（コマンドプロンプトやPowerShell）から実行する場合は、ファイルが存在するフォルダに移動し、以下のコマンドを入力する。
+   ```bash
+   phreeqc satake2025_kinetics.pqi satake2025_kinetics.out PHREEQC_ThermoddemV1.10_15Dec2020.dat
+   ```
+   ※PHREEQC Interactive (Windows GUI版) を使用する場合は、PQIファイルを開き、実行時のデータベース設定で当該データを指定して Run ボタンを押すだけでよい。
+
+::: {.callout-note}
+**実行時の「WARNING」について（注意書き）**
+
+計算を開始すると、ターミナルやログファイルに以下のような大量のWARNINGメッセージが表示されることがある。
+`WARNING: Element Al is contained in Beidellite(Mg) (which has 0.0 mass), but is not in solution or other phases.`
+
+これは計算エラーではないので**完全に無視して問題ない**。
+PHREEQCの仕様上、計算の初期状態（水のみの段階）でアルミニウム（Al）などの元素が存在しないのに、将来の沈殿候補としてBeidellite等を指定しているために「現時点では材料がありません」とシステムがお知らせしているだけである。反応が進んで岩石が溶解し始めれば正常に計算が行われ、最後まで完走してデータ（CSV）が出力される。
+:::
+
+<br>
+
+---
+
+## References
+
+::: {#refs}
+:::
+
+<br>
+
+::: {.callout-note appearance="simple"}
+※本記事における物理的解析手法の導出およびPHREEQCコードの作成は、AI（Gemini 3.1 Pro）のアシストを利用して実行されました。
+:::

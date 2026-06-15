@@ -1,0 +1,478 @@
+---
+title: "PHREEQCをゼロから始める #17：玄武岩-CO2反応への挑戦 — CarbFixプロジェクトの論文再現"
+date: 2026-06-09
+categories: [Geochemistry, PHREEQC, Kinetics]
+series: "PHREEQCをゼロから始める"
+description: "前回のKINETICS入門から一歩進み、Gysi (2016) の論文を題材にして、CO2地中貯留（CarbFix）における複雑な玄武岩の溶解と二次鉱物沈殿のシミュレーションをPHREEQCで実装・再現する。"
+image: thumb.png
+author: "DeepFlow"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: ja
+bibliography: part17_refs.bib
+nocite: |
+  @*
+format:
+  html:
+    lightbox: true
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/phreeqc/phreeqc-part17/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/phreeqc/phreeqc-part17/index-en" />
+---
+
+
+## はじめに：玄武岩-CO2反応への挑戦
+
+前回の記事（#16）では、反応速度論（KINETICS）の基礎として、純水中でCalciteが溶けていくシンプルなシミュレーションを実装した。
+今回はそこから大きくステップアップし、実際の**最先端の論文のシミュレーションをPHREEQCで再現**してみよう。
+
+題材にするのは、Gysi (2016) による論文 *"Numerical simulations of CO2 sequestration in basaltic rock formations"* である。
+これは、アイスランドなどで実用化が進められている「玄武岩へのCO2地中貯留（CarbFixプロジェクト等）」をテーマにしたものである。CO2が水に溶けて酸性になった地下水が玄武岩を溶かし、最終的にCaやMg、Feと結合して**炭酸塩鉱物（Calciteなど）**として半永久的に固定化されるメカニズムを、シミュレーションによって解明しようとする極めて実践的な研究である。
+
+この反応経路では、目的とする炭酸塩鉱物だけでなく、**ケイ酸塩鉱物（ゼオライトやスメクタイトなどの粘土鉱物）**が大量に沈殿し、カルシウム等のイオンを奪い合う「競合」が起こる。原著論文では、この複雑な計算に **GEMS (Gibbs Energy Minimization Software)** という強力なソフトが使われているが、果たして水文地球化学者にとってなじみ深い **PHREEQC** でもこの複雑な地球化学反応を再現できるのだろうか？
+
+---
+
+## 熱力学データベースの壁：Thermoddemの導入
+
+PHREEQCでこの複雑なシミュレーションを構築するにあたり、最初の最大の壁となったのが**「熱力学データベースの選定」**である。
+
+### `llnl.dat` が使えなかった理由
+初期段階では、非常に広範な鉱物データを網羅していることで有名な `llnl.dat` (Lawrence Livermore National Laboratory) の使用を試みた。しかし、論文でCO2固定の競合相手として極めて重要な役割を果たす Saponite (サポナイト) や Nontronite (ノントロナイト) などの特定の粘土鉱物の端成分が `llnl.dat` に含まれていないという問題に直面した。
+
+### Thermoddemデータベースによる突破口
+この行き詰まりを打破してくれたのが、フランス地質調査所 (BRGM) が開発している **[Thermoddem データベース](https://thermoddem.brgm.fr/databases/phreeqc)** である。
+Thermoddemには、最新の熱力学測定データが反映されており、`Saponite(Ca)` やゼオライトの端成分が標準で網羅されている。このデータベースを導入することで、ユーザーが手動で複雑な $\log K$ の理論計算を行う必要がなくなり、PHREEQCの `EQUILIBRIUM_PHASES` ブロックで鉱物名を指定するだけで、論文と同様の複雑な二次鉱物の沈殿をシミュレーションできるようになった。
+
+---
+
+## Titration（滴定）モデリングの実装
+
+まずは、時間（Kinetics）の要素を入れず、「玄武岩を少しずつ水に溶かしていったら（滴定：Titration）、最終的にどんな鉱物が沈殿するか？」を計算するモデルを作成する。
+
+### Open System と Closed System の違い
+初期テストでは、`EQUILIBRIUM_PHASES` においてCO2ガスを無限ソースとして開かれた系 (Open System) に設定してしまったため、玄武岩を溶かしてもpHが論文のように上昇しないという失敗があった。
+論文の記述に基づき、**「最初に水をCO2で飽和させた後、系を閉じて (Closed System) 玄武岩を溶かす」** 設定にする必要があった。これはPHREEQCでは `SAVE solution` と `USE solution` コマンドを使うことで簡単に実装できる。
+
+### PHREEQC スクリプト (.pqi)
+実際のコードは以下の通りである。Thermoddemデータベースの多数のスメクタイト端成分を指定しているのがポイントである。
+
+```phreeqc
+DATABASE PHREEQC_ThermoddemV1.10_15Dec2020.dat
+
+# 1. 初期水質の定義 (Vellankatla spring water)
+SOLUTION 1 
+    temp      50
+    units     umol/kgw
+    pH        7.0
+    Si        256
+    Na        269
+    K         11.9
+    Ca        71
+    Mg        38
+    Fe        0.16
+    Al        1.09
+    Cl        120
+
+# 2. 初期水質を pCO2 = 20 bar で飽和させる
+EQUILIBRIUM_PHASES 1
+    CO2(g)    1.301  10.0   # log10(20) = 1.301
+
+# 3. 飽和した溶液を保存し、系を閉じる (Closed System)
+SAVE solution 1
+END
+
+USE solution 1
+
+# 4. 沈殿しうる二次鉱物のリストアップ
+EQUILIBRIUM_PHASES 2
+    Chalcedony 0 0
+    Kaolinite 0 0
+    Calcite 0 0
+    Dolomite 0 0
+    Siderite 0 0
+    Analcime 0 0
+    Beidellite(Ca) 0 0
+    Beidellite(K) 0 0
+    Beidellite(Mg) 0 0
+    Beidellite(Na) 0 0
+    Nontronite(Ca) 0 0
+    Nontronite(K) 0 0
+    Nontronite(Mg) 0 0
+    Nontronite(Na) 0 0
+    Saponite(Ca) 0 0
+    Saponite(FeCa) 0 0
+    Saponite(FeK) 0 0
+    Saponite(FeMg) 0 0
+    Saponite(FeNa) 0 0
+    Saponite(K) 0 0
+    Saponite(Mg) 0 0
+    Saponite(Na) 0 0
+    Scolecite 0 0
+
+# 5. 玄武岩の組成を定義し、100段階に分けて添加 (Titration)
+REACTION 1 Basaltic Glass Titration
+    K        0.008
+    Na       0.08
+    Ca       0.27
+    Mg       0.26
+    Fe       0.181
+    Si       1.0
+    Al       0.35
+    O        3.286
+    3.347 in 100 steps
+
+SELECTED_OUTPUT
+    -file gysi2016_titration_out.csv
+    -reset false
+    -reaction true
+    -pH true
+    -totals Ca Mg Fe Al Si C
+    -equilibrium_phases Chalcedony Kaolinite Calcite Dolomite Siderite Analcime Beidellite(Ca) Beidellite(K) Beidellite(Mg) Beidellite(Na) Nontronite(Ca) Nontronite(K) Nontronite(Mg) Nontronite(Na) Saponite(Ca) Saponite(FeCa) Saponite(FeK) Saponite(FeMg) Saponite(FeNa) Saponite(K) Saponite(Mg) Saponite(Na) Scolecite
+
+END
+```
+
+---
+
+## 結果の可視化：GEMS（固溶体） vs PHREEQC（純端成分）
+
+上記の計算結果（pCO2 = 20 bar）を、論文と同じ形式である「積み上げ面積グラフ (Stacked Area Plot)」で描画したものが下図である。
+
+### 滴定モデルにおける沈殿鉱物の推移
+![Titration Minerals (pCO2 = 20 bar)](fig2_titration_minerals.png){width=70% .lightbox}
+
+### pHの推移と「pH跳ね上がり現象」
+![Titration pH (pCO2 = 20 bar)](fig1_titration_ph.png)
+
+
+::: {.callout-note}
+**【一致点】**
+*   玄武岩の溶解に伴ってpHが段階的に上昇し、下層から順に `Chalcedony`（水色）、`Kaolinite`（ピンク）、`Calcite`（黄）、`Saponite` 等のスメクタイト（青系）が積み重なっていく順番とバランスは、論文の結果と見事に一致しています。
+
+
+:::
+
+::: {.callout-warning}
+**【相違点：なぜ終盤にpHが12まで跳ね上がったのか？】**
+論文の図では、玄武岩を大量に添加した終盤でも水色の `Chalcedony`（シリカ）が分厚く残存し、**pHが9.8付近でピタッと止まって（緩衝されて）いる**。
+しかし今回のPHREEQCモデルでは、終盤に赤や茶色の**ゼオライト（Scolecite等）が過剰に沈殿**して系内のシリカを奪い尽くしてしまった。その結果 `Chalcedony` が消滅し、シリカバッファーが破壊されてpHが12.2まで跳ね上がってしまったのです。
+:::
+
+
+### 固溶体モデル vs 純端成分モデル
+この明確な違いは、GEMSが採用している「複雑な**固溶体モデル**」と、今回PHREEQCで採用した「**純粋な端成分モデル**」の違いに起因する。
+自然界の鉱物であるゼオライトや粘土は、成分が混ざり合った固溶体であり、純粋な端成分の熱力学データ（Thermoddemのデフォルト値）をそのまま使うと、「沈殿しすぎる（安定すぎる）」傾向がある。論文では固溶体モデルを使うことで過剰な沈殿を抑え込んでいたのである。
+
+---
+
+
+
+## Kinetics（速度論）モデリングの実装
+
+滴定モデルに続き、時間依存の反応速度論（Kinetics）モデルを構築した。これは「150gの玄武岩が地下水中でどれくらいの時間をかけて溶解するか」をシミュレーションするものである。
+
+### PHREEQC スクリプト (.pqi)
+
+速度論モデルのスクリプトは以下の通りである。前回の記事（#16）で学んだ RATES と KINETICS ブロックを用いて、玄武岩ガラスの溶解速度式（Gysi 2016の式）を実装している。
+
+```phreeqc
+DATABASE PHREEQC_ThermoddemV1.10_15Dec2020.dat
+
+SOLUTION 1 Initial water
+    temp      50
+    units     umol/kgw
+    pH        7.0
+    Si        256
+    Na        269
+    K         11.9
+    Ca        71
+    Mg        38
+    Fe        0.16
+    Al        1.09
+    Cl        120
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)    1.301  10.0
+
+SAVE solution 1
+END
+`USE solution 1
+
+EQUILIBRIUM_PHASES 2
+    Chalcedony    0.0  0.0
+    Kaolinite     0.0  0.0
+    Calcite       0.0  0.0
+    Dolomite      0.0  0.0
+    Siderite      0.0  0.0
+    Analcime      0.0  0.0
+    Scolecite     0.0  0.0
+    Saponite(Ca)  0.0  0.0
+    Saponite(Mg)  0.0  0.0
+    Nontronite(Ca) 0.0 0.0
+
+RATES
+Basalt_Glass
+-start
+ 10 A_factor = 10^-5.6
+ 20 Ea = 25.5
+ 30 R = 0.008314
+ 40 TempK = TK
+ 50 rate_const = A_factor * EXP(-Ea / (R * TempK))
+ 60 a_H = ACT("H+")
+ 70 a_Al = ACT("Al+3")
+ 80 IF (a_Al <= 0) THEN a_Al = 1e-20
+ 90 term = (a_H^3 / a_Al)^(1/3)
+ 100 specific_rate = rate_const * term
+ 110 m_init = PARM(1)
+ 120 s_init = PARM(2)
+ 130 m_curr = M
+ 140 IF (m_curr <= 0) THEN GOTO 200
+ 150 current_S = s_init * (m_curr / m_init)^(2/3)
+ 160 rate_mol = specific_rate * current_S
+ 170 moles = rate_mol * TIME
+ 180 SAVE moles
+ 190 END
+ 200 SAVE 0
+-end
+
+KINETICS 2
+Basalt_Glass
+    -formula  K 0.008 Na 0.08 Ca 0.27 Mg 0.26 Fe 0.181 Si 1.0 Al 0.35 O 3.286
+    -m        1.255
+    -m0       1.255
+    -parms    1.255  37500
+    -steps    43200000 in 100 steps
+
+SELECTED_OUTPUT
+    -file gysi2016_kinetics_out.csv
+    -reset false
+    -time true
+    -pH true
+    -totals Ca Mg Fe Al Si C
+    -equilibrium_phases Chalcedony Kaolinite Calcite Dolomite Siderite Analcime Scolecite Saponite(Ca) Saponite(Mg) Nontronite(Ca)
+
+END
+```
+
+::: {.callout-note}
+**PHREEQC実行時の「WARNING」について（注意書き）**
+
+上記のスクリプトを手元のPHREEQCで実行すると、ターミナルやログファイルに以下のようなWARNINGメッセージが表示されることがあります。
+`WARNING: Maximum iterations exceeded, 100`
+`WARNING: Numerical method failed with this set of convergence parameters.`
+`WARNING: Trying smaller step size, pe step size 10, 5 ... `
+
+これは計算エラーではないので**完全に無視して問題ありません**。
+Kinetics（速度論）モデルで急速なpH変化などを計算する際、計算が一時的に収束しなかった場合に、PHREEQCが自動的に計算の刻み幅（ステップサイズ）を小さくして再試行（リトライ）していることを知らせるメッセージです。この機能のおかげで、そのまま正常に計算が進み、最後まで完走して出力データが得られます。
+:::
+
+### 速度論モデルの可視化と比較
+
+速度論モデルの計算結果（pCO2 = 20 bar）も同様に可視化した。黒い領域が未溶解の玄武岩ガラスを表している。
+
+#### 鉱物生成量と未溶解玄武岩の推移
+![Kinetics Minerals (pCO2 = 20 bar)](fig7_kinetic_minerals.png){width=70% .lightbox}
+
+::: {.callout-note}
+**【見事な一致点：溶解速度の再現】**
+未溶解の玄武岩ガラス（黒い領域）が、**約150〜200日間で完全に溶解し尽くす**というタイムスケールが論文の図と完璧に一致している。これにより、PHREEQCのBASIC言語で組み込んだ RATES の反応速度式が正しく機能していることが裏付けられました。
+
+
+:::
+
+::: {.callout-warning}
+**【相違点：やはり現れるゼオライト】**
+論文の図（20 bar）では、500日経過後もゼオライトは一切出現せず、Chalcedony が残存してpHは8.5付近で安定している。
+対して今回のPHREEQCモデルでは、約250日目以降に赤色のゼオライトが沈殿を開始している。これもTitrationモデルと同様に、純端成分モデルによるゼオライトの過剰安定性が原因です。
+:::
+
+
+## 感度分析：CO2分圧の影響
+
+「端成分モデルゆえの過剰沈殿」という特性を理解した上で、初期のCO2分圧を **20 bar, 40 bar, 100 bar** と変化させる感度分析（Sensitivity Analysis）を行った。速度論（Kinetics）モデルのpH推移を下図に示す。
+
+![Kinetics pH Sensitivity Analysis](fig6_kinetic_ph.png)
+
+ここには、CO2圧力による反応のシフトという、論文の最も重要な主張が完璧に再現されている。
+$pCO_2$ が高い（100 bar等）条件ほど、系内に溶け込んでいる炭酸濃度が高く酸性が強くなる。そのため、**緩衝帯がより酸性側（下方向）にシフト**し、同じpHに到達するためにより多くの時間をかけて玄武岩を溶かす必要があるという理論通りの結果である。
+
+---
+
+## 読者のための再現ガイド
+
+本記事で示したシミュレーション結果およびグラフは、PHREEQCの計算結果（CSV出力）をPythonで処理することで簡単に再現できます。以下にその具体的な手順を示します。
+
+### 1. CO2分圧（pCO2）の感度分析の設定
+初期のCO2分圧を変更するには、PHREEQC入力スクリプト内の `EQUILIBRIUM_PHASES 1` における `CO2(g)` の値を調整します。
+PHREEQCでは、ガス相の分圧は対数（$\log_{10} p$）で指定するため、それぞれの設定値は以下の通りになります。
+
+*   **pCO2 = 20 bar** の場合：
+    ```phreeqc
+    EQUILIBRIUM_PHASES 1
+        CO2(g)    1.301  10.0   # log10(20) = 1.301
+    ```
+*   **pCO2 = 40 bar** の場合：
+    ```phreeqc
+    EQUILIBRIUM_PHASES 1
+        CO2(g)    1.602  10.0   # log10(40) = 1.602
+    ```
+*   **pCO2 = 100 bar** の場合：
+    ```phreeqc
+    EQUILIBRIUM_PHASES 1
+        CO2(g)    2.000  10.0   # log10(100) = 2.000
+    ```
+
+### 2. 計算結果のCSV出力
+PHREEQCの計算結果をPythonで読み込むため、スクリプトの末尾に `SELECTED_OUTPUT` ブロックを記述してタブ区切りのテキストデータ（拡張子 `.csv`）を出力します。
+
+感度分析を行う際は、それぞれの分圧条件（20 bar, 40 bar, 100 bar）ごとに個別のPQIスクリプトを作成・実行し、それぞれ異なるCSVファイル名で出力します。
+
+*   **pCO2 = 20 bar用の設定例**:
+    ```phreeqc
+    SELECTED_OUTPUT
+        -file gysi2016_kinetics_out.csv
+        -reset false
+        -time true          # 速度論モデルのみ（滴定モデルでは -reaction true）
+        -pH true
+        -totals Ca Mg Fe Al Si C
+        -equilibrium_phases Chalcedony Kaolinite Calcite Dolomite Siderite Analcime Scolecite Saponite(Ca) Saponite(Mg) Nontronite(Ca)
+    ```
+*   **40 bar用および100 bar用の設定例**:
+    出力ファイル設定の `-file` 部分を、それぞれ `gysi2016_kinetics_40bar_out.csv` および `gysi2016_kinetics_100bar_out.csv` に書き換えて実行します（滴定モデルも同様に `gysi2016_titration_40bar_out.csv` 等として個別に出力します）。
+
+::: {.callout-tip}
+## コラム：なぜPHREEQCのCSVデータから「積み上げ面積図」が作れるのか？
+
+PHREEQCの出力CSVには、沈殿した各鉱物の絶対量は記録されていますが、**「まだ溶けずに残っている玄武岩の量」は直接記録されていません。**
+そこでPythonを用いて、以下の手順でデータを加工・描画しています。
+
+1.  **残存玄武岩量の逆算**
+    初期の玄武岩中のシリカ（Si）総量（1.255 mol）から、「溶液中に溶け出しているSiの量」と「各種二次鉱物中に取り込まれたSiの量（化学量論比から算出）」の合計を差し引くことで、**現在も溶けずに残っている玄武岩ガラスの量を逆算**しています。
+2.  **積み木のような重ね書き（stackplot）**
+    得られた各データを、一番下から順に「未溶解玄武岩（黒）」、その上に「Chalcedony（水色）」、「Kaolinite（ピンク）」と積み木のように順次足し算しながら積み重ねて領域を塗りつぶします。
+
+この計算と描画の自動化こそが、可視化におけるPythonスクリプトの重要な役割です。
+:::
+
+### 3. Pythonによるグラフ描画スクリプト
+出力されたCSV（タブ区切り）ファイルを読み込み、論文と同様の積み上げ面積グラフ（Stacked Area Plot）やpH推移を描画するPythonコードは以下の通りです。
+
+なお、提示しているスクリプトの前半部分は、**20 bar（Kineticsモデル）のCSVデータをもとに1枚の積み上げ図を描画する設定**になっています。もし 40 bar や 100 bar の積み上げ面積図を描きたい場合は、最初のデータ読み込み部分（`pd.read_csv('gysi2016_kinetics_out.csv', ...)`）のファイル名を、それぞれ `gysi2016_kinetics_40bar_out.csv` または `gysi2016_kinetics_100bar_out.csv` に書き換えて実行してください。
+
+
+::: {.callout-note}
+## Pythonライブラリの準備
+グラフ作成には `pandas`、`matplotlib`、`numpy` が必要になります。事前にインストールしておいてください。
+:::
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 論文のデザインに合わせたカラーマップの定義
+color_map = {
+    'Siderite': '#6b5b95',         # 紫
+    'Dolomite': '#ff7b25',         # 橙
+    'Calcite': '#f0e130',          # 黄
+    'Kaolinite': '#d4a5a5',        # 桃
+    'Chalcedony': '#6bc5d2',       # 水色
+    'Saponite(Ca)': '#034f84',     # 濃青
+    'Saponite(Mg)': '#034f84',
+    'Nontronite(Ca)': '#008080',   # ティール
+    'Analcime': '#8d5524',         # 茶
+    'Scolecite': '#c94c4c',        # 赤
+}
+order = ['Siderite', 'Nontronite(Ca)', 'Saponite(Ca)', 'Saponite(Mg)', 'Dolomite', 'Calcite', 'Kaolinite', 'Chalcedony', 'Analcime', 'Scolecite']
+
+# 1. データの読み込み (例: Kinetics 20 bar)
+df = pd.read_csv('gysi2016_kinetics_out.csv', sep='\t', skipinitialspace=True)
+df.columns = [c.strip() for c in df.columns] # 列名の余白処理
+df['Time_days'] = df['time'] / 86400.0       # 秒から日へ換算
+
+# 2. 未溶解玄武岩ガラスの残存量の計算
+# 各二次鉱物が消費したシリカ(Si)の化学量論比を掛け合わせ、初期量から差し引く
+mineral_si = 0
+if 'Chalcedony' in df.columns: mineral_si += df['Chalcedony'] * 1
+if 'Kaolinite' in df.columns: mineral_si += df['Kaolinite'] * 2
+if 'Analcime' in df.columns: mineral_si += df['Analcime'] * 2
+if 'Scolecite' in df.columns: mineral_si += df['Scolecite'] * 3
+if 'Saponite(Ca)' in df.columns: mineral_si += df['Saponite(Ca)'] * 3.67
+if 'Saponite(Mg)' in df.columns: mineral_si += df['Saponite(Mg)'] * 3.67
+if 'Nontronite(Ca)' in df.columns: mineral_si += df['Nontronite(Ca)'] * 3.67
+
+# 初期ガラス量 1.255 mole からの残量を計算
+remaining_basalt = np.maximum(1.255 - (df['Si'] + mineral_si), 0)
+
+# 3. 積み上げ面積グラフの描画
+plot_minerals = [m for m in order if m in df.columns and df[m].max() > 1e-4]
+y_data = [remaining_basalt.values] + [df[m].values for m in plot_minerals]
+labels = ['Basaltic glass'] + plot_minerals
+c_list = ['#000000'] + [color_map.get(m, '#aaaaaa') for m in plot_minerals]
+
+fig, ax = plt.subplots(figsize=(7, 5))
+ax.stackplot(df['Time_days'], y_data, labels=labels, colors=c_list)
+ax.set_xlim(0, 500)
+ax.set_ylim(0, 1.6)
+ax.set_xlabel('Time (days)')
+ax.set_ylabel('Minerals (mole)')
+ax.set_title('Basalt Dissolution and Secondary Minerals (pCO2 = 20 bar)')
+ax.legend(loc='upper right', bbox_to_anchor=(1.35, 1.0))
+plt.tight_layout()
+plt.savefig('reproduced_kinetics.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+# 4. 感度分析によるpH変化の重ね書きプロット (Fig.6の再現)
+pcos = [20, 40, 100]
+colors_pco = {20: 'black', 40: '#d95384', 100: '#5bc0de'}
+
+fig, ax = plt.subplots(figsize=(6, 5))
+for p in pcos:
+    # 20barだけファイル名の命名規則が異なる場合の読み込み処理
+    filename = f"gysi2016_kinetics_out.csv" if p == 20 else f"gysi2016_kinetics_{p}bar_out.csv"
+    try:
+        df_p = pd.read_csv(filename, sep='\t', skipinitialspace=True)
+        df_p.columns = [c.strip() for c in df_p.columns]
+        time_days = df_p['time'] / 86400.0
+        ax.plot(time_days, df_p['pH'], color=colors_pco[p], label=f'pCO2 = {p} bar')
+    except FileNotFoundError:
+        print(f"ファイル {filename} が見つかりません。")
+
+ax.set_xlabel('Time (days)')
+ax.set_ylabel('pH')
+ax.set_xlim(0, 500)
+ax.set_ylim(2, 11)
+ax.set_title('Kinetic Model: pH Evolution (Fig 6)')
+ax.legend()
+plt.tight_layout()
+plt.savefig('reproduced_kinetic_ph.png', dpi=150)
+plt.show()
+```
+
+---
+
+## まとめ
+
+今回の挑戦により、適切なデータベース（Thermoddem）とClosed Systemの設定を用いることで、PHREEQCでも十分に最先端論文の複雑な玄武岩-CO2 反応経路の全体像をシミュレーションできることが証明された。
+
+純粋な熱力学データベースの値を人為的に操作せず、「固溶体と端成分の違い」というモデリングの特性を正しく認識した上で結果を解釈することは、科学的なアプローチとして非常に重要である。
+地下環境という見えない世界を可視化するPHREEQCのポテンシャルの高さを、改めて実感できたのではないだろうか。
+
+---
+
+## References
+
+::: {#refs}
+:::
+
+<br>
+
+::: {.callout-note appearance="simple"}
+※本記事で紹介したPHREEQCコードおよびPythonスクリプトは、AI（Gemini 3.1 Pro）のアシストを利用して作成・調整を行いました。
+:::
+
+
