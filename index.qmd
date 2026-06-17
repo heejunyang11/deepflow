@@ -309,7 +309,7 @@ listing:
 <div class="series-wrapper">
   <div class="inner-card">
     <img src="/cute_cat.png" class="cute-cat" alt="Cute Cat">
-    <div class="series-title">Groundwater Modeling</div>
+    <div class="series-title">Groundwater Science</div>
     <div class="series-desc">
       MODFLOWとFloPyを用いた地下水流動解析や、熱水地球化学シミュレーションの実践的なノウハウ。
     </div>

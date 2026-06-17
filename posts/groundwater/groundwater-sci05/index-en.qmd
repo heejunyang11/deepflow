@@ -221,6 +221,6 @@ In the next episode, we will focus on **Groundwater Chemistry**.
 
 1. [#1: What is the Water Cycle? — Where Does the Rain Go?](../groundwater-sci01/index-en.qmd)
 2. [#2: Where Does Groundwater Exist and How Does It Move? — The Geological Vessel and Topographical Engine](../groundwater-sci02/index-en.qmd)
-3. [#3: Physics of Aquifers, Darcy's Law, and Hydraulic Head (Planned)](../groundwater-sci03/index-en.qmd)
-4. [#4: Pumping Tests and Well Modeling (Planned)](../groundwater-sci04/index-en.qmd)
+3. [#3: Physics of Aquifers, Darcy's Law, and Hydraulic Head](../groundwater-sci03/index-en.qmd)
+4. [#4: Pumping Tests and Well Modeling](../groundwater-sci04/index-en.qmd)
 5. [#5: Where Does the River Water Come From? — Interaction Between River and Groundwater](../groundwater-sci05/index-en.qmd) (This post)

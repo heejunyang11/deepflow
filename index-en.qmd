@@ -308,7 +308,7 @@ listing:
 <div class="series-wrapper">
   <div class="inner-card">
     <img src="/cute_cat.png" class="cute-cat" alt="Cute Cat">
-    <div class="series-title">Groundwater Modeling</div>
+    <div class="series-title">Groundwater Science</div>
     <div class="series-desc">
       Practical know-how for groundwater flow analysis and hydrothermal geochemical simulations using MODFLOW and FloPy.
     </div>

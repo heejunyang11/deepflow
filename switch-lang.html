@@ -60,7 +60,30 @@
   }
 
   function switchLanguage() {
-    window.location.href = getTargetUrl(window.location.href);
+    let targetUrl = getTargetUrl(window.location.href);
+    
+    // ローカルプレビュー環境（localhost/127.0.0.1）では、
+    // 拡張子なしのURLだと404エラーになるため、明示的に .html を付加します。
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocal) {
+      let targetPath = targetUrl.split('?')[0].split('#')[0];
+      if (!targetPath.endsWith('/') && !targetPath.endsWith('.html')) {
+        try {
+          let urlObj = new URL(targetUrl);
+          targetUrl = urlObj.origin + urlObj.pathname + '.html' + urlObj.search + urlObj.hash;
+        } catch(e) {
+          const queryIndex = targetUrl.indexOf('?');
+          const hashIndex = targetUrl.indexOf('#');
+          let splitIndex = targetUrl.length;
+          if (queryIndex !== -1 && hashIndex !== -1) splitIndex = Math.min(queryIndex, hashIndex);
+          else if (queryIndex !== -1) splitIndex = queryIndex;
+          else if (hashIndex !== -1) splitIndex = hashIndex;
+          targetUrl = targetUrl.slice(0, splitIndex) + '.html' + targetUrl.slice(splitIndex);
+        }
+      }
+    }
+    
+    window.location.href = targetUrl;
   }
 
   document.addEventListener("DOMContentLoaded", async function() {
