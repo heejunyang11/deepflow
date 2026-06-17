@@ -15,6 +15,7 @@ listing:
     contents:
       - "posts/groundwater/**/index-en.qmd"
     type: grid
+    fields: [date, title, image]
     sort: "date asc"
     categories: false
     sort-ui: false
@@ -23,6 +24,7 @@ listing:
     contents:
       - "posts/phreeqc/**/index-en.qmd"
     type: grid
+    fields: [date, title, image]
     sort: "date asc"
     categories: false
     sort-ui: false

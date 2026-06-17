@@ -15,25 +15,30 @@ listing:
       - "posts/note/onsen-part1/index.qmd"
       - "posts/note/onsen-part2/index.qmd"
       - "posts/note/sekigahara/index.qmd"
+      - "posts/note/intro/index.qmd"
     type: grid
+    fields: [date, title, image]
     sort: "date desc"
     categories: false
     sort-ui: false
     filter-ui: false
   - id: lab-notes
     contents:
+      - "posts/note/vibe-coding-do-you-love-me/index.qmd"
       - "posts/note/reactive-transport-part1/index.qmd"
-      - "posts/note/intro/index.qmd"
       - "posts/note/pde-part1/index.qmd"
     type: grid
+    fields: [date, title, image]
     sort: "date desc"
     categories: false
     sort-ui: false
     filter-ui: false
   - id: groundwater
     contents:
+      - "posts/note/groundwater-beppu/index.qmd"
       - "posts/note/groundwater-contour/index.qmd"
     type: grid
+    fields: [date, title, image]
     sort: "date desc"
     categories: false
     sort-ui: false
@@ -100,9 +105,9 @@ From columns scientifically deciphering the chemical properties of hot springs, 
 <div class="series-section-header">
   <div class="series-heading">
     <span class="series-icon">🔬</span>
-    <span>Lab Notes & Python</span>
+    <span>AI & Python</span>
   </div>
-  <p class="series-subheading">Trajectory of Research and Trial-and-Error <span class="badge-ja">Japanese Only</span></p>
+  <p class="series-subheading">AI Collaboration and Python Simulation Optimization <span class="badge-ja">Japanese Only</span></p>
 </div>
 ```
 

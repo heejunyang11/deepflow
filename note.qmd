@@ -15,17 +15,20 @@ listing:
       - "posts/note/onsen-part1/index.qmd"
       - "posts/note/onsen-part2/index.qmd"
       - "posts/note/sekigahara/index.qmd"
+      - "posts/note/intro/index.qmd"
     type: grid
+    fields: [date, title, image]
     sort: "date desc"
     categories: false
     sort-ui: false
     filter-ui: false
   - id: lab-notes
     contents:
+      - "posts/note/vibe-coding-do-you-love-me/index.qmd"
       - "posts/note/reactive-transport-part1/index.qmd"
-      - "posts/note/intro/index.qmd"
       - "posts/note/pde-part1/index.qmd"
     type: grid
+    fields: [date, title, image]
     sort: "date desc"
     categories: false
     sort-ui: false
@@ -35,6 +38,7 @@ listing:
       - "posts/note/groundwater-beppu/index.qmd"
       - "posts/note/groundwater-contour/index.qmd"
     type: grid
+    fields: [date, title, image]
     sort: "date desc"
     categories: false
     sort-ui: false
