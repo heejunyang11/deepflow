@@ -202,11 +202,11 @@ To address river pollution or water scarcity, it is insufficient to manage surfa
 
 ---
 
-## Next Episode Preview {#sec-next}
+## Next Episode Preview
 
-In the next episode, we will focus on **Groundwater Chemistry**.
+In the next episode, we will focus on **Time-Series Analysis & FFT**.
 
-> Why does groundwater taste and contain different constituents depending on where it is sampled? How does water react with minerals in the aquifer as it moves along flow paths? We will combine Python and PHREEQC to plot Piper diagrams and Stiff diagrams, learning how to decipher the "geochemical resume" of groundwater.
+> We analyze the long-term decline of unconfined groundwater levels in southern Beppu. Using signal processing (Fast Fourier Transform: FFT) and statistical analysis, we decompose the time-series data to isolate and quantify the periodic components of groundwater levels and their response to atmospheric and tidal variations.
 
 ---
 
@@ -224,3 +224,4 @@ In the next episode, we will focus on **Groundwater Chemistry**.
 3. [#3: Physics of Aquifers, Darcy's Law, and Hydraulic Head](../groundwater-sci03/index-en.qmd)
 4. [#4: Pumping Tests and Well Modeling](../groundwater-sci04/index-en.qmd)
 5. [#5: Where Does the River Water Come From? — Interaction Between River and Groundwater](../groundwater-sci05/index-en.qmd) (This post)
+6. [#6: Time-Series Analysis & FFT — Relationship Between Unconfined Groundwater Level and Barometric Pressure](../groundwater-sci06/index-en.qmd)

@@ -1,50 +1,55 @@
 <style>
-.series-nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 5rem;
-  padding: 2.5rem 0;
-  border-top: 2px dashed #E8E4DC;
-  font-family: inherit;
-}
-.nav-link-btn {
-  font-weight: 700;
-  color: #ea580c;
-  text-decoration: none;
-  font-size: 1.05rem;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  visibility: hidden; /* JavaScriptで有効な場合のみ表示 */
-}
-.nav-link-btn:hover {
-  background-color: #fff7ed;
-  color: #c2410c;
-}
-.nav-index-btn {
-  background: #fff7ed;
-  color: #c2410c !important;
-  border: 1px solid #fed7aa;
-  padding: 14px 28px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 1.1rem;
-  text-decoration: none;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.05);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  letter-spacing: 0.02em;
-}
-.nav-index-btn:hover {
-  background: #ffedd5;
-  color: #ea580c !important;
-  border-color: #fdba74;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
-}
+  .series-nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5rem;
+    padding: 2.5rem 0;
+    border-top: 2px dashed #E8E4DC;
+    font-family: inherit;
+  }
+
+  .nav-link-btn {
+    font-weight: 700;
+    color: #ea580c;
+    text-decoration: none;
+    font-size: 1.05rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    visibility: hidden;
+    /* JavaScriptで有効な場合のみ表示 */
+  }
+
+  .nav-link-btn:hover {
+    background-color: #fff7ed;
+    color: #c2410c;
+  }
+
+  .nav-index-btn {
+    background: #fff7ed;
+    color: #c2410c !important;
+    border: 1px solid #fed7aa;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.05);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-index-btn:hover {
+    background: #ffedd5;
+    color: #ea580c !important;
+    border-color: #fdba74;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
+  }
 </style>
 
 <div class="series-nav-container">
@@ -56,57 +61,56 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const path = window.location.pathname;
-  // HTML拡張子の有無や -en の有無で言語判定
-  const isEnglish = path.includes("index-en") || path.includes("-en.html") || path.endsWith("-en/");
-  
-  // 言語に応じたインデックスボタンの設定
-  const navIndexText = document.getElementById('nav-index-text');
-  const navIndex = document.getElementById('nav-index');
-  navIndexText.innerText = isEnglish ? "Series Index" : "シリーズ一覧へ";
-  navIndex.href = isEnglish ? "/blog-en.html" : "/blog.html";
-  
-  // URLからプレフィックスと番号を抽出
-  // パターン例: /posts/phreeqc/phreeqc-part16/ または /posts/groundwater/groundwater-sci02/index.html
-  const match = path.match(/^(.*\/)([a-zA-Z-]+)(\d+)(\/?.*)$/);
-  
-  if (match) {
-    const basePath = match[1];
-    const prefix = match[2];
-    const numStr = match[3];
-    const num = parseInt(numStr, 10);
-    const suffix = match[4];
-    
-    // 0埋めが必要かどうかの判定（例: sci01 の場合は 0埋めあり）
-    const isPadded = numStr.startsWith('0');
-    
-    const prevBtn = document.getElementById('nav-prev');
-    const nextBtn = document.getElementById('nav-next');
-    
-    prevBtn.innerText = isEnglish ? "← Prev Article" : "← 前の記事";
-    nextBtn.innerText = isEnglish ? "Next Article →" : "次の記事 →";
-    
-    // シリーズごとの最大記事数（ハードコードで404エラーを防止）
-    let maxNum = 20;
-    if(prefix.includes("groundwater-sci")) maxNum = 5;
-    if(prefix.includes("phreeqc-part")) maxNum = 18;
-    if(prefix.includes("flopy-phreeqc-part")) maxNum = 3;
-    if(prefix.includes("fft-part")) maxNum = 1;
+  document.addEventListener("DOMContentLoaded", function () {
+    const path = window.location.pathname;
+    // HTML拡張子の有無や -en の有無で言語判定
+    const isEnglish = path.includes("index-en") || path.includes("-en.html") || path.endsWith("-en/");
 
-    // 前の記事リンク生成
-    if (num > 1) {
-      const prevNumStr = isPadded ? String(num - 1).padStart(numStr.length, '0') : String(num - 1);
-      prevBtn.href = basePath + prefix + prevNumStr + suffix;
-      prevBtn.style.visibility = "visible";
+    // 言語に応じたインデックスボタンの設定
+    const navIndexText = document.getElementById('nav-index-text');
+    const navIndex = document.getElementById('nav-index');
+    navIndexText.innerText = isEnglish ? "Series Index" : "シリーズ一覧へ";
+    navIndex.href = isEnglish ? "/blog-en.html" : "/blog.html";
+
+    // URLからプレフィックスと番号を抽出
+    // パターン例: /posts/phreeqc/phreeqc-part16/ または /posts/groundwater/groundwater-sci02/index.html
+    const match = path.match(/^(.*\/)([a-zA-Z-]+)(\d+)(\/?.*)$/);
+
+    if (match) {
+      const basePath = match[1];
+      const prefix = match[2];
+      const numStr = match[3];
+      const num = parseInt(numStr, 10);
+      const suffix = match[4];
+
+      // 0埋めが必要かどうかの判定（例: sci01 の場合は 0埋めあり）
+      const isPadded = numStr.startsWith('0');
+
+      const prevBtn = document.getElementById('nav-prev');
+      const nextBtn = document.getElementById('nav-next');
+
+      prevBtn.innerText = isEnglish ? "← Prev Article" : "← 前の記事";
+      nextBtn.innerText = isEnglish ? "Next Article →" : "次の記事 →";
+
+      // シリーズごとの最大記事数（ハードコードで404エラーを防止）
+      let maxNum = 20;
+      if (prefix.includes("groundwater-sci")) maxNum = 6;
+      if (prefix.includes("phreeqc-part")) maxNum = 19;
+      if (prefix.includes("flopy-phreeqc-part")) maxNum = 3;
+
+      // 前の記事リンク生成
+      if (num > 1) {
+        const prevNumStr = isPadded ? String(num - 1).padStart(numStr.length, '0') : String(num - 1);
+        prevBtn.href = basePath + prefix + prevNumStr + suffix;
+        prevBtn.style.visibility = "visible";
+      }
+
+      // 次の記事リンク生成
+      if (num < maxNum) {
+        const nextNumStr = isPadded ? String(num + 1).padStart(numStr.length, '0') : String(num + 1);
+        nextBtn.href = basePath + prefix + nextNumStr + suffix;
+        nextBtn.style.visibility = "visible";
+      }
     }
-    
-    // 次の記事リンク生成
-    if (num < maxNum) {
-      const nextNumStr = isPadded ? String(num + 1).padStart(numStr.length, '0') : String(num + 1);
-      nextBtn.href = basePath + prefix + nextNumStr + suffix;
-      nextBtn.style.visibility = "visible";
-    }
-  }
-});
+  });
 </script>
