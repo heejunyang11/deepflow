@@ -22,7 +22,7 @@ format:
 
 One of the world's most active geothermal systems resides beneath the city of Beppu. Geothermal manifestations, such as steaming ground and active hot springs, are widely distributed, and both the spring discharge rate and the number of active vents are among the highest in Japan. However, the origin and flow dynamics of the shallow meteoric groundwater, as well as the mechanisms governing its long-term decline, remain critical hydrogeological questions.
 
-In this series, we analyze time-series data of unconfined groundwater levels measured at the Beppu Geothermal Research Center of Kyoto University. Using signal processing, statistical analysis, and Python-based scripts, we characterize the sub-surface flow dynamics.
+In this series, we analyze time-series data of unconfined groundwater levels measured at the Beppu Geothermal Research Center of Kyoto University. Using signal processing, statistical analysis, and Python-based scripts, we characterize the subsurface flow dynamics.
 
 ------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ The geological framework of this aquifer system consists of volcanic products (t
 
 ## Mechanisms of Long-Term Water Level Decline in Unconfined Aquifers
 
-Long-term hydrological monitoring (Yusa, 1979; 2001) has revealed a steady decline in the unconfined groundwater levels in this region. This downward trend is primarily attributed to two distinct anthropogenic and environmental factors:
+Long-term hydrological monitoring (Yusa, 1979, 2001) has revealed a steady decline in the unconfined groundwater levels in this region. This downward trend is primarily attributed to two distinct anthropogenic and environmental factors:
 
 ```{=html}
 <div style="background:#FFF7ED; border-left:4px solid #D97706; padding:1.2em 1.5em; margin:1.5em 0; border-radius:0 8px 8px 0;">
@@ -180,10 +180,11 @@ We first implement a Python script to import and visualize the time-series data.
 
 ::: callout-note
 ## Use of Synthetic (Dummy) Dataset for Demonstration
+
 To ensure reproducibility and ease of learning, we initially utilize a **synthetic (dummy) dataset** generated using `numpy`. When applying this analysis to field measurements, the synthetic generator section can be replaced with `pd.read_csv()` as described in the subsequent section.
 :::
 
-```python
+``` python
 # [Synthetic Data] Python script for generating and plotting synthetic groundwater level and barometric pressure data
 
 import numpy as np
@@ -260,11 +261,11 @@ In this section, we transition from the numerical simulation using synthetic dat
 
 The dataset analyzed herein consists of unconfined groundwater levels, barometric pressure, and precipitation continuously monitored at hourly intervals for approximately one year at the observation wells of the Beppu Geothermal Research Center, Kyoto University. The field measurement dataset is available for download below:
 
-*   **Field Measurement Data:** [BP.csv](BP.csv)
+- **Field Measurement Data:** [BP.csv](BP.csv)
 
-To adapt the previously defined Python script for the field measurements, the synthetic data generation block (lines 207–224) should be replaced with the following data import routing utilizing `pandas.read_csv`:
+To adapt the previously defined Python script for the field measurements, the synthetic data generation block (lines 207–224) should be replaced with the following data import routine utilizing `pandas.read_csv`:
 
-```python
+``` python
 # ---- Load Field Measurements ----
 df = pd.read_csv("BP.csv", parse_dates=["datetime"], index_col="datetime")
 gwl_ow1 = df["OW1"]
@@ -280,14 +281,10 @@ Applying this modification and executing the script yields the field data plot p
 
 The field measurement time-series (@fig-gwl-real) reveals several complex physical dynamics:
 
-1.  **Baseline Water Levels and Local Gradients:**
-    The mean water levels of OW1 and OW2 fluctuate within the range of 39.5 to 40.0 m a.s.l. The water level in OW2 remains consistently higher than in OW1 throughout the year, reflecting a stable local hydraulic gradient and indicating the direction of groundwater flow.
-2.  **Barometric Response during Typhoon Events:**
-    The barometric pressure drops rapidly (below 985 hPa) during storm events, such as mid-September typhoons. Simultaneously, the groundwater levels in both wells show a sharp increase. This immediate, in-phase rise in water level in response to a decline in barometric pressure is a classic barometric response. It demonstrates that the unconfined aquifer behaves elastically under changing atmospheric load.
-3.  **Long-Term Seasonal Trends:**
-    Similar to the synthetic dataset, a long-term seasonal fluctuation with a period of several months is observed. This represents the catchment-scale precipitation-recharge and evapotranspiration cycle.
-4.  **High-Frequency Micro-Fluctuations:**
-    Continuous micro-fluctuations with amplitudes of 1 to 5 cm are superimposed on the baseline. These represent the combined effects of earth tides and diurnal/semidiurnal barometric variations.
+1.  **Baseline Water Levels and Local Gradients:** The mean water levels of OW1 and OW2 fluctuate within the range of 39.5 to 40.0 m a.s.l. The water level in OW2 remains consistently higher than in OW1 throughout the year, reflecting a stable local hydraulic gradient and indicating the direction of groundwater flow.
+2.  **Barometric Response during Typhoon Events:** The barometric pressure drops rapidly (below 985 hPa) during storm events, such as mid-September typhoons. Simultaneously, the groundwater levels in both wells show a sharp increase. This immediate, inverse-phase rise in water level in response to a decline in barometric pressure is a classic barometric response, demonstrating that the unconfined aquifer responds elastically to atmospheric loading.
+3.  **Long-Term Seasonal Trends:** Similar to the synthetic dataset, a long-term seasonal fluctuation with a period of several months is observed. This represents the catchment-scale precipitation-recharge and evapotranspiration cycle.
+4.  **High-Frequency Micro-Fluctuations:** Continuous micro-fluctuations with amplitudes of 1 to 5 cm are superimposed on the baseline. These represent the combined effects of earth tides and diurnal/semidiurnal barometric variations.
 
 ------------------------------------------------------------------------
 
@@ -349,10 +346,10 @@ The blue curve in the left panel of @fig-tidal-fluctuations represents a 30-day 
 
 Applying the FFT to this complex time-series transforms the data into the frequency domain, yielding the power spectrum shown in the right panel. This transformation isolates sharp spectral peaks corresponding to specific **tidal constituents**:
 
--   **$M_2$ (Principal lunar semidiurnal constituent, period of 12.42 h):** A semidiurnal tide induced by lunar gravitational forcing, typically exhibiting the highest spectral energy in most marine tidal records.
--   **$S_2$ (Principal solar semidiurnal constituent, period of 12.00 h):** A semidiurnal tide induced by solar gravitational forcing.
--   **$K_1$ (Luni-solar declinational diurnal constituent, period of 23.93 h) / $O_1$ (Principal lunar diurnal constituent, period of 25.82 h):** Major diurnal tidal constituents associated with the Earth's daily rotation and orbital inclination.
--   **$N_2$ (Larger lunar elliptic semidiurnal constituent, period of 12.66 h):** A semidiurnal constituent that accounts for the eccentricity of the lunar orbit.
+- $M_2$ (Principal lunar semidiurnal constituent, period of 12.42 h): A semidiurnal tide induced by lunar gravitational forcing, typically exhibiting the highest spectral energy in most marine tidal records.
+- $S_2$ (Principal solar semidiurnal constituent, period of 12.00 h): A semidiurnal tide induced by solar gravitational forcing.
+- $K_1$ (Luni-solar declinational diurnal constituent, period of 23.93 h) / $O_1$ (Principal lunar diurnal constituent, period of 25.82 h): Major diurnal tidal constituents associated with the Earth's daily rotation and orbital inclination.
+- $N_2$ (Larger lunar elliptic semidiurnal constituent, period of 12.66 h): A semidiurnal constituent that accounts for the eccentricity of the lunar orbit.
 
 In coastal aquifers and regions adjacent to the sea, such as southern Beppu facing Beppu Bay, stress variations induced by tidal sea-level fluctuations propagate through the geologic formations. Consequently, even in unconfined aquifers, micro-scale water table fluctuations (on the order of centimeters) are induced in phase with these marine tides, exhibiting identical periodicities (particularly the semidiurnal $M_2$ component).
 
@@ -387,4 +384,4 @@ By applying the Fast Fourier Transform (FFT) to the 8,136 hourly data points, we
 - Yusa Y. (1979) Long-term variations of chemical components in the southern Beppu hot spring area, Reports of the Beppu Hot Spring Research Society, Oita Prefecture, 30, 10-18. (in Japanese)
 - Japan Meteorological Agency (JMA) Historical Weather Data Search. (https://www.data.jma.go.jp/obd/stats/etrn/index.php)
 - Merritt M. L. (2004) Estimating hydraulic properties of the Floridan Aquifer System by analysis of earth-tide, ocean-tide, and barometric effects, Collier and Hendry counties, Florida. U.S. Geological Survey Water-Resources Investigations Report 2003-4267.
-- Yang H.*, Shibata T. (2020) Aquifer classification and pneumatic diffusivity estimation using periodic groundwater level changes induced by barometric pressure. Hydrological Research Letters 14(3): 111–116.
+- Yang H.\*, Shibata T. (2020) Aquifer classification and pneumatic diffusivity estimation using periodic groundwater level changes induced by barometric pressure. Hydrological Research Letters 14(3): 111–116.
