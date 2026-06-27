@@ -247,8 +247,8 @@ listing:
 </style>
 ```
 
-:::: {.grid}
-::: {.g-col-12}
+::::::: grid
+:::: g-col-12
 ```{=html}
 <div class="series-section-header">
   <div class="series-heading">
@@ -259,12 +259,11 @@ listing:
 </div>
 ```
 
-
-:::{#groundwater-series}
+::: {#groundwater-series}
 :::
-:::
+::::
 
-::: {.g-col-12}
+:::: g-col-12
 ```{=html}
 <div class="series-section-header">
   <div class="series-heading">
@@ -275,10 +274,7 @@ listing:
 </div>
 ```
 
-
-:::{#phreeqc-series}
+::: {#phreeqc-series}
 :::
-:::
-
-
 ::::
+:::::::

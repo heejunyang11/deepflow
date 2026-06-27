@@ -44,8 +44,8 @@ The classic **Ghyben-Herzberg relation** quantifies this "buoyancy." From hydros
 
 $$z = \frac{\rho_f}{\rho_s - \rho_f}\, h \approx 40\, h$$
 
-- $z$: depth from sea level to the fresh–saline interface [L]
-- $h$: height from sea level to the water table [L]
+- $z$: depth from sea level to the fresh–saline interface \[L\]
+- $h$: height from sea level to the water table \[L\]
 - $\rho_f$: density of fresh water (≈ 1.000 g/cm³)
 - $\rho_s$: density of salt water (≈ 1.025 g/cm³)
 
@@ -61,7 +61,7 @@ The freshwater lens does not float in stillness. On an island surrounded by sea,
 
 The tide originates from the **tide-generating force** exerted by the Moon and Sun on the Earth. Their gravitational pull differs subtly from point to point on the Earth, and this difference draws the seawater, producing high and low tides. Crucially, a tide is not a single period but a **superposition of multiple "tidal constituents"** (@fig-tidal-v2).
 
-![(Left) Concept of the tide-generating force of the Moon and Sun (after the Japan Meteorological Agency). (Top right) Sea-level fluctuations in Florida and their FFT spectrum (Merritt, 2004). (Bottom right) A list of the major harmonic constituents. Distinct peaks separate at the semidiurnal and diurnal periods.](Tidal_v2.png){#fig-tidal-v2}
+![(Left) The tide-generating force of the Moon and Sun: its basic mechanism (the balance between gravitational and centrifugal forces), why two tides occur each day, and the difference between spring and neap tides. (Top right) Sea-level fluctuations in Florida and their FFT spectrum (Merritt, 2004). (Bottom right) The major harmonic constituents of the tide. Distinct peaks separate at the semidiurnal and diurnal periods.](Tidal_v2_en.png){#fig-tidal-v2}
 
 Five **major tidal constituents** are particularly important in the groundwater analysis of Minami-Daito Island.
 
@@ -251,13 +251,13 @@ plt.show()
 
 Running this code yields @fig-tidal-fft.
 
-![Time series of synthetic tide and groundwater level (top) and their FFT amplitude spectrum (bottom). The groundwater level follows the tide with smaller amplitude and a ~3-hour lag, and in the frequency domain distinct peaks separate at the diurnal (O₁, K₁) and semidiurnal (N₂, M₂, S₂) constituents.](daito_tidal_fft.png){#fig-tidal-fft}
+![Time series of synthetic tide and groundwater level (top) and their FFT amplitude spectrum (bottom). The groundwater level follows the tide with smaller amplitude and a \~3-hour lag, and in the frequency domain distinct peaks separate at the diurnal (O₁, K₁) and semidiurnal (N₂, M₂, S₂) constituents.](daito_tidal_fft.png){#fig-tidal-fft}
 
 In the top panel (Time series), the groundwater level (cyan) follows the tide (navy) with suppressed amplitude. But the naked eye cannot tell which constituent contributes how much. That is the job of the FFT in the bottom panel (Amplitude spectrum). Waves that looked tangled are reorganized into a **set of sharp peaks** in the frequency domain, and the five constituents separate at a glance.
 
 What we showed here is synthetic data for learning, but applying exactly the same FFT to the **actual tide and groundwater-level data** of Minami-Daito Island gives @fig-fft-spectrum.
 
-![Amplitude spectra obtained by applying FFT to the tide (Tide) and the groundwater level of two observation wells (92-2 and Site3) on Minami-Daito Island (Yang et al., 2015). For clarity, 92-2 is shifted up by 30 cm and Site3 by 40 cm. Sharp peaks stand at the diurnal (~0.04 cph) and semidiurnal (~0.08 cph) bands.](daito_fft_spectrum.png){#fig-fft-spectrum width=70%}
+![Amplitude spectra obtained by applying FFT to the tide (Tide) and the groundwater level of two observation wells (92-2 and Site3) on Minami-Daito Island (Yang et al., 2015). For clarity, 92-2 is shifted up by 30 cm and Site3 by 40 cm. Sharp peaks stand at the diurnal (\~0.04 cph) and semidiurnal (\~0.08 cph) bands.](daito_fft_spectrum.png){#fig-fft-spectrum width="70%"}
 
 In the lowest spectrum (Tide), exactly as in the synthetic data, distinct peaks stand near 0.04 cph and 0.08 cph. And at the **same frequencies**, the groundwater-level spectra of the two wells (92-2 and Site3) also show peaks. The periods contained in the ocean tide are engraved, virtually unchanged, onto the groundwater level. Indeed, the amplitude spectra show pronounced peaks at **0.0387, 0.0419, 0.0789, 0.0806, and 0.0833 cph**, corresponding respectively to the **O₁, K₁, N₂, M₂, and S₂** constituents (Yang et al., 2015).
 
@@ -294,18 +294,18 @@ The FFT does not only tell us "what periods exist." By computing the **amplitude
 
 @fig-lag-map shows the time lags mapped across the wells. For both the M₂ and O₁ constituents, the tide propagated **fastest on the southern side of the island** (orange arrow from the south). This agrees well with the geological observation of Takenaga (1965) that "there are large fractures on the southern side of the island, where seawater intrusion is pronounced." Because fractures transmit water quickly, the tidal pressure wave also propagates first through them.
 
-![Contour map of the M₂-constituent tidal propagation lag (h). The number at each well is the lag time (hours) of the groundwater level behind the tide. The contours (2 h, 2.5 h, 3 h) bulge densely to the south, indicating that the tide propagates faster (i.e., higher permeability) on the southern side. The orange arrows mark the fast-propagation directions.](daito_tide_lag_map.png){#fig-lag-map width=70%}
+![Contour map of the M₂-constituent tidal propagation lag (h). The number at each well is the lag time (hours) of the groundwater level behind the tide. The contours (2 h, 2.5 h, 3 h) bulge densely to the south, indicating that the tide propagates faster (i.e., higher permeability) on the southern side. The orange arrows mark the fast-propagation directions.](daito_tide_lag_map.png){#fig-lag-map width="70%"}
 
 Furthermore, the phase lag lets us estimate the **hydraulic diffusivity**. Using the coastal tidal fluctuation as a boundary condition, we apply the analytical solution for a pressure wave propagating through an unconfined aquifer (the Jacob-Ferris equation; Merritt, 2004).
 
 $$h(x,t) = h_0\, \exp\!\left(-x\sqrt{\frac{\omega S}{2T}}\right)
         \sin\!\left(\omega t - x\sqrt{\frac{\omega S}{2T}}\right)$$
 
-- $h_0$: tidal amplitude at the coast [L]
-- $x$: distance from the coast [L]
-- $\omega$: angular velocity [T⁻¹]
-- $T$: transmissivity [L²T⁻¹]
-- $S$: storativity [−]
+- $h_0$: tidal amplitude at the coast \[L\]
+- $x$: distance from the coast \[L\]
+- $\omega$: angular velocity \[T⁻¹\]
+- $T$: transmissivity \[L²T⁻¹\]
+- $S$: storativity \[−\]
 
 From both the amplitude attenuation and the phase lag, the hydraulic diffusivity $T/S$ is obtained, ranging on average from **3.5 to 91.6 m²/s** on Minami-Daito. Assuming a storativity and an aquifer thickness, the hydraulic conductivity is estimated at **about 10⁻² to 10⁻¹ cm/s**, broadly consistent with past pumping-test results (Okinawa General Bureau, 1978).
 
