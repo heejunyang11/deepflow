@@ -246,6 +246,91 @@ listing:
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ── About this site ── */
+.about-site {
+  max-width: 900px;
+  margin: 5rem auto 0;
+}
+.about-site-inner {
+  margin-bottom: 2.5rem;
+}
+.about-site-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #1F2937;
+  text-align: center;
+  margin-bottom: 1.6rem;
+  letter-spacing: 0.02em;
+}
+.about-site-lead {
+  font-size: 1.05rem;
+  line-height: 1.95;
+  color: #4B5563;
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+.about-site-lead strong { color: #B45309; }
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 2.5rem;
+}
+.pillar-card {
+  background: #FEFCF8;
+  border: 1px solid rgba(217, 119, 6, 0.12);
+  border-radius: 16px;
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.05);
+}
+.pillar-icon { font-size: 2.2rem; margin-bottom: 0.8rem; }
+.pillar-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.8rem;
+}
+.pillar-text {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #6B7280;
+}
+.author-strip {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 18px;
+  padding: 1.5rem 1.8rem;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+}
+.author-strip:hover {
+  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.12);
+  transform: translateY(-3px);
+}
+.author-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #FDE68A;
+}
+.author-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #B45309;
+  margin-bottom: 0.4rem;
+}
+.author-desc {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #6B7280;
+}
 </style>
 
 <div class="hero-container">
@@ -275,6 +360,44 @@ listing:
     <span class="badge-item">Geography</span>
     <span class="badge-item">Geothermal Science</span>
   </div>
+</div>
+
+<div class="about-site">
+  <div class="about-site-inner">
+    <h2 class="about-site-title">About This Site</h2>
+    <p class="about-site-lead">
+      DeepFlows is a site run by a researcher specializing in groundwater science and geochemistry, dedicated to <strong>explaining the science and documenting the practice of data analysis</strong>. Rainwater seeps underground, flows slowly through aquifers, and eventually mixes with seawater along the coast. We decipher these "invisible movements of water," one step at a time, using numerical simulation and code.
+    </p>
+    <p class="about-site-lead">
+      This is not about memorizing textbook facts. From groundwater flow analysis with MODFLOW, to modeling water–rock chemical reactions with PHREEQC, to data visualization with Python, we explain <strong>the very methods used in real research</strong>—including the dead ends and the trial-and-error that rarely make it into published papers. The content is written for students learning hydrogeology, engineers in the water-resource and environmental fields, and anyone curious about numerical analysis and data science.
+    </p>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar-card">
+      <div class="pillar-icon">📘</div>
+      <div class="pillar-name">Introduction to Groundwater Science</div>
+      <div class="pillar-text">From core concepts—aquifers, hydraulic conductivity, recharge—to time-series analysis of freshwater lenses and tidal response. A 17-part series for learning systematically.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">⚗️</div>
+      <div class="pillar-name">PHREEQC Geochemical Modeling</div>
+      <div class="pillar-text">From the basics of water-quality calculation to reaction-path modeling and inverse modeling. A 19-part series explaining geochemical simulation with real examples and code.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🗒️</div>
+      <div class="pillar-name">Field Notes</div>
+      <div class="pillar-text">Hot-spring water chemistry, the links between landforms and history, and the failures faced in everyday computation. Essays that don't fit the tutorial format.</div>
+    </div>
+  </div>
+
+  <a href="/about-en.html" class="author-strip">
+    <img src="/profile.png" class="author-avatar" alt="Author profile photo">
+    <div class="author-info">
+      <div class="author-name">Author: Heejun Yang, Ph.D.</div>
+      <div class="author-desc">A researcher specializing in hydrology, groundwater flow analysis, and geochemistry, with 26 peer-reviewed publications. Sharing the methods built up through years of research, in the plainest language possible. ＞ See full profile and publications</div>
+    </div>
+  </a>
 </div>
 
 <div class="section-heading">

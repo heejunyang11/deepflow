@@ -246,6 +246,91 @@ listing:
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ── このサイトについて ── */
+.about-site {
+  max-width: 900px;
+  margin: 5rem auto 0;
+}
+.about-site-inner {
+  margin-bottom: 2.5rem;
+}
+.about-site-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #1F2937;
+  text-align: center;
+  margin-bottom: 1.6rem;
+  letter-spacing: 0.02em;
+}
+.about-site-lead {
+  font-size: 1.05rem;
+  line-height: 1.95;
+  color: #4B5563;
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+.about-site-lead strong { color: #B45309; }
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 2.5rem;
+}
+.pillar-card {
+  background: #FEFCF8;
+  border: 1px solid rgba(217, 119, 6, 0.12);
+  border-radius: 16px;
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.05);
+}
+.pillar-icon { font-size: 2.2rem; margin-bottom: 0.8rem; }
+.pillar-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.8rem;
+}
+.pillar-text {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #6B7280;
+}
+.author-strip {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 18px;
+  padding: 1.5rem 1.8rem;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+}
+.author-strip:hover {
+  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.12);
+  transform: translateY(-3px);
+}
+.author-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #FDE68A;
+}
+.author-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #B45309;
+  margin-bottom: 0.4rem;
+}
+.author-desc {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #6B7280;
+}
 </style>
 
 <div class="hero-container">
@@ -276,6 +361,44 @@ listing:
     <span class="badge-item">地理学</span>
     <span class="badge-item">温泉の科学</span>
   </div>
+</div>
+
+<div class="about-site">
+  <div class="about-site-inner">
+    <h2 class="about-site-title">このサイトについて</h2>
+    <p class="about-site-lead">
+      DeepFlows は、地下水科学・地球化学を専門とする研究者が運営する、<strong>科学の解説とデータ解析の実践</strong>を記録するサイトです。雨水が地下にしみ込み、帯水層をゆっくりと流れ、やがて海岸で海水と混じり合う——その「目に見えない水の動き」を、数値シミュレーションとコードを使って一つひとつ読み解いていきます。
+    </p>
+    <p class="about-site-lead">
+      扱うのは、教科書的な知識の暗記ではありません。MODFLOW による地下水流動解析、PHREEQC による水と岩石の化学反応のモデリング、そして Python によるデータの可視化まで、<strong>研究の現場で実際に使われている手法</strong>を、つまずいた過程やうまくいかなかった試行錯誤も含めて、具体的に解説します。地下水を学ぶ学生の方、水資源・環境分野の技術者の方、そして数値解析やデータサイエンスに関心のあるすべての方に向けた内容です。
+    </p>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar-card">
+      <div class="pillar-icon">📘</div>
+      <div class="pillar-name">地下水科学入門</div>
+      <div class="pillar-text">帯水層・透水係数・涵養といった基礎概念から、淡水レンズや潮汐応答の時系列解析まで。全17回で体系的に学べる入門連載です。</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">⚗️</div>
+      <div class="pillar-name">PHREEQC 地球化学モデリング</div>
+      <div class="pillar-text">水質計算の基礎から、反応経路モデリングや逆計算まで。全19回にわたり、地球化学シミュレーションを実例とコードで解説します。</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🗒️</div>
+      <div class="pillar-name">フィールドノート</div>
+      <div class="pillar-text">温泉の泉質、地形と歴史のつながり、日々の計算で直面した失敗談まで。技術解説の枠に収まらない、多角的なエッセイ集です。</div>
+    </div>
+  </div>
+
+  <a href="/about.html" class="author-strip">
+    <img src="/profile.png" class="author-avatar" alt="運営者プロフィール画像">
+    <div class="author-info">
+      <div class="author-name">運営者：Heejun Yang, Ph.D.</div>
+      <div class="author-desc">水文学・地下水流動解析・地球化学を専門とする研究者。査読付き学術論文26編。研究で培ってきた手法を、できるだけ平易な言葉で共有しています。 ＞ プロフィールと業績一覧を見る</div>
+    </div>
+  </a>
 </div>
 
 <div class="section-heading">
