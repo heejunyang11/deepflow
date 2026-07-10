@@ -1,6 +1,6 @@
 ---
 title: "-Science Beneath the Surface-"
-pagetitle: "連載シリーズ — 地下水科学入門とPHREEQC地球化学モデリング | DeepFlows"
+pagetitle: "連載シリーズ — 地下水科学入門とPHREEQC地球化学モデリング"
 description: "地下水科学入門（全17回）とPHREEQC地球化学モデリング（全19回）の連載シリーズ。MODFLOW・FloPy・PHREEQC を用いた実践的な解析手法を、実例とコードで体系的に解説する。"
 number-sections: false
 crossref:

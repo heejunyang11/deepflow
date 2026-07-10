@@ -1,6 +1,6 @@
 ---
 title: "お問い合わせ"
-pagetitle: "お問い合わせ | DeepFlows"
+pagetitle: "お問い合わせ"
 description: "DeepFlows へのお問い合わせ窓口。記事内容に関するご質問・誤りのご指摘、共同研究や執筆・講演のご依頼、取材、広告掲載に関するご連絡先を掲載しています。"
 number-sections: false
 toc: false

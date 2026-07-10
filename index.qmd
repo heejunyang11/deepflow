@@ -1,7 +1,7 @@
 ---
 title: "DeepFlows"
 subtitle: "Science beneath the surface"
-pagetitle: "DeepFlows — 地下水科学・地球化学・データ解析のサイエンスブログ"
+pagetitle: "地下水科学・地球化学・データ解析のサイエンスブログ"
 description: "地下水流動解析（MODFLOW）と地球化学モデリング（PHREEQC）、Python によるデータ解析を、研究者が実例とコードで解説するサイエンスブログ。運営者は査読付き論文26編の Heejun Yang, Ph.D."
 page-layout: full
 title-block-banner: true

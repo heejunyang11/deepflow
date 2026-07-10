@@ -1,6 +1,6 @@
 ---
 title: "404"
-pagetitle: "404 — ページが見つかりません | Page Not Found — DeepFlows"
+pagetitle: "404 — ページが見つかりません / Page Not Found"
 description: "お探しのページは見つかりませんでした。The page you are looking for was not found."
 page-layout: full
 number-sections: false

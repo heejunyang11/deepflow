@@ -1,6 +1,6 @@
 ---
 title: "Contact"
-pagetitle: "Contact | DeepFlows"
+pagetitle: "Contact"
 description: "How to contact DeepFlows. Questions about article content, corrections, collaboration and consulting enquiries, writing and speaking requests, press and advertising enquiries."
 number-sections: false
 toc: false

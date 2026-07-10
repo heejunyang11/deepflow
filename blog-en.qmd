@@ -1,6 +1,6 @@
 ---
 title: "-Science Beneath the Surface-"
-pagetitle: "Series — Introduction to Groundwater Science & PHREEQC Geochemical Modeling | DeepFlows"
+pagetitle: "Series — Introduction to Groundwater Science and PHREEQC Geochemical Modeling"
 description: "Two tutorial series: Introduction to Groundwater Science (17 parts) and PHREEQC Geochemical Modeling (19 parts), covering MODFLOW, FloPy and PHREEQC with worked examples and Python code."
 number-sections: false
 crossref:
