@@ -1,0 +1,115 @@
+---
+title: "404"
+pagetitle: "404 — ページが見つかりません | Page Not Found — DeepFlows"
+description: "お探しのページは見つかりませんでした。The page you are looking for was not found."
+page-layout: full
+number-sections: false
+toc: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <meta name="robots" content="noindex, follow" />
+          <!-- 404はどの階層のURLでも配信されるため、相対パス(ナビ/CSS)を
+               常にルート基準で解決させる。これが無いと深い階層で崩れる。 -->
+          <base href="/" />
+---
+
+```{=html}
+<style>
+.nf-wrap {
+  max-width: 720px;
+  margin: 3rem auto 4rem;
+  text-align: center;
+}
+.nf-code {
+  font-size: 5.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: #D97706;
+  margin-bottom: 0.5rem;
+}
+.nf-divider {
+  width: 56px;
+  height: 4px;
+  background: linear-gradient(90deg, #D97706, #F59E0B);
+  border-radius: 4px;
+  margin: 1.2rem auto 2rem;
+}
+.nf-head {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 0.6rem;
+}
+.nf-sub {
+  font-size: 1.05rem;
+  color: #6B7280;
+  line-height: 1.9;
+  margin-bottom: 0.4rem;
+}
+.nf-en {
+  font-size: 0.95rem;
+  color: #9CA3AF;
+  line-height: 1.8;
+  margin-bottom: 2.4rem;
+}
+.nf-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  border: 2px solid #FDE68A;
+  background: #FFFBEB;
+  color: #B45309 !important;
+}
+.nf-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(217, 119, 6, 0.15);
+  border-color: #D97706;
+}
+.nf-btn-primary {
+  background: #f97316;
+  border-color: #f97316;
+  color: #FFFFFF !important;
+}
+.nf-btn-primary:hover {
+  background: #ea580c;
+  border-color: #ea580c;
+}
+</style>
+
+<div class="nf-wrap">
+  <div class="nf-code">404</div>
+  <div class="nf-divider"></div>
+
+  <div class="nf-head">お探しのページは見つかりませんでした</div>
+  <p class="nf-sub">
+    URL が変更されたか、削除された可能性があります。<br>
+    下のリンクから、記事一覧やトップページへお進みください。
+  </p>
+  <p class="nf-en">
+    <strong>Page not found.</strong> The page may have been moved or removed.<br>
+    Please use the links below to continue.
+  </p>
+
+  <div class="nf-links">
+    <a href="/" class="nf-btn nf-btn-primary">トップページへ / Home</a>
+    <a href="/blog.html" class="nf-btn">連載シリーズ / Series</a>
+    <a href="/note.html" class="nf-btn">Field Notes</a>
+    <a href="/about.html" class="nf-btn">運営者について / About</a>
+  </div>
+</div>
+```

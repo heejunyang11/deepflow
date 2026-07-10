@@ -1,5 +1,7 @@
 ---
 title: "プライバシーポリシーおよび免責事項"
+pagetitle: "プライバシーポリシー・免責事項 | DeepFlows"
+description: "DeepFlows のプライバシーポリシーおよび免責事項。Cookie・Google AdSense・Google Analytics の利用、著作権、リンクポリシー、お問い合わせ窓口について定めています。"
 number-sections: false
 format:
   html:

@@ -34,14 +34,20 @@ website:
         text: Field Notes
       - href: about.qmd
         text: About
+      - href: contact.qmd
+        text: Contact
     right:
+      # クローラが辿れる実URLを指定。JS(switch-lang.html)が実行時に
+      # このリンクを検出し、ページ対応の言語トグルへ差し替える。
       - icon: globe
         text: "EN / JP"
-        href: "javascript:switchLanguage()"
+        href: index-en.qmd
 
   page-footer:
     center: "© 2026 DeepFlows - Science beneath the surface,  Operated by Heejun Yang Ph.D.-"
     right:
+      - text: "Contact"
+        href: contact.qmd
       - text: "Privacy Policy"
         href: privacy.qmd # AdSense審査に必須のプライバシーポリシー
 

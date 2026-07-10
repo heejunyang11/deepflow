@@ -1,5 +1,7 @@
 ---
 title: "About"
+pagetitle: "運営者プロフィール — Heejun Yang, Ph.D. | DeepFlows"
+description: "DeepFlows 運営者 Heejun Yang（Ph.D.）のプロフィール。地下水流動解析・地球化学モデリング・水文学を専門とする研究者。査読付き学術論文26編。業績一覧とお問い合わせ先を掲載。"
 number-sections: false
 format:
   html:

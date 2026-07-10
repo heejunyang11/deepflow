@@ -1,0 +1,48 @@
+---
+title: "Contact"
+pagetitle: "Contact | DeepFlows"
+description: "How to contact DeepFlows. Questions about article content, corrections, collaboration and consulting enquiries, writing and speaking requests, press and advertising enquiries."
+number-sections: false
+toc: false
+lang: en
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/contact" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/contact-en" />
+---
+
+Thank you for visiting DeepFlows.\
+For any enquiry about this site, please write to the address below.
+
+## Get in touch
+
+📧 **[heejun1105\@gmail.com](mailto:heejun1105@gmail.com)**
+
+Including "DeepFlows" in the subject line helps ensure your message is seen.
+
+## What I am happy to hear about
+
+- **Questions about article content** (groundwater modeling, PHREEQC, MODFLOW, Python, and so on)
+- **Corrections and reports of errors** — these are genuinely welcome, and I will verify and correct promptly
+- **Research collaboration and technical consulting**
+- **Writing, speaking and review requests**
+- **Press enquiries and advertising enquiries**
+
+## About replies
+
+I read every message and normally reply within a week.\
+Please understand that I may not reply in the following cases:
+
+- Messages unrelated to the site's content, or unsolicited sales enquiries
+- Requests to perform detailed analyses, assignments or reports on your behalf
+- Questions that cannot be answered from publicly available information alone
+
+## About the author
+
+**Heejun Yang, Ph.D.**\
+A researcher specializing in groundwater flow analysis, geochemical modeling and hydrology, with 26 peer-reviewed publications.
+
+For a full profile and publication list, see [About](/about-en.html).\
+Personal data is handled as described in the [Privacy Policy](/privacy-en.html).

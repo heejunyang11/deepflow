@@ -1,5 +1,7 @@
 ---
 title: "About"
+pagetitle: "About the Author — Heejun Yang, Ph.D. | DeepFlows"
+description: "Profile of Heejun Yang, Ph.D., who runs DeepFlows. A researcher specializing in groundwater flow analysis, geochemical modeling and hydrology, with 26 peer-reviewed publications. Full publication list and contact details."
 number-sections: false
 format:
   html:

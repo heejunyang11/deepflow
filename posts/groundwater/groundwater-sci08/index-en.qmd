@@ -185,6 +185,7 @@ The cross-wavelet phase is "(phase of series 1) − (phase of series 2)." So **w
 | `xwt(lake, river)` (the lagging lake first) | **−35.9°** | up-right | Yang et al. (2017) |
 
 Both express the **same fact** — "the river leads the lake by about 40 days." The 2017 paper put the lake (KL) first (`xwt(KL, PK)`), which is why its phase is negative; the sign is merely a matter of ordering. The hand calculation below uses the magnitude $35.9°$, to match the paper.
+::::
 
 The high-power band stretching horizontally across the annual period (256–512 days) tells us the flood pulse's annual cycle dominated for all 15 years. And because the arrows (phase) point consistently down and to the right, we read that river and lake moved together while **maintaining a stable phase difference — a steady time lag**. Had the arrows scrambled partway through, that would have signalled "the propagation changed in some particular year." The cross-wavelet thus reveals the **time variation of the lag** that cross-correlation cannot see.
 

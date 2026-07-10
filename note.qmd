@@ -1,5 +1,7 @@
 ---
 title: "Field Notes (Japanese Only)"
+pagetitle: "Field Notes — 温泉・地形・研究ノート | DeepFlows"
+description: "温泉の泉質、地形と歴史のつながり、日々のシミュレーションで直面した失敗談まで。技術チュートリアルの枠に収まらない、研究者のエッセイと研究ノート。"
 number-sections: false
 crossref:
   chapters: false
