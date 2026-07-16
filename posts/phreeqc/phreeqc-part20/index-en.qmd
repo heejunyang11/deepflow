@@ -68,11 +68,15 @@ Take quartz, step by step. Its dissolution reaction and log K in Thermoddem are:
 Quartz(alpha):  SiO2 + 2H2O  =  H4SiO4        log K = -3.734
 ```
 
-Writing $K$ as "products ÷ reactants," the denominator terms $a(\mathrm{SiO_2})=1$ (pure solid) and $a(\mathrm{H_2O})\approx 1$ (water) vanish, leaving:
+Write out $K$ in full, as "activity of products ÷ activity of reactants." For $\mathrm{SiO_2 + 2H_2O = H_4SiO_4}$, the product is $\mathrm{H_4SiO_4}$ and the reactants are $\mathrm{SiO_2}$ and $\mathrm{H_2O}$:
 
-$$ K = a(\mathrm{H_4SiO_4}) = 10^{-3.734} \approx 1.8 \times 10^{-4} $$
+$$ K = \frac{a(\mathrm{H_4SiO_4})}{a(\mathrm{SiO_2}) \cdot a(\mathrm{H_2O})^2} $$
 
-That is "the solubility of quartz." A log K value carries a concrete equilibrium number behind it.
+Now apply the rule from above: $\mathrm{SiO_2}$ is a pure solid so $a(\mathrm{SiO_2}) = 1$, and $a(\mathrm{H_2O}) \approx 1$. **The entire denominator becomes 1 and drops out**, leaving:
+
+$$ K = a(\mathrm{H_4SiO_4}) = 10^{\log K} = 10^{-3.734} \approx 1.8 \times 10^{-4} $$
+
+That is: "the activity of dissolved silica ($\mathrm{H_4SiO_4}$) in water at equilibrium with quartz is $1.8 \times 10^{-4}$" — the solubility of quartz. A log K value carries a concrete equilibrium number behind it.
 
 ### A pH-sensitive mineral — calcite
 
@@ -82,11 +86,17 @@ Now a pH-dependent case. The dissolution of calcite is:
 Calcite:  CaCO3 + H+  =  Ca2+ + HCO3-        log K = 1.847
 ```
 
-The denominator now contains $a(\mathrm{H^+})$ — this is the pH lever. Writing out the saturation index (SI) makes the role of pH explicit:
+Write out its equilibrium constant the same way. For $\mathrm{CaCO_3 + H^+ = Ca^{2+} + HCO_3^-}$, the products are $\mathrm{Ca^{2+}}$ and $\mathrm{HCO_3^-}$, and the reactants are the solid $\mathrm{CaCO_3}$ and $\mathrm{H^+}$:
 
-$$ \mathrm{SI} = \log a(\mathrm{Ca^{2+}}) + \log a(\mathrm{HCO_3^-}) + \mathrm{pH} - 1.847 $$
+$$ K = \frac{a(\mathrm{Ca^{2+}}) \cdot a(\mathrm{HCO_3^-})}{a(\mathrm{CaCO_3}) \cdot a(\mathrm{H^+})} = \frac{a(\mathrm{Ca^{2+}}) \cdot a(\mathrm{HCO_3^-})}{a(\mathrm{H^+})} $$
 
-(using $-\log a(\mathrm{H^+}) = \mathrm{pH}$). So pH enters SI with a coefficient of +1: **raise pH by 1 and SI rises by 1** (i.e. ten-fold more supersaturated). This is the real mechanism behind "calcite precipitates as pH rises."
+The solid $\mathrm{CaCO_3}$ cancels as 1, but **this time $a(\mathrm{H^+})$ survives in the denominator**. That is the crucial difference from quartz — the pH lever.
+
+Writing this as a saturation index — the log of the ratio of the present water's IAP to $K$, $\mathrm{SI} = \log(\mathrm{IAP}/K)$ (see §3) — and using the definition $-\log a(\mathrm{H^+}) = \mathrm{pH}$:
+
+$$ \mathrm{SI} = \log a(\mathrm{Ca^{2+}}) + \log a(\mathrm{HCO_3^-}) \underbrace{-\,\log a(\mathrm{H^+})}_{=\,+\mathrm{pH}} - 1.847 = \log a(\mathrm{Ca^{2+}}) + \log a(\mathrm{HCO_3^-}) + \mathrm{pH} - 1.847 $$
+
+So pH enters SI with a coefficient of +1: **raise pH by 1 and SI rises by 1** (i.e. ten-fold more supersaturated). This is the real mechanism behind "calcite precipitates as pH rises."
 
 For example, with $a(\mathrm{Ca^{2+}}) = a(\mathrm{HCO_3^-}) = 10^{-3}$, we get $\mathrm{SI} = \mathrm{pH} - 7.847$, and moving pH alone flips precipitation on and off:
 
@@ -110,6 +120,12 @@ $$ \mathrm{SI} = \log \left( \frac{\mathrm{IAP}}{K} \right) $$
 - **SI > 0**: the present water is more concentrated than equilibrium → supersaturated → the mineral precipitates
 - **SI = 0**: exactly at equilibrium (saturated)
 - **SI < 0**: the present water is dilute → undersaturated → nothing forms (existing crystals dissolve)
+
+Let us do it once with numbers. From §2, quartz equilibrium is $K = 10^{-3.734}$. Suppose some water has a silica activity of $a(\mathrm{H_4SiO_4}) = 10^{-3.0}$ (more concentrated than equilibrium). The IAP is just the same expression with the present value, $\mathrm{IAP} = 10^{-3.0}$, so:
+
+$$ \mathrm{SI} = \log\frac{\mathrm{IAP}}{K} = \log 10^{-3.0} - \log 10^{-3.734} = (-3.0) - (-3.734) = +0.734 $$
+
+SI > 0, so it is supersaturated and quartz precipitates. Since $10^{+0.734} \approx 5.4$, the present water is about 5.4 times more concentrated than equilibrium. (The trick: dividing inside a log becomes subtracting the exponents.)
 
 SI also converts to energy — another member of the master-equation family:
 
@@ -140,12 +156,31 @@ Then cancel anything that appears identically on both sides. As a basic case, bu
 (2) Kaolinite + 6H+ = 2Al3+ + 2H4SiO4 + H2O        log K = +6.483
 ```
 
-Forming $(1) - (2)$, the $2\mathrm{Al^{3+}}$ and $2\mathrm{H_4SiO_4}$ cancel on both sides:
+The aim is to merge anorthite and kaolinite into a single equation. To do that, **reverse** $(2)$ (flip the sign of its log K to $-6.483$) and add it to $(1)$ as is.
+
+```
+  (1) as is    :  Anorthite + 8H+          = 2Al3+ + Ca2+ + 2H4SiO4    (+24.235)
+  (2) reversed :  2Al3+ + 2H4SiO4 + H2O    = Kaolinite + 6H+           (-6.483)
+  ──────────────────────────────────────────────────────────────
+  sum          :  Anorthite + 8H+ + 2Al3+ + 2H4SiO4 + H2O
+                    = 2Al3+ + Ca2+ + 2H4SiO4 + Kaolinite + 6H+
+```
+
+Now cancel each species that appears identically on both sides:
+
+- $2\mathrm{Al^{3+}}$ … 2 on the left, 2 on the right → **cancels**
+- $2\mathrm{H_4SiO_4}$ … 2 on the left, 2 on the right → **cancels**
+- $\mathrm{H^+}$ … 8 on the left, 6 on the right → net **2 remain on the left**
+
+After cancelling, one equation remains:
 
 $$ \text{Anorthite} + 2\mathrm{H^+} + \mathrm{H_2O} = \text{Kaolinite} + \mathrm{Ca^{2+}} $$
+
+The log K is simply the sum in the directions used (the $+24.235$ of $(1)$ as is, plus the $-6.483$ of $(2)$ reversed):
+
 $$ \log K = 24.235 - 6.483 = +17.75 $$
 
-log K = +17.75, i.e. $\Delta G^\circ(25℃) \approx -5.71 \times 17.75 \approx -101$ kJ/mol — a steep downhill. The Al in anorthite drops happily into kaolinite.
+log K = +17.75, i.e. $\Delta G^\circ(25℃) = -2.303\,RT \times \log K \approx -5.71 \times 17.75 \approx -101$ kJ/mol — a steep downhill. The Al in anorthite drops happily into kaolinite.
 
 ---
 
@@ -160,12 +195,30 @@ Let us write the "mineral fixation of CO2" that CarbFix and Satake target, in th
 (4) CO2 + H2O = HCO3- + H+                          -7.821
 ```
 
-Taking $(1)$ as is, $(2)$ reversed, $(3)$ reversed, $(4)$ as is, and summing, the $\mathrm{Al^{3+}}$, $\mathrm{H_4SiO_4}$, $\mathrm{Ca^{2+}}$, $\mathrm{HCO_3^-}$ and $\mathrm{H^+}$ all cancel:
+This time we combine four reactions. The goal is to leave only anorthite, CO2, calcite and kaolinite, cancelling every intermediate ion. Take $(1)$ as is, $(2)$ and $(3)$ **reversed**, and $(4)$ as is, and add them:
+
+```
+  (1) as is    :  Anorthite + 8H+       = 2Al3+ + Ca2+ + 2H4SiO4    (+24.235)
+  (2) reversed :  2Al3+ + 2H4SiO4 + H2O = Kaolinite + 6H+           (-6.483)
+  (3) reversed :  Ca2+ + HCO3-          = Calcite + H+              (-1.847)
+  (4) as is    :  CO2 + H2O             = HCO3- + H+                (-7.821)
+```
+
+Check the species that cancel, one by one:
+
+- $2\mathrm{Al^{3+}}$ (2 each side), $2\mathrm{H_4SiO_4}$ (2 each side), $\mathrm{Ca^{2+}}$ (1 each side), $\mathrm{HCO_3^-}$ (1 each side) … all **cancel**
+- $\mathrm{H^+}$ … 8 on the left from $(1)$, and $6+1+1 = 8$ on the right from $(2)(3)(4)$ → **exactly cancels**
+- $\mathrm{H_2O}$ … 2 remain on the left, from $(2)$ and $(4)$
+
+What remains is CO2 fixation itself:
 
 $$ \text{Anorthite} + \mathrm{CO_2} + 2\mathrm{H_2O} = \text{Calcite} + \text{Kaolinite} $$
+
+The log K is just the four terms added with their signs ($(1)$ plus, $(2)(3)(4)$ minus):
+
 $$ \log K = 24.235 - 6.483 - 1.847 - 7.821 = +8.08 $$
 
-$\Delta G^\circ(25℃) \approx -46$ kJ/mol, downhill. The primary mineral anorthite fixes CO2 as calcite, and the leftover Al becomes kaolinite. On paper, we can see this is a **thermodynamically certain** reaction.
+$\Delta G^\circ(25℃) \approx -5.71 \times 8.08 \approx -46$ kJ/mol, downhill. The primary mineral anorthite fixes CO2 as calcite, and the leftover Al becomes kaolinite. On paper, we can see this is a **thermodynamically certain** reaction.
 
 ### Confirmation from real data (Satake et al. 2025 reproduction)
 
@@ -189,7 +242,15 @@ In CO2 fixation, not only calcite but also dolomite and magnesite are candidates
 (3) Magnesite(Natur) + H+ = Mg2+ + HCO3-          +1.415
 ```
 
-Forming $(1) - (2) - (3)$, the H+, HCO3-, Ca2+ and Mg2+ all cancel:
+Build the equation that splits dolomite into calcite and magnesite. Take $(1)$ as is, and $(2)$ and $(3)$ **reversed**, and add:
+
+```
+  (1) as is    :  Dolomite + 2H+ = Ca2+ + Mg2+ + 2HCO3-    (+3.533)
+  (2) reversed :  Ca2+ + HCO3-   = Calcite + H+            (-1.847)
+  (3) reversed :  Mg2+ + HCO3-   = Magnesite + H+          (-1.415)
+```
+
+On both sides $\mathrm{Ca^{2+}}$, $\mathrm{Mg^{2+}}$, $2\mathrm{HCO_3^-}$ and $2\mathrm{H^+}$ all cancel, leaving only the solids:
 
 $$ \text{Dolomite} = \text{Calcite} + \text{Magnesite} $$
 $$ \log K = 3.533 - 1.847 - 1.415 = +0.27 $$
@@ -249,11 +310,23 @@ In the low-temperature CarbFix-type model ([#17](../phreeqc-part17/index-en)), z
 Laumontite ... ·4H2O        Wairakite ... ·2H2O
 ```
 
-So the supply of Ca, Al and Si does not decide between them — the activity of water does. Building the dehydration reaction from the Thermoddem dissolution reactions (subtracting wairakite's dissolution from laumontite's):
+So the supply of Ca, Al and Si does not decide between them — the activity of water does. Let us confirm this with an equation. Using the two dissolution reactions (Thermoddem, 25 °C) as materials, add $(1)$ as is and $(2)$ reversed:
+
+```
+  (1) as is    :  Laumontite + 8H+       = 2Al3+ + Ca2+ + 4H4SiO4   (+11.695)
+  (2) reversed :  2Al3+ + Ca2+ + 4H4SiO4 = Wairakite + 8H+ + 2H2O   (-14.444)
+```
+
+On both sides $2\mathrm{Al^{3+}}$, $\mathrm{Ca^{2+}}$, $4\mathrm{H_4SiO_4}$ and $8\mathrm{H^+}$ all cancel, leaving **only water**:
 
 $$ \text{Laumontite} = \text{Wairakite} + 2\mathrm{H_2O} $$
+$$ \log K = 11.695 - 14.444 = -2.75 \quad (25\,°\mathrm{C}) $$
 
-For this reaction $K = a(\mathrm{H_2O})^2$ (solids are 1). Hence the threshold water activity at which the two balance is $a(\mathrm{H_2O}) = 10^{\log K / 2}$. Computing the dehydration log K at each temperature in PHREEQC:
+With solid activities set to 1, only the product-side water survives, so $K = a(\mathrm{H_2O})^2$. Solving $K = a(\mathrm{H_2O})^2$ for the threshold water activity at which the two balance:
+
+$$ a(\mathrm{H_2O}) = 10^{\,\log K / 2} = 10^{-2.75/2} \approx 0.042 \quad (25\,°\mathrm{C}) $$
+
+At 25 °C the threshold is only 0.042. Ordinary dilute water ($a(\mathrm{H_2O}) \approx 1$) is far above it, so laumontite is overwhelmingly stable. Raising the temperature increases the dehydration log K and therefore the threshold. Computing the dehydration log K at each temperature in PHREEQC:
 
 | Temperature | Dehydration log K | Threshold $a(\mathrm{H_2O})$ | Stable phase in pure water ($a\approx1$) |
 |---|---|---|---|
@@ -262,11 +335,17 @@ For this reaction $K = a(\mathrm{H_2O})^2$ (solids are 1). Hence the threshold w
 | 200 °C | −0.39 | 0.64 | Laumontite |
 | 250 °C | +0.17 | 1.21 (>1) | **Wairakite** |
 
-![Temperature dependence of the Laumontite ⇌ Wairakite dehydration log K and the threshold a(H2O). At low temperature, dilute water (a≈1) always favors laumontite. Where the threshold reaches 1, near 235 °C, wairakite appears even in pure water.](fig-zeolite-temp.png){width=85% .lightbox}
+Plotting this threshold (third column) with temperature on the x-axis and water activity on the y-axis turns it into a **phase diagram that shows at a glance which zeolite is stable**. The black boundary is exactly the threshold we just computed.
 
-How to read it: if $a(\mathrm{H_2O})$ is above the threshold, the more hydrous laumontite is stable; below it, the dehydrated wairakite is stable. At low temperature, ordinary dilute groundwater ($a(\mathrm{H_2O}) \approx 1$) is always above the threshold, so laumontite wins. To get wairakite you must either (a) lower the water activity (high salinity, evaporation) or (b) raise the temperature.
+![Phase diagram of the Laumontite and Wairakite stability fields on the temperature–water activity plane. The black boundary is the threshold a(H₂O). Above it (more water) laumontite is stable; below it (drier) wairakite is stable. The green line marks the dilute water (a≈1) that this series' models deal with.](fig-zeolite-temp.png){width=88% .lightbox}
 
-As temperature rises the dehydration log K increases, and **at about 235 °C the threshold reaches 1, so wairakite finally appears even in pure water**. This nearly matches the phase boundary from Liou (1971) [@liou1971] (about 230 °C). The difficulty of handling zeolites in low-temperature CarbFix systems has this delicate tug-of-war over water activity behind it.
+**To read this figure you only locate "the present water" on the map** — no need to read the dehydration log K directly.
+
+1. **Fix the y-position** — the groundwater in this series is dilute, so $a(\mathrm{H_2O}) \approx 1$: it sits at the very top of the figure (the green line).
+2. **See which colored field that line passes through** — on the low-temperature side, the green line runs far above the boundary, i.e. through the **laumontite field (blue)**. So laumontite is stable at low temperature and wairakite does not form.
+3. **Trace to the right** — as temperature rises the boundary climbs, and **at about 235 °C it crosses the green line (a≈1)**. Beyond that point the green line enters the **wairakite field (orange)**: even pure water converts to wairakite above ~235 °C.
+
+This ~235 °C nearly matches the experimental phase boundary of Liou (1971) [@liou1971] (about 230 °C). The only way to get wairakite at low temperature is to lower the green line, i.e. **lower the water activity (high salinity, evaporation, dehydration)**. The difficulty of handling zeolites in low-temperature CarbFix systems has this delicate tug-of-war over water activity behind it.
 
 ---
 

@@ -164,38 +164,57 @@ def fig_satake_si():
 ZEO = [(25, -2.749), (100, -1.540), (200, -0.387), (250, 0.168)]
 
 def fig_zeolite_temp():
+    # Phase diagram: temperature x water activity, with stability fields shaded.
+    # The boundary a(H2O) = 10^(logK/2) comes from the dehydration log K, but the
+    # reader only needs to locate "the present water" on this map.
     z = np.array(ZEO, dtype=float)
-    T, logK = z[:, 0], z[:, 1]
-    thr = 10 ** (logK / 2.0)          # threshold a(H2O)
-    # crossover where logK = 0 (threshold a(H2O)=1), interpolate 200->250
-    Tx = 200 + 50 * (0.387 / (0.387 + 0.168))
+    Tp, Kp = z[:, 0], z[:, 1]                 # computed points (25,100,200,250)
+    T = np.linspace(25, 260, 400)
+    logK = np.interp(T, Tp, Kp)               # piecewise-linear dehydration logK
+    thr = 10 ** (logK / 2.0)                  # boundary: threshold a(H2O)
+    Tx = 200 + 50 * (0.387 / (0.387 + 0.168)) # crossover where threshold = 1  (~235 C)
+    ymax = 1.08
+    thr_c = np.clip(thr, 0, ymax)
 
-    fig, ax1 = plt.subplots(figsize=(9.2, 5.0))
-    ax1.axhline(0, color=GREY, lw=1.0, ls=":")
-    ax1.plot(T, logK, "o-", color=AMBER, lw=2.6, ms=8, label="dehydration log K  (Laumontite $\\to$ Wairakite + 2H$_2$O)")
-    ax1.set_xlabel("Temperature (°C)")
-    ax1.set_ylabel("dehydration log K", color=AMBER)
-    ax1.tick_params(axis="y", labelcolor=AMBER)
-    ax1.set_xlim(0, 270); ax1.set_ylim(-3.2, 0.8)
+    fig, ax = plt.subplots(figsize=(9.2, 5.4))
+    # stability fields
+    ax.fill_between(T, thr_c, ymax, color=BLUE,   alpha=0.13)   # above boundary: hydrous
+    ax.fill_between(T, 0,     thr_c, color=ORANGE, alpha=0.20)  # below boundary: dehydrated
+    ax.plot(T, thr_c, color=INK, lw=2.4, zorder=4)             # phase boundary
 
-    ax2 = ax1.twinx()
-    ax2.plot(T, thr, "s--", color=BLUE, lw=2.0, ms=7, label="threshold a(H$_2$O)")
-    ax2.axhline(1.0, color=BLUE, lw=1.0, ls=":", alpha=0.6)
-    ax2.set_ylabel("threshold  a(H$_2$O)", color=BLUE)
-    ax2.tick_params(axis="y", labelcolor=BLUE)
-    ax2.set_ylim(0, 1.35)
+    # the "present water": dilute groundwater at a(H2O) ~ 1
+    ax.axhline(1.0, color=TEAL, lw=2.8, zorder=5)
+    ax.text(31, 0.965, "the water in these models:  dilute,  a(H$_2$O) ≈ 1",
+            color=TEAL, fontsize=10.5, va="top", weight="bold")
 
-    ax1.axvline(Tx, color=INK, lw=1.4, ls="--", alpha=0.6)
-    ax1.text(Tx - 5, -1.65, f"~{Tx:.0f} °C\npure-water\nWairakite\n(Liou 1971:\n~230 °C)",
-             ha="right", fontsize=9.0, color=INK)
-    ax1.text(95, -2.55, "below the line:\nLaumontite (more hydrous) wins",
-             fontsize=9.5, color=INK, style="italic")
+    # computed boundary points (25,100,200 C are <=1)
+    for t, k in zip(Tp, Kp):
+        a = 10 ** (k / 2)
+        if a <= ymax:
+            ax.plot(t, a, "o", color=INK, ms=7, zorder=6)
+            ax.annotate(f"{a:.2f}", (t, a), textcoords="offset points",
+                        xytext=(6, -12), fontsize=9, color=INK)
 
-    lines = ax1.get_lines()[1:2] + ax2.get_lines()[:1]
-    ax1.legend(lines, [l.get_label() for l in lines], loc="upper left", fontsize=9.5)
-    ax1.set_title("Zeolite selection is set by the activity of water",
-                  fontsize=13, weight="bold")
-    ax1.grid(alpha=0.15)
+    # region labels
+    ax.text(140, 0.55, "LAUMONTITE  stable\n(more hydrous, ·4H$_2$O)",
+            color=BLUE, fontsize=12.5, weight="bold", ha="center")
+    ax.text(120, 0.10, "WAIRAKITE  stable  (dehydrated, ·2H$_2$O)",
+            color="#A24A1C", fontsize=11.5, weight="bold", ha="center")
+
+    # crossover marker
+    ax.axvline(Tx, color=INK, lw=1.3, ls="--", alpha=0.6)
+    ax.plot([Tx], [1.0], "o", color="#A24A1C", ms=10, zorder=7)
+    ax.annotate(f"~{Tx:.0f} °C : the a≈1 water crosses the line\n"
+                f"→ pure water flips to Wairakite\n(matches Liou 1971: ~230 °C)",
+                xy=(Tx, 1.0), xytext=(Tx - 6, 0.62), ha="right", fontsize=9.5,
+                arrowprops=dict(arrowstyle="->", color=INK))
+
+    ax.set_xlabel("Temperature (°C)")
+    ax.set_ylabel("Activity of water   a(H$_2$O)")
+    ax.set_title("Which zeolite forms? Find where the water sits on this map",
+                 fontsize=13, weight="bold")
+    ax.set_xlim(25, 260); ax.set_ylim(0, ymax)
+    ax.grid(alpha=0.15)
     fig.tight_layout()
     fig.savefig("fig-zeolite-temp.png", bbox_inches="tight")
     plt.close(fig)
