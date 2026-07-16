@@ -28,7 +28,7 @@
     }
     
     // 2. 固定ページ (/blog, /about, /note, /privacy)
-    const rootPages = ['/blog', '/about', '/note', '/privacy'];
+    const rootPages = ['/blog', '/about', '/note', '/privacy', '/contact'];
     let matchedPage = rootPages.find(p => path === p || path === p + '/');
     if (matchedPage) {
       let base = cleanUrl;
@@ -37,7 +37,7 @@
     }
     
     // 英語の固定ページ (/blog-en, /about-en, /note-en, /privacy-en)
-    const rootPagesEn = ['/blog-en', '/about-en', '/note-en', '/privacy-en'];
+    const rootPagesEn = ['/blog-en', '/about-en', '/note-en', '/privacy-en', '/contact-en'];
     let matchedPageEn = rootPagesEn.find(p => path === p || path === p + '/');
     if (matchedPageEn) {
       let base = cleanUrl;

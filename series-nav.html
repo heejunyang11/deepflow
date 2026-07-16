@@ -92,25 +92,28 @@
       prevBtn.innerText = isEnglish ? "← Prev Article" : "← 前の記事";
       nextBtn.innerText = isEnglish ? "Next Article →" : "次の記事 →";
 
-      // シリーズごとの最大記事数（ハードコードで404エラーを防止）
-      let maxNum = 20;
-      if (prefix.includes("groundwater-sci")) maxNum = 9;
-      if (prefix.includes("phreeqc-part")) maxNum = 20;
-      if (prefix.includes("flopy-phreeqc-part")) maxNum = 3;
-
-      // 前の記事リンク生成
+      // 前の記事：番号が1より大きければ必ず存在するので、そのまま表示する。
       if (num > 1) {
         const prevNumStr = isPadded ? String(num - 1).padStart(numStr.length, '0') : String(num - 1);
         prevBtn.href = basePath + prefix + prevNumStr + suffix;
         prevBtn.style.visibility = "visible";
       }
 
-      // 次の記事リンク生成
-      if (num < maxNum) {
-        const nextNumStr = isPadded ? String(num + 1).padStart(numStr.length, '0') : String(num + 1);
-        nextBtn.href = basePath + prefix + nextNumStr + suffix;
-        nextBtn.style.visibility = "visible";
-      }
+      // 次の記事：リンク先が実在するかを HEAD リクエストで確認してから表示する。
+      // これによりシリーズに記事を追加してもこのファイルを更新する必要がなく、
+      // 存在しない記事へのリンク（404）も出ない。最大記事数のハードコードは不要。
+      const nextNumStr = isPadded ? String(num + 1).padStart(numStr.length, '0') : String(num + 1);
+      const nextHref = basePath + prefix + nextNumStr + suffix;
+      // ディレクトリ形式（.html でない）URL は末尾スラッシュを補って確認精度を上げる
+      const probeUrl = /\.html?$/.test(nextHref) ? nextHref : nextHref.replace(/\/?$/, '/');
+      fetch(probeUrl, { method: 'HEAD' })
+        .then(function (res) {
+          if (res.ok) {
+            nextBtn.href = nextHref;
+            nextBtn.style.visibility = "visible";
+          }
+        })
+        .catch(function () { /* 取得失敗・未存在時はボタンを出さない */ });
     }
   });
 </script>
