@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #7: An Island Breathing with the Tide — The Freshwater Lens of Minami-Daito"
+title: "The Freshwater Lens Explained: Tidal Response on Minami-Daito (FFT Analysis) | Groundwater Science #7"
 description: "On the remote uplifted atoll of Minami-Daito, a freshwater lens floats beneath the limestone. Using FFT and time-series analysis of real field data, we reveal how ocean tides shake the groundwater and how rainfall reshapes the lens."
 date: 2026-06-27
 categories: [Groundwater, Freshwater Lens, Time-Series Analysis]

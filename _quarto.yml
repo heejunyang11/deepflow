@@ -61,6 +61,7 @@ format:
       - text: |
           <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1900441978503848"
           crossorigin="anonymous"></script>
+      - file: _seo-jsonld.html
       - file: switch-lang.html
   
     highlight-style: 

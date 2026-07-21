@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #1: What is the Water Cycle? — Where Does the Rain Go?"
+title: "The Water Cycle Explained: Where Does the Rain Go? | Groundwater Science #1"
 description: "Groundwater makes up 99% of the unfrozen freshwater on Earth. This article explains the fundamental mechanisms of the water cycle and the global water budget. Discover why groundwater is a uniquely vital resource and learn the basics of hydrology."
 author: "Heejun Yang"
 date: "2026-06-02"
@@ -341,6 +341,11 @@ Let's review what we learned in Part 1:
 The theme for the next article will be "**Topography and Geology**".
 
 > What kind of "container" holds groundwater? Why do groundwater characteristics differ so wildly between mountainous regions and alluvial plains? We will explore how topography and geology determine the "whereabouts" of groundwater.
+
+::: {.callout-tip}
+## Related series: PHREEQC Geochemical Modeling
+Once you have a feel for how water **flows**, the next step is the **chemistry** of water. See [PHREEQC #1: Installation and Your First Calculation](/posts/phreeqc/phreeqc-part1/index-en) to learn how to model water–rock reactions and water quality with code.
+:::
 
 ---
 

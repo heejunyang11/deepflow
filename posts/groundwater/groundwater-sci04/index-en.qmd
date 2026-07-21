@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #4: Permeability & Pumping Tests and Well Modeling — How Do We Measure Aquifer Properties?"
+title: "Pumping Tests & the Theis Equation: Measuring Aquifer Properties in Python | Groundwater Science #4"
 description: "How does the groundwater level drop when we pump water from a well? We'll intuitively understand transient flow using the Theis equation and Jacob's method, visualized with Python. Later, we explore Peaceman's well model to see how to bridge the gap between actual wells and simulations."
 author: "Heejun Yang"
 date: "2026-06-05"

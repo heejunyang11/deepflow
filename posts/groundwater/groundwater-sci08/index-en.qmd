@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #8: Measuring the Time Lag — The Flood Pulse of Tonle Sap Lake and Cross-Correlation Analysis"
+title: "Cross-Correlation & Cross-Wavelet in Python: The Tonle Sap Flood Pulse | Groundwater Science #8"
 description: "In Southeast Asia's largest lake, the river reverses its flow every rainy season. Using this 'flood pulse' as our case study, we introduce three tools of time-series analysis — auto-correlation, cross-correlation, and the cross-wavelet transform — to measure the hidden 'time lag' between two water-level signals."
 date: 2026-06-29
 categories: [hydrology, time-series analysis, cross-correlation, wavelet]

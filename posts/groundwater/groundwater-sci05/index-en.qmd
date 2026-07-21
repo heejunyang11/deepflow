@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #5: Where Does the River Water Come From? — Interaction Between River and Groundwater"
+title: "Baseflow Separation in Python: River–Groundwater Interaction & the Lyne–Hollick Filter | Groundwater Science #5"
 description: "Why doesn't a river dry up even after weeks of no rain? This article explores how rivers and groundwater are connected, discussing hydraulic principles such as gaining/losing streams, kinematic/diffusion wave approximations, and Manning's equation. We also implement the Lyne-Hollick digital filter in Python to perform hydrograph baseflow separation."
 author: "Heejun Yang"
 date: "2026-06-07"

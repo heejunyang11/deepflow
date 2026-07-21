@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #3: Why Does Groundwater Move? — Darcy's Law and the Physics of Head"
+title: "Darcy's Law & Hydraulic Head Explained (with FloPy / MODFLOW) | Groundwater Science #3"
 description: "What is the driving force behind groundwater movement? Learn the concept of total head derived from Bernoulli's theorem, the differences between saturated and unsaturated zones, the mechanics of unconfined and confined aquifers, and Darcy's Law — the most fundamental law of groundwater flow — through a 1D model built with FloPy (MODFLOW 6)."
 author: "Heejun Yang"
 date: "2026-06-05"

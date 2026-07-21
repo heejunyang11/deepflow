@@ -331,6 +331,11 @@ In the next article, we will input real seawater data and calculate **Speciation
 
 **Next Step: [#2 Geochemical Modeling of Seawater: Speciation and Distribution](/posts/phreeqc/phreeqc-part2/index-en)**
 
+::: {.callout-tip}
+## Related series: Introduction to Groundwater Science
+While PHREEQC handles the **chemistry** of water, if you want to learn how water itself **flows** — recharge, aquifers, and hydraulic gradient — a good place to start is [Groundwater Science #1: The Water Cycle Explained](/posts/groundwater/groundwater-sci01/index-en).
+:::
+
 ------------------------------------------------------------------------
 
 ## References

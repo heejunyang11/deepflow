@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #9: Diagnosing the Aquifer with the Tide — From Time Lag to Hydraulic Conductivity, and Back to the Water Level"
+title: "Hydraulic Conductivity from Tidal Response: The Tidal Method Explained | Groundwater Science #9"
 description: "The ocean tide is a natural signal generator for probing the ground. Using real observations from Minami-Daito Island, we derive the aquifer's hydraulic conductivity from the tidal time lag and amplitude ratio — and then reconstruct the groundwater level itself with a lag-based multiple regression."
 date: 2026-07-10
 categories: [hydrology, time-series analysis, hydraulic conductivity, regression]

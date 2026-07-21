@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #6: Time-Series Analysis & FFT — Relationship Between Unconfined Groundwater Level and Barometric Pressure"
+title: "FFT & Time-Series Analysis of Groundwater Levels vs. Barometric Pressure | Groundwater Science #6"
 description: "Analysis of the long-term decline of unconfined groundwater levels observed in southern Beppu. We discuss the interaction between hydrothermal and meteoric groundwater systems, geologic structures, and the hydrogeological significance of monitoring water levels."
 author: "DeepFlows"
 date: 2026-06-13

@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Groundwater Science #2: Where Does Groundwater Exist and How Does It Move? — The Geological Container and Topographical Engine"
+title: "Where Groundwater Exists & How It Moves: Aquifers and Tóth's Flow Systems | Groundwater Science #2"
 description: "Where does groundwater exist and how does it move? This article illustrates the geological 'containers' of groundwater—from alluvial aquifers and bedrock fractures to dynamic Karst topography. It also details Tóth's groundwater flow systems, explaining how topography drives groundwater movement."
 author: "Heejun Yang"
 date: "2026-06-03"
