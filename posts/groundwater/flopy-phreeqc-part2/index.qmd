@@ -3,7 +3,7 @@ title: "FlopyとPHREEQCで熱水地球化学シミュレーション #2：カッ
 date: 2026-04-04
 categories: [Groundwater, Python, MODFLOW, Geochemistry, Simulation, 地下水, 地球化学]
 series: "熱水地球化学シミュレーション"
-description: "地下水の流れと化学反応を同時にシミュレーションする仕組みを、プログラミング未経験者にもわかるように解説する。"
+description: "MODFLOW 6（Flopy）とPHREEQCを連携させ、地下水の流れと地球化学反応を同時に解くカップリングの仕組みを、プログラミング未経験者にもわかるように解説する。移流分散と化学反応をどう結合するのか、その概念を図解で示す。"
 image: thumbnail.jpg
 author: "DeepFlows"
 toc: true
