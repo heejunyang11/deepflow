@@ -6,7 +6,6 @@ project:
     - "apps/"
     - "_headers"
     - "ads.txt"
-    - "40cb5c7348fd64dd48fbeb6c92774598.txt"  # IndexNow キー（ルート配信）
 
 # サイトの言語を日本語に設定
 lang: ja
