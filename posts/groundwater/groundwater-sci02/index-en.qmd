@@ -1,6 +1,6 @@
 ---
-title: "Where Groundwater Exists & How It Moves: Aquifers and Tóth's Flow Systems | Groundwater Science #2"
-description: "Where does groundwater exist and how does it move? This article illustrates the geological 'containers' of groundwater—from alluvial aquifers and bedrock fractures to dynamic Karst topography. It also details Tóth's groundwater flow systems, explaining how topography drives groundwater movement."
+title: "What Is an Aquifer? Confined, Unconfined & Karst Types Explained | Groundwater Science #2"
+description: "What is an aquifer? A clear definition plus the main aquifer types — unconfined, confined (artesian), perched, and leaky — and the geology behind them, from alluvial and fractured aquifers to karst, plus how topography drives groundwater flow through Tóth's flow systems."
 author: "Heejun Yang"
 date: "2026-06-03"
 date-modified: last-modified
@@ -35,6 +35,29 @@ In Part 2, we will look at this geological "container" and the "topography" that
 
 ---
 
+## What Is an Aquifer? {#sec-what-is-aquifer}
+
+An **aquifer** is a body of rock or sediment that can store and transmit usable amounts of groundwater — for example sand, gravel, sandstone, or fractured limestone. A layer that holds water but transmits it too slowly to be useful is called an **aquitard** (such as silt or sandy clay), and a layer that is effectively impermeable is an **aquiclude** (such as dense clay or unfractured granite).
+
+What makes a good aquifer is not just the amount of empty space (**porosity**), but how well those spaces are connected (**permeability**). A clay layer can have high porosity yet still be a poor aquifer, because its pores are tiny and poorly connected.
+
+---
+
+## Types of Aquifers: Unconfined, Confined, Perched, and Leaky {#sec-aquifer-types}
+
+Aquifers are classified by whether an impermeable layer confines the water, and by the pressure this creates.
+
+![Geological structure of an alluvial plain and the difference between unconfined and confined groundwater. A shallow well pumps unconfined groundwater at atmospheric pressure, while a deep well pumps confined groundwater that is under pressure because it is trapped beneath a clay layer.](fig-aquifer-types-en.svg){#fig-aquifer-types}
+
+- **Unconfined aquifer** — The uppermost aquifer, open to the atmosphere through the soil above. Its upper surface is the **water table**, which rises and falls with rainfall. A shallow well here pumps water at atmospheric pressure.
+- **Confined (artesian) aquifer** — An aquifer sandwiched beneath an aquitard. Its water is under pressure, so when a well penetrates the confining layer the water rises above the top of the aquifer — sometimes flowing freely at the surface as an **artesian well**. The level to which it rises defines the **potentiometric (piezometric) surface**.
+- **Perched aquifer** — A small, localized aquifer held above the main water table by a limited impermeable lens (such as a clay bed) within the unsaturated zone. Perched water can feed springs on hillsides far above the regional water table.
+- **Leaky (semi-confined) aquifer** — A confined aquifer whose confining layer is not perfectly impermeable, so water slowly leaks in or out through the aquitard. Most real-world "confined" aquifers are leaky to some degree — a fact that matters greatly when estimating sustainable pumping rates.
+
+With these categories in mind, let us see how real geology builds each kind of aquifer.
+
+---
+
 ## How Does Groundwater Differ Between Plains and Mountains? {#sec-geology}
 
 Depending on where we live, the shape of the groundwater "container" beneath our feet is completely different. Broadly speaking, imagine two types: plains (alluvial plains) and mountainous areas (bedrock).
@@ -45,9 +68,7 @@ Many major cities in Japan (such as the Kanto, Nobi, and Osaka plains) are situa
 
 Groundwater here is stored in layers of sand and gravel. Since sand and gravel layers easily transmit water, they make excellent "aquifers." On the other hand, mud and clay layers are difficult for water to pass through, making them "aquitards." As these two alternate, massive water layers (groundwater basins) are formed underground.
 
-![Geological structure of an alluvial plain and the difference between unconfined and confined groundwater. A shallow well pumps unconfined groundwater at atmospheric pressure, while a deep well pumps confined groundwater that has pressure because it is trapped under a clay layer.](fig-aquifer-types-en.svg){#fig-aquifer-types}
-
-Water trapped under a clay layer (a lid) is subjected to pressure from above, so when a well is drilled, the water pushes itself up. This is called **Confined Groundwater**. On the other hand, the groundwater at the very top, which has no lid, is called **Unconfined Groundwater**.
+As these permeable and impermeable layers alternate, they produce exactly the **unconfined and confined aquifers** described above (see @fig-aquifer-types): the topmost, lidless layer holds unconfined groundwater, while water trapped beneath a clay lid becomes pressurized confined groundwater.
 
 These geological layers in the plains can be considered a "container" that was gradually built over time by "**Alluvial Channels**", where rivers flow gently and repeatedly deposit sediments.
 

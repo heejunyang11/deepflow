@@ -41,6 +41,10 @@ The theme of Part 1 is the **Water Cycle**. As a starting point to understand gr
 
 ## Overview of the Water Cycle {#sec-water-cycle}
 
+The **water cycle** (also called the **hydrologic cycle**) is the continuous movement of water among the ocean, atmosphere, and land — evaporating, forming clouds, falling as precipitation, and returning to the sea through rivers and underground. It has no beginning or end: the same water has circulated for billions of years, only changing form and location.
+
+Crucially for this series, one leg of that loop runs **underground** — water that infiltrates the soil becomes groundwater and can stay there for years to millennia before rejoining the cycle. First, let us see how much water the Earth actually holds, and where.
+
 ### Where is Earth's Water Located?
 
 Earth is called the "Water Planet," but the amount of water actually available for human use is surprisingly small.
@@ -125,7 +129,7 @@ Although glaciers and ice caps are the largest reservoirs of freshwater on Earth
 
 ---
 
-### The 5 Processes of the Water Cycle {#sec-processes}
+### The 5 Stages of the Water Cycle {#sec-processes}
 
 Water circulates the Earth in an endless cycle of evaporation, precipitation, and runoff. This cycle is called the **Hydrologic Cycle** [@freeze1979].
 
