@@ -1,0 +1,86 @@
+---
+title: "Services"
+pagetitle: "地下水データの時系列解析・PHREEQCモデリングの受託・講義 — Heejun Yang, Ph.D. | DeepFlows"
+description: "地下水位・水文データの時系列／スペクトル解析（FFT・ウェーブレット・相互相関）と、地球化学モデリング（PHREEQC）の専門家によるサービス。大学院生向けの集中講義・実習、技術指導、受託／共同研究、講演、データ解析。査読論文26編のPh.D.が日英で対応します。"
+number-sections: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/services" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/services-en" />
+---
+
+```{=html}
+<style>
+.svc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin:20px 0 8px; }
+.svc-card { border:1.5px solid #E8E4DC; border-radius:10px; padding:18px 20px; background:#FAF9F6; }
+.svc-card h4 { margin:0 0 8px; font-size:16px; }
+.svc-card p { margin:0; font-size:14px; line-height:1.75; color:#444; }
+.svc-facts { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+.svc-tag { padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600; background:#FDF3EC; color:#E07B39; border:1px solid #F0C9A8; }
+.svc-links a { display:inline-block; margin:6px 14px 6px 0; font-weight:600; }
+.svc-cv { font-size:14px; line-height:1.85; }
+.svc-cv li { margin-bottom:6px; }
+</style>
+```
+
+地下水位・水文データの**時系列／スペクトル解析（FFT・ウェーブレット・相互相関）**と、**地球化学モデリング（PHREEQC）**を専門とする研究者（Ph.D.）です。大学院生向けの集中講義・実習から、研究室の技術指導、受託・共同研究まで、実データにもとづく解析をお手伝いします。日本語・英語の両方で対応できます。
+
+## 提供できること
+
+```{=html}
+<div class="svc-grid">
+  <div class="svc-card">
+    <h4>🎓 集中講義・実習</h4>
+    <p>大学院生・研究室向けに、<strong>水文データの時系列・スペクトル解析（FFT・ウェーブレット）</strong>と<strong>地球化学モデリング（PHREEQC）</strong>の実践を1〜数日で。DeepFlows の連載をベースにした、手を動かす実習形式。</p>
+  </div>
+  <div class="svc-card">
+    <h4>🛠️ 技術指導・モデリング支援</h4>
+    <p>研究プロジェクトのモデリング部分を、専門家として担当・伴走します。学生の解析のつまずきどころもサポート。</p>
+  </div>
+  <div class="svc-card">
+    <h4>📊 受託・共同研究</h4>
+    <p><strong>地下水位・水文データの時系列解析</strong>（潮汐・気圧応答、透水係数／水理拡散係数の推定、FFT・ウェーブレット・相互相関）や、<strong>地球化学</strong>（水質形成・水–岩石反応、地熱・CO2）の解析を受託・共同研究として実施します。</p>
+  </div>
+  <div class="svc-card">
+    <h4>🎤 講演・セミナー</h4>
+    <p>研究会・学会・企業向けの招待講演やセミナー。専門テーマをわかりやすくお伝えします。</p>
+  </div>
+  <div class="svc-card">
+    <h4>🐍 データ解析・可視化</h4>
+    <p>Python による<strong>時系列・スペクトル解析（FFT・ウェーブレット）</strong>、空間補間、図の作成。研究や報告に使える形に整えます。</p>
+  </div>
+</div>
+```
+
+## こんな方に
+
+- 大学の研究室・大学院生（モデリングを学びたい／プロジェクトで必要）
+- 研究機関・自治体（地下水・地球化学の解析）
+- 企業（環境・地熱・水資源の分野）
+
+## Credentials
+
+- 博士（理学）／ 査読付き学術論文 **26編**（第1著者 14編）
+- 専門：地下水位・水文データの時系列／スペクトル解析（FFT・ウェーブレット・相互相関、潮汐・気圧応答）・地球化学モデリング（PHREEQC）・水–岩石反応（地熱／CO2）
+
+```{=html}
+<div class="svc-facts">
+  <span class="svc-tag">時系列解析</span>
+  <span class="svc-tag">FFT / ウェーブレット</span>
+  <span class="svc-tag">PHREEQC</span>
+  <span class="svc-tag">Python</span>
+  <span class="svc-tag">日本語 / English / 한국어</span>
+</div>
+```
+
+学歴・職歴・業績一覧（査読付き論文26編）は [About](about.qmd) をご覧ください。
+
+## お問い合わせ
+
+ご依頼・ご相談は、内容（ご希望・時期・ご予算の目安など）をそえてお気軽にご連絡ください。**料金は内容に応じてご相談**いたします。
+
+📧 [heejun1105\@gmail.com](mailto:heejun1105@gmail.com)
+
+［[お問い合わせページ](contact.qmd) からもご連絡いただけます］

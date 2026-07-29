@@ -725,6 +725,14 @@ Using the `TRANSPORT` block, we will simulate how pollutants and dissolved const
 
 ------------------------------------------------------------------------
 
+::: callout-note
+## Applied example: Groundwater Science #15 (the "maturation" of Kirishima springs)
+
+The reaction-path modeling learned here is applied to the Kirishima volcanic springs in [Groundwater Science #15 — Silicate Weathering and Groundwater Residence Time](/posts/groundwater/groundwater-sci15/index-en.html). There, minerals are dissolved little by little into a dilute recharge water, and the "water-chemistry maturation" in which secondary minerals shift from gibbsite → kaolinite → Ca-smectite is followed — a field application of this method.
+:::
+
+------------------------------------------------------------------------
+
 ## References
 
 ::: {#refs}

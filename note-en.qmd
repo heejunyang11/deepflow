@@ -2,6 +2,7 @@
 title: "Field Notes (Currently Japanese Only)"
 pagetitle: "Field Notes — Hot Springs, Landforms and Lab Notes"
 description: "Essays and research notes that do not fit the tutorial format: the chemistry of hot springs, the link between landforms and history, and the failures faced in everyday simulation work."
+lang: en
 number-sections: false
 crossref:
   chapters: false

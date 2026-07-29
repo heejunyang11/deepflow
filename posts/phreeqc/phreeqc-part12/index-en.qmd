@@ -842,6 +842,14 @@ Your next steps could open doors to **inverse modeling** (the `INVERSE_MODELING`
 
 ------------------------------------------------------------------------
 
+::: callout-note
+## Applied example: Groundwater Science #15 (the "maturation" of Kirishima springs)
+
+The idea of advection–dispersion (i.e., reactive transport) learned here is the key to the conclusion of [Groundwater Science #15 — Silicate Weathering and Groundwater Residence Time](/posts/groundwater/groundwater-sci15/index-en.html). In a volcanic spring system dominated by mixing, the residence-time dependence of dissolved silica cannot be explained by equilibrium calculation alone; it requires exactly the reactive transport model — coupling the advection, dispersion, and mixing handled by `TRANSPORT` — whose necessity that article argues.
+:::
+
+------------------------------------------------------------------------
+
 ## References
 
 ::: {#refs}

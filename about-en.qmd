@@ -2,6 +2,7 @@
 title: "About"
 pagetitle: "About the Author — Heejun Yang, Ph.D."
 description: "Profile of Heejun Yang, Ph.D., who runs DeepFlows. A researcher specializing in groundwater flow analysis, geochemical modeling and hydrology, with 26 peer-reviewed publications. Full publication list and contact details."
+lang: en
 number-sections: false
 format:
   html:
@@ -116,24 +117,33 @@ Passionate about decoding the movement of water in nature through code and AI.
 
 ### Expertise
 
-- 🌊 Groundwater Flow Analysis（MODFLOW / FloPy）
-- ⚗️ Geochemical Modeling（PHREEQC）
-- 💧 Hydrology
+- 📈 Time-series & spectral analysis of hydrological data (FFT, wavelet, cross-correlation, tidal/barometric response)
+- ⚗️ Geochemical modeling (PHREEQC) & water–rock interaction (geothermal / CO2)
+- 💧 Hydrology & groundwater flow analysis
 - 🤖 AI & Machine Learning for Research
 
 ### Skills & Tools
 
-Python · GitHub · MODFLOW · PHREEQC · AI Tools
+Python · Time-series analysis (FFT / wavelet) · PHREEQC · Vibe Coding · AI Tools
 
 ### Languages
 
 Japanese · English · Korean
 
-### Contact
+### Education
 
-For inquiries about this site, please contact me at:
+- Ph.D. in Science, Osaka City University (2012)
+- M.A. in Arts and Sciences, Osaka Kyoiku University (2009)
+- MEXT (Japanese Government) Scholarship
 
-📧 [heejun1105\@gmail.com](mailto:heejun1105@gmail.com)
+### Research Positions
+
+- **University of Toyama**, Faculty of Science — Specially Appointed Associate Professor / Researcher (2022–2026) | water–rock interaction, geochemical modeling
+- **Kyoto University**, Institute for Geothermal Sciences — Researcher (2019–2022) | hot-spring chemistry & groundwater flow
+- **Tokyo Institute of Technology**, School of Environment and Society — Researcher (2016–2017) | lake water quality & flood analysis
+- **Kumamoto University**, Graduate School of Science and Technology — Researcher (2012–2016) | island freshwater-lens analysis
+
+### Publications
 
 ```{=html}
 <a class="scholar-btn" href="https://scholar.google.co.jp/citations?hl=ja&user=aTONqwkAAAAJ" target="_blank" rel="noopener">

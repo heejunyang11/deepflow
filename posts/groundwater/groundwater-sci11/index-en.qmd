@@ -1,0 +1,167 @@
+---
+title: "How Groundwater Chemistry Forms — Major Ions and PHREEQC | Groundwater Science #11"
+description: "Why does groundwater differ in taste and composition from place to place? The origins of the major ions, the four mechanisms of water-quality formation (dissolution, cation exchange, evaporative concentration, mixing), and a PHREEQC calculation of rainwater dissolving calcite into a Ca-HCO₃ water — compared across river, groundwater, seawater and hot spring on a Piper diagram."
+date: 2026-07-26
+categories: [Hydrology, Water quality, Geochemistry, PHREEQC]
+image: piper.png
+author: "DeepFlows"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci11/index.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci11/index-en.html" />
+---
+
+## Introduction: water earns its "taste" by travelling underground
+
+Up to [#10](/posts/groundwater/groundwater-sci10/index-en.html), the story was about *water level* — a matter of physics. From here we step into the water's **contents**: its chemistry.
+
+A spring is soft, a hot spring is salty, another smells metallic. Why do waters that are all just "water" differ so much? The answer is simple: **as water travels underground, it slowly dissolves the rocks and gases it meets along the way.** Rain, which starts out containing almost nothing, takes up carbon dioxide in the soil, dissolves minerals, and sometimes mixes with ancient seawater. That history is written into the water's "taste" — its chemistry.
+
+This article reviews the **major ions** that set groundwater chemistry, organizes the **four mechanisms** that create it, then follows the most universal of them — calcite dissolution — by calculating it with the geochemical code **PHREEQC**. Finally we compare river, groundwater, seawater and hot spring on a **Piper diagram**.
+
+------------------------------------------------------------------------
+
+## The major ions — an alphabet
+
+The composition of natural water can be described almost completely by eight major constituents: four cations (Na⁺, K⁺, Ca²⁺, Mg²⁺) and four anions (Cl⁻, SO₄²⁻, HCO₃⁻, NO₃⁻). These eight are the alphabet of the language of water chemistry.
+
+Each ion carries a story about where the water has been:
+
+| Type | Ion | Main origin | What high values indicate |
+|-------------|-------------|--------------|--------------------------------|
+| Cation | Na⁺ | halite, deep thermal water, seawater | Na-Cl thermal water, seawater mixing |
+| Cation | K⁺ | weathering of feldspar, volcanic thermal water | deep high-temperature thermal water |
+| Cation | Ca²⁺ | limestone, gypsum, carbonate rocks | Ca-HCO₃ (bicarbonate) water, hard water |
+| Cation | Mg²⁺ | dolomite, mafic (Fe–Mg) minerals | young, immature groundwater |
+| Anion | Cl⁻ | sea salt, deep thermal water, halite | deep Na-Cl thermal water, seawater |
+| Anion | SO₄²⁻ | gypsum, sulfide oxidation, volcanic gas | sulfate springs, mine drainage |
+| Anion | HCO₃⁻ | dissolution of CO₂ and carbonate rocks | bicarbonate springs |
+| Anion | NO₃⁻ | fertilizer, sewage, forest soil | anthropogenic (human) contamination |
+
+Cl⁻ deserves special note: because almost no rock contains it, chloride in groundwater is a near-**conservative tracer** of sea salt, deep thermal water, or halite. The shape these eight ions make on a **hexadiagram (Stiff diagram)** is a water's chemical "face".
+
+The metallic smell noted at the outset, however, is not among these eight. Reducing groundwater can carry dissolved **iron (Fe²⁺)**; drawn up and exposed to air, it oxidizes into reddish-brown iron hydroxide — the source of that metallic tang, and of the rust-colored stains on taps and laundry. Such trace constituents are governed less by the balance of major ions than by **oxidation–reduction (redox)** — a theme we return to later in the water-quality thread of this series.
+
+------------------------------------------------------------------------
+
+## Why chemistry varies — four mechanisms of water-quality formation
+
+The reactions that create groundwater chemistry come down to four.
+
+1.  **Dissolution (weathering)** — CO₂-bearing water dissolves minerals. The most basic reaction: calcite dissolution (→ Ca-HCO₃ type), feldspar weathering (→ Na, K), and so on.
+2.  **Cation exchange** — on clay-mineral surfaces, Ca²⁺ in the water swaps with Na⁺ held by the mineral. Important when a seawater-invaded aquifer freshens, producing Na-HCO₃ waters.
+3.  **Evaporative concentration** — in arid settings or long-residence waters, evaporation concentrates ions until salts precipitate.
+4.  **Mixing** — fresh water blends with deep thermal water, or with seawater. Ubiquitous in freshwater lenses ([#7](/posts/groundwater/groundwater-sci07/index-en.html)) and in coastal / geothermal areas.
+
+Of these, **dissolution** is the road almost every groundwater travels first. Below we follow its archetype — rainwater dissolving calcite (CaCO₃) into a **Ca-HCO₃** groundwater — calculating with PHREEQC.
+
+------------------------------------------------------------------------
+
+## Calculating water-quality formation with PHREEQC — calcite dissolution
+
+### Setup
+
+Rain, just before it infiltrates, is almost pure water. But the soil is rich in **CO₂** — tens of times atmospheric — from root and microbial respiration. The rain takes up this CO₂ to become a weak carbonic acid, and begins to dissolve limestone (calcite). The reaction is a single line:
+
+$$\mathrm{CaCO_3 + CO_2 + H_2O \;\rightleftharpoons\; Ca^{2+} + 2HCO_3^-}$$
+
+Assuming an **open system** in which soil CO₂ is continuously supplied, we fix the partial pressure at $p\mathrm{CO_2}=10^{-2}\,\mathrm{atm}$ and let calcite dissolve to saturation. The PHREEQC input is short:
+
+``` phreeqc
+SOLUTION 1  Rainwater
+    temp      25
+    units     mmol/kgw
+    pH        5.6          # rain that has taken up CO2
+    -water    1 # kg
+
+EQUILIBRIUM_PHASES 1
+    CO2(g)    -2.0         # fix soil CO2 (open system, pCO2 = 10^-2 atm)
+    Calcite   0.0   10     # equilibrate with calcite (ample supply)
+
+SELECTED_OUTPUT
+    -pH     true
+    -totals    Ca  C(4)
+    -si     Calcite
+END
+```
+
+`EQUILIBRIUM_PHASES` fixes the **CO₂ pressure** while equilibrating with **calcite** — that is the open-system, calcite-saturation calculation.
+
+### Result: evolution toward a Ca-HCO₃ water
+
+The result is @fig-calcite. The horizontal axis is the amount of calcite dissolved (= Ca²⁺ taken into solution).
+
+![Rainwater + soil CO₂ dissolving calcite into a Ca-HCO₃ groundwater (open system, $p\mathrm{CO_2}=10^{-2}$ atm, 25 °C). Left: Ca²⁺ and HCO₃⁻ rise in a 1:2 ratio and pH increases. Right: the calcite saturation index (SI) rises and dissolution stops at SI = 0 (saturation).](calcite_evolution.png){#fig-calcite}
+
+Three things stand out.
+
+- **Ca²⁺ : HCO₃⁻ = 1 : 2**, exactly the stoichiometry of the reaction above.
+- **pH rises**, as the acid (CO₂) is consumed and alkalinity (HCO₃⁻) accumulates.
+- **SI approaches 0 and dissolution stops.** The water reaches equilibrium with calcite — a classic **Ca-HCO₃ groundwater** (pH ≈ 7.3, Ca ≈ 1.4 mmol/L ≈ 56 mg/L).
+
+::: callout-note
+## The values depend on $p\mathrm{CO_2}$ — link to the PHREEQC series
+
+The Ca concentration at saturation scales roughly as $p\mathrm{CO_2}^{1/3}$. In settings with high soil CO₂ ($p\mathrm{CO_2}=10^{-1.5}$ to $10^{-1}$ atm), Ca reaches 2–4 mmol/L. [PHREEQC from scratch #5](/posts/phreeqc/phreeqc-part5/index-en.html) defines a carbonate groundwater with "Ca ≈ 3–4 mmol/kg, calcite SI ≈ 0" under higher CO₂ — continuous with the calculation here. The full PHREEQC workflow is taught from the ground up in the [PHREEQC series](/blog-en.html).
+:::
+
+> This calculation uses a dilute approximation (activity coefficients = 1). For high-ionic-strength waters such as seawater, PHREEQC applies Debye–Hückel activity corrections automatically; for quantitative work, let PHREEQC handle it.
+
+------------------------------------------------------------------------
+
+## Checking against real data — from the literature
+
+### Fluoride enrichment in Kumamoto: dissolution sets the chemistry
+
+A telling example of dissolution controlling chemistry is the groundwater of western Kumamoto. **Hossain et al. (2016)** analyzed the geochemical processes by which **fluoride (F⁻) becomes locally enriched** there. Dissolution of volcanic-rock minerals, combined with residence time and pH, can push fluoride above drinking-water limits. *Which* mineral dissolves under *which* conditions decides the chemistry — sometimes the water-quality problem.
+
+### Classifying Beppu hot springs: a multivariate view
+
+The archetype of mixing-controlled chemistry is a hot spring. **Yang (2021)** measured the major constituents of many Beppu spring sources and used **multivariate analysis (cluster and principal-component analysis)** to classify the spring types and their vertical distribution. Deep Na-Cl thermal water and shallow Ca-HCO₃ groundwater mix in varying proportions to give each source its character; one source was estimated at 12% seawater mixing from its hexadiagram.
+
+> Not just *reading* the major ions but *classifying* them with multivariate statistics — treating water-quality data with the same mindset as the time-series methods from [#8](/posts/groundwater/groundwater-sci08/index-en.html) onward.
+
+------------------------------------------------------------------------
+
+## The Piper diagram — a whole-picture view
+
+Finally, we view four contrasting waters — river, groundwater, hot spring and seawater — on a **Piper (trilinear) diagram** (@fig-piper). The lower-left triangle is the cations, the lower-right the anions, each plotting relative proportions (equivalent %). The upper diamond is obtained by **projecting the points from the two triangles until they intersect**, and it tells the water type at a glance.
+
+![Piper (trilinear) diagram of river, groundwater, hot spring and seawater. Dashed lines show, for each sample, the projection from its cation and anion points up to the diamond — the diamond point is the intersection of the two triangles. The diamond is divided into water-type fields I–IV. Representative values are from the field note above.](piper.png){#fig-piper}
+
+- The diamond is divided into four water-type fields (**I: Na-Cl, II: Ca-Mg-SO₄, III: Ca-HCO₃, IV: Na-HCO₃**).
+- **Groundwater and river** fall in field **III (Ca-HCO₃)** — precisely the product of the calcite dissolution calculated above.
+- **Hot spring and seawater** fall in field **I (Na-Cl)**, chemistry governed by deep thermal water and seawater mixing.
+
+On a single figure, the differences in formation mechanism appear directly as differences in position. That is the power of the Piper diagram.
+
+------------------------------------------------------------------------
+
+## Summary
+
+- Groundwater chemistry can be understood as the history of four mechanisms: **dissolution, cation exchange, evaporative concentration, and mixing**.
+- The most basic — **calcite dissolution** — can be tracked quantitatively in PHREEQC. Rain takes up CO₂, dissolves calcite in a Ca : HCO₃ = 1 : 2 ratio, evolves toward a **Ca-HCO₃ type**, and stops at saturation.
+- The **Piper diagram** shows water type and formation process at a glance; the diamond point is the intersection of the projections from the two ternary plots.
+
+::: callout-note
+## Coming next — #12: Reproducing a paper with PHREEQC
+
+Taking the Kumamoto fluoride enrichment of **Hossain et al. (2016)** touched on above, the next article reads that paper closely and **reproduces its water-quality formation in PHREEQC** — testing how far real groundwater chemistry can be explained with public data and geochemical modeling.
+:::
+
+------------------------------------------------------------------------
+
+## References
+
+- Appelo, C.A.J. & Postma, D. (2005) *Geochemistry, Groundwater and Pollution*, 2nd ed. Balkema.
+- Parkhurst, D.L. & Appelo, C.A.J. (2013) Description of input and examples for PHREEQC version 3. *U.S. Geological Survey Techniques and Methods*, book 6, chap. A43.
+- Hossain, S., Hosono, T., Yang, H., Shimada, J. (2016) Geochemical Processes Controlling Fluoride Enrichment in Groundwater at the Western Part of Kumamoto Area, Japan. *Water, Air, & Soil Pollution*, 227(10), 385.
+- Yang, H. (2021) Classification and vertical distribution of Beppu hot-spring water quality using hydrochemical methods and multivariate analysis. *Journal of Groundwater Hydrology*, 63(3), 137–149. (in Japanese)
+- Yang, H., Mishima, T., Katazakai, S., Kagabu, M. (2023) Analytical approach using a chemical equilibrium formula and geochemical modeling for alkalinity measurements of small natural water samples. *Applied Geochemistry*, 148, 105535.

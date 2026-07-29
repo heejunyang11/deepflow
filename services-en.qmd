@@ -1,0 +1,87 @@
+---
+title: "Services"
+pagetitle: "Groundwater Time-Series Analysis & PHREEQC Modeling Services — Heejun Yang, Ph.D. | DeepFlows"
+description: "Services by a specialist in time-series & spectral analysis of groundwater-level and hydrological data (FFT, wavelet, cross-correlation) and geochemical modeling (PHREEQC): hands-on graduate courses, technical guidance, contract/collaborative research, invited talks, and data analysis. Delivered by a Ph.D. with 26 peer-reviewed papers, in English and Japanese."
+lang: en
+number-sections: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/services" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/services-en" />
+---
+
+```{=html}
+<style>
+.svc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin:20px 0 8px; }
+.svc-card { border:1.5px solid #E8E4DC; border-radius:10px; padding:18px 20px; background:#FAF9F6; }
+.svc-card h4 { margin:0 0 8px; font-size:16px; }
+.svc-card p { margin:0; font-size:14px; line-height:1.75; color:#444; }
+.svc-facts { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+.svc-tag { padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600; background:#FDF3EC; color:#E07B39; border:1px solid #F0C9A8; }
+.svc-links a { display:inline-block; margin:6px 14px 6px 0; font-weight:600; }
+.svc-cv { font-size:14px; line-height:1.85; }
+.svc-cv li { margin-bottom:6px; }
+</style>
+```
+
+I am a researcher (Ph.D.) specializing in **time-series and spectral analysis of groundwater-level and hydrological data (FFT, wavelet, cross-correlation)** and **geochemical modeling (PHREEQC)**. From hands-on graduate courses to technical guidance and contract/collaborative research, I help teams make sense of real data. Available in both English and Japanese.
+
+## What I Offer
+
+```{=html}
+<div class="svc-grid">
+  <div class="svc-card">
+    <h4>🎓 Intensive Courses &amp; Hands-on Workshops</h4>
+    <p>Practical training in <strong>PHREEQC (geochemical modeling)</strong> and <strong>time-series &amp; spectral analysis of hydrological data (FFT, wavelet)</strong> for graduate students and labs, over one to a few days. Built on the DeepFlows tutorial series, hands-on.</p>
+  </div>
+  <div class="svc-card">
+    <h4>🛠️ Technical Guidance &amp; Modeling Support</h4>
+    <p>I take on — or work alongside you on — the modeling part of your research project, including untangling where students get stuck.</p>
+  </div>
+  <div class="svc-card">
+    <h4>📊 Contract &amp; Collaborative Research</h4>
+    <p><strong>Time-series analysis of groundwater-level &amp; hydrological data</strong> (tidal/barometric response, hydraulic conductivity &amp; diffusivity estimation, FFT, wavelet, cross-correlation), and <strong>geochemistry</strong> (water-quality formation, water–rock interaction, geothermal / CO2).</p>
+  </div>
+  <div class="svc-card">
+    <h4>🎤 Talks &amp; Seminars</h4>
+    <p>Invited talks and seminars for study groups, conferences, and companies — technical topics made clear.</p>
+  </div>
+  <div class="svc-card">
+    <h4>🐍 Data Analysis &amp; Visualization</h4>
+    <p><strong>Time-series &amp; spectral analysis (FFT, wavelet)</strong>, spatial interpolation, and figure preparation in Python, shaped for research and reporting.</p>
+  </div>
+</div>
+```
+
+## Who It's For
+
+- University labs and graduate students (learning modeling, or needing it for a project)
+- Research institutes and government agencies (groundwater & geochemistry analysis)
+- Companies in the environmental, geothermal, and water-resources sectors
+
+## Credentials
+
+- Ph.D. in Science / **26 peer-reviewed papers** (14 as first author)
+- Expertise: time-series &amp; spectral analysis of groundwater-level and hydrological data (FFT, wavelet, cross-correlation, tidal/barometric response), geochemical modeling (PHREEQC), water–rock interaction (geothermal / CO2)
+
+```{=html}
+<div class="svc-facts">
+  <span class="svc-tag">Time-series analysis</span>
+  <span class="svc-tag">FFT / Wavelet</span>
+  <span class="svc-tag">PHREEQC</span>
+  <span class="svc-tag">Python</span>
+  <span class="svc-tag">English / Japanese / Korean</span>
+</div>
+```
+
+See education, work history and the full publication list (26 peer-reviewed papers) on [About](about-en.qmd).
+
+## Contact
+
+For enquiries, please get in touch with a short note about what you need (scope, timing, and rough budget). **Fees are discussed based on scope.**
+
+📧 [heejun1105\@gmail.com](mailto:heejun1105@gmail.com)
+
+[You can also reach me via the [Contact page](contact-en.qmd).]

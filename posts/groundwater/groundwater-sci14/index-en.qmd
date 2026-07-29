@@ -1,0 +1,177 @@
+---
+title: "How Old Is Groundwater? — Reading Recharge and Residence Time with Isotopes, Tritium and ⁸⁵Kr | Groundwater Science #14"
+description: "Groundwater records both where it was born (recharge source) and when (age). We review stable isotopes δ¹⁸O and δD, the meteoric water line and the altitude effect, and age dating with tritium, CFCs, SF₆ and ⁸⁵Kr — then read the stagnant, old water of Kumamoto (Kagabu 2017) and Kirishima (Ide)."
+date: 2026-07-28
+categories: [Hydrology, Water Quality, Isotopes, Age Dating, Geochemistry]
+image: fig3_age_flowline.png
+author: "DeepFlows"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci14/index.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci14/index-en.html" />
+---
+
+## Introduction: measuring the age of the stagnant zone
+
+In [#12](/posts/groundwater/groundwater-sci12/index-en.html) (fluoride) and [#13](/posts/groundwater/groundwater-sci13/index-en.html) (arsenic), the high concentrations both clustered in the **long-residence stagnant zone** — water that had lingered for decades, reacting with rock. But how do we measure those "decades"?
+
+Groundwater records two things about itself: **where it was born (recharge source)** and **when it was born (age)**. The former is told by the **stable isotopes of the water molecule (δ¹⁸O, δD)**; the latter by **environmental tracers whose atmospheric concentrations have changed over time (³H, CFCs, SF₆, ⁸⁵Kr)**. This article reviews these tools for reading "the time of water," from textbook basics to field cases.
+
+Where #11–13 were about water gaining its chemistry by reacting with rock, #14 measures the **time** that governs those reactions.
+
+------------------------------------------------------------------------
+
+## A water's fingerprint: stable isotopes
+
+> This section reviews isotope basics in some depth. Readers already familiar may skip to "Where was it born."
+
+### What isotopes are
+
+**Isotopes** are atoms with the same number of protons (i.e., the same element) but different numbers of neutrons. Each of water's two elements has stable isotopes:
+
+- Oxygen: **¹⁶O (99.76%), ¹⁷O (0.04%), ¹⁸O (0.20%)**
+- Hydrogen: **¹H (99.985%), ²H = deuterium D (0.015%)** (plus radioactive ³H = tritium, below)
+
+So most water molecules are the light **¹H₂¹⁶O**, but a tiny fraction are heavy **¹H₂¹⁸O** or **¹HD¹⁶O**. The slight difference in **these ratios** is the fingerprint of a water's history.
+
+### Why δ notation — a relative value against VSMOW
+
+The absolute ¹⁸O/¹⁶O ratio is about 0.0020, and differences between samples are a thousandth of that. Rather than absolute values, we express the **deviation from a standard in per mil (‰)** — the **δ notation**:
+
+$$\delta = \left(\frac{R_{\text{sample}}}{R_{\text{standard}}} - 1\right) \times 1000\ (‰), \qquad R = \frac{^{18}\mathrm{O}}{^{16}\mathrm{O}}\ \text{or}\ \frac{\mathrm{D}}{\mathrm{H}}$$
+
+- The standard is **VSMOW (Vienna Standard Mean Ocean Water)**; by definition δ¹⁸O = δD = 0‰.
+- **Negative δ = lighter than the standard** (depleted in the heavy isotope). Continental precipitation and groundwater are usually negative.
+- Example: δ¹⁸O = −8‰ means "8‰ (0.8%) less ¹⁸O/¹⁶O than VSMOW."
+
+### Isotope fractionation — heavy and light water behave differently
+
+During phase changes (evaporation, condensation), heavy and light molecules move slightly differently — **fractionation**.
+
+- **Equilibrium fractionation**: heavy isotopes (¹⁸O, D) bond more strongly and **stay in the liquid (condensate), resisting the vapor**. The effect is larger at lower temperature.
+- **Kinetic (non-equilibrium) fractionation**: extra fractionation during rapid evaporation into dry air — larger when humidity is low. It is the source of d-excess (below).
+- As a result,
+  - **vapor evaporated from the sea is lighter than seawater** (enriched in ¹⁶O, ¹H);
+  - **as rain condenses and falls, the heavy water leaves first**, so **the remaining vapor becomes progressively lighter** (Rayleigh distillation);
+  - hence the more the vapor is carried inland, higher, or to colder latitudes, raining out along the way, **the lighter (more negative) the later rain becomes.**
+
+### The meteoric water line (GMWL)
+
+Craig (1961) found that precipitation worldwide falls on a single line when δ¹⁸O and δD are plotted — the **Global Meteoric Water Line (GMWL)**:
+
+$$\delta \mathrm{D} = 8\,\delta^{18}\mathrm{O} + 10$$
+
+- **Slope 8** reflects the **ratio of equilibrium fractionation** for H and O (D fractionates about 8× more than ¹⁸O). As long as evaporation/condensation is near-equilibrium, the two move together at this slope.
+- **Intercept 10 = d-excess (Dansgaard 1964)**, defined $d = \delta \mathrm{D} - 8\,\delta^{18}\mathrm{O}$, reflecting the **relative humidity of the vapor source** — larger for water evaporated from dry seas.
+- Each region forms a **Local Meteoric Water Line (LMWL)** close to the GMWL. **Groundwater keeps the δ of the precipitation that recharged it** (little evaporation underground), so it plots on this line — the basis for tracing recharge.
+
+### The "effects" that shift δ (Dansgaard 1964)
+
+Precipitation δ varies systematically, all understandable via Rayleigh distillation:
+
+- **Latitude effect**: lighter at higher latitude.
+- **Altitude effect**: lighter at higher elevation (about **−0.15 to −0.5‰/100 m** in δ¹⁸O) → used to estimate recharge elevation.
+- **Continental effect**: lighter farther inland.
+- **Amount effect**: lighter for heavier rainfall (marked in the tropics).
+- **Seasonal effect**: winter precipitation is lighter than summer.
+
+------------------------------------------------------------------------
+
+## Where was it born — reading recharge (the altitude effect)
+
+Of these effects, the **altitude effect** is the one most used for groundwater. Since precipitation δ is lighter at higher elevation, **the δ of groundwater can be back-calculated to the elevation at which it recharged.**
+
+@fig-gmwl shows the relationship. Groundwater (red) plots on the meteoric water line and moves **toward the lower-left (lighter) the higher the recharge elevation**. Water that has evaporated, in contrast, leaves the line along an **evaporation line of slope 4–5**. Seawater sits at δ ≈ 0 (upper right); a fresh–seawater mixture falls on the line joining them (well suited to the freshwater lens of [#7](/posts/groundwater/groundwater-sci07/index-en.html)).
+
+![The meteoric water line and a water's isotopic fingerprint. Groundwater (red) plots on the GMWL and is lighter (lower-left) for higher, colder, more inland recharge. Evaporated water departs on a slope-4–5 evaporation line; seawater is at VSMOW ≈ 0. (Points are illustrative.)](fig1_gmwl.png){#fig-gmwl}
+
+In the **Kirishima case (Ide et al. 2016)**, spring δD correlated clearly with mean catchment elevation, indicating recharge mainly at 700–1000 m. The δ value is a label for "at what elevation the water was born."
+
+------------------------------------------------------------------------
+
+## When was it born — dating groundwater
+
+Once the source is known, we turn to age. Young groundwater (within decades) can be timed with **substances whose atmospheric concentration has changed over time.** Each has a distinct atmospheric history, as in @fig-tracers.
+
+![Atmospheric histories of age tracers (schematic, Northern Hemisphere). ³H peaked with 1960s nuclear testing (bomb tritium); CFCs, ⁸⁵Kr and SF₆ rose through the late 20th century. The atmospheric level at recharge is recorded in the water and acts as a clock. In cities, CFCs and SF₆ are contaminated, so ⁸⁵Kr is more reliable.](fig2_tracers.png){#fig-tracers}
+
+- **Tritium ³H** (half-life 12.3 yr): the radioactive hydrogen isotope; nuclear testing left a large peak (bomb tritium) in 1960s precipitation. Age follows from decay and input history.
+- **CFCs**: rose monotonically through the late 20th century, then plateaued after the Montreal Protocol. The atmospheric level at recharge gives the recharge year.
+- **SF₆**: a similarly rising anthropogenic tracer.
+- **⁸⁵Kr (krypton-85)** (half-life 10.8 yr): risen from nuclear-fuel reprocessing; **strong for young water (< 50 yr) and less affected by local contamination.**
+
+::: callout-important
+## "Age" is a model age
+
+What these give is **not a single absolute date but a "model age" that includes flow mixing.** Water pumped from a well is a mixture of many paths and ages. So a **lumped parameter model (LPM: piston flow PFM, exponential mixing EMM, etc.)** is assumed to estimate a mean residence time. The resulting age is an "apparent/model age" resting on that assumption — to be read honestly as such.
+:::
+
+------------------------------------------------------------------------
+
+## The Kumamoto case — dating with ⁸⁵Kr (Kagabu et al. 2017)
+
+Kumamoto depends on groundwater for nearly 100% of its drinking water. **Kagabu et al. (2017)** measured ⁸⁵Kr, CFCs, SF₆ and ³H together to map the time structure of the regional flow system.
+
+Here ⁸⁵Kr was decisive. Where **CFCs and SF₆ were anthropogenically contaminated in urban areas** and could not yield ages, ⁸⁵Kr — little affected — made dating possible (the core of this study).
+
+The result was clear: along the main flow line A–A′, **the ⁸⁵Kr apparent age increased from ≈16 yr (recharge) → ≈36 yr (discharge) → ≥55 yr (stagnant zone)** (@fig-age), consistent with an LPM analysis using a ³H time series.
+
+![⁸⁵Kr apparent age along the Kumamoto A–A′ flow line (Kagabu et al. 2017): recharge ≈16 yr → discharge ≈36 yr → stagnant ≥55 yr. The stagnant zone coincides with where the fluoride of #12 and arsenic of #13 concentrate. "≥55" is a lower bound set by detection.](fig3_age_flowline.png){#fig-age}
+
+The striking point: **this "stagnant zone ≥55 yr" is exactly where the fluoride of [#12](/posts/groundwater/groundwater-sci12/index-en.html) and the arsenic of [#13](/posts/groundwater/groundwater-sci13/index-en.html) concentrated.** An independent tracer, ⁸⁵Kr, gave the answer of **time — "because the water is old"** — to why they accumulate there.
+
+------------------------------------------------------------------------
+
+## The Kirishima case — the distribution of residence time (Ide et al. 2016)
+
+The same idea works in volcanic terrain. **Ide et al. (2016)** measured CFCs in 25 springs of the Kirishima volcanic group and, assuming exponential-mixing plus piston flow (EMM+PFM) in an LPM, estimated **mean residence times of 1–58 years**:
+
+- **under 10 years near the summits** (young water);
+- **10–40 years around the foot**;
+- **50–60 years at the longest**, where **piston flow** dominated (note: the system as a whole is dominated by mixing flow (EMM); piston-flow dominance is limited to this longest flow path — the end of the Takachihonomine lava).
+
+Residence time is set by topography and flow style. Combined with the altitude effect (recharge elevation), one can map "**where the water was born and how many years it travelled.**"
+
+------------------------------------------------------------------------
+
+## Age as a time axis — back to water quality
+
+Isotopes and age are not ends in themselves. Their value is in giving a **time axis to water quality.**
+
+- **Water quality is a function of age.** The fluoride of #12 and the arsenic of #13 both concentrated in the long-residence stagnant zone (≥55 yr). Age answers *why there* with *time*.
+- **A bridge to the next article**: Ide et al. (2018) showed at Kirishima that **dissolved silica saturates and secondary minerals shift from kaolinite to Ca-smectite about 20 years after recharge.** Residence time (this article) × water–rock "maturation" is followed with PHREEQC in [#15](/posts/groundwater/groundwater-sci15/index-en.html).
+
+------------------------------------------------------------------------
+
+## Summary
+
+- Groundwater records both **where it was born (δ¹⁸O, δD = recharge source, altitude effect)** and **when (³H, CFCs, SF₆, ⁸⁵Kr = age).**
+- On the meteoric water line **δD = 8δ¹⁸O + 10**, groundwater preserves its recharge fingerprint; the altitude effect gives recharge elevation, the evaporation line records evaporation.
+- Age is **not a single value but a model age assuming a flow style** (LPM) — read honestly as such.
+- In Kumamoto, ⁸⁵Kr traced **16 → 36 → ≥55 yr**, tying the stagnant, old water to the concentration zones of #12/#13. In Kirishima, residence times of **1–58 yr** followed topography.
+- And age gives water-quality concentration its time axis, leading to the "maturation" of #15.
+
+::: callout-note
+## Next — [#15](/posts/groundwater/groundwater-sci15/index-en.html) Springs and residence time: how water quality "matures"
+
+At Kirishima, we combine **residence time (this article) × water–rock reaction (PHREEQC)**. Ide et al. (2018)'s finding — "silica saturation and a kaolinite→Ca-smectite shift about 20 years after recharge" — is retraced along a PHREEQC reaction path. **The article where PHREEQC shines most.**
+:::
+
+------------------------------------------------------------------------
+
+## References
+
+- Kagabu, M., Matsunaga, M., Ide, K., Momoshima, N., Shimada, J. (2017) Groundwater age determination using ⁸⁵Kr and multiple age tracers (SF₆, CFCs, and ³H) to elucidate regional groundwater flow systems. *Journal of Hydrology: Regional Studies*, 12, 165–180.
+- Ide, K. et al. (2016) Estimation of spring water residence time in the Kirishima volcanic area using CFCs from repeated sampling (in Japanese). *Journal of Japanese Association of Hydrological Sciences*, 46(3), 213–231.
+- Ide, K., Hosono, T., Hossain, S., Shimada, J. (2018) Estimating silicate weathering timescales from geochemical modeling and spring water residence time in the Kirishima volcanic area, southern Japan. *Chemical Geology*, 488, 44–55.
+- Craig, H. (1961) Isotopic variations in meteoric waters. *Science*, 133, 1702–1703.
+- Dansgaard, W. (1964) Stable isotopes in precipitation. *Tellus*, 16, 436–468.
+- Clark, I. & Fritz, P. (1997) *Environmental Isotopes in Hydrogeology*. Lewis Publishers.
+- Cook, P.G. & Herczeg, A.L. (eds., 2000) *Environmental Tracers in Subsurface Hydrology*. Kluwer.

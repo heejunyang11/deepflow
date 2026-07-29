@@ -1,0 +1,176 @@
+---
+title: "Why Arsenic Dissolves into Groundwater — Redox in Kumamoto's Aquifer, Read with PHREEQC | Groundwater Science #13"
+description: "In parts of Kumamoto, arsenic (As) exceeds the drinking-water limit naturally. The key is redox. Following Hossain et al. (2016), we reproduce it in PHREEQC — the redox sequence of electron acceptors, the pe/Eh control on arsenic speciation, and the release of arsenic by reductive dissolution of iron oxide."
+date: 2026-07-28
+categories: [Hydrology, Water Quality, Geochemistry, PHREEQC, Arsenic, Redox]
+image: fig1_redox_ladder.png
+author: "DeepFlows"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci13/index.html" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci13/index-en.html" />
+---
+
+## Introduction: beyond the metallic smell
+
+In [#11](/posts/groundwater/groundwater-sci11/index-en.html) we noted that the **metallic smell** of well water is dissolved **iron (Fe²⁺)** in reducing groundwater — iron that oxidizes to reddish-brown hydroxide once it meets air. We promised that "such trace constituents are governed by **redox (oxidation–reduction)**." This article keeps that promise.
+
+The lead is **arsenic (As)**. Arsenic is highly toxic, and the drinking-water limit is a strict **10 µg/L** (both WHO and Japan). In the Kumamoto area, this arsenic exceeds the limit **naturally — not from pollution.** **Hossain et al. (2016)** found As ranging **0.1–60.6 µg/L**, with **36% of wells in the stagnant Kumamoto Plain exceeding 10 µg/L**.
+
+Why would arsenic dissolve naturally? As with the fluoride of [#12](/posts/groundwater/groundwater-sci12/index-en.html), the answer is slow water–rock reaction over time. But this time, what moves arsenic is not pH — it is **electrons**. We reproduce the mechanism in **PHREEQC** in three stages: **① the redox sequence**, **② arsenic speciation**, and **③ release of arsenic from iron oxide**.
+
+------------------------------------------------------------------------
+
+## Same stage as #12, a different lead
+
+Strikingly, the signature of high-arsenic groundwater resembles the high-fluoride water of [#12](/posts/groundwater/groundwater-sci12/index-en.html). For the high-As area (39 samples), Hossain et al. (2016) report:
+
+- **High pH** (mean 7.97, range 7.14–9.45)
+- **Reducing** (ORP mean +42 mV, down to −283 mV; low dissolved oxygen)
+- **Low NO₃** (often below detection) and **high dissolved iron** (Fe mean 511, max 5283 µg/L)
+- Clustered in **long-residence stagnant zones** (central Kumamoto Plain)
+
+Sediment-core analysis shows that **arsenic is adsorbed on iron and aluminum oxides/hydroxides** (As correlates with Fe and Al, not Mn) and is **geogenic** in origin.
+
+So the stage is the same as #12 — "high pH, stagnant." But whereas #12 saw **high pH desorb fluoride**, in #13 **reduction (electron transfer) dissolves the iron oxide and takes arsenic with it.** The lead role passes to redox.
+
+------------------------------------------------------------------------
+
+## The redox sequence — electron acceptors are used in order
+
+What does it actually mean for groundwater to "turn reducing"? The key is that when microbes decompose organic matter, they **use up electron acceptors in order of energy yield.** This order is the **redox sequence.**
+
+In PHREEQC, adding organic matter (CH₂O) step by step to an oxic recharge water reproduces the sequence directly.
+
+``` phreeqc
+SOLUTION 1  Oxic recharge water        # water with O2, NO3, SO4
+    pe 14;  O(0) 0.5;  N(5) 0.5;  S(6) 1.0 ...
+EQUILIBRIUM_PHASES 1
+    Pyrolusite  0.0  5e-5              # MnO2 (electron acceptor)
+    Fe(OH)3(a)  0.0  2e-3              # ferrihydrite (acceptor & Fe source)
+REACTION 1
+    CH2O 1.0;  0 0.1 ... 3.0 mmol      # add organic matter (reductant)
+```
+
+The result is @fig-ladder.
+
+![The redox sequence. Top: as organic matter (CH₂O) is added, pe (electron availability) falls in steps. Bottom: electron acceptors are consumed in the order O₂ → NO₃⁻ → MnO₂ → Fe(OH)₃ → SO₄²⁻, with Fe²⁺ and H₂S appearing. The red band is the iron-reduction zone — where arsenic is released.](fig1_redox_ladder.png){#fig-ladder}
+
+The order is clear:
+
+1. First **O₂** (aerobic respiration) is consumed.
+2. Then **NO₃⁻** (denitrification).
+3. Once O₂ and NO₃⁻ are gone, **pe crashes** and **MnO₂ → Fe(OH)₃** reduction begins (Fe²⁺ rises sharply).
+4. Further on, **SO₄²⁻ is reduced**, producing **H₂S**.
+
+This sequence explains the signature of high-arsenic water. **Arsenic is released in the red band — where iron oxide Fe(OH)₃ dissolves.** And crucially, **NO₃⁻ is consumed before iron.** So **where NO₃⁻ still remains, iron reduction has not been reached, and arsenic is not released.** The paper's "**high As = low NO₃**" is exactly this ordering of the sequence.
+
+::: callout-tip
+## The PHREEQC how-to is here
+
+Computing the redox sequence in PHREEQC is walked through hands-on in [PHREEQC from scratch #13: the redox sequence](/posts/phreeqc/phreeqc-part13/index-en.html), and denitrification diagnosis in [#14: diagnosing nitrate](/posts/phreeqc/phreeqc-part14/index-en.html). Here we apply those results to the field case of Kumamoto's arsenic.
+:::
+
+------------------------------------------------------------------------
+
+## Why arsenic moves — reductive dissolution of iron oxide
+
+Arsenic in the sediment is **adsorbed on the surface of iron oxide (hydrous ferric oxide, Hfo)** — effectively "pinned." In oxic conditions the iron oxide is stable and arsenic stays put.
+
+But when the redox sequence reaches the iron-reduction rung, this changes. As **Fe(OH)₃ accepts electrons and dissolves (reductive dissolution)**, the arsenic on its surface **loses its host and is released to the water.** In PHREEQC, reducing an Hfo surface that carries adsorbed arsenic (`SURFACE`) reproduces this release.
+
+![Release of arsenic by reductive dissolution of iron oxide (concept demo). Initially As is adsorbed on Hfo and dissolved As is below the limit (blue dashed = remaining Fe(OH)₃, red = dissolved As). As organic matter drives reduction, Fe(OH)₃ dissolves and the adsorbed As is released — dissolved As rises past the 10 µg/L limit.](fig3_as_release.png){#fig-release}
+
+@fig-release shows exactly the picture: not "poison mixed in," but **arsenic that was pinned on iron oxide dissolving along with the iron.** As Fe(OH)₃ decreases (blue), dissolved arsenic (red) rises in its place — this mirror relationship is the heart of arsenic mobilization.
+
+::: callout-note
+## An honest limit: this is a "concept demo"
+
+This sorption/desorption calculation (the Dzombak–Morel Hfo model) uses default values for specific surface area and site density — not values specific to Kumamoto's sediment. So **we make no claim about exact concentrations**; it is a **visualization of the principle** that reduction releases arsenic. Hossain et al. (2016) themselves treat this desorption qualitatively.
+:::
+
+------------------------------------------------------------------------
+
+## Arsenic's "face" — from arsenate to arsenite
+
+Arsenic does not merely dissolve or not. It **changes chemical species (its face) with redox.** In oxic water, **arsenate As(V)** (HAsO₄²⁻, etc.) dominates; in reducing water, **arsenite As(III)** (H₃AsO₃). Arsenite is generally more mobile and more toxic.
+
+Here it helps to connect the **ORP (redox potential Eh)** a field meter reads with the **pe** PHREEQC uses.
+
+::: callout-note
+## pe and ORP (Eh) — a ruler for electrons
+
+- **pe** is a dimensionless measure of how readily electrons are exchanged (`pe = −log{e⁻}`). **High pe = oxidizing, low pe = reducing.** If pH is "a ruler for protons (H⁺)," pe is "a ruler for electrons (e⁻)."
+- The field **ORP (Eh, mV)** corresponds one-to-one with pe. At 25 °C, **$E_h(\mathrm{mV}) \approx 59.2 \times \mathrm{pe}$** (pe = 1 ≈ +59 mV). **PHREEQC computes in pe, the field measures Eh** — this equation bridges them.
+- But a Pt-electrode ORP is a **mixed potential** of many redox couples that are not necessarily in mutual equilibrium. **Read a measured ORP as a guide,** not an exact pe.
+:::
+
+Fixing pH = 8 and sweeping pe from oxidizing to reducing gives @fig-spec.
+
+![Fractions of reduced arsenic and iron species (y-axis = reduced fraction) versus pe (bottom axis) and Eh (top axis). Fe(II) becomes dominant at pe ≈ +1.7, and As(III) (arsenite) at pe ≈ −1 (Eh ≈ −59 mV). Iron is reduced first, then arsenic shifts to arsenite.](fig2_as_speciation.png){#fig-spec}
+
+Two points stand out.
+
+- **Iron first, arsenic second.** Fe(III)→Fe(II) crosses over at pe ≈ +1.7, As(V)→As(III) at pe ≈ −1 — consistent with the sequence order (iron reduction before sulfate reduction) in @fig-ladder.
+- **The more reducing, the more arsenite As(III).** This reproduces, from public data, the paper's Eh–pH picture of "arsenite under reducing conditions."
+
+------------------------------------------------------------------------
+
+## The sulfur testimony — what δ³⁴S reveals
+
+Near the bottom rung of the sequence is **sulfate reduction.** Hossain et al. (2016) found the sulfur isotope ratio **δ³⁴S_SO₄ spanning 8.3–57.6‰.** This wide range is evidence of isotopic fractionation: **microbes reducing sulfate preferentially use the lighter sulfur (³²S)**, enriching the residual sulfate in heavy ³⁴S. In other words, **sulfur is undergoing redox cycling** in this groundwater.
+
+Moreover, if the sulfide produced meets dissolved Fe(II), arsenic could be **co-precipitated as a sulfide** and thereby removed from the water. But the paper reports **no direct evidence** of this co-precipitation and leaves it as a suggestion. We take the same stance — no further than "it may occur."
+
+::: callout-tip
+## Sulfur redox in PHREEQC too
+
+The oxidation of sulfide (pyrite → sulfate, acid water) and its reverse are covered in [PHREEQC from scratch #6: pyrite oxidation and AMD](/posts/phreeqc/phreeqc-part6/index-en.html) — the backstage of the sulfur cycling that δ³⁴S records.
+:::
+
+------------------------------------------------------------------------
+
+## The three conditions for high arsenic
+
+Pulling it together, the **three conditions for high-arsenic groundwater** concluded by Hossain et al. (2016) now make mechanistic sense.
+
+1. **High pH** — lowers the positive charge on iron-oxide surfaces, easing desorption of arsenic (an anion) — shared with fluoride in #12.
+2. **Reducing (anoxic)** — the redox sequence reaches the iron-reduction rung, dissolving arsenic along with the iron oxide.
+3. **Stagnation in recently deposited sediments** — geologically young (recently deposited) layers such as the Ariake clay have not been well flushed by groundwater since burial, still holding their original arsenic adsorbed on iron oxide; there the groundwater stagnates and reacts over a long residence time.
+
+Note that "young" here means the **geological age of the sediment** (recently deposited), which is distinct from the **long residence time of the water** within it. Conditions ① and ② are properties of water that has taken its time; ③ is the vessel — a young layer not yet flushed. All overlap where groundwater lingers. Like fluoride, arsenic concentration is **a record of how long the groundwater has travelled — and how far reduction has gone.**
+
+------------------------------------------------------------------------
+
+## Summary
+
+- In parts of Kumamoto, arsenic exceeds the drinking-water limit through **natural reduction**, not pollution.
+- The mechanism is the **redox sequence**: organic-matter decay consumes acceptors in the order O₂ → NO₃ → Mn → **Fe** → SO₄, and **arsenic is released where iron oxide dissolves.** Hence **high As = low NO₃.**
+- Arsenic changes face with pe (≈ Eh), from **arsenate to arsenite**, the more mobile arsenite dominating under reduction.
+- High-arsenic water clusters where the three conditions — **high pH, reducing, and stagnation in poorly-flushed young sediments** — overlap.
+- The order, the speciation, and the release can all be **reproduced in PHREEQC.**
+
+Not poison mixed in, but **arsenic moved by time and reduction.** Like fluoride (#12), it is a phenomenon we can read with data and geochemistry.
+
+::: callout-note
+## Next — #14 Reading groundwater "age" with isotopes
+
+The "long-residence stagnant zone" that recurred in #12 and #13 — how do we measure its *age*? Next, we read recharge sources with **stable isotopes (δ¹⁸O, δD) and the meteoric water line**, and groundwater age with **tritium and ⁸⁵Kr**, using data from Kumamoto and Kirishima.
+:::
+
+------------------------------------------------------------------------
+
+## References
+
+- Hossain, S., Hosono, T., Ide, K., Matsunaga, M., Shimada, J. (2016) Redox processes and occurrence of arsenic in a volcanic aquifer system of Kumamoto Area, Japan. *Environmental Earth Sciences*, 75:740.
+- Appelo, C.A.J. & Postma, D. (2005) *Geochemistry, Groundwater and Pollution*, 2nd ed. Balkema.
+- Smedley, P.L. & Kinniburgh, D.G. (2002) A review of the source, behaviour and distribution of arsenic in natural waters. *Applied Geochemistry*, 17, 517–568.
+- Dzombak, D.A. & Morel, F.M.M. (1990) *Surface Complexation Modeling: Hydrous Ferric Oxide*. Wiley.
+- Parkhurst, D.L. & Appelo, C.A.J. (2013) Description of input and examples for PHREEQC version 3. *U.S. Geological Survey Techniques and Methods*, book 6, chap. A43.

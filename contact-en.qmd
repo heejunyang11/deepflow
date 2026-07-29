@@ -1,7 +1,7 @@
 ---
 title: "Contact"
 pagetitle: "Contact"
-description: "How to contact DeepFlows. Questions about article content, corrections, collaboration and consulting enquiries, writing and speaking requests, press and advertising enquiries."
+description: "How to contact DeepFlows: questions about article content and reports of errors or corrections."
 number-sections: false
 toc: false
 lang: en
@@ -26,9 +26,6 @@ Including "DeepFlows" in the subject line helps ensure your message is seen.
 
 - **Questions about article content** (groundwater modeling, PHREEQC, MODFLOW, Python, and so on)
 - **Corrections and reports of errors** — these are genuinely welcome, and I will verify and correct promptly
-- **Research collaboration and technical consulting**
-- **Writing, speaking and review requests**
-- **Press enquiries and advertising enquiries**
 
 ## About replies
 

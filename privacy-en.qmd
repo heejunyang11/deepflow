@@ -2,6 +2,7 @@
 title: "Privacy Policy & Terms of Use"
 pagetitle: "Privacy Policy and Terms of Use"
 description: "The privacy policy and disclaimer for DeepFlows: use of cookies, Google AdSense and Google Analytics, copyright, link policy, and how to contact the site owner."
+lang: en
 number-sections: false
 format:
   html:
