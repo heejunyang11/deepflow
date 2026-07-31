@@ -1,7 +1,7 @@
 ---
 title: "Silicate Weathering and Groundwater Residence Time — Modeling How Spring-Water Chemistry \"Matures\" with PHREEQC | Groundwater Science #15"
 description: "How many years does it take for groundwater to mature chemically? Using the Kirishima volcanic springs (residence times 1–58 years), we reproduce primary-mineral dissolution and secondary-mineral precipitation (gibbsite → kaolinite → Ca-smectite) in PHREEQC and cross-check against the public data of Ide et al. (2018). We read the \"maturation clock\" by which dissolved silica saturates and switches phases at about 20 years — and why fully quantifying it requires reactive transport."
-date: 2026-07-29
+date: 2026-07-30
 categories: [Hydrology, Water Quality, Geochemistry, Weathering, PHREEQC]
 image: fig2_reaction_path.png
 author: "DeepFlows"

@@ -1,7 +1,7 @@
 ---
 title: "How Old Is Groundwater? — Reading Recharge and Residence Time with Isotopes, Tritium and ⁸⁵Kr | Groundwater Science #14"
 description: "Groundwater records both where it was born (recharge source) and when (age). We review stable isotopes δ¹⁸O and δD, the meteoric water line and the altitude effect, and age dating with tritium, CFCs, SF₆ and ⁸⁵Kr — then read the stagnant, old water of Kumamoto (Kagabu 2017) and Kirishima (Ide)."
-date: 2026-07-28
+date: 2026-07-29
 categories: [Hydrology, Water Quality, Isotopes, Age Dating, Geochemistry]
 image: fig3_age_flowline.png
 author: "DeepFlows"
@@ -105,7 +105,7 @@ Once the source is known, we turn to age. Young groundwater (within decades) can
 - **Tritium ³H** (half-life 12.3 yr): the radioactive hydrogen isotope; nuclear testing left a large peak (bomb tritium) in 1960s precipitation. Age follows from decay and input history.
 - **CFCs**: rose monotonically through the late 20th century, then plateaued after the Montreal Protocol. The atmospheric level at recharge gives the recharge year.
 - **SF₆**: a similarly rising anthropogenic tracer.
-- **⁸⁵Kr (krypton-85)** (half-life 10.8 yr): risen from nuclear-fuel reprocessing; **strong for young water (< 50 yr) and less affected by local contamination.**
+- **⁸⁵Kr (krypton-85)** (half-life 10.8 yr): risen from nuclear-fuel reprocessing; **strong for young water (\< 50 yr) and less affected by local contamination.**
 
 ::: callout-important
 ## "Age" is a model age
