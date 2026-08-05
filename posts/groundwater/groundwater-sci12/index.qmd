@@ -14,8 +14,8 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci12/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci12/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci12/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci12/index-en" />
 ---
 
 ## はじめに：蛇口の水に「基準値」がある

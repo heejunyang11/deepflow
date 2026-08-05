@@ -22,7 +22,7 @@ nocite: |
 
 ## Introduction: Why Integrate with Python?
 
-While PHREEQC's built-in `USER_GRAPH` is handy for quick plots, Python is undeniably superior when it comes to creating **publication-quality figures, interactive visualizations, and statistical processing**. In this article, we will load the `gibbsite_solubility.txt` output from [Part 7](../phreeqc-part7/index-en.html) into Python to achieve the following:
+While PHREEQC's built-in `USER_GRAPH` is handy for quick plots, Python is undeniably superior when it comes to creating **publication-quality figures, interactive visualizations, and statistical processing**. In this article, we will load the `gibbsite_solubility.txt` output from [Part 7](/posts/phreeqc/phreeqc-part7/index-en) into Python to achieve the following:
 
 ```{=html}
 <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1em; margin:1.5em 0;">
@@ -501,12 +501,12 @@ Next time, in Part 9, we will dive into Ionic Strength and Activity Coefficients
 ::: {#refs}
 :::
 
-- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
-- [#2 Analyzing Seawater with Speciation](../phreeqc-part2/index-en.html)
-- [#3 Mineral Equilibrium and Temperature Effects](../phreeqc-part3/index-en.html)
-- [#4 Calcite–CO₂ Interaction (Open vs. Closed Systems)](../phreeqc-part4/index-en.html)
-- [#5 Mixing Groundwater and Seawater](../phreeqc-part5/index-en.html)
-- [#6 Pyrite Oxidation and AMD Formation](../phreeqc-part6/index-en.html)
-- [#7 Solubility Diagrams (Gibbsite)](../phreeqc-part7/index-en.html)
+- [#1 Installation and Initial Calculation](/posts/phreeqc/phreeqc-part1/index-en)
+- [#2 Analyzing Seawater with Speciation](/posts/phreeqc/phreeqc-part2/index-en)
+- [#3 Mineral Equilibrium and Temperature Effects](/posts/phreeqc/phreeqc-part3/index-en)
+- [#4 Calcite–CO₂ Interaction (Open vs. Closed Systems)](/posts/phreeqc/phreeqc-part4/index-en)
+- [#5 Mixing Groundwater and Seawater](/posts/phreeqc/phreeqc-part5/index-en)
+- [#6 Pyrite Oxidation and AMD Formation](/posts/phreeqc/phreeqc-part6/index-en)
+- [#7 Solubility Diagrams (Gibbsite)](/posts/phreeqc/phreeqc-part7/index-en)
 - **#8 Visualization with Python** (This article)
-- [#9 Ionic Strength and Activity Coefficients](../phreeqc-part9/index-en.html)
+- [#9 Ionic Strength and Activity Coefficients](/posts/phreeqc/phreeqc-part9/index-en)

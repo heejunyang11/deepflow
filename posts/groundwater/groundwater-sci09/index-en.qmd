@@ -14,13 +14,13 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci09/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci09/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci09/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci09/index-en" />
 ---
 
 ## Introduction: turning the tide into a tool
 
-In [#7](/posts/groundwater/groundwater-sci07/index-en.html) we watched the freshwater lens beneath the remote island of Minami-Daito "breathe" quietly in step with the ocean tide. When the sea rises, the water table rises; when it falls, the table falls. We pulled that oscillation out with the FFT.
+In [#7](/posts/groundwater/groundwater-sci07/index-en) we watched the freshwater lens beneath the remote island of Minami-Daito "breathe" quietly in step with the ocean tide. When the sea rises, the water table rises; when it falls, the table falls. We pulled that oscillation out with the FFT.
 
 But the tide is not merely something to observe. It is also **a natural signal generator for probing the ground**. Every day the sea knocks on the island with a fixed rhythm, and that vibration travels inland through the subsurface. How fast it travels, and how much it weakens, carries the fingerprint of the rock it passed through.
 
@@ -28,7 +28,7 @@ The question of this article is therefore:
 
 > The same tide reaches every well. So why does the "delay" and the "weakening" differ from well to well? And what can we read from those differences?
 
-The answer, stated up front: from the tidal **time lag** and **amplitude ratio** we can obtain the aquifer's **hydraulic conductivity $K$** — its ability to transmit water — without performing a single pumping test. And at the end, we will reconstruct the groundwater level itself from the tide. The cross-correlation we learned in [#8](/posts/groundwater/groundwater-sci08/index-en.html) comes into its own here.
+The answer, stated up front: from the tidal **time lag** and **amplitude ratio** we can obtain the aquifer's **hydraulic conductivity $K$** — its ability to transmit water — without performing a single pumping test. And at the end, we will reconstruct the groundwater level itself from the tide. The cross-correlation we learned in [#8](/posts/groundwater/groundwater-sci08/index-en) comes into its own here.
 
 ::: callout-note
 ## The data

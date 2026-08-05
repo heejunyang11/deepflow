@@ -14,15 +14,15 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci10/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci10/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci10/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci10/index-en" />
 ---
 
 ## Introduction: fingerprints written in a single line
 
 A water-level record from a monitoring well looks, at first glance, like nothing more than a wandering line — up and down, over and over, a rather dull graph.
 
-Yet across these four articles — from [#6](/posts/groundwater/groundwater-sci06/index-en.html) to [#9](/posts/groundwater/groundwater-sci09/index-en.html) — we have seen that this line is densely inscribed with the **fingerprints of the outside world**: air pressure, ocean tides, rainfall. Read those fingerprints carefully, and without digging a single meter, you can name the invisible properties of the aquifer — how easily it transmits water, how fast pressure propagates through it, how long it remembers.
+Yet across these four articles — from [#6](/posts/groundwater/groundwater-sci06/index-en) to [#9](/posts/groundwater/groundwater-sci09/index-en) — we have seen that this line is densely inscribed with the **fingerprints of the outside world**: air pressure, ocean tides, rainfall. Read those fingerprints carefully, and without digging a single meter, you can name the invisible properties of the aquifer — how easily it transmits water, how fast pressure propagates through it, how long it remembers.
 
 This article is the **capstone** of the time-series series. Rather than reviewing each method in isolation, it draws a map for decision-making: **given a question, which tool should you reach for?** The goal is simple — that when a water-level dataset is in front of you, you know exactly what to do next.
 
@@ -44,7 +44,7 @@ Let us revisit the four tools one by one, each with its example from the series.
 
 The first step always begins here. A tangled waveform is decomposed into its periodic components by the **Fast Fourier Transform (FFT)**. Regular rhythms invisible to the eye then appear as sharp spectral peaks — the semidiurnal ocean tide (the M2 constituent, period 12.42 h), the diurnal atmospheric tide (S2), seasonal cycles.
 
-In [#6](/posts/groundwater/groundwater-sci06/index-en.html) we extracted the **barometric periodic components** in the unconfined groundwater level of southern Beppu. In [#7](/posts/groundwater/groundwater-sci07/index-en.html) we watched the freshwater lens of Minami-Daito **breathe with the ocean tide**, resolving it into its principal tidal constituents by FFT.
+In [#6](/posts/groundwater/groundwater-sci06/index-en) we extracted the **barometric periodic components** in the unconfined groundwater level of southern Beppu. In [#7](/posts/groundwater/groundwater-sci07/index-en) we watched the freshwater lens of Minami-Daito **breathe with the ocean tide**, resolving it into its principal tidal constituents by FFT.
 
 > FFT is the entrance to all time-series analysis. Without first knowing *what is driving the signal*, you cannot go further.
 
@@ -56,7 +56,7 @@ In [#6](/posts/groundwater/groundwater-sci06/index-en.html) we extracted the **b
 
 Once you know the periods, you want the *offset*. The delay for an ocean tide to reach an inland well, the time for an upstream change to propagate downstream — this **time lag** is measured by **cross-correlation**, while its evolving period and phase can be tracked with the **cross-wavelet transform**.
 
-In [#8](/posts/groundwater/groundwater-sci08/index-en.html) we used the "reversing river" of Tonle Sap Lake in Cambodia to quantify the phase propagation of water level between lake and river with cross-correlation and cross-wavelet analysis.
+In [#8](/posts/groundwater/groundwater-sci08/index-en) we used the "reversing river" of Tonle Sap Lake in Cambodia to quantify the phase propagation of water level between lake and river with cross-correlation and cross-wavelet analysis.
 
 > A lag is not merely a delay. It is a mirror of the **medium the signal passed through**. The next tool aims precisely there.
 
@@ -68,9 +68,9 @@ In [#8](/posts/groundwater/groundwater-sci08/index-en.html) we used the "reversi
 
 Here is the heart of time-series analysis. From how groundwater level responds to a **natural signal source** — the tide, the barometric pressure — through its delay and attenuation, we back out the properties of the aquifer.
 
-In [#9](/posts/groundwater/groundwater-sci09/index-en.html) we applied **Ferris's tidal method** to the Minami-Daito data, deriving the **hydraulic conductivity** $K$ from the tidal time lag and amplitude ratio — without a single pumping test. The same idea applies to the barometric response (barometric efficiency), leading to confined/unconfined diagnosis and to estimates of **hydraulic diffusivity**.
+In [#9](/posts/groundwater/groundwater-sci09/index-en) we applied **Ferris's tidal method** to the Minami-Daito data, deriving the **hydraulic conductivity** $K$ from the tidal time lag and amplitude ratio — without a single pumping test. The same idea applies to the barometric response (barometric efficiency), leading to confined/unconfined diagnosis and to estimates of **hydraulic diffusivity**.
 
-> "Far, yet not attenuated" — that single observation at well MD3 in [#9](/posts/groundwater/groundwater-sci09/index-en.html) told the whole story of a highly permeable formation. The response never betrays the property.
+> "Far, yet not attenuated" — that single observation at well MD3 in [#9](/posts/groundwater/groundwater-sci09/index-en) told the whole story of a highly permeable formation. The response never betrays the property.
 
 ------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ In [#9](/posts/groundwater/groundwater-sci09/index-en.html) we applied **Ferris'
 
 **The question: can we reconstruct the water level itself from the forcing?**
 
-The final step is synthesis. In **lag-based regression**, the forcing — tide, pressure — is superposed at several time lags to reconstruct the water level itself. In [#9](/posts/groundwater/groundwater-sci09/index-en.html), over a validation period not used for fitting, the level was reproduced with **R² = 0.987**.
+The final step is synthesis. In **lag-based regression**, the forcing — tide, pressure — is superposed at several time lags to reconstruct the water level itself. In [#9](/posts/groundwater/groundwater-sci09/index-en), over a validation period not used for fitting, the level was reproduced with **R² = 0.987**.
 
 But we also learned restraint. Because of multicollinearity, the individual regression coefficients must not be given a physical interpretation. **Treat the whole model as a single linear filter** — that discipline is the line that keeps data analysis a science.
 
@@ -90,9 +90,9 @@ Beppu (pressure), Minami-Daito (tide), Tonle Sap (flood pulse) — different sta
 
 | Site | Main forcing | Tools used | What it revealed |
 |----------------|------------------|----------------|-----------------------|
-| Beppu ([#6](/posts/groundwater/groundwater-sci06/index-en.html)) | Air pressure | FFT / spectral | Periodic components in unconfined level |
-| Minami-Daito ([#7](/posts/groundwater/groundwater-sci07/index-en.html), [#9](/posts/groundwater/groundwater-sci09/index-en.html)) | Ocean tide | FFT → cross-correlation → tidal method → regression | Lens response, hydraulic conductivity, reconstruction |
-| Tonle Sap ([#8](/posts/groundwater/groundwater-sci08/index-en.html)) | River–lake interaction | Cross-correlation / cross-wavelet | Propagation lag and phase |
+| Beppu ([#6](/posts/groundwater/groundwater-sci06/index-en)) | Air pressure | FFT / spectral | Periodic components in unconfined level |
+| Minami-Daito ([#7](/posts/groundwater/groundwater-sci07/index-en), [#9](/posts/groundwater/groundwater-sci09/index-en)) | Ocean tide | FFT → cross-correlation → tidal method → regression | Lens response, hydraulic conductivity, reconstruction |
+| Tonle Sap ([#8](/posts/groundwater/groundwater-sci08/index-en)) | River–lake interaction | Cross-correlation / cross-wavelet | Propagation lag and phase |
 
 The same four tools hold across regions and phenomena. That is the universality of the time-series approach.
 

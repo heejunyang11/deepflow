@@ -14,23 +14,23 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci13/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci13/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci13/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci13/index-en" />
 ---
 
 ## Introduction: beyond the metallic smell
 
-In [#11](/posts/groundwater/groundwater-sci11/index-en.html) we noted that the **metallic smell** of well water is dissolved **iron (Fe²⁺)** in reducing groundwater — iron that oxidizes to reddish-brown hydroxide once it meets air. We promised that "such trace constituents are governed by **redox (oxidation–reduction)**." This article keeps that promise.
+In [#11](/posts/groundwater/groundwater-sci11/index-en) we noted that the **metallic smell** of well water is dissolved **iron (Fe²⁺)** in reducing groundwater — iron that oxidizes to reddish-brown hydroxide once it meets air. We promised that "such trace constituents are governed by **redox (oxidation–reduction)**." This article keeps that promise.
 
 The lead is **arsenic (As)**. Arsenic is highly toxic, and the drinking-water limit is a strict **10 µg/L** (both WHO and Japan). In the Kumamoto area, this arsenic exceeds the limit **naturally — not from pollution.** **Hossain et al. (2016)** found As ranging **0.1–60.6 µg/L**, with **36% of wells in the stagnant Kumamoto Plain exceeding 10 µg/L**.
 
-Why would arsenic dissolve naturally? As with the fluoride of [#12](/posts/groundwater/groundwater-sci12/index-en.html), the answer is slow water–rock reaction over time. But this time, what moves arsenic is not pH — it is **electrons**. We reproduce the mechanism in **PHREEQC** in three stages: **① the redox sequence**, **② arsenic speciation**, and **③ release of arsenic from iron oxide**.
+Why would arsenic dissolve naturally? As with the fluoride of [#12](/posts/groundwater/groundwater-sci12/index-en), the answer is slow water–rock reaction over time. But this time, what moves arsenic is not pH — it is **electrons**. We reproduce the mechanism in **PHREEQC** in three stages: **① the redox sequence**, **② arsenic speciation**, and **③ release of arsenic from iron oxide**.
 
 ------------------------------------------------------------------------
 
 ## Same stage as #12, a different lead
 
-Strikingly, the signature of high-arsenic groundwater resembles the high-fluoride water of [#12](/posts/groundwater/groundwater-sci12/index-en.html). For the high-As area (39 samples), Hossain et al. (2016) report:
+Strikingly, the signature of high-arsenic groundwater resembles the high-fluoride water of [#12](/posts/groundwater/groundwater-sci12/index-en). For the high-As area (39 samples), Hossain et al. (2016) report:
 
 - **High pH** (mean 7.97, range 7.14–9.45)
 - **Reducing** (ORP mean +42 mV, down to −283 mV; low dissolved oxygen)
@@ -75,7 +75,7 @@ This sequence explains the signature of high-arsenic water. **Arsenic is release
 ::: callout-tip
 ## The PHREEQC how-to is here
 
-Computing the redox sequence in PHREEQC is walked through hands-on in [PHREEQC from scratch #13: the redox sequence](/posts/phreeqc/phreeqc-part13/index-en.html), and denitrification diagnosis in [#14: diagnosing nitrate](/posts/phreeqc/phreeqc-part14/index-en.html). Here we apply those results to the field case of Kumamoto's arsenic.
+Computing the redox sequence in PHREEQC is walked through hands-on in [PHREEQC from scratch #13: the redox sequence](/posts/phreeqc/phreeqc-part13/index-en), and denitrification diagnosis in [#14: diagnosing nitrate](/posts/phreeqc/phreeqc-part14/index-en). Here we apply those results to the field case of Kumamoto's arsenic.
 :::
 
 ------------------------------------------------------------------------
@@ -132,7 +132,7 @@ Moreover, if the sulfide produced meets dissolved Fe(II), arsenic could be **co-
 ::: callout-tip
 ## Sulfur redox in PHREEQC too
 
-The oxidation of sulfide (pyrite → sulfate, acid water) and its reverse are covered in [PHREEQC from scratch #6: pyrite oxidation and AMD](/posts/phreeqc/phreeqc-part6/index-en.html) — the backstage of the sulfur cycling that δ³⁴S records.
+The oxidation of sulfide (pyrite → sulfate, acid water) and its reverse are covered in [PHREEQC from scratch #6: pyrite oxidation and AMD](/posts/phreeqc/phreeqc-part6/index-en) — the backstage of the sulfur cycling that δ³⁴S records.
 :::
 
 ------------------------------------------------------------------------

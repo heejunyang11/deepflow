@@ -394,7 +394,7 @@ listing:
     </div>
   </div>
 
-  <a href="/about-en.html" class="author-strip">
+  <a href="/about-en" class="author-strip">
     <img src="/profile.png" class="author-avatar" alt="Author profile photo">
     <div class="author-info">
       <div class="author-name">Author: Heejun Yang, Ph.D.</div>
@@ -421,7 +421,7 @@ listing:
       A complete guide to geochemical modeling, deciphering chemical reactions between water and rock. From installation to reaction path modeling.
     </div>
     <div class="btn-group">
-      <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
+      <a href="/posts/phreeqc/phreeqc-part1/index-en" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
       <a href="/posts/phreeqc/phreeqc-part1/" class="btn-lang btn-jp">日本語で読む &gt;</a>
     </div>
   </div>
@@ -439,7 +439,7 @@ listing:
       Practical know-how for groundwater flow analysis and hydrothermal geochemical simulations using MODFLOW and FloPy.
     </div>
     <div class="btn-group">
-      <a href="/posts/groundwater/groundwater-sci01/index-en.html" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
+      <a href="/posts/groundwater/groundwater-sci01/index-en" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
       <a href="/posts/groundwater/groundwater-sci01/" class="btn-lang btn-jp">日本語で読む &gt;</a>
     </div>
   </div>

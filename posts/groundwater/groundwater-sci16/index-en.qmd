@@ -14,8 +14,8 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci16/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci16/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci16/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci16/index-en" />
 ---
 
 ## Reading the temperature underground, without drilling
@@ -30,7 +30,7 @@ In this article, rather than leaving the geothermometer as "a handy method that 
 
 ## Last time's "equilibrium" becomes a thermometer
 
-In [#15](/posts/groundwater/groundwater-sci15/index-en.html) we watched spring-water chemistry reach chemical equilibrium through water–rock reaction and "mature," in the low-temperature (about 15°C) groundwater of Kirishima. The geothermometer is nothing more than the **high-temperature version** of that equilibrium.
+In [#15](/posts/groundwater/groundwater-sci15/index-en) we watched spring-water chemistry reach chemical equilibrium through water–rock reaction and "mature," in the low-temperature (about 15°C) groundwater of Kirishima. The geothermometer is nothing more than the **high-temperature version** of that equilibrium.
 
 The equilibrium constant $K$ of a chemical reaction depends on temperature. As the relation between Gibbs free energy and the equilibrium constant,
 
@@ -38,7 +38,7 @@ $$\Delta G^{\circ} = -RT \ln K$$
 
 shows, when the temperature changes, so does the position of equilibrium. Conversely, **if water and minerals have reached equilibrium in a hot reservoir, that temperature is "engraved" into the water's chemistry**. The water carries that record as it rises to the surface. The geothermometer is the technique of reading that engraved temperature.
 
-Thus #16 is the final chapter — the "temperature" chapter — of the "**water tells its own history**" trilogy, following [#14](/posts/groundwater/groundwater-sci14/index-en.html) (isotopes, the "age" of water) and [#15](/posts/groundwater/groundwater-sci15/index-en.html) (water–rock reaction, the "degree of maturation").
+Thus #16 is the final chapter — the "temperature" chapter — of the "**water tells its own history**" trilogy, following [#14](/posts/groundwater/groundwater-sci14/index-en) (isotopes, the "age" of water) and [#15](/posts/groundwater/groundwater-sci15/index-en) (water–rock reaction, the "degree of maturation").
 
 ------------------------------------------------------------------------
 
@@ -120,15 +120,15 @@ The temperature-sweep figure of this article (silica geothermometry) can be repr
 
 The geothermometer is not all-powerful. Besides the equilibrium premise, boiling and two-phase separation (vapor–liquid separation) on the way up, and the mixing we saw repeatedly here, distort the values. That is why a comprehensive judgment combining several indicators — rather than trusting a single number — is required (Tsutsumi & Ishibashi, 2022).
 
-Furthermore, combining the thermometer with **isotopes** (δD and δ¹⁸O, treated in [#14](/posts/groundwater/groundwater-sci14/index-en.html)) lets us see not only the temperature but the origin of the water (meteoric, or magmatic fluid). In recent years, "supercritical geothermal" development targeting supercritical fluids above 400°C at depths of 3–5 km has advanced, and expectations for geochemical exploration are rising further still.
+Furthermore, combining the thermometer with **isotopes** (δD and δ¹⁸O, treated in [#14](/posts/groundwater/groundwater-sci14/index-en)) lets us see not only the temperature but the origin of the water (meteoric, or magmatic fluid). In recent years, "supercritical geothermal" development targeting supercritical fluids above 400°C at depths of 3–5 km has advanced, and expectations for geochemical exploration are rising further still.
 
 The chemistry of a hot spring speaks of the temperature underground. To hear that voice correctly requires the very posture of continually asking "has equilibrium been reached?" — that is the heart of the technique of reading the subsurface without drilling.
 
 ## Coming next
 
-From [#11](/posts/groundwater/groundwater-sci11/index-en.html) through this article, six installments have read the subsurface from the constituents dissolved in water. With the next installment the series enters a new part, and its subject is the movement of the Earth itself — earthquakes and volcanoes.
+From [#11](/posts/groundwater/groundwater-sci11/index-en) through this article, six installments have read the subsurface from the constituents dissolved in water. With the next installment the series enters a new part, and its subject is the movement of the Earth itself — earthquakes and volcanoes.
 
-The first article takes up a single idea: **a well is the Earth's strain meter**. In [#6](/posts/groundwater/groundwater-sci06/index-en.html) we saw groundwater levels respond to atmospheric pressure, and in [#9](/posts/groundwater/groundwater-sci09/index-en.html) to ocean tides. The same well also responds to crustal strain. At the moment of an earthquake the level jumps in a step; before an eruption it fluctuates; after an earthquake the discharge of springs changes. We will follow these three faces of the well through observations at Usu Volcano and Loma Prieta.
+The first article takes up a single idea: **a well is the Earth's strain meter**. In [#6](/posts/groundwater/groundwater-sci06/index-en) we saw groundwater levels respond to atmospheric pressure, and in [#9](/posts/groundwater/groundwater-sci09/index-en) to ocean tides. The same well also responds to crustal strain. At the moment of an earthquake the level jumps in a step; before an eruption it fluctuates; after an earthquake the discharge of springs changes. We will follow these three faces of the well through observations at Usu Volcano and Loma Prieta.
 
 ------------------------------------------------------------------------
 

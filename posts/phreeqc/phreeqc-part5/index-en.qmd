@@ -109,7 +109,7 @@ Our simulation is structured into 5 distinct steps, referred to as S1 through S5
 
 ## S1: Define Carbonate Groundwater
 
-We define the groundwater of a limestone region by equilibrating pure water with calcite at $P_{CO_2} = 10^{-2}$ atm. This is similar to the "Open System" in [Part 4](../phreeqc-part4/index-en.html), but with a slightly higher CO₂ pressure typical of deep soil.
+We define the groundwater of a limestone region by equilibrating pure water with calcite at $P_{CO_2} = 10^{-2}$ atm. This is similar to the "Open System" in [Part 4](/posts/phreeqc/phreeqc-part4/index-en), but with a slightly higher CO₂ pressure typical of deep soil.
 
 ``` phreeqc
 SOLUTION 1  Carbonate groundwater

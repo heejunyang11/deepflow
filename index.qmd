@@ -394,7 +394,7 @@ listing:
     </div>
   </div>
 
-  <a href="/about.html" class="author-strip">
+  <a href="/about" class="author-strip">
     <img src="/profile.png" class="author-avatar" alt="運営者プロフィール画像">
     <div class="author-info">
       <div class="author-name">運営者：Heejun Yang, Ph.D.</div>
@@ -421,7 +421,7 @@ listing:
     </div>
     <div class="btn-group">
       <a href="/posts/phreeqc/phreeqc-part1/" class="btn-lang btn-jp">日本語で読む &gt;</a>
-      <a href="/posts/phreeqc/phreeqc-part1/index-en.html" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
+      <a href="/posts/phreeqc/phreeqc-part1/index-en" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
     </div>
   </div>
 </div>
@@ -439,7 +439,7 @@ listing:
     </div>
     <div class="btn-group">
       <a href="/posts/groundwater/groundwater-sci01/" class="btn-lang btn-jp">日本語で読む &gt;</a>
-      <a href="/posts/groundwater/groundwater-sci01/index-en.html" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
+      <a href="/posts/groundwater/groundwater-sci01/index-en" class="btn-lang btn-en">READ IN ENGLISH &gt;</a>
     </div>
   </div>
 </div>

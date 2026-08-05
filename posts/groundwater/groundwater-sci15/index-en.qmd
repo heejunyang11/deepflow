@@ -14,17 +14,17 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci15/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci15/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci15/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci15/index-en" />
 ---
 
 ## Introduction: water chemistry is a function of age
 
-In [#14](/posts/groundwater/groundwater-sci14/index-en.html) we saw how to measure the **age (residence time)** of groundwater — isotopes for the recharge source, tritium and ⁸⁵Kr for the age. What we obtained there was a "clock for water." This article reuses that clock as a **time axis for chemical change**. The question is this:
+In [#14](/posts/groundwater/groundwater-sci14/index-en) we saw how to measure the **age (residence time)** of groundwater — isotopes for the recharge source, tritium and ⁸⁵Kr for the age. What we obtained there was a "clock for water." This article reuses that clock as a **time axis for chemical change**. The question is this:
 
 > **How many years does it take for groundwater to mature chemically? How does the chemistry of young water differ from that of old water?**
 
-In [#11](/posts/groundwater/groundwater-sci11/index-en.html) we saw that "rain and soil CO₂ dissolve rock (dissolution)," and in [#12](/posts/groundwater/groundwater-sci12/index-en.html) and [#13](/posts/groundwater/groundwater-sci13/index-en.html) that "components concentrate in stagnant zones." #15 ties these into a single line: it follows the progress of water–rock reaction — the **"maturation" of water chemistry — along a residence-time axis, using PHREEQC**. We first reproduce the "maturation" with equilibrium calculations, and then push into what is still missing to solve the system quantitatively — the division of labor between reaction and transport. The stage is Kirishima, a group of volcanic springs. Every ingredient is public data (the public tables of Ide et al. 2018 and a public thermodynamic database).
+In [#11](/posts/groundwater/groundwater-sci11/index-en) we saw that "rain and soil CO₂ dissolve rock (dissolution)," and in [#12](/posts/groundwater/groundwater-sci12/index-en) and [#13](/posts/groundwater/groundwater-sci13/index-en) that "components concentrate in stagnant zones." #15 ties these into a single line: it follows the progress of water–rock reaction — the **"maturation" of water chemistry — along a residence-time axis, using PHREEQC**. We first reproduce the "maturation" with equilibrium calculations, and then push into what is still missing to solve the system quantitatively — the division of labor between reaction and transport. The stage is Kirishima, a group of volcanic springs. Every ingredient is public data (the public tables of Ide et al. 2018 and a public thermodynamic database).
 
 ------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ Below, we verify this picture with PHREEQC (database `llnl.dat`) in two stages.
 ::: callout-note
 ## A recap of SI (saturation index)
 
-The saturation index SI = log(IAP/K) tells whether the water is supersaturated (SI \> 0, can precipitate) or undersaturated (SI \< 0, can dissolve) with respect to a mineral. For the detailed meaning of SI and how to use it in PHREEQC, see the sister series [PHREEQC from Scratch #10: Mastering the Saturation Index (SI)](/posts/phreeqc/phreeqc-part10/index-en.html).
+The saturation index SI = log(IAP/K) tells whether the water is supersaturated (SI \> 0, can precipitate) or undersaturated (SI \< 0, can dissolve) with respect to a mineral. For the detailed meaning of SI and how to use it in PHREEQC, see the sister series [PHREEQC from Scratch #10: Mastering the Saturation Index (SI)](/posts/phreeqc/phreeqc-part10/index-en).
 :::
 
 ------------------------------------------------------------------------
@@ -75,7 +75,7 @@ These matched the paper's values almost perfectly (the red and blue bars are nea
 
 ## Reproduction ②: following "maturation" along a reaction path
 
-The sign check of SI is a static snapshot of "the water as it is now." Next we set this **in motion along time**. Into a dilute recharge water (rain + soil CO₂), we dissolve plagioclase, pyroxene, and volcanic glass **little by little** (a proxy for contact time), precipitating secondary minerals at equilibrium at each step — a "reaction path" calculation (@fig-path). For an introduction to the method itself, see [PHREEQC from Scratch #11: Reaction-Path Modeling](/posts/phreeqc/phreeqc-part11/index-en.html).
+The sign check of SI is a static snapshot of "the water as it is now." Next we set this **in motion along time**. Into a dilute recharge water (rain + soil CO₂), we dissolve plagioclase, pyroxene, and volcanic glass **little by little** (a proxy for contact time), precipitating secondary minerals at equilibrium at each step — a "reaction path" calculation (@fig-path). For an introduction to the method itself, see [PHREEQC from Scratch #11: Reaction-Path Modeling](/posts/phreeqc/phreeqc-part11/index-en).
 
 ![Water-chemistry "maturation" from the reaction-path calculation. The horizontal axis is the amount of primary mineral dissolved (a proxy for contact time / residence time). **Top**: the Al partitioning ratio among precipitated secondary minerals. As the reaction proceeds, the lead role shifts from **gibbsite → kaolinite → Ca-smectite**. **Bottom**: dissolved silica (DSi) rises, then plateaus near chalcedony saturation, and afterward declines slightly as it is taken up by smectite. pH rises gently from 6.3 to 7.9.](fig2_reaction_path.png){#fig-path}
 
@@ -95,7 +95,7 @@ Primary-mineral dissolution is a reaction that consumes H⁺ (e.g., Anorthite + 
 
 ## Where do the springs sit on the weathering diagram?
 
-Finally, we plot all 37 springs on an **activity diagram** (@fig-act). With dissolved silica on the horizontal axis and log(aCa²⁺/aH⁺²) on the vertical axis, this classical diagram lets you read at a glance which mineral is stable. Onto it we overlaid the trajectory of the reaction path from the previous section. The drawing of such solubility diagrams itself is covered in [PHREEQC from Scratch #7: Solubility Diagrams (Gibbsite)](/posts/phreeqc/phreeqc-part7/index-en.html).
+Finally, we plot all 37 springs on an **activity diagram** (@fig-act). With dissolved silica on the horizontal axis and log(aCa²⁺/aH⁺²) on the vertical axis, this classical diagram lets you read at a glance which mineral is stable. Onto it we overlaid the trajectory of the reaction path from the previous section. The drawing of such solubility diagrams itself is covered in [PHREEQC from Scratch #7: Solubility Diagrams (Gibbsite)](/posts/phreeqc/phreeqc-part7/index-en).
 
 ![Activity diagram of silicate weathering. Stars are the 37 Kirishima springs (Ide et al. 2018, Table 1); circles are the reaction path (PHREEQC), each colored by the secondary mineral precipitating at that stage (orange = gibbsite, green = kaolinite, purple = Ca-smectite). The boundaries that can be drawn rigorously (the vertical Gibbsite│Kaolinite line; the Anorthite boundary is above the plot) are shown as solid lines. The gibbsite points of the reaction path fall to the left (low-silica side) of the boundary and the kaolinite points to the right, consistent with the calculation.](fig3_activity_diagram.png){#fig-act}
 
@@ -137,13 +137,13 @@ The key lies in the **flow regime** of this spring system. From CFC analysis, Id
 
 **Why it reaches there in about 20 years and "appears" age-dependent (the time evolution).** Here both the speed of chemical reaction and the age distribution (mixing) matter. The observed "apparent residence time vs. DSi" is a **convolution** of the reaction progress of a single water parcel with the age distribution, and it cannot be tracked by a closed-system equilibrium calculation alone.
 
-Therefore, to solve this system truly quantitatively requires a **reactive transport model** that couples chemical reaction with mass transport (advection, dispersion, mixing). PHREEQC itself has functions for advection and dispersion, whose basics were introduced in [PHREEQC from Scratch #12: Advection–Dispersion Modeling](/posts/phreeqc/phreeqc-part12/index-en.html). This article stopped at equilibrium calculation, but the division of labor — **"equilibrium tells the endpoint; transport tells the road to it"** — is itself the starting point for the next step.
+Therefore, to solve this system truly quantitatively requires a **reactive transport model** that couples chemical reaction with mass transport (advection, dispersion, mixing). PHREEQC itself has functions for advection and dispersion, whose basics were introduced in [PHREEQC from Scratch #12: Advection–Dispersion Modeling](/posts/phreeqc/phreeqc-part12/index-en). This article stopped at equilibrium calculation, but the division of labor — **"equilibrium tells the endpoint; transport tells the road to it"** — is itself the starting point for the next step.
 
 ------------------------------------------------------------------------
 
 ## Connection to #12 and #13
 
-This "story of time" runs through the entire water-quality sub-series. In [#12](/posts/groundwater/groundwater-sci12/index-en.html) (fluoride) and [#13](/posts/groundwater/groundwater-sci13/index-en.html) (arsenic), the high concentrations clustered in the **long-residence stagnant zone**. In the language of this article, that is "the most matured water." Water that has drifted toward Na type by ion exchange (#12), become reduced (#13), and matured in its secondary minerals all the way to smectite — on one and the same time axis stand fluoride, arsenic, and the phase transition of silica and clay.
+This "story of time" runs through the entire water-quality sub-series. In [#12](/posts/groundwater/groundwater-sci12/index-en) (fluoride) and [#13](/posts/groundwater/groundwater-sci13/index-en) (arsenic), the high concentrations clustered in the **long-residence stagnant zone**. In the language of this article, that is "the most matured water." Water that has drifted toward Na type by ion exchange (#12), become reduced (#13), and matured in its secondary minerals all the way to smectite — on one and the same time axis stand fluoride, arsenic, and the phase transition of silica and clay.
 
 ------------------------------------------------------------------------
 
@@ -163,19 +163,19 @@ This "story of time" runs through the entire water-quality sub-series. In [#12](
 
 The PHREEQC methods used in this article are explained one by one, carefully, in the sister series. Readers who want to learn geochemical modeling from the ground up are encouraged to consult it as well.
 
-- [#1: Installation and Your First Calculation](/posts/phreeqc/phreeqc-part1/index-en.html) — the entrance to the series
-- [#7: Solubility Diagrams (Gibbsite)](/posts/phreeqc/phreeqc-part7/index-en.html) — how to draw this article's activity diagram
-- [#10: Mastering the Saturation Index (SI)](/posts/phreeqc/phreeqc-part10/index-en.html) — the basis of Reproduction ①
-- [#11: Reaction-Path Modeling](/posts/phreeqc/phreeqc-part11/index-en.html) — the basis of Reproduction ②
-- [#12: Advection–Dispersion Modeling](/posts/phreeqc/phreeqc-part12/index-en.html) — the road toward the "reactive transport" this article left as homework
-- [#16: Introduction to Reaction Kinetics (KINETICS)](/posts/phreeqc/phreeqc-part16/index-en.html) — the next step, treating the "speed" of maturation
+- [#1: Installation and Your First Calculation](/posts/phreeqc/phreeqc-part1/index-en) — the entrance to the series
+- [#7: Solubility Diagrams (Gibbsite)](/posts/phreeqc/phreeqc-part7/index-en) — how to draw this article's activity diagram
+- [#10: Mastering the Saturation Index (SI)](/posts/phreeqc/phreeqc-part10/index-en) — the basis of Reproduction ①
+- [#11: Reaction-Path Modeling](/posts/phreeqc/phreeqc-part11/index-en) — the basis of Reproduction ②
+- [#12: Advection–Dispersion Modeling](/posts/phreeqc/phreeqc-part12/index-en) — the road toward the "reactive transport" this article left as homework
+- [#16: Introduction to Reaction Kinetics (KINETICS)](/posts/phreeqc/phreeqc-part16/index-en) — the next step, treating the "speed" of maturation
 :::
 
 ------------------------------------------------------------------------
 
 ## Coming next
 
-The homework this article left — a **reactive transport model** coupling chemical reaction with mass transport — will be treated in earnest in a future installment. In the following #16, we move to **the water chemistry of hot springs and geothermal systems and high-temperature water–rock reaction**. In a world where the temperature is an order of magnitude different from the low-temperature weathering so far — calcite saturation, the reaction of CO₂ with basalt and andesite — we will see how far PHREEQC can read water chemistry (the basalt–CO₂ reaction itself is also treated in [PHREEQC #17](/posts/phreeqc/phreeqc-part17/index-en.html) and [#18](/posts/phreeqc/phreeqc-part18/index-en.html)).
+The homework this article left — a **reactive transport model** coupling chemical reaction with mass transport — will be treated in earnest in a future installment. In the following #16, we move to **the water chemistry of hot springs and geothermal systems and high-temperature water–rock reaction**. In a world where the temperature is an order of magnitude different from the low-temperature weathering so far — calcite saturation, the reaction of CO₂ with basalt and andesite — we will see how far PHREEQC can read water chemistry (the basalt–CO₂ reaction itself is also treated in [PHREEQC #17](/posts/phreeqc/phreeqc-part17/index-en) and [#18](/posts/phreeqc/phreeqc-part18/index-en)).
 
 ## References
 

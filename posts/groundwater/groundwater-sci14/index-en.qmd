@@ -14,13 +14,13 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci14/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci14/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci14/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci14/index-en" />
 ---
 
 ## Introduction: measuring the age of the stagnant zone
 
-In [#12](/posts/groundwater/groundwater-sci12/index-en.html) (fluoride) and [#13](/posts/groundwater/groundwater-sci13/index-en.html) (arsenic), the high concentrations both clustered in the **long-residence stagnant zone** — water that had lingered for decades, reacting with rock. But how do we measure those "decades"?
+In [#12](/posts/groundwater/groundwater-sci12/index-en) (fluoride) and [#13](/posts/groundwater/groundwater-sci13/index-en) (arsenic), the high concentrations both clustered in the **long-residence stagnant zone** — water that had lingered for decades, reacting with rock. But how do we measure those "decades"?
 
 Groundwater records two things about itself: **where it was born (recharge source)** and **when it was born (age)**. The former is told by the **stable isotopes of the water molecule (δ¹⁸O, δD)**; the latter by **environmental tracers whose atmospheric concentrations have changed over time (³H, CFCs, SF₆, ⁸⁵Kr)**. This article reviews these tools for reading "the time of water," from textbook basics to field cases.
 
@@ -88,7 +88,7 @@ Precipitation δ varies systematically, all understandable via Rayleigh distilla
 
 Of these effects, the **altitude effect** is the one most used for groundwater. Since precipitation δ is lighter at higher elevation, **the δ of groundwater can be back-calculated to the elevation at which it recharged.**
 
-@fig-gmwl shows the relationship. Groundwater (red) plots on the meteoric water line and moves **toward the lower-left (lighter) the higher the recharge elevation**. Water that has evaporated, in contrast, leaves the line along an **evaporation line of slope 4–5**. Seawater sits at δ ≈ 0 (upper right); a fresh–seawater mixture falls on the line joining them (well suited to the freshwater lens of [#7](/posts/groundwater/groundwater-sci07/index-en.html)).
+@fig-gmwl shows the relationship. Groundwater (red) plots on the meteoric water line and moves **toward the lower-left (lighter) the higher the recharge elevation**. Water that has evaporated, in contrast, leaves the line along an **evaporation line of slope 4–5**. Seawater sits at δ ≈ 0 (upper right); a fresh–seawater mixture falls on the line joining them (well suited to the freshwater lens of [#7](/posts/groundwater/groundwater-sci07/index-en)).
 
 ![The meteoric water line and a water's isotopic fingerprint. Groundwater (red) plots on the GMWL and is lighter (lower-left) for higher, colder, more inland recharge. Evaporated water departs on a slope-4–5 evaporation line; seawater is at VSMOW ≈ 0. (Points are illustrative.)](fig1_gmwl.png){#fig-gmwl}
 
@@ -125,7 +125,7 @@ The result was clear: along the main flow line A–A′, **the ⁸⁵Kr apparent
 
 ![⁸⁵Kr apparent age along the Kumamoto A–A′ flow line (Kagabu et al. 2017): recharge ≈16 yr → discharge ≈36 yr → stagnant ≥55 yr. The stagnant zone coincides with where the fluoride of #12 and arsenic of #13 concentrate. "≥55" is a lower bound set by detection.](fig3_age_flowline.png){#fig-age}
 
-The striking point: **this "stagnant zone ≥55 yr" is exactly where the fluoride of [#12](/posts/groundwater/groundwater-sci12/index-en.html) and the arsenic of [#13](/posts/groundwater/groundwater-sci13/index-en.html) concentrated.** An independent tracer, ⁸⁵Kr, gave the answer of **time — "because the water is old"** — to why they accumulate there.
+The striking point: **this "stagnant zone ≥55 yr" is exactly where the fluoride of [#12](/posts/groundwater/groundwater-sci12/index-en) and the arsenic of [#13](/posts/groundwater/groundwater-sci13/index-en) concentrated.** An independent tracer, ⁸⁵Kr, gave the answer of **time — "because the water is old"** — to why they accumulate there.
 
 ------------------------------------------------------------------------
 
@@ -146,7 +146,7 @@ Residence time is set by topography and flow style. Combined with the altitude e
 Isotopes and age are not ends in themselves. Their value is in giving a **time axis to water quality.**
 
 - **Water quality is a function of age.** The fluoride of #12 and the arsenic of #13 both concentrated in the long-residence stagnant zone (≥55 yr). Age answers *why there* with *time*.
-- **A bridge to the next article**: Ide et al. (2018) showed at Kirishima that **dissolved silica saturates and secondary minerals shift from kaolinite to Ca-smectite about 20 years after recharge.** Residence time (this article) × water–rock "maturation" is followed with PHREEQC in [#15](/posts/groundwater/groundwater-sci15/index-en.html).
+- **A bridge to the next article**: Ide et al. (2018) showed at Kirishima that **dissolved silica saturates and secondary minerals shift from kaolinite to Ca-smectite about 20 years after recharge.** Residence time (this article) × water–rock "maturation" is followed with PHREEQC in [#15](/posts/groundwater/groundwater-sci15/index-en).
 
 ------------------------------------------------------------------------
 
@@ -159,7 +159,7 @@ Isotopes and age are not ends in themselves. Their value is in giving a **time a
 - And age gives water-quality concentration its time axis, leading to the "maturation" of #15.
 
 ::: callout-note
-## Next — [#15](/posts/groundwater/groundwater-sci15/index-en.html) Springs and residence time: how water quality "matures"
+## Next — [#15](/posts/groundwater/groundwater-sci15/index-en) Springs and residence time: how water quality "matures"
 
 At Kirishima, we combine **residence time (this article) × water–rock reaction (PHREEQC)**. Ide et al. (2018)'s finding — "silica saturation and a kaolinite→Ca-smectite shift about 20 years after recharge" — is retraced along a PHREEQC reaction path. **The article where PHREEQC shines most.**
 :::

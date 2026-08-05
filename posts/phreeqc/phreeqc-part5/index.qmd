@@ -111,7 +111,7 @@ nocite: |
 
 ## S1：炭酸地下水の定義
 
-石灰岩地帯の地下水を、純水を Pco₂ = 10⁻² atm とカルサイトで平衡させることで定義する。[前回（Part 4）](../phreeqc-part4/index.html)の「開放系」に似た設定だが、今回は CO₂分圧を 10⁻² atm（土壌に近い高めの値）にしている。
+石灰岩地帯の地下水を、純水を Pco₂ = 10⁻² atm とカルサイトで平衡させることで定義する。[前回（Part 4）](/posts/phreeqc/phreeqc-part4/)の「開放系」に似た設定だが、今回は CO₂分圧を 10⁻² atm（土壌に近い高めの値）にしている。
 
 ``` phreeqc
 SOLUTION 1  Carbonate groundwater

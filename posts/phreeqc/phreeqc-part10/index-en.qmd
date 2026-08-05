@@ -622,7 +622,7 @@ A field measurement error of ±0.1 in pH translates directly to roughly ±0.1 un
 ::: callout-note
 ## Applied example: Groundwater Science #15 (the "maturation" of Kirishima springs)
 
-The reading of the saturation index (SI) learned here is applied to real volcanic springs in [Groundwater Science #15 — Silicate Weathering and Groundwater Residence Time](/posts/groundwater/groundwater-sci15/index-en.html). There, the computed SI signs are cross-checked against the paper's public values to read the stage of "water-chemistry maturation" in which primary minerals dissolve and secondary minerals settle — an example of SI at work on field data.
+The reading of the saturation index (SI) learned here is applied to real volcanic springs in [Groundwater Science #15 — Silicate Weathering and Groundwater Residence Time](/posts/groundwater/groundwater-sci15/index-en). There, the computed SI signs are cross-checked against the paper's public values to read the stage of "water-chemistry maturation" in which primary minerals dissolve and secondary minerals settle — an example of SI at work on field data.
 :::
 
 ------------------------------------------------------------------------

@@ -107,9 +107,9 @@ format:
 
   <div class="nf-links">
     <a href="/" class="nf-btn nf-btn-primary">トップページへ / Home</a>
-    <a href="/blog.html" class="nf-btn">連載シリーズ / Series</a>
-    <a href="/note.html" class="nf-btn">Field Notes</a>
-    <a href="/about.html" class="nf-btn">運営者について / About</a>
+    <a href="/blog" class="nf-btn">連載シリーズ / Series</a>
+    <a href="/note" class="nf-btn">Field Notes</a>
+    <a href="/about" class="nf-btn">運営者について / About</a>
   </div>
 </div>
 ```

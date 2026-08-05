@@ -14,8 +14,8 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci12/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci12/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci12/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci12/index-en" />
 ---
 
 ## Introduction: tap water has a limit for a reason
@@ -24,7 +24,7 @@ Drinking water carries **quality standards** that define what is safe to drink. 
 
 What is a little surprising is that **this fluoride can exceed the limit *naturally* — not from industrial pollution.** Groundwater in the western part of the Kumamoto area is one example: inside a volcanic aquifer, the water itself concentrates fluoride as it reacts with rock.
 
-Following **Hossain et al. (2016)**, this article reads "why fluoride builds up in natural groundwater" in the language of geochemistry, and reproduces the key reactions in **PHREEQC**. It is the second chapter of a story begun in [#11](/posts/groundwater/groundwater-sci11/index-en.html), where rainwater dissolved calcite into a Ca-HCO₃ recharge water. What happens next, as that water travels on?
+Following **Hossain et al. (2016)**, this article reads "why fluoride builds up in natural groundwater" in the language of geochemistry, and reproduces the key reactions in **PHREEQC**. It is the second chapter of a story begun in [#11](/posts/groundwater/groundwater-sci11/index-en), where rainwater dissolved calcite into a Ca-HCO₃ recharge water. What happens next, as that water travels on?
 
 ::: callout-important
 ## A note on terms: inorganic F⁻ is not PFAS
@@ -36,7 +36,7 @@ This article is about the **inorganic fluoride ion F⁻**. It is chemically dist
 
 ## Continuing from #11: as Ca-HCO₃ recharge water travels on
 
-In [#11](/posts/groundwater/groundwater-sci11/index-en.html), rainwater took up soil CO₂, became a weak acid, and dissolved minerals into a **Ca-HCO₃** groundwater — the "entry water" that almost all groundwater passes through first.
+In [#11](/posts/groundwater/groundwater-sci11/index-en), rainwater took up soil CO₂, became a weak acid, and dissolved minerals into a **Ca-HCO₃** groundwater — the "entry water" that almost all groundwater passes through first.
 
 Kumamoto's aquifer is a volcanic one, built mainly of Aso pyroclastic-flow deposits: highly permeable, with active flow. The Ca-HCO₃ water born in the recharge zone undergoes **two more major changes** as it flows down-gradient:
 
@@ -61,7 +61,7 @@ $$\mathrm{Ca^{2+} + 2Na\text{-}X \;\rightarrow\; Ca\text{-}X_2 + 2Na^{+}}$$
 
 ### Following it in PHREEQC
 
-Starting from the Ca-HCO₃ recharge water of [#11](/posts/groundwater/groundwater-sci11/index-en.html), we react it with a Na-form exchanger (clay) and vary the exchanger amount to advance the reaction.
+Starting from the Ca-HCO₃ recharge water of [#11](/posts/groundwater/groundwater-sci11/index-en), we react it with a Na-form exchanger (clay) and vary the exchanger amount to advance the reaction.
 
 ``` phreeqc
 SOLUTION 1  Recharge Ca-HCO3 water (≈ #11 calcite-equilibrium water)
@@ -193,7 +193,7 @@ Even naturally, limits can be exceeded — but not chaotically. It is a necessit
 ::: callout-note
 ## Next — #13 Redox and groundwater quality: arsenic, iron, nitrate
 
-Starting from the "metallic (iron) smell" mentioned in [#11](/posts/groundwater/groundwater-sci11/index-en.html), the next article enters the world where **redox (oxidation–reduction)** governs groundwater chemistry. In the same Kumamoto area, **Hossain et al. (2016, Environmental Earth Sciences)** revealed arsenic mobilization — occurring, in fact, on a stage much like #12's fluoride: **high pH, reducing, stagnant.**
+Starting from the "metallic (iron) smell" mentioned in [#11](/posts/groundwater/groundwater-sci11/index-en), the next article enters the world where **redox (oxidation–reduction)** governs groundwater chemistry. In the same Kumamoto area, **Hossain et al. (2016, Environmental Earth Sciences)** revealed arsenic mobilization — occurring, in fact, on a stage much like #12's fluoride: **high pH, reducing, stagnant.**
 :::
 
 ------------------------------------------------------------------------

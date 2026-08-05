@@ -14,13 +14,13 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci11/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci11/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci11/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci11/index-en" />
 ---
 
 ## Introduction: water earns its "taste" by travelling underground
 
-Up to [#10](/posts/groundwater/groundwater-sci10/index-en.html), the story was about *water level* — a matter of physics. From here we step into the water's **contents**: its chemistry.
+Up to [#10](/posts/groundwater/groundwater-sci10/index-en), the story was about *water level* — a matter of physics. From here we step into the water's **contents**: its chemistry.
 
 A spring is soft, a hot spring is salty, another smells metallic. Why do waters that are all just "water" differ so much? The answer is simple: **as water travels underground, it slowly dissolves the rocks and gases it meets along the way.** Rain, which starts out containing almost nothing, takes up carbon dioxide in the soil, dissolves minerals, and sometimes mixes with ancient seawater. That history is written into the water's "taste" — its chemistry.
 
@@ -58,7 +58,7 @@ The reactions that create groundwater chemistry come down to four.
 1.  **Dissolution (weathering)** — CO₂-bearing water dissolves minerals. The most basic reaction: calcite dissolution (→ Ca-HCO₃ type), feldspar weathering (→ Na, K), and so on.
 2.  **Cation exchange** — on clay-mineral surfaces, Ca²⁺ in the water swaps with Na⁺ held by the mineral. Important when a seawater-invaded aquifer freshens, producing Na-HCO₃ waters.
 3.  **Evaporative concentration** — in arid settings or long-residence waters, evaporation concentrates ions until salts precipitate.
-4.  **Mixing** — fresh water blends with deep thermal water, or with seawater. Ubiquitous in freshwater lenses ([#7](/posts/groundwater/groundwater-sci07/index-en.html)) and in coastal / geothermal areas.
+4.  **Mixing** — fresh water blends with deep thermal water, or with seawater. Ubiquitous in freshwater lenses ([#7](/posts/groundwater/groundwater-sci07/index-en)) and in coastal / geothermal areas.
 
 Of these, **dissolution** is the road almost every groundwater travels first. Below we follow its archetype — rainwater dissolving calcite (CaCO₃) into a **Ca-HCO₃** groundwater — calculating with PHREEQC.
 
@@ -109,7 +109,7 @@ Three things stand out.
 ::: callout-note
 ## The values depend on $p\mathrm{CO_2}$ — link to the PHREEQC series
 
-The Ca concentration at saturation scales roughly as $p\mathrm{CO_2}^{1/3}$. In settings with high soil CO₂ ($p\mathrm{CO_2}=10^{-1.5}$ to $10^{-1}$ atm), Ca reaches 2–4 mmol/L. [PHREEQC from scratch #5](/posts/phreeqc/phreeqc-part5/index-en.html) defines a carbonate groundwater with "Ca ≈ 3–4 mmol/kg, calcite SI ≈ 0" under higher CO₂ — continuous with the calculation here. The full PHREEQC workflow is taught from the ground up in the [PHREEQC series](/blog-en.html).
+The Ca concentration at saturation scales roughly as $p\mathrm{CO_2}^{1/3}$. In settings with high soil CO₂ ($p\mathrm{CO_2}=10^{-1.5}$ to $10^{-1}$ atm), Ca reaches 2–4 mmol/L. [PHREEQC from scratch #5](/posts/phreeqc/phreeqc-part5/index-en) defines a carbonate groundwater with "Ca ≈ 3–4 mmol/kg, calcite SI ≈ 0" under higher CO₂ — continuous with the calculation here. The full PHREEQC workflow is taught from the ground up in the [PHREEQC series](/blog-en).
 :::
 
 > This calculation uses a dilute approximation (activity coefficients = 1). For high-ionic-strength waters such as seawater, PHREEQC applies Debye–Hückel activity corrections automatically; for quantitative work, let PHREEQC handle it.
@@ -126,7 +126,7 @@ A telling example of dissolution controlling chemistry is the groundwater of wes
 
 The archetype of mixing-controlled chemistry is a hot spring. **Yang (2021)** measured the major constituents of many Beppu spring sources and used **multivariate analysis (cluster and principal-component analysis)** to classify the spring types and their vertical distribution. Deep Na-Cl thermal water and shallow Ca-HCO₃ groundwater mix in varying proportions to give each source its character; one source was estimated at 12% seawater mixing from its hexadiagram.
 
-> Not just *reading* the major ions but *classifying* them with multivariate statistics — treating water-quality data with the same mindset as the time-series methods from [#8](/posts/groundwater/groundwater-sci08/index-en.html) onward.
+> Not just *reading* the major ions but *classifying* them with multivariate statistics — treating water-quality data with the same mindset as the time-series methods from [#8](/posts/groundwater/groundwater-sci08/index-en) onward.
 
 ------------------------------------------------------------------------
 

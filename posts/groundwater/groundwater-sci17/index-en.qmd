@@ -14,8 +14,8 @@ format:
   html:
     include-in-header:
       - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci17/index.html" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci17/index-en.html" />
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci17/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci17/index-en" />
 ---
 
 ## A well is already recording the movement of the Earth
@@ -44,11 +44,11 @@ Three quite different physics. Yet all three appear in the same record of water 
 
 Before the main subject, it is worth restating the view this series has been building.
 
-In [#6](/posts/groundwater/groundwater-sci06/) we saw the unconfined groundwater level at Beppu respond to **barometric pressure**: when the air presses harder on the aquifer, the level falls. In [#9](/posts/groundwater/groundwater-sci09/) we saw the level on Minami-Daito Island respond to **ocean tides**, and used the phase lag to estimate hydraulic conductivity across the island.
+In [#6](/posts/groundwater/groundwater-sci06/index-en) we saw the unconfined groundwater level at Beppu respond to **barometric pressure**: when the air presses harder on the aquifer, the level falls. In [#9](/posts/groundwater/groundwater-sci09/index-en) we saw the level on Minami-Daito Island respond to **ocean tides**, and used the phase lag to estimate hydraulic conductivity across the island.
 
 What these share is a view of the well as **a device that records the forces applied to it from outside**. Barometric pressure is a load from above; the tide is the load of seawater plus the deformation of the solid Earth. If that is so, the strain an earthquake imposes on the crust should be recordable by the same well.
 
-This article extends that view to **crustal strain**. The tools are the same as well: the harmonic analysis used in [#9](/posts/groundwater/groundwater-sci09/) to isolate tidal constituents is exactly what calibrates the strain meter here.
+This article extends that view to **crustal strain**. The tools are the same as well: the harmonic analysis used in [#9](/posts/groundwater/groundwater-sci09/index-en) to isolate tidal constituents is exactly what calibrates the strain meter here.
 
 ------------------------------------------------------------------------
 
@@ -132,7 +132,7 @@ One is the tidal route, $W_{\varepsilon}^{(M_2)}$, described above. The other is
 
 **The two estimates showed a good linear correlation.** That two entirely different forcings — the tide of the Moon and the rupture of a fault — yield the same coefficient means the response of the groundwater level is governed by one framework: linear poroelasticity.
 
-They also obtained the **loading efficiency** $\gamma$ from the barometric response — the very quantity treated in [#6](/posts/groundwater/groundwater-sci06/), a dimensionless number giving the fraction of an increase in atmospheric pressure that is taken up by the pore pressure. They found $\gamma = 0.16$–$0.62$ across the nineteen wells. Combining $\gamma$ with $W_{\varepsilon}$ yields the **uniaxial undrained bulk modulus** $K_v^{(u)}$ of the aquifer. The values obtained correspond roughly to laboratory measurements for sandstone (13–47 GPa) and granite (61–66 GPa) (Wang, 2000).
+They also obtained the **loading efficiency** $\gamma$ from the barometric response — the very quantity treated in [#6](/posts/groundwater/groundwater-sci06/index-en), a dimensionless number giving the fraction of an increase in atmospheric pressure that is taken up by the pore pressure. They found $\gamma = 0.16$–$0.62$ across the nineteen wells. Combining $\gamma$ with $W_{\varepsilon}$ yields the **uniaxial undrained bulk modulus** $K_v^{(u)}$ of the aquifer. The values obtained correspond roughly to laboratory measurements for sandstone (13–47 GPa) and granite (61–66 GPa) (Wang, 2000).
 
 In other words — **from a single time series of water level, one can read the stiffness of the rock below.**
 
@@ -258,7 +258,7 @@ The view does not end there, either. Crustal deformation shows up not only in th
 | Months (before) | Pre-eruptive decline and oscillation | Critical phenomena, accumulation of microcracks | — |
 | Weeks to months (after) | Increased spring and stream flow | Permeability enhancement in the shallow crust | Irreversible |
 
-The well that responded to barometric pressure in [#6](/posts/groundwater/groundwater-sci06/), the well that responded to ocean tides in [#9](/posts/groundwater/groundwater-sci09/), and the well that responded to earthquake strain here are **the same well**. Only the forcing differs; the framework for reading it is one. Barometric response gives loading efficiency, tidal response gives strain sensitivity, coseismic steps give crustal deformation. **The same record returns a different answer each time the question changes** — that is the power of time-series analysis.
+The well that responded to barometric pressure in [#6](/posts/groundwater/groundwater-sci06/index-en), the well that responded to ocean tides in [#9](/posts/groundwater/groundwater-sci09/index-en), and the well that responded to earthquake strain here are **the same well**. Only the forcing differs; the framework for reading it is one. Barometric response gives loading efficiency, tidal response gives strain sensitivity, coseismic steps give crustal deformation. **The same record returns a different answer each time the question changes** — that is the power of time-series analysis.
 
 And it is worth remembering that all of this came from **water-level records that were already being collected**. No new monitoring network was built. Level gauges installed in hot-spring and domestic wells, logging every ten minutes to 5–10 mm for a decade — the work was to read those records again. **There is unread data beneath your feet.**
 
@@ -268,7 +268,7 @@ And it is worth remembering that all of this came from **water-level records tha
 
 This article showed how deformation of the crust appears in a groundwater level. Next time we descend to what causes that deformation — **the magma** itself.
 
-What happens beneath a volcano? How does the hot fluid separating from magma react with the surrounding rock, and what kind of water emerges at the surface? The geothermometers of [#16](/posts/groundwater/groundwater-sci16/) told us the *temperature* but said nothing about the *source* of that heat. The next article fills that gap, re-reading the magma ascent that moved the water level at Usu from the side of chemistry.
+What happens beneath a volcano? How does the hot fluid separating from magma react with the surrounding rock, and what kind of water emerges at the surface? The geothermometers of [#16](/posts/groundwater/groundwater-sci16/index-en) told us the *temperature* but said nothing about the *source* of that heat. The next article fills that gap, re-reading the magma ascent that moved the water level at Usu from the side of chemistry.
 
 ------------------------------------------------------------------------
 

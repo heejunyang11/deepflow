@@ -54,7 +54,7 @@
 
 <div class="series-nav-container">
   <a id="nav-prev" href="#" class="nav-link-btn">← Prev</a>
-  <a id="nav-index" href="/blog.html" class="nav-index-btn">
+  <a id="nav-index" href="/blog" class="nav-index-btn">
     <span style="font-size: 1.3em;">📚</span> <span id="nav-index-text">シリーズ一覧へ</span>
   </a>
   <a id="nav-next" href="#" class="nav-link-btn">Next →</a>
@@ -70,7 +70,7 @@
     const navIndexText = document.getElementById('nav-index-text');
     const navIndex = document.getElementById('nav-index');
     navIndexText.innerText = isEnglish ? "Series Index" : "シリーズ一覧へ";
-    navIndex.href = isEnglish ? "/blog-en.html" : "/blog.html";
+    navIndex.href = isEnglish ? "/blog-en" : "/blog";
 
     // URLからプレフィックスと番号を抽出
     // パターン例: /posts/phreeqc/phreeqc-part16/ または /posts/groundwater/groundwater-sci02/index.html

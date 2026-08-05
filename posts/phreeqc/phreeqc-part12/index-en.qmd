@@ -26,9 +26,9 @@ nocite: |
 
 From #2 to #11, we calculated the chemistry at "a single point and a single moment".
 
-- **Speciation** ([#2](../phreeqc-part2/index-en.html)): Solution composition at one point
-- **EQUILIBRIUM_PHASES** ([#3](../phreeqc-part3/index-en.html)〜[#5](../phreeqc-part5/index-en.html)): Mineral equilibrium at one point
-- **REACTION** ([#11](../phreeqc-part11/index-en.html)): Changes over time
+- **Speciation** ([#2](/posts/phreeqc/phreeqc-part2/index-en)): Solution composition at one point
+- **EQUILIBRIUM_PHASES** ([#3](/posts/phreeqc/phreeqc-part3/index-en)〜[#5](/posts/phreeqc/phreeqc-part5/index-en)): Mineral equilibrium at one point
+- **REACTION** ([#11](/posts/phreeqc/phreeqc-part11/index-en)): Changes over time
 
 This time, the **TRANSPORT block** adds the **dimension of space** to this. As groundwater flows through an aquifer, it reacts with minerals, transports contaminants, and forms concentration fronts—we will calculate this entire process all at once.
 
@@ -845,7 +845,7 @@ Your next steps could open doors to **inverse modeling** (the `INVERSE_MODELING`
 ::: callout-note
 ## Applied example: Groundwater Science #15 (the "maturation" of Kirishima springs)
 
-The idea of advection–dispersion (i.e., reactive transport) learned here is the key to the conclusion of [Groundwater Science #15 — Silicate Weathering and Groundwater Residence Time](/posts/groundwater/groundwater-sci15/index-en.html). In a volcanic spring system dominated by mixing, the residence-time dependence of dissolved silica cannot be explained by equilibrium calculation alone; it requires exactly the reactive transport model — coupling the advection, dispersion, and mixing handled by `TRANSPORT` — whose necessity that article argues.
+The idea of advection–dispersion (i.e., reactive transport) learned here is the key to the conclusion of [Groundwater Science #15 — Silicate Weathering and Groundwater Residence Time](/posts/groundwater/groundwater-sci15/index-en). In a volcanic spring system dominated by mixing, the residence-time dependence of dissolved silica cannot be explained by equilibrium calculation alone; it requires exactly the reactive transport model — coupling the advection, dispersion, and mixing handled by `TRANSPORT` — whose necessity that article argues.
 :::
 
 ------------------------------------------------------------------------
@@ -855,16 +855,16 @@ The idea of advection–dispersion (i.e., reactive transport) learned here is th
 ::: {#refs}
 :::
 
-- [#1 Installation and Initial Calculation](../phreeqc-part1/index-en.html)
-- [#2 Speciation Analysis of Seawater](../phreeqc-part2/index-en.html)
-- [#3 Mixing and EQUILIBRIUM_PHASES](../phreeqc-part3/index-en.html)
-- [#4 Calcite-CO2-Water Reaction](../phreeqc-part4/index-en.html)
-- [#5 Mixing Carbonate Groundwater and Seawater](../phreeqc-part5/index-en.html)
-- [#6 Pyrite Oxidation (Acid Mine Drainage)](../phreeqc-part6/index-en.html)
-- [#7 Solubility Diagrams (Gibbsite)](../phreeqc-part7/index-en.html)
-- [#8 Visualization with Python](../phreeqc-part8/index-en.html)
-- [#9 Ionic Strength and Activity Coefficients](../phreeqc-part9/index-en.html)
-- [#10 Mastering Saturation Index (SI)](../phreeqc-part10/index-en.html)
-- [#11 Reaction Path Modeling (REACTION block)](../phreeqc-part11/index-en.html)
+- [#1 Installation and Initial Calculation](/posts/phreeqc/phreeqc-part1/index-en)
+- [#2 Speciation Analysis of Seawater](/posts/phreeqc/phreeqc-part2/index-en)
+- [#3 Mixing and EQUILIBRIUM_PHASES](/posts/phreeqc/phreeqc-part3/index-en)
+- [#4 Calcite-CO2-Water Reaction](/posts/phreeqc/phreeqc-part4/index-en)
+- [#5 Mixing Carbonate Groundwater and Seawater](/posts/phreeqc/phreeqc-part5/index-en)
+- [#6 Pyrite Oxidation (Acid Mine Drainage)](/posts/phreeqc/phreeqc-part6/index-en)
+- [#7 Solubility Diagrams (Gibbsite)](/posts/phreeqc/phreeqc-part7/index-en)
+- [#8 Visualization with Python](/posts/phreeqc/phreeqc-part8/index-en)
+- [#9 Ionic Strength and Activity Coefficients](/posts/phreeqc/phreeqc-part9/index-en)
+- [#10 Mastering Saturation Index (SI)](/posts/phreeqc/phreeqc-part10/index-en)
+- [#11 Reaction Path Modeling (REACTION block)](/posts/phreeqc/phreeqc-part11/index-en)
 - **#12 Advection-Dispersion Model (TRANSPORT block)** ← Current
-- [#13 Redox Sequences — The Order of Groundwater "Reduction"](../phreeqc-part13/index-en.html)
+- [#13 Redox Sequences — The Order of Groundwater "Reduction"](/posts/phreeqc/phreeqc-part13/index-en)
