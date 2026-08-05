@@ -1,7 +1,7 @@
 ---
 title: "About"
 pagetitle: "運営者プロフィール — Heejun Yang, Ph.D."
-description: "DeepFlows 運営者 Heejun Yang（Ph.D.）のプロフィール。地下水流動解析・地球化学モデリング・水文学を専門とする研究者。査読付き学術論文26編。業績一覧とお問い合わせ先を掲載。"
+description: "DeepFlows 運営者 Heejun Yang（Ph.D.）のプロフィール。地下水流動解析・地球化学モデリング・水文学を専門とする研究者。査読付き学術論文27編。業績一覧とお問い合わせ先を掲載。"
 number-sections: false
 format:
   html:
@@ -163,7 +163,7 @@ Python · 時系列解析（FFT・ウェーブレット） · PHREEQC · Vibe Co
   <div class="pub-section open">
     <div class="pub-header" onclick="togglePub(this)">
       <span>📄 学術論文（査読付）</span>
-      <span class="pub-count">26編（第１著者 14編 · 最近5年間 14編）</span>
+      <span class="pub-count">27編（第１著者 14編 · 最近5年間 15編）</span>
       <span class="pub-arrow">▼</span>
     </div>
     <div class="pub-body">
@@ -194,6 +194,7 @@ Python · 時系列解析（FFT・ウェーブレット） · PHREEQC · Vibe Co
         <li>Satake S., Hosoki A., Suka A., Hoshino Y., Yang H., Ueda A.*, Kuramitz H., Terai A.，2025年 Scale evaluation in geothermal fluids by a batch-type method using fiber optic scale sensor. <em>Geothermics</em> 131: 103387</li>
         <li>Yang H.*, Ueda A., Kuramitz H., Satake S., Masuoka K., Terai A.，2025年 Andesite and CO₂-saturated water interaction at different temperatures and flow rates using a flow-through reactor. <em>Geosciences</em> 15(9): 351</li>
         <li>Yang H.*, Ueda A., Kuramitz H., Terai A.，2025年 Interactions between basalt and CO₂-saturated water at varying temperatures (100℃–300℃) in a duplex reactor. <em>Applied Geochemistry</em> 194: 106593</li>
+        <li>Suka A., Hosoki A.*, Satake S., Abrishamian F., Yang H., Ueda A., Terai A., Kuramitz H.*，2026年 Design of Hetero-Core Fiber-Optic SPR Sensor for Reliable Detection of Geothermal Scale Deposition. <em>Advanced Sensor Research</em> 5(8): e70173</li>
       </ol>
     </div>
   </div>

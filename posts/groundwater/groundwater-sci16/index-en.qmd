@@ -124,6 +124,12 @@ Furthermore, combining the thermometer with **isotopes** (δD and δ¹⁸O, trea
 
 The chemistry of a hot spring speaks of the temperature underground. To hear that voice correctly requires the very posture of continually asking "has equilibrium been reached?" — that is the heart of the technique of reading the subsurface without drilling.
 
+## Coming next
+
+From [#11](/posts/groundwater/groundwater-sci11/index-en.html) through this article, six installments have read the subsurface from the constituents dissolved in water. With the next installment the series enters a new part, and its subject is the movement of the Earth itself — earthquakes and volcanoes.
+
+The first article takes up a single idea: **a well is the Earth's strain meter**. In [#6](/posts/groundwater/groundwater-sci06/index-en.html) we saw groundwater levels respond to atmospheric pressure, and in [#9](/posts/groundwater/groundwater-sci09/index-en.html) to ocean tides. The same well also responds to crustal strain. At the moment of an earthquake the level jumps in a step; before an eruption it fluctuates; after an earthquake the discharge of springs changes. We will follow these three faces of the well through observations at Usu Volcano and Loma Prieta.
+
 ------------------------------------------------------------------------
 
 ### References

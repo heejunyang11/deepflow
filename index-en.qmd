@@ -3,7 +3,7 @@ title: "DeepFlows"
 subtitle: "Science beneath the surface"
 lang: en
 pagetitle: "Groundwater Science, Geochemistry and Data Analysis"
-description: "A science blog by a researcher: groundwater flow modeling (MODFLOW), geochemical modeling (PHREEQC), and data analysis with Python, explained with real examples and code. Written by Heejun Yang, Ph.D., author of 26 peer-reviewed papers."
+description: "A science blog by a researcher: groundwater flow modeling (MODFLOW), geochemical modeling (PHREEQC), and data analysis with Python, explained with real examples and code. Written by Heejun Yang, Ph.D., author of 27 peer-reviewed papers."
 page-layout: full
 title-block-banner: true
 format:
@@ -398,7 +398,7 @@ listing:
     <img src="/profile.png" class="author-avatar" alt="Author profile photo">
     <div class="author-info">
       <div class="author-name">Author: Heejun Yang, Ph.D.</div>
-      <div class="author-desc">A researcher specializing in hydrology, groundwater flow analysis, and geochemistry, with 26 peer-reviewed publications. Sharing the methods built up through years of research, in the plainest language possible. ＞ See full profile and publications</div>
+      <div class="author-desc">A researcher specializing in hydrology, groundwater flow analysis, and geochemistry, with 27 peer-reviewed publications. Sharing the methods built up through years of research, in the plainest language possible. ＞ See full profile and publications</div>
     </div>
   </a>
 </div>

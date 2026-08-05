@@ -1,7 +1,7 @@
 ---
 title: "Services"
 pagetitle: "Groundwater Time-Series Analysis & PHREEQC Modeling Services — Heejun Yang, Ph.D. | DeepFlows"
-description: "Services by a specialist in time-series & spectral analysis of groundwater-level and hydrological data (FFT, wavelet, cross-correlation) and geochemical modeling (PHREEQC): hands-on graduate courses, technical guidance, contract/collaborative research, invited talks, and data analysis. Delivered by a Ph.D. with 26 peer-reviewed papers, in English and Japanese."
+description: "Services by a specialist in time-series & spectral analysis of groundwater-level and hydrological data (FFT, wavelet, cross-correlation) and geochemical modeling (PHREEQC): hands-on graduate courses, technical guidance, contract/collaborative research, invited talks, and data analysis. Delivered by a Ph.D. with 27 peer-reviewed papers, in English and Japanese."
 lang: en
 number-sections: false
 format:
@@ -63,7 +63,7 @@ I am a researcher (Ph.D.) specializing in **time-series and spectral analysis of
 
 ## Credentials
 
-- Ph.D. in Science / **26 peer-reviewed papers** (14 as first author)
+- Ph.D. in Science / **27 peer-reviewed papers** (14 as first author)
 - Expertise: time-series &amp; spectral analysis of groundwater-level and hydrological data (FFT, wavelet, cross-correlation, tidal/barometric response), geochemical modeling (PHREEQC), water–rock interaction (geothermal / CO2)
 
 ```{=html}
@@ -76,7 +76,7 @@ I am a researcher (Ph.D.) specializing in **time-series and spectral analysis of
 </div>
 ```
 
-See education, work history and the full publication list (26 peer-reviewed papers) on [About](about-en.qmd).
+See education, work history and the full publication list (27 peer-reviewed papers) on [About](about-en.qmd).
 
 ## Contact
 
