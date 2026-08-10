@@ -1,0 +1,215 @@
+/* ---------------------------------------------------------------------------
+ * DeepFlows Calc — 計算機ページ専用のスタイル
+ *
+ * このファイルは calc/ 配下のページからのみ読み込む（各ページの
+ * include-in-header に <link> を書く）。サイト全体の css: には入れないこと。
+ * ゆえにここのセレクタが `main.content table` のように広くても、
+ * 記事ページ側には一切届かない。
+ *
+ * 移植元は GroundwaterCalc の styles.css。ただし body・.navbar・.nav-footer・
+ * h1.title・見出し色・本文色・リンク色といった「サイトの顔」にあたる規則は
+ * すべて落としてある。そこは DeepFlows のデザインに従わせるのが統合の趣旨で、
+ * 残したのは計算機コンポーネント（.gw-*）と、それが使うトークンだけである。
+ * ------------------------------------------------------------------------- */
+
+:root {
+  --gw-ink:        #101a1e;
+  --gw-ink-2:      #3c4d52;
+  --gw-ink-3:      #6b7d82;
+  --gw-rule:       #d3dbda;
+  --gw-surface:    #f4f6f5;
+  --gw-panel:      #ffffff;
+  --gw-panel-2:    #eaeeed;
+  --gw-accent:     #0f6f7a;
+  --gw-accent-ink: #0b545d;
+  --gw-accent-wash:#dfecec;
+  --gw-brass:      #a07d28;
+  --gw-brass-wash: #f0e6cc;
+  --gw-good:       #2f6f4f;
+  --gw-warn:       #8a5a12;
+  --gw-crit:       #9c3626;
+
+  /* 図で使う色 */
+  --gw-sand:       #ddd2b4;
+  --gw-sand-line:  #b9a97f;
+  --gw-water:      #7fb7bd;
+
+  --gw-f0: 0.75rem;
+  --gw-f1: 0.875rem;
+  --gw-f2: 1rem;
+  --gw-f3: 1.25rem;
+  --gw-f4: 1.625rem;
+  --gw-f5: 2.25rem;
+  --gw-f6: 3rem;
+
+  --gw-serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --gw-sans:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --gw-mono:  ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+}
+
+/* 行長を抑えたい導入文だけに掛ける。本文段落には max-width を掛けない
+   （Quarto の記事レイアウトが既に制限しているので、二重に掛けると
+   幅いっぱいの計算機パネルに対して本文だけ左に偏って見える）。 */
+.gw-lede { max-width: 68ch; }
+
+/* ---- 信頼の表示（監修・出典） ------------------------------------------ */
+
+.gw-attest {
+  margin: 0.9rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  align-items: center;
+  font-size: var(--gw-f0);
+  padding: 0;
+  list-style: none;
+}
+.gw-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--gw-rule);
+  border-radius: 2px;
+  padding: 0.15rem 0.5rem;
+  color: var(--gw-ink-2);
+  background: var(--gw-panel);
+}
+.gw-chip.verified {
+  border-color: var(--gw-accent);
+  color: var(--gw-accent-ink);
+  background: var(--gw-accent-wash);
+}
+
+.gw-author {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  border: 1px solid var(--gw-rule);
+  border-top: 2px solid var(--gw-brass);
+  background: var(--gw-panel);
+  padding: 1rem 1.1rem;
+  margin-top: 2rem;
+  font-size: var(--gw-f1);
+}
+.gw-author .gw-badge {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--gw-brass-wash);
+  color: var(--gw-brass);
+  display: grid;
+  place-items: center;
+  font-family: var(--gw-serif);
+  font-size: var(--gw-f3);
+}
+.gw-author p { margin: 0.2rem 0 0; color: var(--gw-ink-2); font-size: var(--gw-f1); }
+
+/* ---- 式 ---------------------------------------------------------------- */
+
+/* 中身は KaTeX（$$...$$）で組む。スラッシュ書きの分数は使わない。 */
+.gw-eq {
+  font-family: var(--gw-serif);
+  font-size: var(--gw-f3);
+  text-align: center;
+  padding: 1.1rem 0.75rem;
+  margin: 1.25rem 0;
+  background: var(--gw-panel);
+  border-top: 1px solid var(--gw-rule);
+  border-bottom: 1px solid var(--gw-rule);
+  overflow-x: auto;
+  color: var(--gw-ink);
+}
+.gw-eq i { font-style: italic; }
+
+/* 数式エンジン側の既定マージンは .gw-eq の padding と二重になるので消す。
+   KaTeX と MathJax の両方を書いておく（どちらで組んでも崩れないように）。 */
+.gw-eq .katex-display { margin: 0; }
+.gw-eq .katex { color: var(--gw-ink); }
+.gw-eq mjx-container[display] { margin: 0 !important; }
+
+/* ---- 表 ---------------------------------------------------------------- */
+
+/* 表の見た目そのものは DeepFlows のスタイルに任せる。ここに残すのは
+   計算機と連動する機能的な部分だけ。 */
+
+/* 数値列（Markdown の表では右寄せ指定で効く） */
+main.content td[align="right"] {
+  font-family: var(--gw-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* K 値表：計算機の値に最も近い行を強調する（gwcalc.js が付ける） */
+main.content tbody tr.gw-hot { background: var(--gw-accent-wash); }
+main.content tbody tr[data-k] { cursor: pointer; }
+main.content tbody tr[data-k]:hover { background: var(--gw-accent-wash); }
+
+/* ---- 例題 -------------------------------------------------------------- */
+
+.gw-worked {
+  background: var(--gw-panel);
+  border: 1px solid var(--gw-rule);
+  padding: 1rem 1.1rem;
+  margin: 1.25rem 0;
+  font-size: var(--gw-f1);
+}
+.gw-worked p { font-size: var(--gw-f1); }
+.gw-worked ol { margin: 0.5rem 0 0; padding-left: 1.2rem; }
+.gw-worked li { margin-bottom: 0.4rem; color: var(--gw-ink-2); }
+.gw-worked code {
+  font-family: var(--gw-mono);
+  font-size: 0.95em;
+  color: var(--gw-ink);
+  background: none;
+  padding: 0;
+}
+
+/* ---- 関連ツール -------------------------------------------------------- */
+
+.gw-related {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1px;
+  background: var(--gw-rule);
+  border: 1px solid var(--gw-rule);
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.gw-related li { margin: 0; }
+.gw-related a {
+  background: var(--gw-panel);
+  padding: 0.8rem 0.9rem;
+  text-decoration: none;
+  color: var(--gw-ink);
+  display: block;
+  height: 100%;
+  font-size: var(--gw-f1);
+}
+.gw-related a:hover { background: var(--gw-accent-wash); }
+.gw-related a strong { display: block; color: var(--gw-accent-ink); margin-bottom: 0.15rem; }
+.gw-related a span { color: var(--gw-ink-3); font-size: var(--gw-f0); }
+
+/* ---- 注記 -------------------------------------------------------------- */
+
+.gw-note {
+  margin: 2rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--gw-rule);
+  font-size: var(--gw-f0);
+  color: var(--gw-ink-3);
+  background: var(--gw-panel);
+}
+
+/* ---- 参考文献 ---------------------------------------------------------- */
+
+.gw-refs { font-size: var(--gw-f1); color: var(--gw-ink-2); }
+.gw-refs li { margin-bottom: 0.45rem; }
+
+/* ---- 操作性 ------------------------------------------------------------ */
+
+:where(.gw a, .gw button, .gw input, .gw select, .gw summary):focus-visible {
+  outline: 2px solid var(--gw-accent);
+  outline-offset: 2px;
+}

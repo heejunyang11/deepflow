@@ -1,0 +1,368 @@
+/* ---------------------------------------------------------------------------
+ * gwcalc.css — 計算機コンポーネントの見た目
+ * 色とタイポグラフィのトークンは styles.css で定義している。
+ * ------------------------------------------------------------------------- */
+
+/* 構造：.gw-root ┬ .gw-figure（全幅の装置図）
+ *                └ .gw ┬ .gw-inputs（入力）
+ *                      └ .gw-stage （結果）
+ * 図とパネルは罫線でつなぎ、ひとつのブロックとして見せる。 */
+
+.gw {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: 1px;
+  background: var(--gw-rule);
+  border: 1px solid var(--gw-rule);
+  margin: 1.5rem 0 2.5rem;
+}
+.gw-figure + .gw { margin-top: 0; }
+
+@media (max-width: 860px) {
+  .gw { grid-template-columns: 1fr; }
+}
+
+.gw-pane { background: var(--gw-panel); padding: 1.25rem; min-width: 0; }
+.gw-pane.gw-stage { background: var(--gw-panel-2); padding: 1rem 1.25rem 1.25rem; }
+
+.gw-panetitle {
+  font-size: var(--gw-f0);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gw-ink-3);
+  margin: 0 0 0.9rem;
+  font-weight: 600;
+}
+
+.gw-sym {
+  font-family: var(--gw-serif);
+  font-style: italic;
+  color: var(--gw-ink);
+}
+
+/* ---- solve-for タブ ---- */
+
+.gw-solvefor {
+  display: flex;
+  gap: 1px;
+  background: var(--gw-rule);
+  border: 1px solid var(--gw-rule);
+  margin-bottom: 1.1rem;
+}
+.gw-solvefor button {
+  flex: 1;
+  appearance: none;
+  border: 0;
+  background: var(--gw-panel);
+  font: inherit;
+  font-size: var(--gw-f1);
+  color: var(--gw-ink-2);
+  padding: 0.45rem 0.3rem;
+  cursor: pointer;
+  line-height: 1.4;
+}
+.gw-solvefor button[aria-pressed="true"] {
+  background: var(--gw-accent);
+  color: #f6fbfb;
+  font-weight: 600;
+}
+.gw-solvefor button[aria-pressed="true"] .gw-sym { color: #f6fbfb; }
+.gw-solvefor button:hover:not([aria-pressed="true"]) {
+  background: var(--gw-accent-wash);
+  color: var(--gw-accent-ink);
+}
+
+/* ---- 入力欄 ---- */
+
+/* min-width:0 が無いと、グリッドアイテムの既定 min-width:auto により
+   中身（長い単位名を持つ select）が親をはみ出す。 */
+.gw-field { display: grid; gap: 0.3rem; margin-bottom: 0.95rem; min-width: 0; }
+.gw-field > label {
+  font-size: var(--gw-f1);
+  color: var(--gw-ink-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+}
+.gw-hint { color: var(--gw-ink-3); font-size: var(--gw-f0); }
+
+.gw-combo {
+  display: flex;
+  gap: 1px;
+  background: var(--gw-rule);
+  border: 1px solid var(--gw-rule);
+  width: 100%;
+  min-width: 0;
+}
+.gw-combo:focus-within { outline: 2px solid var(--gw-accent); outline-offset: 1px; }
+.gw-combo input,
+.gw-combo select {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  background: var(--gw-panel);
+  color: var(--gw-ink);
+  font: inherit;
+  padding: 0.45rem 0.55rem;
+  min-width: 0;
+  height: auto;
+}
+.gw-combo input {
+  flex: 1;
+  font-family: var(--gw-mono);
+  font-variant-numeric: tabular-nums;
+}
+/* step を持たない欄はスピナーを出さない（押しても意味のある増減にならない） */
+.gw-combo input[data-nospin] { -moz-appearance: textfield; appearance: textfield; }
+.gw-combo input[data-nospin]::-webkit-outer-spin-button,
+.gw-combo input[data-nospin]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* 単位欄は固定幅。内容に合わせて伸ばすと、長い単位（US gal/min）を持つ
+   フィールドだけ幅が変わり、入力欄の右端が揃わなくなる。
+   appearance:none でドロップダウンの矢印も消えるため、自前で描き戻す。 */
+.gw-combo select {
+  flex: 0 0 6.75rem;
+  color: var(--gw-ink-2);
+  font-size: var(--gw-f1);
+  cursor: pointer;
+  text-overflow: ellipsis;
+  padding-right: 1.5rem;
+  background-image:
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236b7d82' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.55rem center;
+  background-size: 9px 6px;
+}
+/* 単位を持たない欄（間隙率など）は選べないので矢印を出さない */
+.gw-combo select:disabled {
+  background-image: none;
+  padding-right: 0.55rem;
+  cursor: default;
+}
+.gw-combo input:focus,
+.gw-combo select:focus { outline: none; box-shadow: none; }
+
+.gw-field.gw-locked .gw-combo { opacity: 0.5; }
+
+.gw-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: -0.5rem 0 1.1rem;
+}
+.gw-presets button {
+  appearance: none;
+  font: inherit;
+  font-size: var(--gw-f0);
+  border: 1px solid var(--gw-rule);
+  background: var(--gw-panel);
+  color: var(--gw-ink-2);
+  padding: 0.1rem 0.45rem;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.gw-presets button:hover {
+  border-color: var(--gw-accent);
+  color: var(--gw-accent-ink);
+  background: var(--gw-accent-wash);
+}
+
+/* ---- 図 ---- */
+
+.gw-figure {
+  background: var(--gw-panel-2);
+  border: 1px solid var(--gw-rule);
+  border-bottom: 0;
+  padding: 1.5rem 1.25rem 1rem;
+  margin: 1.5rem 0 0;
+}
+.gw-figure figure { margin: 0; }
+/* 図を広げすぎると線と文字が痩せて読めなくなるので上限を置き、中央に寄せる */
+.gw-figure svg {
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  display: block;
+  margin-inline: auto;
+}
+
+/* --- 図の色はすべてここで与える ---------------------------------------
+   SVG のプレゼンテーション属性に直接 fill="var(--x)" と書くと、ブラウザに
+   よっては解決されず要素が消える。図の色は必ずクラス経由で指定すること。 */
+
+.gw-figure .gw-water      { fill: var(--gw-water); }
+.gw-figure .gw-waterline  { stroke: var(--gw-accent); stroke-width: 1.6; fill: none; }
+.gw-figure .gw-glass      { fill: none; stroke: var(--gw-ink-3); stroke-width: 1.5; }
+.gw-figure .gw-vessel     { fill: none; stroke: var(--gw-ink-2); stroke-width: 1.5; }
+.gw-figure .gw-sand-bg    { fill: var(--gw-sand); }
+.gw-figure .gw-sand-grain { fill: var(--gw-sand-line); }
+.gw-figure .gw-flow       { stroke: var(--gw-brass); stroke-width: 2.2; fill: none; stroke-linecap: round; }
+.gw-figure .gw-flow-head  { fill: var(--gw-brass); }
+.gw-figure .gw-dim        { stroke: var(--gw-ink-2); stroke-width: 1.2; fill: none; }
+.gw-figure .gw-dim-head   { fill: var(--gw-ink-2); }
+/* 断面積を示す端面。ここだけアクセント色にして、何の面積かを一目で分からせる */
+.gw-figure .gw-area       { fill: none; stroke: var(--gw-accent); stroke-width: 2.5; }
+/* 陽イオン／陰イオンの棒。2 分類なので色は 2 色だけ、内訳は区切りと直接ラベルで読ませる */
+.gw-figure .gw-bar-cat    { fill: var(--gw-accent); }
+.gw-figure .gw-bar-ani    { fill: var(--gw-brass); }
+.gw-figure .gw-tx-seg     { font-family: var(--gw-sans); font-size: 11px; fill: #fff; }
+/* 水位低下コーン */
+.gw-figure .gw-cone       { fill: none; stroke: var(--gw-accent); stroke-width: 2; }
+.gw-figure .gw-cone-fill  { fill: var(--gw-panel-2); stroke: none; }
+.gw-figure .gw-soil-bg    { fill: var(--gw-sand); }
+.gw-figure .gw-soil-grain { fill: var(--gw-sand-line); }
+.gw-figure .gw-lead       { stroke: var(--gw-accent); stroke-width: 1.2; fill: none; }
+.gw-figure .gw-tx-area    { fill: var(--gw-accent-ink); }
+.gw-figure .gw-dim-aux    { stroke: var(--gw-ink-3); stroke-width: 1; stroke-dasharray: 4 3; fill: none; }
+.gw-figure .gw-datum      { stroke: var(--gw-rule); stroke-width: 1; stroke-dasharray: 5 4; }
+
+.gw-figure .gw-tx {
+  font-family: var(--gw-serif);
+  font-style: italic;
+  font-size: 14px;
+  fill: var(--gw-ink);
+}
+.gw-figure .gw-tx-brass { fill: var(--gw-brass); }
+.gw-figure .gw-tx-sm {
+  font-family: var(--gw-sans);
+  font-style: normal;
+  font-size: 11px;
+  fill: var(--gw-ink-3);
+  letter-spacing: 0.04em;
+}
+
+.gw-figure figcaption,
+.gw-figure .gw-cap {
+  font-size: var(--gw-f0);
+  color: var(--gw-ink-3);
+  line-height: 1.55;
+  max-width: 720px;          /* 図と同じ幅に揃える */
+  margin: 0.7rem auto 0;
+}
+
+/* ---- 結果 ---- */
+
+.gw-headline {
+  border-top: 2px solid var(--gw-accent);
+  background: var(--gw-panel);
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1px;
+}
+.gw-headline .gw-lab {
+  font-size: var(--gw-f0);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gw-ink-3);
+}
+.gw-headline .gw-lab .gw-sym { color: var(--gw-ink-2); text-transform: none; }
+.gw-headline .gw-val {
+  font-family: var(--gw-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--gw-f5);
+  line-height: 1.1;
+  color: var(--gw-accent-ink);
+  font-weight: 600;
+}
+.gw-headline .gw-unit {
+  font-size: var(--gw-f3);
+  color: var(--gw-ink-2);
+}
+
+.gw-outs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--gw-rule);
+  border: 1px solid var(--gw-rule);
+  margin: 0;
+}
+.gw-out { background: var(--gw-panel); padding: 0.7rem 0.8rem; }
+.gw-out dt {
+  font-size: var(--gw-f0);
+  color: var(--gw-ink-3);
+  margin: 0 0 0.15rem;
+  font-weight: 400;
+}
+.gw-out dt .gw-sym { color: var(--gw-ink-2); }
+.gw-out dt .gw-unit {
+  font-family: var(--gw-mono);
+  font-size: 0.95em;
+  color: var(--gw-ink-3);
+  white-space: nowrap;
+}
+.gw-out dt .gw-out-note {
+  color: var(--gw-accent-ink);
+  font-style: italic;
+  white-space: nowrap;
+}
+.gw-out dd {
+  margin: 0;
+  font-family: var(--gw-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--gw-f2);
+  color: var(--gw-ink);
+}
+.gw-out dd small {
+  font-family: var(--gw-sans);
+  color: var(--gw-ink-3);
+  font-size: var(--gw-f0);
+}
+
+/* ---- 妥当性の判定 ---- */
+
+.gw-verdict {
+  margin-top: 1px;
+  border: 1px solid var(--gw-rule);
+  border-left-width: 3px;
+  background: var(--gw-panel);
+  padding: 0.7rem 0.85rem;
+  font-size: var(--gw-f1);
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  line-height: 1.6;
+}
+.gw-verdict[data-state="good"] { border-left-color: var(--gw-good); }
+.gw-verdict[data-state="warn"] { border-left-color: var(--gw-warn); }
+.gw-verdict[data-state="crit"] { border-left-color: var(--gw-crit); }
+.gw-verdict .gw-mark { font-weight: 700; flex: 0 0 auto; }
+.gw-verdict[data-state="good"] .gw-mark { color: var(--gw-good); }
+.gw-verdict[data-state="warn"] .gw-mark { color: var(--gw-warn); }
+.gw-verdict[data-state="crit"] .gw-mark { color: var(--gw-crit); }
+
+/* ---- 判定の下に置く補足 ---- */
+
+.gw-footnote {
+  margin-top: 1px;
+  border: 1px solid var(--gw-rule);
+  background: var(--gw-panel);
+  padding: 0.8rem 0.95rem;
+  font-size: var(--gw-f1);
+  line-height: 1.65;
+  color: var(--gw-ink-2);
+}
+.gw-footnote p { margin: 0 0 0.5rem; font-size: inherit; color: inherit; }
+.gw-footnote p:last-child { margin-bottom: 0; }
+.gw-footnote strong { color: var(--gw-ink); }
+.gw-footnote em { font-family: var(--gw-serif); font-style: italic; color: var(--gw-ink); }
+.gw-footnote .gw-key {
+  display: inline-block;
+  min-width: 5.5em;
+  color: var(--gw-accent-ink);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gw-figure [data-animate] {
+    transition: y 260ms ease, height 260ms ease, opacity 260ms ease;
+  }
+}

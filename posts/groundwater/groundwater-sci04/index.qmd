@@ -436,6 +436,14 @@ Theisの非平衡公式は、熱伝導との美しいアナロジーから生ま
 
 ---
 
+::: {.callout-tip title="この式をブラウザで動かす"}
+Theis 式と井戸関数 $W(u)$ を、数値を入れて確かめられる計算機を用意した。水位降下・透水量係数・揚水量のいずれを未知数にしても解け、その条件で **Cooper–Jacob の直線近似を使ってよいか**（$u$ が十分小さいか）も同時に判定される。
+
+→ [Theis Solution Calculator](/calc/theis-solution/)（英語）
+:::
+
+---
+
 ## 参考文献 {#sec-references}
 
 ::: {#refs}

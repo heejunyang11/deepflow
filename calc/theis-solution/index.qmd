@@ -1,0 +1,503 @@
+---
+title: "Theis Solution Calculator"
+subtitle: "Transient drawdown around a pumping well in a confined aquifer — and whether the Cooper–Jacob straight-line approximation may be used instead."
+description: "Free Theis equation calculator. Computes transient drawdown, transmissivity, or pumping rate in a confined aquifer, evaluates the well function W(u), and reports when the Cooper-Jacob approximation is valid."
+date: 2026-08-10
+lang: en
+categories: [Flow]
+number-sections: false
+toc-title: "On this page"
+format:
+  html:
+    html-math-method: katex
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="/calc/assets/gwcalc.css" />
+          <link rel="stylesheet" href="/calc/assets/gwcalc-page.css" />
+          <script src="/calc/assets/gwcalc.js" defer></script>
+---
+
+::: {.gw-attest}
+[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
+[SI and US customary units]{.gw-chip}
+[Cooper–Jacob validity check]{.gw-chip}
+[Sources: Theis 1935 · Cooper &amp; Jacob 1946]{.gw-chip}
+:::
+
+```{=html}
+<div id="calc"></div>
+
+<template id="calc-figure">
+  <figure>
+    <svg viewBox="0 0 680 320" role="img" aria-labelledby="figTitle figDesc">
+      <title id="figTitle">Cone of depression around a pumping well</title>
+      <desc id="figDesc">A cross-section through a confined aquifer. Pumping from the central well lowers the potentiometric surface into a cone. An observation well a distance r away records the drawdown s.</desc>
+
+      <defs>
+        <pattern id="soil" width="10" height="10" patternUnits="userSpaceOnUse">
+          <rect class="gw-soil-bg" width="10" height="10"></rect>
+          <circle class="gw-soil-grain" cx="2.5" cy="3" r="1"></circle>
+          <circle class="gw-soil-grain" cx="7" cy="7.5" r="0.85"></circle>
+        </pattern>
+        <marker id="arrowDim2" markerWidth="9" markerHeight="8" refX="8.4" refY="4" orient="auto-start-reverse">
+          <path class="gw-dim-head" d="M0,0.6 L9,4 L0,7.4 Z"></path>
+        </marker>
+        <clipPath id="aquiferClip">
+          <rect x="40" y="76" width="600" height="196"></rect>
+        </clipPath>
+      </defs>
+
+      <!-- 帯水層と上下の遮水層 -->
+      <rect x="40" y="40" width="600" height="36" fill="url(#soil)"></rect>
+      <rect class="gw-vessel" x="40" y="40" width="600" height="36"></rect>
+      <text class="gw-tx-sm" x="46" y="62">confining bed</text>
+
+      <rect class="gw-water" x="40" y="76" width="600" height="196"></rect>
+      <rect x="40" y="272" width="600" height="22" fill="url(#soil)"></rect>
+      <rect class="gw-vessel" x="40" y="272" width="600" height="22"></rect>
+      <text class="gw-tx-sm" x="46" y="288">aquiclude</text>
+
+      <!-- 揚水前の水位（基準）と、揚水後のコーン -->
+      <g clip-path="url(#aquiferClip)">
+        <path class="gw-cone-fill" id="coneFill" d=""></path>
+        <path class="gw-cone" id="coneLine" d=""></path>
+      </g>
+      <line class="gw-dim-aux" x1="40" y1="96" x2="640" y2="96"></line>
+      <text class="gw-tx-sm" x="46" y="92">potentiometric surface before pumping</text>
+
+      <!-- 揚水井 -->
+      <rect class="gw-glass" x="332" y="20" width="16" height="252"></rect>
+      <line class="gw-flow" x1="340" y1="44" x2="340" y2="14" marker-end="url(#arrowFlow2)"></line>
+      <text class="gw-tx gw-tx-brass" x="352" y="20">Q</text>
+
+      <!-- 観測井 -->
+      <rect class="gw-glass" id="obsWell" x="446" y="30" width="10" height="242"></rect>
+      <line class="gw-waterline" id="obsLevel" x1="446" y1="140" x2="456" y2="140"></line>
+      <text class="gw-tx-sm" id="obsLabel" x="462" y="26">observation well</text>
+
+      <!-- 水位低下量 s -->
+      <line class="gw-dim" id="sBar" x1="451" y1="96" x2="451" y2="140"
+            marker-start="url(#arrowDim2)" marker-end="url(#arrowDim2)"></line>
+      <text class="gw-tx gw-tx-area" id="sLabel" x="466" y="122">s</text>
+
+      <!-- 距離 r -->
+      <line class="gw-dim-aux" x1="340" y1="20" x2="340" y2="40"></line>
+      <line class="gw-dim" id="rBar" x1="340" y1="34" x2="451" y2="34"
+            marker-start="url(#arrowDim2)" marker-end="url(#arrowDim2)"></line>
+      <text class="gw-tx" id="rLabel" x="396" y="30" text-anchor="middle">r</text>
+    </svg>
+    <figcaption>Pumping at rate <em>Q</em> draws the potentiometric surface down into a cone. The drawdown <em>s</em> at an observation well depends on how far away it is (<em>r</em>) and how long the pump has run (<em>t</em>) — the cone deepens and widens without ever reaching steady state. The figure tracks your inputs.</figcaption>
+  </figure>
+</template>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="arrowFlow2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path class="gw-flow-head" d="M0,0.8 L8,4 L0,7.2 Z"></path>
+    </marker>
+  </defs>
+</svg>
+```
+
+## What to enter for what you want
+
+Every derived quantity is computed on every keystroke, so **Solve for** does not
+decide what you can see — it only decides which variable is treated as the unknown.
+
+| To find | Enter | Read it in |
+|---|---|---|
+| **Drawdown at an observation well** | *Q*, *T*, *S*, *r*, *t* | Headline |
+| **Transmissivity from a pumping test** | *Q*, *s*, *S*, *r*, *t* — set *Solve for* to *T* | Headline |
+| **The rate that produces a target drawdown** | *T*, *S*, *r*, *t*, *s* — set *Solve for* to *Q* | Headline |
+| **Whether Cooper–Jacob is usable** | any of the above | *u* and the validity note |
+| **How far the cone reaches** | *Q*, *T*, *S*, *t* | Radius of influence |
+
+Solving for *T* is the pumping-test case, and it cannot be done algebraically —
+*T* appears both outside the well function and inside its argument. The calculator
+solves it numerically by bisection on a logarithmic scale, which is why the value
+settles rather than appearing instantly.
+
+## What the equation says
+
+By 1935 the steady-state well equations of Thiem had a well-known defect: real
+aquifers never reach steady state, because the cone of depression keeps expanding
+for as long as the pump runs. Charles Theis, working with the mathematician Clarence
+Lubin, noticed that this expanding cone is formally the same problem as heat
+conducting away from a line source — a problem already solved. Transplanting that
+solution gave hydrogeology its first transient analysis.
+
+::: {.gw-eq}
+$$s \;=\; \frac{Q}{4\pi T}\,W(u), \qquad u \;=\; \frac{r^{2}S}{4Tt}$$
+:::
+
+$W(u)$ is the **well function**, which is the exponential integral $E_1(u)$:
+
+::: {.gw-eq}
+$$W(u) \;=\; \int_{u}^{\infty}\frac{e^{-y}}{y}\,dy
+\;=\; -\gamma - \ln u + \sum_{n=1}^{\infty}\frac{(-1)^{n+1}u^{n}}{n\cdot n!}$$
+:::
+
+with $\gamma = 0.5772157$ (Euler's constant). This calculator evaluates it with the
+rational approximations of Abramowitz & Stegun (5.1.53 and 5.1.56), which agree with
+published well-function tables to within 0.02 % over the range $10^{-5} \le u \le 5$.
+
+### The variables
+
+| Symbol | Quantity | SI unit | Note |
+|---|---|---|---|
+| *s* | Drawdown at the observation well | m | Measured **down** from the pre-pumping level |
+| *Q* | Pumping rate | m³/s | Held constant — the solution assumes it never varies |
+| *T* | Transmissivity, *Kb* | m²/s | Conductivity times aquifer thickness |
+| *S* | Storativity (storage coefficient) | – | Dimensionless; typically 10⁻⁵–10⁻³ when confined |
+| *r* | Distance from the pumping well | m | Radial |
+| *t* | Time since pumping began | s | From the instant the pump starts |
+| *u* | Dimensionless time parameter | – | Small *u* means late time or short distance |
+
+### What *u* actually measures
+
+Everything about the shape of the response is carried by the single group
+$u = r^2S/4Tt$. It is small when the test has run a long time or the observation
+well is close, and large early on or far away. This is why *u* — not time alone —
+decides which analysis applies: an observation well at 20 m may already be in the
+late-time regime while one at 300 m is still in the early-time regime at the same
+instant.
+
+## When Cooper–Jacob can replace it
+
+For small *u* the series for $W(u)$ is dominated by its first two terms, and the
+solution collapses into a straight line on a semi-logarithmic plot:
+
+::: {.gw-eq}
+$$s \;\approx\; \frac{2.303\,Q}{4\pi T}\,\log_{10}\!\left(\frac{2.25\,T t}{r^{2}S}\right)
+\qquad (u \lesssim 0.01)$$
+:::
+
+That is the Cooper–Jacob (1946) approximation, and it is what makes graphical
+pumping-test analysis possible. The threshold matters: at *u* = 0.01 the error is
+about 1 %, but it grows quickly. **The calculator reports the Cooper–Jacob value
+and its error alongside the exact Theis result**, so you can see for yourself
+whether the shortcut is safe at your *r* and *t*.
+
+Above *u* ≈ 1 you are in the earliest moments of the test at that radius. The Theis
+solution is still exact there, but wellbore storage — water drawn from the casing
+rather than the aquifer — distorts real measurements, so early data are usually
+discarded rather than fitted.
+
+## Worked example
+
+::: {.gw-worked}
+**Problem.** A confined aquifer has *T* = 1.2×10⁻² m²/s and *S* = 2.0×10⁻⁴. A well
+is pumped at 0.020 m³/s. Find the drawdown (a) after one day at an observation well
+50 m away, and (b) after 30 minutes at one 200 m away. In each case, check whether
+Cooper–Jacob could have been used.
+
+**(a) *t* = 86 400 s, *r* = 50 m**
+
+1. `u = r²S/(4Tt) = (2500 × 2.0×10⁻⁴) / (4 × 1.2×10⁻² × 86400) = 1.206×10⁻⁴`
+2. `W(u) = 8.446`
+3. `s = Q/(4πT) · W(u) = 0.020/(4π × 1.2×10⁻²) × 8.446 = 0.1326 × 8.446 = 1.120 m`
+4. Cooper–Jacob gives 1.121 m — an error of **0.04 %**. Since *u* ≪ 0.01, the straight-line method is entirely safe here.
+
+**(b) *t* = 1 800 s, *r* = 200 m**
+
+1. `u = (40000 × 2.0×10⁻⁴) / (4 × 1.2×10⁻² × 1800) = 9.26×10⁻²`
+2. `W(u) = 1.893`
+3. `s = 0.1326 × 1.893 = 0.251 m`
+4. Cooper–Jacob gives 0.239 m — an error of **−4.7 %**, an underestimate.
+
+The difference between the two cases is not the aquifer; it is *u*. At 200 m and
+30 minutes the test has not yet reached the late-time regime, and using the
+straight-line method there would bias the fitted transmissivity. This is the single
+most common error in pumping-test analysis: applying Cooper–Jacob to early data
+because the plot happens to look straight.
+:::
+
+## Frequently asked
+
+### What assumptions am I accepting by using this?
+
+That the aquifer is confined, homogeneous, isotropic, of uniform thickness, and
+infinite in extent; that the well fully penetrates it; that the pumping rate is
+constant; and that water is released from storage instantaneously. Real aquifers
+violate several of these routinely. The Theis curve is nevertheless the reference
+against which departures are diagnosed — leakage, boundaries, and delayed yield are
+all identified by *how* measured drawdown deviates from it.
+
+### Can I use this for an unconfined aquifer?
+
+Not directly. In an unconfined aquifer the saturated thickness itself decreases as
+water is removed, and drainage from the pores is not instantaneous. Use the
+Neuman solution, or apply the Jacob correction *s*′ = *s* − *s*²/2*b* when the
+drawdown is a small fraction of the saturated thickness *b*.
+
+### Why does drawdown never stabilise?
+
+Because the solution assumes an infinite aquifer with no source of recharge. The
+cone must keep expanding to supply the pumped water. If measured drawdown does level
+off, that is informative: it means a boundary or a source of leakage has been
+reached, and the Theis assumptions no longer hold.
+
+### What is a realistic storativity?
+
+For confined aquifers, 10⁻⁵ to 10⁻³ — the water comes from expansion of water and
+compression of the matrix, so very little is available per unit head. Unconfined
+values are three orders of magnitude larger (0.05–0.30) because the water is
+physically drained from pores. A "confined" test returning *S* = 0.1 is telling you
+the aquifer is not confined.
+
+## Related calculators
+
+::: {.gw-related}
+- [**Darcy's law**<span>The equation this one is built from</span>](../darcy-law/)
+- [**Charge balance error**<span>Whether a water analysis is internally consistent</span>](../charge-balance/)
+:::
+
+## Read further
+
+[Pumping Tests & the Theis Equation: Measuring Aquifer Properties in Python](/posts/groundwater/groundwater-sci04/index-en)
+works through a full pumping test in the Groundwater Science series — fitting the
+type curve to real drawdown data rather than evaluating the solution at a single
+point, which is what this calculator does.
+
+## References
+
+::: {.gw-refs}
+1. Theis, C.V. (1935) The relation between the lowering of the piezometric surface and the rate and duration of discharge of a well using ground-water storage. *Transactions, American Geophysical Union* 16, 519–524.
+2. Cooper, H.H. & Jacob, C.E. (1946) A generalized graphical method for evaluating formation constants and summarizing well-field history. *Transactions, American Geophysical Union* 27, 526–534.
+3. Abramowitz, M. & Stegun, I.A. (1964) *Handbook of Mathematical Functions.* National Bureau of Standards, Washington DC. Equations 5.1.53 and 5.1.56.
+4. Freeze, R.A. & Cherry, J.A. (1979) *Groundwater.* Prentice-Hall, Englewood Cliffs, NJ.
+5. Kruseman, G.P. & de Ridder, N.A. (1990) *Analysis and Evaluation of Pumping Test Data*, 2nd ed. ILRI, Wageningen.
+:::
+
+::: {.gw-author}
+[HY]{.gw-badge}
+
+::: {}
+**Reviewed by Heejun Yang, Ph.D.**
+
+Hydrogeologist working on groundwater time-series analysis and water–rock
+interaction modelling. The well function implemented here was checked against
+published tables; equations and reference values were verified against the primary
+sources listed above.
+:::
+:::
+
+```{=html}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  /* 井戸関数 W(u) = E1(u)。Abramowitz & Stegun 5.1.53 / 5.1.56 の有理近似。
+     10^-5 <= u <= 5 で公表表値と 0.02 % 以内で一致することを確認済み。 */
+  function W(u) {
+    if (!(u > 0)) return NaN;
+    if (u <= 1) {
+      return -Math.log(u) - 0.57721566
+        + 0.99999193 * u
+        - 0.24991055 * u * u
+        + 0.05519968 * u * u * u
+        - 0.00976004 * u * u * u * u
+        + 0.00107857 * u * u * u * u * u;
+    }
+    var e = Math.exp(-u);
+    return (e / u) * (u * u + 2.334733 * u + 0.250621)
+                   / (u * u + 3.330657 * u + 1.681534);
+  }
+
+  /* T は W(u) の外にも中にも現れるため代数的に解けない。
+     注意：s(T) は単調ではない。T が小さいと u が大きくなって W(u) が指数的に
+     消え、T が大きいと 1/T が効くので、両端とも s → 0 の山形になる。したがって
+     同じ s を与える T が二つあり得る。物理的に意味があるのは late-time 側
+     （u < 1）なので、u = 1 となる T を下限にして、その右側だけを二分法で探す。 */
+  function solveT(Q, s, S, r, t) {
+    var f = function (T) { return Q / (4 * Math.PI * T) * W(r * r * S / (4 * T * t)) - s; };
+    var lo = r * r * S / (4 * t);      // u = 1 となる T
+    var hi = lo * 1e9;
+    var flo = f(lo), fhi = f(hi);
+    if (!isFinite(flo) || !isFinite(fhi) || flo * fhi > 0) return NaN;
+    for (var i = 0; i < 200 && hi / lo > 1 + 1e-12; i++) {
+      var mid = Math.sqrt(lo * hi);
+      var fm = f(mid);
+      if (!isFinite(fm)) return NaN;
+      if (flo * fm <= 0) { hi = mid; fhi = fm; } else { lo = mid; flo = fm; }
+    }
+    return Math.sqrt(lo * hi);
+  }
+
+  var api = GwCalc.mount("#calc", {
+
+    figure: "#calc-figure",
+
+    solveFor: ["s", "T", "Q"],
+
+    inputs: [
+      { id:"Q", sym:"Q", label:"Pumping rate", short:"Rate", value:"0.02",
+        min:0, step:0.001,
+        units:{ "m³/s":1, "m³/day":1.157407e-5, "L/s":1e-3, "US gal/min":6.309020e-5 } },
+
+      { id:"T", sym:"T", label:"Transmissivity", short:"Transmiss.", value:"1.2e-2",
+        units:{ "m²/s":1, "m²/day":1.157407e-5, "ft²/day":1.075387e-6 } },
+
+      { id:"S", sym:"S", label:"Storativity", hint:"confined: 10⁻⁵–10⁻³", value:"2.0e-4",
+        min:1e-7, max:0.5 },
+
+      { id:"r", sym:"r", label:"Distance from well", value:"50",
+        min:0.05, step:1,
+        units:{ "m":1, "ft":0.3048 } },
+
+      { id:"t", sym:"t", label:"Time since pumping began", short:"Time", value:"1",
+        min:0, step:0.5,
+        units:{ "day":86400, "hour":3600, "min":60, "s":1 } },
+
+      { id:"s", sym:"s", label:"Drawdown", value:"1.12",
+        min:0, step:0.05,
+        units:{ "m":1, "ft":0.3048 } }
+    ],
+
+    compute: function (v, target) {
+      var Q = v.Q, T = v.T, S = v.S, r = v.r, t = v.t, s = v.s;
+      // S, r, t はどの解き方でも必要。これらが欠けたら計算しない。
+      if (!(S > 0) || !(r > 0) || !(t > 0)) return {};
+
+      if (target === "T") {
+        if (!(Q > 0) || !(s > 0)) return {};
+        T = solveT(Q, s, S, r, t);
+        if (!isFinite(T)) return {};
+      } else if (!(T > 0)) {
+        return {};
+      }
+
+      var u  = r * r * S / (4 * T * t);
+      var Wu = W(u);
+      if (!isFinite(Wu)) return {};
+
+      if (target === "s") {
+        if (!isFinite(Q)) return {};
+        s = Q / (4 * Math.PI * T) * Wu;
+      } else if (target === "Q") {
+        if (!isFinite(s) || Wu === 0) return {};
+        Q = s * 4 * Math.PI * T / Wu;
+      }
+      if (!isFinite(s) || !isFinite(Q)) return {};
+
+      // Cooper–Jacob の直線近似と、その誤差
+      var arg = 2.25 * T * t / (r * r * S);
+      var sCJ = (arg > 1) ? (2.303 * Q) / (4 * Math.PI * T) * Math.log(arg) / Math.LN10 : NaN;
+      var errCJ = (isFinite(sCJ) && s !== 0) ? (sCJ - s) / s * 100 : NaN;
+
+      // 影響半径（Cooper–Jacob の直線が s = 0 を切る点）と、u = 0.01 に達する時刻
+      var R    = 1.5 * Math.sqrt(T * t / S);
+      var t001 = r * r * S / (0.04 * T);
+
+      return { s:s, Q:Q, T:T, S:S, r:r, t:t, u:u, Wu:Wu,
+               sCJ:sCJ, errCJ:errCJ, R:R, t001:t001 };
+    },
+
+    headline: {
+      s: { key:"s", sym:"s", label:"Drawdown",       unit:"m" },
+      T: { key:"T", sym:"T", label:"Transmissivity", unit:"m²/day", scale:86400 },
+      Q: { key:"Q", sym:"Q", label:"Pumping rate",   unit:"m³/day", scale:86400 }
+    },
+
+    outputs: [
+      { key:"u",     sym:"u",    label:"Time parameter" },
+      { key:"Wu",    sym:"W(u)", label:"Well function" },
+      { key:"sCJ",   sym:"s",    label:"Cooper–Jacob",  unit:"m",     note:"approximation" },
+      { key:"errCJ", sym:"",     label:"Cooper–Jacob error", unit:"%", note:"vs Theis" },
+      { key:"R",     sym:"R",    label:"Radius of influence", unit:"m" },
+      { key:"t001",  sym:"t",    label:"Until u = 0.01", unit:"hours", scale:1/3600 }
+    ],
+
+    check: function (r) {
+      if (!isFinite(r.u)) return GwCalc.warn("Enter the aquifer properties to evaluate u.");
+      var uu = GwCalc.fmt(r.u, 3);
+      if (r.u <= 0.01) {
+        return GwCalc.ok(
+          "Theis is exact, and Cooper–Jacob may be used: u = " + uu +
+          " is below 0.01, so the straight-line approximation is within about 1 % (here " +
+          GwCalc.fmt(Math.abs(r.errCJ), 2) + " %).");
+      }
+      if (r.u <= 1) {
+        return GwCalc.ok(
+          "Theis is exact, but do not use Cooper–Jacob here: u = " + uu +
+          " exceeds 0.01, and the straight-line approximation is off by " +
+          GwCalc.fmt(r.errCJ, 2) + " %. Fitting early data with it would bias the transmissivity.");
+      }
+      if (r.u <= 5) {
+        return GwCalc.warn(
+          "Very early time or far field: u = " + uu + ". The solution is still exact, but real " +
+          "measurements in this range are distorted by wellbore storage — water drawn from the " +
+          "casing rather than the aquifer — and are normally discarded before fitting.");
+      }
+      return GwCalc.crit(
+        "u = " + uu + " puts W(u) below 10⁻³, so the predicted drawdown is far smaller than " +
+        "field instruments resolve. Either the observation well is too distant to have responded " +
+        "yet, or the inputs are not in the units you intended.");
+    },
+
+    footnote:
+      '<p><span class="gw-key">u</span> carries everything about the shape of the response. ' +
+      'It is small at late time or close range, large early or far away — which is why two ' +
+      'observation wells in the same test can need different analyses at the same instant.</p>' +
+      '<p><span class="gw-key">Cooper–Jacob</span> is shown beside the exact result precisely ' +
+      'so the shortcut can be checked rather than assumed. Applying it to early data because the ' +
+      'semi-log plot looks straight is the most common error in pumping-test analysis.</p>',
+
+    onUpdate: function (r) { drawCone(r); }
+  });
+
+  /* ---- 水位低下コーンを入力に追従させる ---------------------------------
+     井戸中心 x=340、片側 280 px に半径 rMax を割り当てる。観測点の s が
+     70 px になるよう縦方向を伸縮し、井戸近傍は帯水層下端でクリップする。 */
+
+  var XW = 340, HALF = 280, Y0 = 96, YBOT = 268, RW = 0.15;
+
+  function drawCone(res) {
+    var $ = function (id) { return document.getElementById(id); };
+    if (!res || !isFinite(res.s) || !isFinite(res.T)) return;
+
+    var Q = res.Q, T = res.T, S = res.S, t = res.t, robs = res.r;
+    var rMax  = Math.max(robs * 2.5, RW * 4);
+    var scale = (res.s > 0) ? 70 / res.s : 0;
+
+    var right = [], left = [];
+    for (var i = 0; i <= 90; i++) {
+      var f  = i / 90;
+      var x  = RW + (rMax - RW) * f * f;                 // 井戸近傍を密に取る
+      var sx = Q / (4 * Math.PI * T) * W(x * x * S / (4 * T * t));
+      var py = Math.min(Y0 + (isFinite(sx) ? sx : 0) * scale, YBOT);
+      var px = XW + (x / rMax) * HALF;
+      right.push(px.toFixed(1) + "," + py.toFixed(1));
+      left.unshift((XW - (x / rMax) * HALF).toFixed(1) + "," + py.toFixed(1));
+    }
+
+    var line = "M" + left.join(" L") + " L" + right.join(" L");
+    $("coneLine").setAttribute("d", line);
+    $("coneFill").setAttribute("d", line + " L" + (XW + HALF) + "," + YBOT +
+                                    " L" + (XW - HALF) + "," + YBOT + " Z");
+
+    // 観測井を r の位置へ動かし、その水位と寸法線を合わせる
+    var xo = XW + Math.min(robs / rMax, 0.98) * HALF;
+    var so = Q / (4 * Math.PI * T) * W(robs * robs * S / (4 * T * t));
+    var yo = Math.min(Y0 + (isFinite(so) ? so : 0) * scale, YBOT);
+
+    $("obsWell").setAttribute("x", xo - 5);
+    $("obsLevel").setAttribute("x1", xo - 5);
+    $("obsLevel").setAttribute("x2", xo + 5);
+    $("obsLevel").setAttribute("y1", yo);
+    $("obsLevel").setAttribute("y2", yo);
+    $("obsLabel").setAttribute("x", xo + 10);
+
+    $("sBar").setAttribute("x1", xo);
+    $("sBar").setAttribute("x2", xo);
+    $("sBar").setAttribute("y2", yo);
+    $("sLabel").setAttribute("x", xo + 15);
+    $("sLabel").setAttribute("y", (Y0 + yo) / 2 + 5);
+    $("sLabel").textContent = "s = " + GwCalc.fmt(res.s, 3) + " m";
+
+    $("rBar").setAttribute("x2", xo);
+    $("rLabel").setAttribute("x", (XW + xo) / 2);
+    $("rLabel").textContent = "r = " + GwCalc.fmt(robs, 3) + " m";
+  }
+});
+</script>
+```

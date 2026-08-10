@@ -1,0 +1,630 @@
+---
+title: "Concentration Unit Converter for Minerals and Water Analyses"
+subtitle: "mg/L ↔ mmol/L ↔ meq/L ↔ mg/L as CaCO₃, from a chemical formula you type — including hydrated minerals, so a dissolved mass converts straight into the ions it releases."
+description: "Free concentration unit converter for water chemistry. Type any mineral or salt formula to get molar mass, then convert mg/L to mmol/L, meq/L and mg/L as CaCO3, with the element-by-element breakdown of what dissolution releases."
+date: 2026-08-10
+lang: en
+categories: [Chemistry]
+number-sections: false
+toc-title: "On this page"
+format:
+  html:
+    html-math-method: katex
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="/calc/assets/gwcalc.css" />
+          <link rel="stylesheet" href="/calc/assets/gwcalc-page.css" />
+          <script src="/calc/assets/gwcalc.js" defer></script>
+---
+
+::: {.gw-attest}
+[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
+[Hydrated mineral formulas supported]{.gw-chip}
+[Density-limit check on mg/L ≈ ppm]{.gw-chip}
+[Sources: IUPAC 2021 atomic weights · Hem 1985 · APHA 2017]{.gw-chip}
+:::
+
+```{=html}
+<div id="calc"></div>
+
+<div id="gw-comp"></div>
+
+<template id="calc-figure">
+  <figure>
+    <svg viewBox="0 0 680 130" role="img" aria-labelledby="figTitle figDesc">
+      <title id="figTitle">Mass composition of the entered formula</title>
+      <desc id="figDesc">A single horizontal bar divided into segments, one per element in the formula. The width of each segment is that element's share of the compound's mass, and the segment is labelled with the element symbol and its percentage.</desc>
+
+      <text class="gw-tx-sm" x="40" y="34">share of the formula mass</text>
+
+      <rect class="gw-seg-a" id="seg0" x="40" y="46" width="0" height="42"></rect>
+      <rect class="gw-seg-b" id="seg1" x="40" y="46" width="0" height="42"></rect>
+      <rect class="gw-seg-a" id="seg2" x="40" y="46" width="0" height="42"></rect>
+      <rect class="gw-seg-b" id="seg3" x="40" y="46" width="0" height="42"></rect>
+      <rect class="gw-seg-a" id="seg4" x="40" y="46" width="0" height="42"></rect>
+      <rect class="gw-seg-b" id="seg5" x="40" y="46" width="0" height="42"></rect>
+
+      <text class="gw-tx-seg" id="lab0" x="0" y="72" text-anchor="middle"></text>
+      <text class="gw-tx-seg" id="lab1" x="0" y="72" text-anchor="middle"></text>
+      <text class="gw-tx-seg" id="lab2" x="0" y="72" text-anchor="middle"></text>
+      <text class="gw-tx-seg" id="lab3" x="0" y="72" text-anchor="middle"></text>
+      <text class="gw-tx-seg" id="lab4" x="0" y="72" text-anchor="middle"></text>
+      <text class="gw-tx-seg" id="lab5" x="0" y="72" text-anchor="middle"></text>
+
+      <text class="gw-tx" id="figname" x="40" y="112"></text>
+    </svg>
+    <figcaption>Segments are drawn in order of the elements as they appear in the formula, and each is labelled only when it is wide enough to hold the text. Oxygen usually dominates, which is why a mineral's mass tells you much less about the water than its stoichiometry does.</figcaption>
+  </figure>
+</template>
+
+<style>
+/* 図の帯だけに使う2色。gwcalc.css の図の色定義と同じ考え方で、
+   プレゼンテーション属性ではなくクラスで与える。 */
+.gw-figure .gw-seg-a { fill: var(--gw-accent); }
+.gw-figure .gw-seg-b { fill: var(--gw-brass); }
+/* 元素の内訳表。計算機の直下に置くので、結果パネルと同じ余白に揃える。 */
+#gw-comp:empty { display: none; }
+#gw-comp {
+  border: 1px solid var(--gw-rule);
+  border-top: 0;
+  background: var(--gw-panel);
+  padding: 0.9rem 1.1rem 1rem;
+  font-size: var(--gw-f1);
+}
+#gw-comp p { margin: 0 0 0.5rem; color: var(--gw-ink-3); font-size: var(--gw-f0); }
+#gw-comp table { margin: 0; }
+</style>
+```
+
+## What to enter for what you want
+
+Type a formula, give a concentration, and every other way of stating that
+concentration appears at once. **Solve for** decides only which of the two
+concentration boxes is treated as the unknown; everything else is computed
+regardless.
+
+| To find | Enter | Read it in |
+|---|---|---|
+| **mmol/L from a laboratory report in mg/L** | Formula, mass concentration | Headline (solve for molar) |
+| **mg/L needed to make up a standard** | Formula, molar concentration | Headline (solve for mass) |
+| **meq/L for a charge balance** | Add the charge per formula unit | Milliequivalents |
+| **Hardness or alkalinity as CaCO₃** | Same, with the right charge | mg/L as CaCO₃ |
+| **What a dissolving mineral releases** | Mineral formula, its concentration | Element breakdown table |
+| **Molar mass alone** | Formula only | Molar mass |
+
+The charge box affects only the two equivalent-based outputs. Molar mass, the
+element breakdown and the two concentration boxes do not depend on it, so an
+uncertain charge never contaminates the rest of the conversion.
+
+## The groundwater question it answers
+
+A water analysis arrives as a column of milligrams per litre. Nothing in that column
+is directly comparable to anything else in it: 100 mg/L of sulphate and 100 mg/L of
+calcium are not the same amount of anything. Converting to moles makes them
+comparable as *particles*, and converting to equivalents makes them comparable as
+*charge* — which is the only form in which a water analysis can be checked for
+internal consistency at all.
+
+The step after that is the one this tool is really built for. Groundwater chemistry
+is largely the record of which minerals have dissolved along a flow path, and the
+stoichiometry of a mineral formula converts a concentration into a quantity of rock:
+
+::: {.gw-eq}
+$$n_{\text{mineral}} = \frac{C_{\text{ion}}}{M_{\text{ion}}} \cdot \frac{1}{\nu}$$
+:::
+
+where $\nu$ is the number of moles of that ion released per mole of mineral. A water
+carrying 480 mg/L of sulphate in a gypsum-bearing formation has, if gypsum is the only
+sulphate source, dissolved about 0.86 g of gypsum per litre of water — and must
+therefore have gained roughly 200 mg/L of calcium in the process. If the measured
+calcium is far from that, something else is happening: cation exchange, calcite
+precipitation, or a second sulphate source. **That comparison is the entire logic of
+inverse geochemical modelling**, and it begins with a unit conversion.
+
+Hydrated minerals are where hand conversions go wrong most often, which is why the
+parser here handles them explicitly. Gypsum is CaSO₄·2H₂O, and the two waters of
+crystallisation are 21 % of its mass. Using the anhydrous mass of 136.14 g/mol instead
+of 172.17 g/mol under-states the dissolved mineral by more than a fifth.
+
+## What the conversions say
+
+### From mass to moles
+
+::: {.gw-eq}
+$$c\ [\text{mmol L}^{-1}] = \frac{C\ [\text{mg L}^{-1}]}{M\ [\text{g mol}^{-1}]}$$
+:::
+
+The units work out because milligrams per gram and millimoles per mole carry the same
+factor of a thousand, which cancels. This is the one conversion that is exact, in the
+sense that it involves nothing but the periodic table.
+
+### From moles to equivalents
+
+::: {.gw-eq}
+$$c\ [\text{meq L}^{-1}] = c\ [\text{mmol L}^{-1}] \times z$$
+:::
+
+$z$ is the charge carried per formula unit: 2 for Ca²⁺ and SO₄²⁻, 1 for Na⁺, HCO₃⁻ and
+Cl⁻, 3 for Al³⁺. For a neutral mineral it is the charge released on dissolution — 2 for
+calcite, which yields Ca²⁺ and CO₃²⁻, and 4 for dolomite, which yields two divalent
+cations. Equivalents are what make the charge-balance check possible, because charge is
+conserved when a mineral dissolves and mass is not.
+
+### "As CaCO₃", the convention that confuses everyone
+
+Water hardness and alkalinity are conventionally reported not as themselves but as the
+mass of calcium carbonate that would carry the same charge. The conversion is a
+consequence of calcite's equivalent mass:
+
+::: {.gw-eq}
+$$C\ [\text{mg L}^{-1}\text{ as CaCO}_3] = c\ [\text{meq L}^{-1}] \times \frac{M_{\text{CaCO}_3}}{2} = c \times 50.04$$
+:::
+
+So 2.0 meq/L of hardness is 100 mg/L as CaCO₃ whether the hardness came from calcium,
+magnesium, or a mixture. This is why two laboratories can report the "same" hardness
+with entirely different calcium numbers, and why an alkalinity of 200 mg/L as CaCO₃
+means 4.0 meq/L of bicarbonate — that is, 244 mg/L of actual HCO₃⁻.
+
+### The variables
+
+| Symbol | Quantity | SI unit | Note |
+|---|---|---|---|
+| *C* | Mass concentration | kg m⁻³ | 1 mg/L = 1 g/m³ = 10⁻³ kg/m³ |
+| *c* | Molar concentration | mol m⁻³ | 1 mmol/L = 1 mol/m³ exactly |
+| *M* | Molar mass | g mol⁻¹ | From the formula and atomic weights |
+| *z* | Charge per formula unit | — | Equivalents released per mole |
+| *M*/*z* | Equivalent mass | g eq⁻¹ | Mass carrying one mole of charge |
+
+## Formulas the parser accepts
+
+| Written as | Read as | Example |
+|---|---|---|
+| Element symbols with counts | The obvious | `CaCO3`, `SiO2` |
+| Nested parentheses | Multiplied through | `CaMg(CO3)2`, `Ca(OH)2` |
+| Water of crystallisation | Hydrate expanded | `CaSO4·2H2O`, `MgSO4*7H2O` |
+| A bare ion, charge omitted | The neutral formula mass | `SO4`, `HCO3`, `Ca` |
+
+Charges are **not** written into the formula — enter them in the charge box instead.
+`SO4` returns the mass of the sulphate group, 96.06 g/mol, which is what a laboratory
+means when it reports sulphate in mg/L.
+
+Solid-solution notation such as `(Mg,Fe)2SiO4` is **rejected rather than guessed at**.
+An olivine of unstated composition has no single molar mass, and a converter that
+silently took the magnesium end-member would be inventing a number. Enter the
+end-member you mean, `Mg2SiO4` or `Fe2SiO4`, or the actual composition.
+
+## When it breaks down
+
+**mg/L stops equalling ppm when the solution stops weighing 1.000 kg per litre.**
+Milligrams per litre is mass per unit *volume*; parts per million is mass per unit
+*mass*. They coincide only while the density of the solution is 1.000 kg/L, which holds
+to within 0.1 % for fresh water and fails progressively as salinity rises. At seawater
+salinity the density is about 1.025 kg/L, so a value in mg/L is about 2.5 % larger than
+the same quantity in ppm. The verdict line watches the total concentration and says
+which regime you are in.
+
+The same divergence affects **molarity versus molality**. Concentrations in mol/L are
+temperature-dependent, because the volume of the solution expands on warming while its
+mass does not. For brines, for geothermal waters, and for anything that will enter a
+Pitzer-model speciation calculation, molality (mol per kg of *water*) is the correct
+quantity and this converter does not produce it.
+
+**Atomic weights are conventional values for terrestrial material.** They carry the
+uncertainty of natural isotopic variation, which is negligible for water chemistry but
+not for isotope work. Do not use these masses to convert isotope-specific
+concentrations.
+
+## Worked example
+
+::: {.gw-worked}
+**Problem.** A water from a gypsum-bearing formation reports SO₄ = 480 mg/L. How much
+gypsum has dissolved, how much calcium should accompany it, and what is the sulphate in
+the units a charge balance needs?
+
+1. Enter `SO4`, mass concentration `480` mg/L, charge `2`.
+2. Molar mass of SO₄: `32.06 + 4 × 15.999 = 96.056 g/mol`
+3. Molar concentration: `480 / 96.056 = 4.997 mmol/L`
+4. Equivalents: `4.997 × 2 = 9.994 meq/L`, and as calcium carbonate `9.994 × 50.043 = 500.1 mg/L as CaCO₃`
+5. Now enter `CaSO4·2H2O` with molar concentration `4.997` mmol/L — one mole of gypsum per mole of sulphate. The mass box gives **`860.3 mg/L` of gypsum dissolved**, and the breakdown table gives the calcium that came with it: **`200.3 mg/L`**
+
+If the analysis reports calcium near 200 mg/L, gypsum dissolution explains the water.
+If it reports 120 mg/L, roughly 80 mg/L of calcium has gone somewhere — most likely
+exchanged for sodium on clays, or precipitated as calcite. **The gap is the finding, and
+it only became visible after the units were made comparable.** Note that step 4 and step
+5 use the same 4.997 mmol/L: moles are the currency in which stoichiometry is written,
+which is why the conversion has to come first.
+:::
+
+## Frequently asked
+
+### Why does the calculator not deduce the charge from the formula?
+
+Because it cannot be done reliably from a formula string. Iron may be Fe²⁺ or Fe³⁺,
+sulphur ranges from S²⁻ to S⁶⁺, and nothing in `FeSO4` announces which. Guessing would
+produce a plausible, wrong meq/L that then propagates into a charge balance. Entering
+the charge takes one keystroke and keeps the assumption visible.
+
+### What charge should I use for a mineral rather than an ion?
+
+The total positive charge released per formula unit: 2 for calcite (CaCO₃) and gypsum
+(CaSO₄·2H₂O), 4 for dolomite (CaMg(CO₃)₂), 1 for halite (NaCl). If you are converting a
+mineral mass rather than balancing charge, leave it at any value and ignore the two
+equivalent outputs.
+
+### Is 1 mmol/L really exactly 1 mol/m³?
+
+Yes, and it is the one piece of luck in this subject. A cubic metre is a thousand
+litres and a mole is a thousand millimoles, so the two factors cancel exactly. The
+calculator works internally in mol/m³ for that reason.
+
+### My laboratory reports nitrate "as N". How do I convert it?
+
+Enter `N` for the as-N value and `NO3` for the as-nitrate value; the ratio of the two
+molar masses, 62.004 / 14.007 = 4.427, is the conversion factor. A nitrate of 10 mg/L
+as N is 44.3 mg/L as NO₃ — the same water, and the difference between passing and
+failing a drinking-water standard if the basis is not stated.
+
+## Related calculators
+
+::: {.gw-related}
+- [**Charge balance error**<span>Whether the analysis these units feed is consistent</span>](../charge-balance/)
+- [**Darcy's law**<span>Groundwater flow through a porous medium</span>](../darcy-law/)
+:::
+
+## Read further
+
+[PHREEQC from Scratch #2: Analyzing Seawater with Speciation](/posts/phreeqc/phreeqc-part2/index-en)
+takes an analysis in exactly these units and computes what the ions are actually doing
+in solution — the step immediately after this one.
+
+## References
+
+::: {.gw-refs}
+1. Hem, J.D. (1985) *Study and Interpretation of the Chemical Characteristics of Natural Water*, 3rd ed. U.S. Geological Survey Water-Supply Paper 2254. Chapter 3.
+2. Appelo, C.A.J. & Postma, D. (2005) *Geochemistry, Groundwater and Pollution*, 2nd ed. Balkema, Leiden. Chapter 1.
+3. APHA/AWWA/WEF (2017) *Standard Methods for the Examination of Water and Wastewater*, 23rd ed. Sections 1030 and 2340 (hardness as CaCO₃).
+4. Prohaska, T. et al. (2022) Standard atomic weights of the elements 2021 (IUPAC Technical Report). *Pure and Applied Chemistry* 94, 573–600.
+:::
+
+::: {.gw-author}
+[HY]{.gw-badge}
+
+::: {}
+**Reviewed by Heejun Yang, Ph.D.**
+
+Hydrogeologist working on groundwater time-series analysis and water–rock
+interaction modelling. Equations, unit conversions, and reference values on this
+page were checked against the primary sources listed above.
+:::
+:::
+
+```{=html}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  /* ---- 原子量（IUPAC 2021 の慣用値） ------------------------------------ */
+  var AW = {
+    H:1.008, He:4.0026, Li:6.94, Be:9.0122, B:10.81, C:12.011, N:14.007, O:15.999,
+    F:18.998, Ne:20.180, Na:22.990, Mg:24.305, Al:26.982, Si:28.085, P:30.974, S:32.06,
+    Cl:35.45, Ar:39.948, K:39.098, Ca:40.078, Sc:44.956, Ti:47.867, V:50.942, Cr:51.996,
+    Mn:54.938, Fe:55.845, Co:58.933, Ni:58.693, Cu:63.546, Zn:65.38, Ga:69.723, Ge:72.630,
+    As:74.922, Se:78.971, Br:79.904, Kr:83.798, Rb:85.468, Sr:87.62, Y:88.906, Zr:91.224,
+    Nb:92.906, Mo:95.95, Ru:101.07, Rh:102.91, Pd:106.42, Ag:107.868, Cd:112.414,
+    In:114.818, Sn:118.710, Sb:121.760, Te:127.60, I:126.904, Xe:131.293, Cs:132.905,
+    Ba:137.327, La:138.905, Ce:140.116, Nd:144.242, Sm:150.36, Gd:157.25, Dy:162.500,
+    Er:167.259, Yb:173.045, Hf:178.49, Ta:180.948, W:183.84, Re:186.207, Os:190.23,
+    Ir:192.217, Pt:195.084, Au:196.967, Hg:200.592, Tl:204.383, Pb:207.2, Bi:208.980,
+    Th:232.038, U:238.029
+  };
+
+  var M_CACO3 = AW.Ca + AW.C + 3 * AW.O;   // 100.086 g/mol
+  var EQ_CACO3 = M_CACO3 / 2;              // 50.043 g/eq —「as CaCO3」の換算係数
+
+  /* ---- 化学式パーサー ---------------------------------------------------
+   * apps/molar-mass.html の実装を土台にしているが、固溶体表記の扱いだけ
+   * 変えてある。元の実装は (Mg,Fe) を先頭の元素で置き換えて計算を続けるが、
+   * 組成の分からない橄欖石に単一の分子量は無い。黙って端成分を仮定するより
+   * 拒否するほうが正しい（このサイトの方針でもある）。
+   * ------------------------------------------------------------------- */
+
+  function ParseError(msg) { this.message = msg; }
+
+  function parseFormula(src) {
+    var s = String(src || "").trim();
+    if (!s) throw new ParseError("Enter a chemical formula.");
+    if (s.length > 120) throw new ParseError("Formula too long.");
+    if (/[,]/.test(s))
+      throw new ParseError("Solid-solution notation such as (Mg,Fe) has no single molar mass — enter one end-member.");
+    if (!/^[A-Za-z0-9()·•*.\s]+$/.test(s))
+      throw new ParseError("Unexpected character. Use element symbols, digits, parentheses and · for hydrates.");
+
+    // 水和水の中点（·, •, *）を括弧表記に開く: CaSO4·2H2O → CaSO4(H2O)2
+    s = s.replace(/[·•*]/g, "·");
+    s = s.replace(/·\s*(\d*)\s*([A-Za-z0-9()]+)/g, function (m, n, part) {
+      return "(" + part + ")" + (n || "1");
+    });
+    s = s.replace(/\s+/g, "");
+
+    var depth = 0, maxDepth = 0;
+    for (var i = 0; i < s.length; i++) {
+      if (s[i] === "(") { depth++; maxDepth = Math.max(maxDepth, depth); }
+      if (s[i] === ")") { depth--; if (depth < 0) throw new ParseError("Unbalanced parentheses."); }
+    }
+    if (depth !== 0) throw new ParseError("Unbalanced parentheses.");
+    if (maxDepth > 5) throw new ParseError("Too many nested parentheses.");
+
+    // 出現順を保った元素の配列を返す（図の帯を式の並びどおりに描くため）
+    var order = [];
+    var counts = {};
+
+    function add(sym, n) {
+      if (!(sym in AW)) throw new ParseError("Unknown element: " + sym);
+      if (!(sym in counts)) { counts[sym] = 0; order.push(sym); }
+      counts[sym] += n;
+    }
+
+    var pos = 0;
+
+    function parseGroup(stopAtParen) {
+      while (pos < s.length) {
+        var ch = s[pos];
+        if (ch === ")") {
+          if (!stopAtParen) throw new ParseError("Unbalanced parentheses.");
+          return;
+        }
+        if (ch === "(") {
+          pos++;
+          var inner = collect();
+          if (s[pos] !== ")") throw new ParseError("Unbalanced parentheses.");
+          pos++;
+          var mult = readNumber();
+          for (var k = 0; k < inner.order.length; k++) {
+            var sym = inner.order[k];
+            add(sym, inner.counts[sym] * mult);
+          }
+          continue;
+        }
+        if (!/[A-Z]/.test(ch)) throw new ParseError("Element symbols must start with a capital letter.");
+        var sym2 = ch;
+        pos++;
+        while (pos < s.length && /[a-z]/.test(s[pos])) { sym2 += s[pos]; pos++; }
+        add(sym2, readNumber());
+      }
+    }
+
+    // 括弧の中身を独立に数え上げる（外側の counts を汚さないため入れ子で呼ぶ）
+    function collect() {
+      var savedOrder = order, savedCounts = counts;
+      order = []; counts = {};
+      parseGroup(true);
+      var res = { order: order, counts: counts };
+      order = savedOrder; counts = savedCounts;
+      return res;
+    }
+
+    function readNumber() {
+      var num = "";
+      while (pos < s.length && /[0-9.]/.test(s[pos])) { num += s[pos]; pos++; }
+      if (num === "") return 1;
+      var val = parseFloat(num);
+      if (!isFinite(val) || val <= 0) throw new ParseError("Invalid subscript.");
+      return val;
+    }
+
+    parseGroup(false);
+    if (!order.length) throw new ParseError("Enter a chemical formula.");
+
+    var M = 0;
+    order.forEach(function (sym) { M += AW[sym] * counts[sym]; });
+    return { order: order, counts: counts, M: M };
+  }
+
+  /* 結晶水は「·nH2O と書かれた分」だけを数える。式の中の H と O から推定すると
+     Ca(OH)2 のような水酸化物まで結晶水を持つことになってしまう。 */
+  function hydrateWater(src) {
+    var s = String(src || "").replace(/[·•*]/g, "·");
+    var re = /·\s*(\d*(?:\.\d+)?)\s*H2O/g, m, n = 0;
+    while ((m = re.exec(s)) !== null) n += m[1] === "" ? 1 : parseFloat(m[1]);
+    return n;
+  }
+
+  /* ---- 表示用（下付き数字と中点） -------------------------------------- */
+  function prettyFormula(src) {
+    return String(src || "")
+      .replace(/[·•*]/g, "·")
+      .replace(/(\d+(?:\.\d+)?)/g, "<sub>$1</sub>")
+      .replace(/·<sub>(\d+)<\/sub>/g, "·$1");
+  }
+
+  GwCalc.mount("#calc", {
+
+    figure: "#calc-figure",
+    solveFor: ["Cn", "Cm"],
+
+    inputs: [
+      { id:"formula", type:"text", sym:"", label:"Chemical formula", short:"Formula",
+        value:"CaSO4·2H2O",
+        hint:"minerals, salts or ions — charges are entered separately",
+        presets:[
+          { label:"Calcite",  value:"CaCO3" },
+          { label:"Dolomite", value:"CaMg(CO3)2" },
+          { label:"Gypsum",   value:"CaSO4·2H2O" },
+          { label:"Halite",   value:"NaCl" },
+          { label:"Epsomite", value:"MgSO4·7H2O" },
+          { label:"Sulphate", value:"SO4" },
+          { label:"Bicarbonate", value:"HCO3" }
+        ] },
+
+      { id:"Cm", sym:"C", label:"Mass concentration", short:"Mass",
+        value:"172.164", min:0,
+        units:{ "mg/L":1e-3, "g/L":1, "µg/L":1e-6 } },
+
+      { id:"Cn", sym:"c", label:"Molar concentration", short:"Molar",
+        value:"1", min:0,
+        units:{ "mmol/L":1, "mol/L":1000, "µmol/L":1e-3 } },
+
+      { id:"z", sym:"z", label:"Charge per formula unit", short:"Charge",
+        value:"2", min:0, step:1,
+        hint:"equivalents released per mole; 2 for Ca²⁺ and SO₄²⁻" }
+    ],
+
+    // v.Cm は kg/m³（= g/L）、v.Cn は mol/m³（= mmol/L）で渡ってくる。
+    compute: function (v, target) {
+      var parsed, err = null;
+      try {
+        parsed = parseFormula(v.formula);
+      } catch (e) {
+        // 式が読めないときは全体を止める。分子量が無ければどの出力も意味を持たない。
+        return { err: e.message || "Invalid formula" };
+      }
+
+      var M = parsed.M;                       // g/mol
+      var Cm = v.Cm, Cn = v.Cn;               // g/L, mmol/L
+
+      if (target === "Cn") {
+        if (!isFinite(Cm)) return { M:M, parsed:parsed };
+        Cn = Cm * 1000 / M;                   // (mg/L) / (g/mol) = mmol/L
+      } else {
+        if (!isFinite(Cn)) return { M:M, parsed:parsed };
+        Cm = Cn * M / 1000;
+      }
+
+      // 電荷は当量系の2出力にしか効かない。欠けていても他は返す
+      // （ここで全体を止めると、電荷欄を編集している最中に分子量まで消える）。
+      var z = v.z;
+      var meq = isFinite(z) ? Cn * z : NaN;
+      var asCaCO3 = isFinite(meq) ? meq * EQ_CACO3 : NaN;
+      var eqMass = (isFinite(z) && z > 0) ? M / z : NaN;
+
+      // 結晶水の質量割合。無水鉱物では 0 になる。
+      var nH2O = hydrateWater(v.formula);
+      var wH2O = nH2O > 0 ? nH2O * (2 * AW.H + AW.O) / M * 100 : 0;
+
+      return {
+        M: M, Cm: Cm, Cn: Cn, meq: meq, asCaCO3: asCaCO3, eqMass: eqMass,
+        wH2O: wH2O, parsed: parsed, mgL: Cm * 1000
+      };
+    },
+
+    headline: {
+      Cn: { key:"Cn", sym:"c", label:"Molar concentration", unit:"mmol/L" },
+      Cm: { key:"Cm", sym:"C", label:"Mass concentration", unit:"mg/L", scale:1000 }
+    },
+
+    outputs: [
+      { key:"M",        sym:"M",   label:"Molar mass", unit:"g/mol", sig:5 },
+      { key:"meq",      sym:"",    label:"Milliequivalents", unit:"meq/L" },
+      { key:"asCaCO3",  sym:"",    label:"Expressed as calcium carbonate", unit:"mg/L as CaCO₃" },
+      { key:"eqMass",   sym:"M/z", label:"Equivalent mass", unit:"g/eq" },
+      { key:"wH2O",     sym:"",    label:"Water of crystallisation", unit:"wt %" }
+    ],
+
+    check: function (r) {
+      if (r.err) return GwCalc.crit(r.err);
+      if (!isFinite(r.mgL)) return GwCalc.warn("Enter a concentration.");
+      // mg/L と ppm が一致するのは溶液密度が 1.000 kg/L のあいだだけ。
+      if (r.mgL < 1000)
+        return GwCalc.ok("Fresh water — mg/L and ppm agree to better than 0.1 %.");
+      if (r.mgL < 35000)
+        return GwCalc.warn("Above 1 g/L the solution density leaves 1.000 kg/L: mg/L and ppm now differ by up to a few per cent.");
+      return GwCalc.crit("Brine range. Use molality (mol per kg of water); mg/L and mol/L are no longer interchangeable with ppm and molality.");
+    },
+
+    footnote:
+      '<p><span class="gw-key">Charge is yours to declare</span> The formula fixes the ' +
+      'molar mass, but not the charge — Fe²⁺ and Fe³⁺ are written the same way. The two ' +
+      'equivalent-based outputs follow the charge box, nothing else does.</p>',
+
+    onUpdate: function (r, v, root) {
+      var X0 = 40, FULL = 600;
+
+      /* --- 帯グラフ：式の質量組成 --- */
+      var order = r.parsed ? r.parsed.order : [];
+      var x = X0;
+      for (var i = 0; i < 6; i++) {
+        var rect = document.getElementById("seg" + i);
+        var lab = document.getElementById("lab" + i);
+        var sym = order[i];
+        var w = 0;
+        if (sym && r.parsed && isFinite(r.M) && r.M > 0) {
+          // 7番目以降の元素は最後の区画にまとめる（水質の式でまず起きないが、
+          // 区画から溢れた分を黙って捨てないため）。
+          var frac = 0;
+          if (i === 5 && order.length > 6) {
+            for (var k = 5; k < order.length; k++) frac += awMass(order[k]) / r.M;
+          } else {
+            frac = awMass(sym) / r.M;
+          }
+          w = frac * FULL;
+        }
+        if (rect) {
+          rect.setAttribute("x", x.toFixed(1));
+          rect.setAttribute("width", Math.max(w, 0).toFixed(1));
+        }
+        if (lab) {
+          var pct = w / FULL * 100;
+          // 文字が入りきる幅のときだけラベルを描く
+          lab.textContent = (w > 42) ? sym + " " + pct.toFixed(0) + "%" : "";
+          lab.setAttribute("x", (x + w / 2).toFixed(1));
+        }
+        x += w;
+      }
+
+      function awMass(sym) {
+        return (AW[sym] || 0) * (r.parsed.counts[sym] || 0);
+      }
+
+      var fname = document.getElementById("figname");
+      if (fname) {
+        fname.innerHTML = r.err ? "" :
+          prettyFormula(v.formula) + "  ·  M = " + GwCalc.fmt(r.M, 5) + " g/mol";
+      }
+
+      /* --- 元素ごとの濃度表 --- */
+      var box = document.getElementById("gw-comp");
+      if (!box) return;
+      if (r.err || !r.parsed || !isFinite(r.Cn)) { box.innerHTML = ""; return; }
+
+      // 表は DOM で組み立てる。文字列で table タグを書いて innerHTML に渡すと、
+      // Quarto の Lua フィルタが raw HTML ブロックの中身を表として解析しようとして
+      // 「Unable to parse table from raw html block」を毎回吐く（この節に
+      // タグ名を素の文字列で書かないのも同じ理由）。
+      function cell(tag, text, align) {
+        var n = document.createElement(tag);
+        n.textContent = text;
+        if (align) n.setAttribute("align", align);
+        return n;
+      }
+
+      box.innerHTML = "";
+      box.appendChild(cell("p", "What this concentration releases, element by element"));
+
+      var table = document.createElement("table");
+      var thead = document.createElement("thead");
+      var htr = document.createElement("tr");
+      ["Element", "Per formula unit", "Atomic weight", "mg/L", "mmol/L"]
+        .forEach(function (h) { htr.appendChild(cell("th", h)); });
+      thead.appendChild(htr);
+      table.appendChild(thead);
+
+      var tbody = document.createElement("tbody");
+      r.parsed.order.forEach(function (sym) {
+        var n = r.parsed.counts[sym];
+        var mmol = r.Cn * n;                       // mmol/L
+        var mg = mmol * AW[sym];                   // mg/L
+        var tr = document.createElement("tr");
+        tr.appendChild(cell("td", sym));
+        tr.appendChild(cell("td", String(n), "right"));
+        tr.appendChild(cell("td", GwCalc.fmt(AW[sym], 5), "right"));
+        tr.appendChild(cell("td", GwCalc.fmt(mg, 4), "right"));
+        tr.appendChild(cell("td", GwCalc.fmt(mmol, 4), "right"));
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      box.appendChild(table);
+    }
+  });
+
+});
+</script>
+```

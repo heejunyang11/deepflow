@@ -1,0 +1,465 @@
+---
+title: "Darcy's Law Calculator"
+subtitle: "Compute discharge, specific discharge, and seepage velocity through a porous medium — and check whether Darcy's law is still valid at your flow rate."
+description: "Free Darcy's law calculator with SI and US units. Solves for discharge, hydraulic conductivity, or head loss, reports Darcy flux and seepage velocity, and flags non-Darcian flow via the pore Reynolds number."
+date: 2026-08-10
+lang: en
+categories: [Flow]
+number-sections: false
+toc-title: "On this page"
+format:
+  html:
+    html-math-method: katex
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="/calc/assets/gwcalc.css" />
+          <link rel="stylesheet" href="/calc/assets/gwcalc-page.css" />
+          <script src="/calc/assets/gwcalc.js" defer></script>
+---
+
+::: {.gw-attest}
+[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
+[SI and US customary units]{.gw-chip}
+[Reynolds-number validity check]{.gw-chip}
+[Sources: Darcy 1856 · Freeze & Cherry 1979]{.gw-chip}
+:::
+
+```{=html}
+<div id="calc"></div>
+
+<template id="calc-figure">
+  <figure>
+    <svg viewBox="0 0 680 320" role="img" aria-labelledby="rigTitle rigDesc">
+      <title id="rigTitle">Darcy's sand column apparatus</title>
+      <desc id="rigDesc">A horizontal sand-filled cylinder with a manometer standing at each end. The water levels in the two manometers differ by the head drop, which drives flow from left to right.</desc>
+
+      <defs>
+        <pattern id="sandgrain" width="9" height="9" patternUnits="userSpaceOnUse">
+          <rect class="gw-sand-bg" width="9" height="9"></rect>
+          <circle class="gw-sand-grain" cx="2.0" cy="2.5" r="1.25"></circle>
+          <circle class="gw-sand-grain" cx="6.6" cy="6.2" r="1.05"></circle>
+          <circle class="gw-sand-grain" cx="7.2" cy="1.6" r="0.7"></circle>
+          <circle class="gw-sand-grain" cx="3.4" cy="7.0" r="0.6"></circle>
+        </pattern>
+        <marker id="arrowFlow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path class="gw-flow-head" d="M0,0.8 L8,4 L0,7.2 Z"></path>
+        </marker>
+        <marker id="arrowDim" markerWidth="9" markerHeight="8" refX="8.4" refY="4" orient="auto-start-reverse">
+          <path class="gw-dim-head" d="M0,0.6 L9,4 L0,7.4 Z"></path>
+        </marker>
+      </defs>
+
+      <!-- 基準面 -->
+      <line class="gw-datum" x1="56" y1="296" x2="624" y2="296"></line>
+      <text class="gw-tx-sm" x="56" y="311">datum</text>
+
+      <!-- マノメーター管：水 → 水面 → ガラス管の順に重ねる -->
+      <rect class="gw-water" id="wl1" data-animate x="179.5" y="70" width="23" height="128"></rect>
+      <rect class="gw-water" id="wl2" data-animate x="437.5" y="130" width="23" height="68"></rect>
+      <line class="gw-waterline" id="ws1" x1="179.5" y1="70" x2="202.5" y2="70"></line>
+      <line class="gw-waterline" id="ws2" x1="437.5" y1="130" x2="460.5" y2="130"></line>
+      <rect class="gw-glass" x="178" y="36" width="26" height="162"></rect>
+      <rect class="gw-glass" x="436" y="36" width="26" height="162"></rect>
+
+      <!-- 貯水槽 -->
+      <rect class="gw-water" x="72" y="198" width="88" height="64"></rect>
+      <rect class="gw-water" x="480" y="198" width="88" height="64"></rect>
+      <rect class="gw-vessel" x="72" y="198" width="88" height="64"></rect>
+      <rect class="gw-vessel" x="480" y="198" width="88" height="64"></rect>
+
+      <!-- 砂柱。円筒として描き、奥の端面を楕円で示す -->
+      <rect x="160" y="198" width="320" height="64" fill="url(#sandgrain)"></rect>
+      <ellipse class="gw-vessel" cx="480" cy="230" rx="11" ry="32"></ellipse>
+      <line class="gw-vessel" x1="160" y1="198" x2="480" y2="198"></line>
+      <line class="gw-vessel" x1="160" y1="262" x2="480" y2="262"></line>
+
+      <!-- 流れ -->
+      <line class="gw-flow" x1="214" y1="214" x2="424" y2="214" marker-end="url(#arrowFlow)"></line>
+      <line class="gw-flow" x1="214" y1="230" x2="424" y2="230" marker-end="url(#arrowFlow)"></line>
+      <line class="gw-flow" x1="214" y1="246" x2="424" y2="246" marker-end="url(#arrowFlow)"></line>
+      <text class="gw-tx gw-tx-brass" x="320" y="192" text-anchor="middle">Q</text>
+
+      <!-- 手前の端面がそのまま断面積 A。流れより前面に置いて強調する -->
+      <ellipse cx="160" cy="230" rx="11" ry="32" fill="url(#sandgrain)"></ellipse>
+      <ellipse class="gw-area" cx="160" cy="230" rx="11" ry="32"></ellipse>
+      <line class="gw-lead" x1="151" y1="208" x2="124" y2="181"></line>
+      <text class="gw-tx gw-tx-area" id="aLabel" x="120" y="177" text-anchor="end">A</text>
+
+      <!-- 水頭差の寸法 -->
+      <line class="gw-dim-aux" id="auxTop" x1="204" y1="70" x2="610" y2="70"></line>
+      <line class="gw-dim-aux" id="auxBot" x1="462" y1="130" x2="610" y2="130"></line>
+      <line class="gw-dim" id="dimBar" x1="602" y1="70" x2="602" y2="130"
+            marker-start="url(#arrowDim)" marker-end="url(#arrowDim)"></line>
+      <text class="gw-tx" id="dhLabel" x="594" y="104" text-anchor="end">Δh</text>
+
+      <!-- 測定区間の寸法 -->
+      <line class="gw-dim-aux" x1="191" y1="262" x2="191" y2="290"></line>
+      <line class="gw-dim-aux" x1="449" y1="262" x2="449" y2="290"></line>
+      <line class="gw-dim" x1="191" y1="284" x2="449" y2="284"
+            marker-start="url(#arrowDim)" marker-end="url(#arrowDim)"></line>
+      <text class="gw-tx" id="lLabel" x="320" y="278" text-anchor="middle">L</text>
+    </svg>
+    <figcaption>Darcy's 1856 apparatus: water is driven through a sand column by the head difference Δ<em>h</em> measured between two manometers set <em>L</em> apart. The ringed end face is the cross-sectional area <em>A</em> — the <em>gross</em> area of the cylinder, solid grains included, not the pore space alone. The figure tracks your inputs.</figcaption>
+  </figure>
+</template>
+```
+
+## What to enter for what you want
+
+Every derived quantity is computed on every keystroke, so **Solve for** does not
+decide what you can see — it only decides which variable is treated as the unknown.
+Velocity, travel time, and the Reynolds number are always there.
+
+| To find | Enter | Read it in |
+|---|---|---|
+| **Discharge through a section** | *K*, Δ*h*, *L*, *A* | Headline, plus L/min and gal/min |
+| **How fast the water actually moves** | *K*, Δ*h*, *L*, *n* | Seepage velocity *v* |
+| **When a tracer arrives** | *K*, Δ*h*, *L*, *n* | Travel time over *L* |
+| **Conductivity from a measured flow** | *Q*, Δ*h*, *L*, *A* — set *Solve for* to *K* | Headline |
+| **The head loss a flow implies** | *Q*, *K*, *L*, *A* — set *Solve for* to Δ*h* | Headline |
+
+Two inputs are narrower than they look. Porosity *n* affects **only** the seepage
+velocity and the travel time — it has no part in the discharge, because Darcy's law
+is written on the gross area. Grain size *d*₁₀ feeds **only** the Reynolds check.
+Leaving either blank stops just those quantities, not the rest.
+
+## What Darcy's law says
+
+In 1856 Henri Darcy, the municipal engineer responsible for the water supply of Dijon, ran water through columns of sand and found that the discharge was proportional to the head loss and inversely proportional to the length of the column. That single empirical result underpins essentially all of quantitative hydrogeology.
+
+Written as a differential, the law is
+
+::: {.gw-eq}
+$$Q = -KA\,\frac{dh}{dl}$$
+:::
+
+### Where the minus sign goes
+
+The minus sign is not decoration, and it does not simply disappear. Hydraulic head *decreases* in the direction water travels, so the derivative $dh/dl$ is itself negative; the minus in front of it is what makes the discharge come out positive. Together they state the physics: water runs downhill in head.
+
+The calculator, though, does not ask for a derivative. It asks for a head *drop* measured across a column. Over a finite length $L$, with head $h_1$ at the upstream manometer and $h_2$ at the downstream one, the derivative becomes a difference:
+
+::: {.gw-eq}
+$$\frac{dh}{dl} \;\approx\; \frac{h_2 - h_1}{L} \;=\; -\frac{\Delta h}{L}
+\qquad\text{where}\qquad \Delta h \equiv h_1 - h_2 \;>\; 0$$
+:::
+
+Defining Δ*h* as a positive drop is what moves the sign. That definition already contains the minus that $dh/dl$ carried, so on substitution the two cancel:
+
+::: {.gw-eq}
+$$Q \;=\; -KA\left(-\frac{\Delta h}{L}\right) \;=\; KA\,\frac{\Delta h}{L}$$
+:::
+
+This is the form the calculator evaluates. The sign was never dropped — it was absorbed into the definition of Δ*h*, which is why entering a positive head difference returns a positive discharge.
+
+### The variables
+
+| Symbol | Quantity | SI unit | Note |
+|---|---|---|---|
+| *Q* | Discharge (volumetric flow rate) | m³/s | Total volume of water crossing area *A* per unit time |
+| *K* | Hydraulic conductivity | m/s | Property of *both* the medium and the fluid |
+| *A* | Cross-sectional area | m² | Gross area — solids included, not just the pores |
+| *i* | Hydraulic gradient, Δ*h*/*L* | – | Dimensionless |
+| *q* | Specific discharge (Darcy flux), *Q*/*A* | m/s | Has units of velocity but is *not* a velocity |
+| *v* | Average linear (seepage) velocity, *q*/*n* | m/s | What a tracer particle actually travels at |
+| *n* | Porosity (effective) | – | Fraction of the volume that conducts flow |
+
+### Why *q* and *v* are not the same number
+
+This is the single most common error in applied work. The Darcy flux *q* spreads the discharge over the *whole* cross-section, as though the solid grains were not there. Water can only move through the pores, so the real velocity is larger by a factor of 1/*n* — typically three to four times. Use *q* for flow budgets; use *v* for travel time and contaminant arrival.
+
+## Typical hydraulic conductivity values
+
+Ranges after Freeze & Cherry (1979, Table 2.2). Note the spread: fourteen orders of magnitude separate gravel from unfractured clay, which is why *K* is almost always the dominant uncertainty in a groundwater calculation. **Click any row to load its representative value into the calculator.**
+
+```{=html}
+<table id="ktable">
+  <thead>
+    <tr><th>Material</th><th>K (m/s)</th><th>K (m/day)</th><th>Character</th></tr>
+  </thead>
+  <tbody>
+    <tr data-k="1e-2"><td>Gravel</td><td align="right">10⁻³ – 10⁻¹</td><td align="right">86 – 8 600</td><td>Highly productive aquifer</td></tr>
+    <tr data-k="1e-3"><td>Coarse sand</td><td align="right">10⁻⁴ – 10⁻²</td><td align="right">8.6 – 860</td><td>Productive aquifer</td></tr>
+    <tr data-k="1e-4"><td>Medium sand</td><td align="right">10⁻⁵ – 10⁻³</td><td align="right">0.86 – 86</td><td>Good aquifer</td></tr>
+    <tr data-k="1e-5"><td>Fine sand</td><td align="right">10⁻⁶ – 10⁻⁴</td><td align="right">0.086 – 8.6</td><td>Modest yield</td></tr>
+    <tr data-k="1e-7"><td>Silt, loess</td><td align="right">10⁻⁹ – 10⁻⁵</td><td align="right">10⁻⁴ – 0.86</td><td>Leaky confining bed</td></tr>
+    <tr data-k="1e-9"><td>Glacial till</td><td align="right">10⁻¹² – 10⁻⁶</td><td align="right">10⁻⁷ – 0.086</td><td>Aquitard</td></tr>
+    <tr data-k="1e-10"><td>Marine clay (unweathered)</td><td align="right">10⁻¹³ – 10⁻⁹</td><td align="right">10⁻⁸ – 10⁻⁴</td><td>Aquiclude</td></tr>
+    <tr data-k="1e-3"><td>Karst limestone</td><td align="right">10⁻⁶ – 10⁻²</td><td align="right">0.086 – 860</td><td>Conduit flow — Darcy may not hold</td></tr>
+  </tbody>
+</table>
+```
+
+## When Darcy's law breaks down
+
+Darcy's law is a linear approximation valid while flow stays laminar. The standard diagnostic is a pore-scale Reynolds number built on the Darcy flux and a representative grain diameter:
+
+::: {.gw-eq}
+$$Re = \frac{\rho\,q\,d}{\mu}$$
+:::
+
+with ρ = 1000 kg/m³ and μ = 1.00×10⁻³ Pa·s for water at 20 °C. The law holds comfortably for *Re* below about 1, and departures become serious somewhere between 1 and 10 (Bear, 1972). Above that the relationship between gradient and flux turns non-linear and the Forchheimer equation is the appropriate replacement.
+
+In practice you cross this threshold near pumping-well screens, in coarse gravel packs, and in karst conduits — which is precisely where people most often apply Darcy's law without checking. The calculator flags this for you.
+
+## Worked example
+
+::: {.gw-worked}
+**Problem.** A confined sand aquifer 2.0 m thick and 500 m wide has a hydraulic conductivity of 3.0×10⁻⁴ m/s. Two wells 800 m apart along the flow direction show heads of 41.2 m and 39.6 m. Find the discharge through the aquifer cross-section and the time for a tracer to travel between the wells. Effective porosity is 0.28.
+
+1. Gradient: `i = (41.2 − 39.6) / 800 = 1.6 / 800 = 2.0×10⁻³`
+2. Area: `A = 2.0 m × 500 m = 1000 m²`
+3. Discharge: `Q = K A i = 3.0×10⁻⁴ × 1000 × 2.0×10⁻³ = 6.0×10⁻⁴ m³/s ≈ 51.8 m³/day`
+4. Darcy flux: `q = K i = 6.0×10⁻⁷ m/s`
+5. Seepage velocity: `v = q / n = 6.0×10⁻⁷ / 0.28 = 2.14×10⁻⁶ m/s ≈ 0.185 m/day`
+6. Travel time: `t = 800 / 0.185 ≈ 4 320 days ≈ 11.8 years`
+
+Had we used the Darcy flux instead of the seepage velocity, the answer would have been 33 years — an error of a factor of 3.6, entirely from forgetting to divide by porosity.
+:::
+
+## Frequently asked
+
+### Is hydraulic conductivity the same as permeability?
+
+No. Intrinsic permeability *k* (units m², or darcy) is a property of the porous medium alone. Hydraulic conductivity folds in the fluid: *K* = *k*ρ*g*/μ. Warm water is less viscous, so the same sand has a higher *K* at 30 °C than at 5 °C — roughly a factor of two across that range. This matters for geothermal and for seasonal recharge studies.
+
+### Does Darcy's law work in unsaturated soil?
+
+In modified form. Conductivity becomes a steep function of water content, *K*(θ), and the head includes matric suction. That extension is the Richards equation, and it is markedly harder to solve because the governing equation is non-linear.
+
+### What area do I use for a well?
+
+Flow into a well is radial, not linear, so the area changes with distance from the well. Integrating Darcy's law in radial coordinates gives the Thiem equation for steady flow, and the Theis solution for transient flow.
+
+## Related calculators
+
+::: {.gw-related}
+- [**Theis solution**<span>Transient drawdown from a pumping well</span>](../theis-solution/)
+- [**Reference evapotranspiration**<span>How much of the rainfall never becomes recharge</span>](../reference-et/)
+- [**Charge balance error**<span>Whether a water analysis is internally consistent</span>](../charge-balance/)
+:::
+
+## Read further
+
+The long-form article behind this tool is
+[Darcy's Law & Hydraulic Head Explained (with FloPy / MODFLOW)](/posts/groundwater/groundwater-sci03/index-en),
+part of the Groundwater Science series. It derives the law from the sand-column
+experiment and then solves the same problem numerically in MODFLOW.
+
+## References
+
+::: {.gw-refs}
+1. Darcy, H. (1856) *Les Fontaines Publiques de la Ville de Dijon.* Victor Dalmont, Paris.
+2. Bear, J. (1972) *Dynamics of Fluids in Porous Media.* Elsevier, New York.
+3. Freeze, R.A. & Cherry, J.A. (1979) *Groundwater.* Prentice-Hall, Englewood Cliffs, NJ. Table 2.2.
+4. Fetter, C.W. (2001) *Applied Hydrogeology*, 4th ed. Prentice-Hall, Upper Saddle River, NJ.
+:::
+
+::: {.gw-author}
+[HY]{.gw-badge}
+
+::: {}
+**Reviewed by Heejun Yang, Ph.D.**
+
+Hydrogeologist working on groundwater time-series analysis and water–rock interaction modelling. Equations, unit conversions, and reference values on this page were checked against the primary sources listed above.
+:::
+:::
+
+```{=html}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  var RHO = 1000, MU = 1.0e-3;   // water at 20 °C
+
+  var api = GwCalc.mount("#calc", {
+
+    figure: "#calc-figure",
+
+    solveFor: ["Q", "K", "dh"],
+
+    inputs: [
+      { id:"K", sym:"K", label:"Hydraulic conductivity", short:"Conductivity", value:"1e-4",
+        units:{ "m/s":1, "m/day":1.157407e-5, "cm/s":0.01, "ft/day":3.527778e-6 },
+        presetUnit:"m/s",
+        presets:[
+          { label:"Gravel",      value:1e-2  },
+          { label:"Coarse sand", value:1e-3  },
+          { label:"Medium sand", value:1e-4  },
+          { label:"Fine sand",   value:1e-5  },
+          { label:"Silt",        value:1e-7  },
+          { label:"Till",        value:1e-9  },
+          { label:"Clay",        value:1e-10 }
+        ] },
+
+      { id:"dh", sym:"Δh", label:"Head difference", short:"Head drop", value:"0.5",
+        min:0, step:0.1,
+        units:{ "m":1, "cm":0.01, "ft":0.3048 } },
+
+      { id:"L", sym:"L", label:"Flow path length", value:"1.0",
+        min:0.01, step:0.1,
+        units:{ "m":1, "cm":0.01, "ft":0.3048 } },
+
+      { id:"A", sym:"A", label:"Cross-sectional area", value:"0.01",
+        min:0.0001, step:0.01,
+        units:{ "m²":1, "cm²":0.0001, "ft²":0.09290304 } },
+
+      { id:"Q", sym:"Q", label:"Discharge", value:"5e-7",
+        units:{ "m³/s":1, "m³/day":1.157407e-5, "L/s":1e-6, "US gal/min":6.309020e-5 } },
+
+      { id:"n", sym:"n", label:"Porosity", hint:"for seepage velocity", value:"0.30",
+        min:0.01, max:0.99, step:0.01 },
+
+      { id:"d", sym:"d₁₀", label:"Grain size", hint:"for Reynolds check", value:"0.5",
+        min:0.001, step:0.1,
+        units:{ "mm":0.001, "m":1 } }
+    ],
+
+    compute: function (v, target) {
+      var A = v.A, L = v.L, n = v.n, d = v.d;
+      // L と A は全体に効くので欠けたら計算しない。n と d は一部の量にしか
+      // 効かないため、ここで止めない（止めると編集中に全出力が消える）。
+      if (!(L > 0) || !(A > 0)) return {};
+
+      var K, dh, Q, i;
+      if (target === "Q") {
+        K = v.K; dh = v.dh; i = dh / L; Q = K * A * i;
+      } else if (target === "K") {
+        Q = v.Q; dh = v.dh; i = dh / L;
+        K = (i !== 0) ? Q / (A * i) : NaN;
+      } else {
+        Q = v.Q; K = v.K;
+        i = (K > 0) ? Q / (K * A) : NaN;
+        dh = i * L;
+      }
+      if (!isFinite(Q) || !isFinite(K) || !isFinite(i)) return {};
+
+      var q   = Q / A;
+      var vel = (n > 0 && n < 1) ? q / n : NaN;              // 有効間隙率が要る
+      var Re  = (d > 0) ? (RHO * Math.abs(q) * d) / MU : NaN; // 粒径が要る
+      var t   = (isFinite(vel) && vel !== 0) ? (L / Math.abs(vel)) / 86400 : NaN;
+
+      return { Q:Q, K:K, dh:dh, L:L, A:A, n:n, i:i, q:q, v:vel, Re:Re, t:t };
+    },
+
+    headline: {
+      Q:  { key:"Q",  sym:"Q",  label:"Discharge",             unit:"m³/day", scale:86400 },
+      K:  { key:"K",  sym:"K",  label:"Hydraulic conductivity", unit:"m/s" },
+      dh: { key:"dh", sym:"Δh", label:"Head difference",        unit:"m" }
+    },
+
+    outputs: [
+      { key:"i",  sym:"i",  label:"Hydraulic gradient" },
+      // q と v の取り違えが実務で最も多い誤りなので、見かけ／実際をラベルに出す。
+      { key:"q",  sym:"q",  label:"Darcy flux",           unit:"m/s",   note:"apparent" },
+      { key:"q",  sym:"q",  label:"Darcy flux",           unit:"m/day", scale:86400 },
+      { key:"v",  sym:"v",  label:"Seepage velocity",     unit:"m/day", scale:86400, note:"actual · q/n" },
+      // Q の m³/day と K の m/s はここに置かない。前者は見出しと重複し、後者は
+      // 入力欄に出ている。解いていない側の量は入力欄で単位を選べる。
+      { key:"Q",  sym:"Q",  label:"Discharge",            unit:"L/min",  scale:60000 },
+      { key:"Q",  sym:"Q",  label:"Discharge",            unit:"US gal/min", scale:15850.323 },
+      { key:"t",  sym:"t",  label:"Travel time over L",   unit:"days" },
+      { key:"Re", sym:"Re", label:"Reynolds number" }
+    ],
+
+    check: function (r) {
+      if (!isFinite(r.Re)) {
+        return GwCalc.warn("Enter a grain size to evaluate the Reynolds criterion.");
+      }
+      if (Math.abs(r.i) > 1 && r.Re < 1) {
+        return GwCalc.warn(
+          "Re = " + GwCalc.fmt(r.Re, 2) + " is fine, but a gradient of " +
+          GwCalc.fmt(r.i, 2) + " is steeper than 1:1 — check that Δh and L were entered in the intended units.");
+      }
+      if (r.Re < 1) {
+        return GwCalc.ok(
+          "Darcy's law is valid. Re = " + GwCalc.fmt(r.Re, 2) +
+          ", comfortably in the laminar regime (Re < 1).");
+      }
+      if (r.Re < 10) {
+        return GwCalc.warn(
+          "Borderline. Re = " + GwCalc.fmt(r.Re, 2) +
+          " falls in the transition zone (1 < Re < 10) where the gradient–flux relationship begins to curve. " +
+          "Treat the result as an upper bound on discharge.");
+      }
+      return GwCalc.crit(
+        "Darcy's law does not apply. Re = " + GwCalc.fmt(r.Re, 2) +
+        " indicates inertial (non-Darcian) flow; use the Forchheimer equation. " +
+        "This regime is typical of gravel packs and karst conduits.");
+    },
+
+    footnote:
+      '<p><span class="gw-key">Darcy flux <em>q</em></span> divides the discharge by the ' +
+      '<em>whole</em> cross-section, solid grains included. It has units of velocity, but no ' +
+      'water actually moves at that speed. Use it for flow budgets and for the Reynolds check.</p>' +
+      '<p><span class="gw-key">Seepage velocity <em>v</em></span> = <em>q</em>/<em>n</em>. Water ' +
+      'can only travel through the pores, so a tracer moves faster than <em>q</em> by 1/<em>n</em> ' +
+      '— typically three to four times. Use it for travel time and contaminant arrival.</p>' +
+      '<p>Substituting one for the other is the most common error in applied work. In the worked ' +
+      'example below it turns 11.8 years into 33.</p>',
+
+    onUpdate: function (r) {
+      drawRig(Math.abs(r.i), r.dh, r.L, r.A);
+      highlightK(r.K);
+    }
+  });
+
+  /* ---- 装置図を入力に追従させる ---- */
+
+  var TOP_Y = 70, BOT_Y = 198, MAX_DROP = 116;
+
+  function drawRig(i, dh, L, A) {
+    if (!isFinite(i)) return;
+    var drop = Math.max(5, Math.min(MAX_DROP, i * 220));
+    var y2 = TOP_Y + drop;
+    var $ = function (id) { return document.getElementById(id); };
+
+    // 左（上流）の水位は固定。右が Δh だけ下がる。
+    $("wl1").setAttribute("y", TOP_Y);
+    $("wl1").setAttribute("height", BOT_Y - TOP_Y);
+    $("ws1").setAttribute("y1", TOP_Y);
+    $("ws1").setAttribute("y2", TOP_Y);
+
+    $("wl2").setAttribute("y", y2);
+    $("wl2").setAttribute("height", Math.max(2, BOT_Y - y2));
+    $("ws2").setAttribute("y1", y2);
+    $("ws2").setAttribute("y2", y2);
+
+    // 寸法の補助線と矢印
+    $("auxTop").setAttribute("y1", TOP_Y);
+    $("auxTop").setAttribute("y2", TOP_Y);
+    $("auxBot").setAttribute("y1", y2);
+    $("auxBot").setAttribute("y2", y2);
+    $("dimBar").setAttribute("y1", TOP_Y);
+    $("dimBar").setAttribute("y2", y2);
+    $("dhLabel").setAttribute("y", (TOP_Y + y2) / 2 + 5);
+
+    $("dhLabel").textContent = "Δh = " + GwCalc.fmt(dh, 2) + " m";
+    $("lLabel").textContent  = "L = "  + GwCalc.fmt(L, 2)  + " m";
+    $("aLabel").textContent  = "A = "  + GwCalc.fmt(A, 2)  + " m²";
+  }
+
+  /* ---- K 値表：現在の K に最も近い行を強調し、クリックで読み込む ---- */
+
+  var rows = document.querySelectorAll("#ktable tbody tr[data-k]");
+
+  function highlightK(K) {
+    var best = null, bestDist = Infinity;
+    rows.forEach(function (tr) {
+      tr.classList.remove("gw-hot");
+      var dist = Math.abs(Math.log10(K) - Math.log10(parseFloat(tr.dataset.k)));
+      if (isFinite(dist) && dist < bestDist) { bestDist = dist; best = tr; }
+    });
+    if (best && bestDist < 1.0) best.classList.add("gw-hot");
+  }
+
+  rows.forEach(function (tr) {
+    tr.title = "Load K = " + tr.dataset.k + " m/s into the calculator";
+    tr.addEventListener("click", function () {
+      api.fields.K.unit.value = "1";           // m/s
+      api.fields.K.input.value = tr.dataset.k;
+      api.setTarget("Q");                       // K を入力として使う状態に戻す
+    });
+  });
+});
+</script>
+```

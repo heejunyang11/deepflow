@@ -436,6 +436,15 @@ Next time, we will explore the places where groundwater emerges back to the surf
 
 ---
 
+::: {.callout-tip title="Run this equation in your browser"}
+The [Theis Solution Calculator](/calc/theis-solution/) evaluates the well function
+$W(u)$ and solves for drawdown, transmissivity, or pumping rate. It also reports
+whether the Cooper–Jacob straight-line approximation is admissible at your radius
+and elapsed time, rather than leaving you to check $u$ by hand.
+:::
+
+---
+
 ## References {#sec-references}
 
 ::: {#refs}

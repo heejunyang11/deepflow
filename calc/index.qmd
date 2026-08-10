@@ -1,0 +1,85 @@
+---
+title: "Groundwater Calculators"
+pagetitle: "Groundwater Calculators — Darcy's Law, Theis Solution, Charge Balance | DeepFlows"
+subtitle: "Browser-based tools for groundwater flow and water chemistry. Every calculator shows the equation it uses, cites where that equation came from, and tells you when it stops being valid."
+description: "Free groundwater calculators: Darcy's law, the Theis solution for pumping tests, and charge balance error for water analyses. Each tool states its equation, its source, and its limits of validity."
+lang: en
+number-sections: false
+toc: false
+listing:
+  id: all-tools
+  contents:
+    - "*/index.qmd"
+  type: grid
+  grid-columns: 3
+  sort: "title asc"
+  fields: [title, description, categories]
+  categories: true
+  filter-ui: false
+  sort-ui: false
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="/calc/assets/gwcalc-page.css" />
+---
+
+::: {.gw-lede}
+Most engineering calculators give you a number and nothing else — no equation, no
+source, and no warning when you have pushed a formula past the range it was
+derived for. Darcy's law quietly stops describing reality above a pore Reynolds
+number of about 1, and nothing on the web tells you when you have crossed it.
+These tools do.
+
+Nothing is uploaded. Every calculation runs in your browser.
+:::
+
+## All tools
+
+::: {#all-tools}
+:::
+
+## Why another calculator
+
+::: {.gw-lede}
+Three things are different here, and each of them exists because getting them
+wrong is common in practice.
+
+**Every tool states where it stops working.** A formula has a domain of validity,
+and outside it the answer is not merely imprecise — it is wrong. The Darcy
+calculator computes a pore Reynolds number and tells you which regime you are in.
+The Theis calculator reports whether the Cooper–Jacob approximation may be used at
+your radius and time. Tools that follow will do the same for their own limits.
+
+**Every equation is sourced.** Not "as found in the literature", but the actual
+paper or textbook, with the table number where a reference value came from. You
+should be able to check the work.
+
+**Quantities that are easy to confuse are shown side by side.** Darcy flux and
+seepage velocity differ by a factor of 1/*n*; using one where the other belongs
+is the most frequent error in contaminant travel-time work. Both appear in the
+output, always.
+:::
+
+## The articles behind the tools
+
+::: {.gw-lede}
+These calculators are the working end of the writing on this site. The
+[Groundwater Science series](/blog-en) derives the equations and then solves the
+same problems numerically with MODFLOW, FloPy and PHREEQC — the pumping test the
+Theis calculator evaluates at a point is fitted to a full drawdown curve in the
+series, and the water analysis this charge-balance tool validates is the input a
+speciation run begins with.
+:::
+
+::: {.gw-author}
+[HY]{.gw-badge}
+
+::: {}
+**Built and maintained by Heejun Yang, Ph.D.**
+
+Hydrogeologist working on groundwater time-series analysis and water–rock
+interaction modelling. Every tool here is checked against a worked example from
+the literature before it is published.
+:::
+:::

@@ -376,6 +376,16 @@ While thermodynamically favored, dolomite rarely precipitates directly from mode
 
 ------------------------------------------------------------------------
 
+::: {.callout-tip title="Check the analysis before it goes into SOLUTION"}
+Before handing a water analysis to PHREEQC, confirm that the cations and anions
+balance. An analysis that does not balance passes its error on to every saturation
+index computed downstream. The
+[Charge Balance Error Calculator](/calc/charge-balance/) converts mg/L to meq/L and
+reports the balance error against the ±5% criterion.
+:::
+
+---
+
 ## Next Time: Mixing and EQUILIBRIUM_PHASES
 
 In the next tutorial, we will combine **Mixing** (merging two solutions) and **EQUILIBRIUM_PHASES** (calculating equilibrium with minerals). We will investigate what happens when gypsum and anhydrite are added to pure water as temperature increases from 25°C to 75°C—a fascinating example of how stability can flip between two minerals.

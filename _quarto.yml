@@ -4,6 +4,7 @@ project:
   post-render: python fix_sitemap.py
   resources:
     - "apps/"
+    - "calc/assets/"   # 計算機の共通ライブラリ（gwcalc.js / .css）。calc/ 配下のページだけが読む
     - "_headers"
     - "ads.txt"
 
@@ -32,6 +33,8 @@ website:
         text: Series  
       - href: note.qmd
         text: Field Notes
+      - href: calc/index.qmd
+        text: Calc
       - href: about.qmd
         text: About
       - href: contact.qmd
