@@ -4,12 +4,20 @@ Quarto post-render フック。
 1) sitemap.xml のクリーンURL化・重複排除・404ページの除外
 2) 全HTMLへ canonical / og:url を注入（重複コンテンツ対策）
 3) alt 属性の無い <img> に alt="" を補完（装飾画像として明示）
+4) href / src の区切り文字を / に統一（Windows 由来の \\ を潰す）
 """
 import os
 import re
 
 BASE = "https://deepflows.net"
 SITE = "_site"
+
+# href="../..\posts/..." のように、Quarto が Windows 上で相対パスを組み立てると
+# 区切りにバックスラッシュが混ざる。ブラウザは http(s) URL のパス内の \ を /
+# として解釈する（WHATWG URL 仕様）ので実害は出ないが、出力としては正しくない。
+# 外部URL（scheme 付き）とページ内アンカーには触れない。
+ATTR_WITH_BACKSLASH = re.compile(r'\b(href|src)="([^"]*\\[^"]*)"')
+HAS_SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.\-]*:")
 
 
 # ----------------------------------------------------------------------
@@ -71,8 +79,23 @@ def iter_html():
                 yield os.path.join(root, fn)
 
 
+def normalize_separators(html):
+    """href / src の中のバックスラッシュを / に直す。置換した数を返す。"""
+    n = 0
+
+    def repl(m):
+        nonlocal n
+        attr, val = m.group(1), m.group(2)
+        if HAS_SCHEME.match(val) or val.startswith("#"):
+            return m.group(0)
+        n += 1
+        return '%s="%s"' % (attr, val.replace("\\", "/"))
+
+    return ATTR_WITH_BACKSLASH.sub(repl, html), n
+
+
 def inject_canonical_and_alt():
-    n_canon = n_ogurl = n_alt = 0
+    n_canon = n_ogurl = n_alt = n_sep = 0
     for fp in iter_html():
         rel = os.path.relpath(fp, SITE).replace("\\", "/")
         with open(fp, "r", encoding="utf-8") as f:
@@ -103,11 +126,17 @@ def inject_canonical_and_alt():
 
         html = re.sub(r"<img\b[^>]*>", add_alt, html)
 
+        # 区切り文字の統一は最後に行う（上で注入した canonical / og:url は
+        # 絶対URLなので対象外だが、順序を固定しておくほうが読みやすい）。
+        html, k = normalize_separators(html)
+        n_sep += k
+
         if html != orig:
             with open(fp, "w", encoding="utf-8") as f:
                 f.write(html)
 
     print(f"SEO: canonical {n_canon}件 / og:url {n_ogurl}件 を注入、alt を {n_alt}件 補完しました。")
+    print(f"SEO: href/src の区切りを {n_sep}件 / に統一しました。")
 
 
 if __name__ == "__main__":

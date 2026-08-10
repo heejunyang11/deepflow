@@ -176,7 +176,9 @@ TODO 公開済みのツールだけを並べる。リンク切れを作らない
 ## Read further
 
 TODO このツールの背景を書いた DeepFlows の記事へ 1 本だけリンクする。
-英語記事なので URL は必ず /index-en で終える。
+書き方は `](../../posts/groundwater/groundwater-sciXX/index-en.qmd)` の .qmd 直リンク。
+拡張子なしの絶対パス（/posts/...）で書くと**ローカルプレビューで 404 になる**。
+英語記事なので必ず index-en を指すこと（index.qmd だと日本語版へ飛ぶ）。
 
 ## References
 

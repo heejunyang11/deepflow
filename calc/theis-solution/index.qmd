@@ -254,7 +254,7 @@ the aquifer is not confined.
 
 ## Read further
 
-[Pumping Tests & the Theis Equation: Measuring Aquifer Properties in Python](/posts/groundwater/groundwater-sci04/index-en)
+[Pumping Tests & the Theis Equation: Measuring Aquifer Properties in Python](../../posts/groundwater/groundwater-sci04/index-en.qmd)
 works through a full pumping test in the Groundwater Science series — fitting the
 type curve to real drawdown data rather than evaluating the solution at a single
 point, which is what this calculator does.

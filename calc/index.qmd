@@ -1,8 +1,8 @@
 ---
 title: "Groundwater Calculators"
-pagetitle: "Groundwater Calculators — Darcy's Law, Theis Solution, Charge Balance | DeepFlows"
+pagetitle: "Groundwater Calculators — Darcy's Law, Theis Solution, Evapotranspiration and Water Chemistry"
 subtitle: "Browser-based tools for groundwater flow and water chemistry. Every calculator shows the equation it uses, cites where that equation came from, and tells you when it stops being valid."
-description: "Free groundwater calculators: Darcy's law, the Theis solution for pumping tests, and charge balance error for water analyses. Each tool states its equation, its source, and its limits of validity."
+description: "Free groundwater calculators: Darcy's law, the Theis solution for pumping tests, reference evapotranspiration by five methods, charge balance error, and concentration unit conversion from a mineral formula."
 lang: en
 number-sections: false
 toc: false
@@ -65,7 +65,7 @@ output, always.
 
 ::: {.gw-lede}
 These calculators are the working end of the writing on this site. The
-[Groundwater Science series](/blog-en) derives the equations and then solves the
+[Groundwater Science series](../blog-en.qmd) derives the equations and then solves the
 same problems numerically with MODFLOW, FloPy and PHREEQC — the pumping test the
 Theis calculator evaluates at a point is fitted to a full drawdown curve in the
 series, and the water analysis this charge-balance tool validates is the input a

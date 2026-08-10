@@ -273,7 +273,7 @@ failing a drinking-water standard if the basis is not stated.
 
 ## Read further
 
-[PHREEQC from Scratch #2: Analyzing Seawater with Speciation](/posts/phreeqc/phreeqc-part2/index-en)
+[PHREEQC from Scratch #2: Analyzing Seawater with Speciation](../../posts/phreeqc/phreeqc-part2/index-en.qmd)
 takes an analysis in exactly these units and computes what the ions are actually doing
 in solution — the step immediately after this one.
 
@@ -428,18 +428,36 @@ document.addEventListener("DOMContentLoaded", function () {
     return n;
   }
 
-  /* ---- 表示用（下付き数字と中点） -------------------------------------- */
+  /* ---- 表示用（下付き数字と中点） --------------------------------------
+   * 図のラベルは SVG の <text> なので、HTML の <sub> は使えない（SVG に
+   * その要素は無く、中身ごと描画されずに消える。CaCO3 が "CaCO" になった）。
+   * Unicode の下付き数字に置き換えて textContent で入れる。
+   * ------------------------------------------------------------------- */
+  var SUB = { "0":"₀","1":"₁","2":"₂","3":"₃","4":"₄",
+              "5":"₅","6":"₆","7":"₇","8":"₈","9":"₉" };
+
   function prettyFormula(src) {
-    return String(src || "")
-      .replace(/[·•*]/g, "·")
-      .replace(/(\d+(?:\.\d+)?)/g, "<sub>$1</sub>")
-      .replace(/·<sub>(\d+)<\/sub>/g, "·$1");
+    var s = String(src || "").replace(/[·•*]/g, "·");
+    var out = "";
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i];
+      if (!/\d/.test(c)) { out += c; continue; }
+      // 中点の直後に続く数字は水和数（係数）なので下げない: CaSO4·2H2O → CaSO₄·2H₂O
+      var j = i;
+      while (j > 0 && /\d/.test(s[j - 1])) j--;
+      out += (j > 0 && s[j - 1] === "·") ? c : (SUB[c] || c);
+    }
+    return out;
   }
 
   GwCalc.mount("#calc", {
 
     figure: "#calc-figure",
     solveFor: ["Cn", "Cm"],
+
+    // 検証用の窓口。mount() は知らないキーを無視する。図のラベル整形は
+    // compute() の外にあるので、これが無いと _verify から手が届かない。
+    _pretty: prettyFormula,
 
     inputs: [
       { id:"formula", type:"text", sym:"", label:"Chemical formula", short:"Formula",
@@ -576,8 +594,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       var fname = document.getElementById("figname");
       if (fname) {
-        fname.innerHTML = r.err ? "" :
-          prettyFormula(v.formula) + "  ·  M = " + GwCalc.fmt(r.M, 5) + " g/mol";
+        // 中点は水和物の区切りに使うので、ここの区切りにはダッシュを使う
+        fname.textContent = r.err ? "" :
+          prettyFormula(v.formula) + " — M = " + GwCalc.fmt(r.M, 5) + " g/mol";
       }
 
       /* --- 元素ごとの濃度表 --- */

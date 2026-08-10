@@ -235,7 +235,7 @@ resolving it, and every downstream saturation index inherits it.
 ## Read further
 
 An analysis that passes this check is exactly what goes into a speciation run.
-[PHREEQC from Scratch #2: Analyzing Seawater with Speciation](/posts/phreeqc/phreeqc-part2/index-en)
+[PHREEQC from Scratch #2: Analyzing Seawater with Speciation](../../posts/phreeqc/phreeqc-part2/index-en.qmd)
 takes a water analysis of the same shape and computes what the ions are actually
 doing in solution.
 

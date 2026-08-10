@@ -242,7 +242,7 @@ Flow into a well is radial, not linear, so the area changes with distance from t
 ## Read further
 
 The long-form article behind this tool is
-[Darcy's Law & Hydraulic Head Explained (with FloPy / MODFLOW)](/posts/groundwater/groundwater-sci03/index-en),
+[Darcy's Law & Hydraulic Head Explained (with FloPy / MODFLOW)](../../posts/groundwater/groundwater-sci03/index-en.qmd),
 part of the Groundwater Science series. It derives the law from the sand-column
 experiment and then solves the same problem numerically in MODFLOW.
 

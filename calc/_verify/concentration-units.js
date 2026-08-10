@@ -162,6 +162,17 @@ near("アスタリスク表記も同じ",    cfg.compute(byMolar("MgSO4*7H2O", 1
 near("Ca(OH)2 の結晶水は 0",   cfg.compute(byMolar("Ca(OH)2", 1, 2), "Cm").wH2O + 1, 1);
 near("ハライト M",            cfg.compute(byMolar("NaCl", 1, 1), "Cm").M, 22.990 + 35.45);
 
+console.log("\n[補] 図のラベル整形（SVG には <sub> が無い）");
+const P = cfg._pretty;
+say("CaCO3 → CaCO₃",          P("CaCO3") === "CaCO₃");
+say("CaMg(CO3)2 の入れ子",       P("CaMg(CO3)2") === "CaMg(CO₃)₂");
+// 中点の直後の数字は水和数なので下付きにしない
+say("CaSO4·2H2O の水和数",      P("CaSO4·2H2O") === "CaSO₄·2H₂O");
+say("MgSO4*7H2O も中点に揃う",   P("MgSO4*7H2O") === "MgSO₄·7H₂O");
+say("2桁の水和数 ·10H2O",       P("Na2SO4·10H2O") === "Na₂SO₄·10H₂O");
+// SVG に流し込むので HTML タグが混ざってはいけない（混ざると丸ごと描画されない）
+say("HTML タグを含まない",       !/[<>]/.test(P("CaSO4·2H2O") + P("CaCO3")));
+
 if (checks === 0) {
   console.log("\n" + TOOL + ": 検証がまだ 1 件も書かれていない。TODO を埋めること。");
   process.exit(1);

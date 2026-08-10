@@ -300,6 +300,25 @@ listing:
   line-height: 1.75;
   color: #6B7280;
 }
+/* Calc カードだけはリンクにする。見た目は他の3枚と揃え、押せることだけを
+   ホバーで示す（カード自体が <a> なので下線は消す）。 */
+a.pillar-card {
+  display: block;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+a.pillar-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(217, 119, 6, 0.15);
+  border-color: rgba(217, 119, 6, 0.4);
+}
+.pillar-more {
+  display: block;
+  margin-top: 0.7rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #C96A28;
+}
 .author-strip {
   display: flex;
   align-items: center;
@@ -392,6 +411,11 @@ listing:
       <div class="pillar-name">Field Notes</div>
       <div class="pillar-text">Hot-spring water chemistry, the links between landforms and history, and the failures faced in everyday computation. Essays that don't fit the tutorial format.</div>
     </div>
+    <a href="/calc/" class="pillar-card">
+      <div class="pillar-icon">🧮</div>
+      <div class="pillar-name">Online Calculators</div>
+      <div class="pillar-text">Darcy's law, pumping tests, evapotranspiration and water-chemistry unit conversion, worked out in your browser with nothing to install. Each tool cites its equation and states <strong>where that equation stops being valid</strong>.<span class="pillar-more">＞ Open Calc</span></div>
+    </a>
   </div>
 
   <a href="/about-en" class="author-strip">

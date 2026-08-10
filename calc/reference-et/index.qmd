@@ -324,7 +324,7 @@ constant is exactly the assumption that fails when the spread on this page grows
 ## Read further
 
 The water balance this calculator feeds is set out in
-[The Water Cycle Explained: Where Does the Rain Go?](/posts/groundwater/groundwater-sci01/index-en),
+[The Water Cycle Explained: Where Does the Rain Go?](../../posts/groundwater/groundwater-sci01/index-en.qmd),
 the opening article of the Groundwater Science series, which follows a raindrop from
 precipitation through the unsaturated zone to the water table.
 
