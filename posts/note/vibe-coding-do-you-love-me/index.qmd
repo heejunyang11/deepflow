@@ -10,11 +10,6 @@ toc-depth: 3
 number-sections: false
 code-fold: false
 lang: ja
-format:
-  html:
-    include-in-header:
-      - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/note/vibe-coding-do-you-love-me/" />
 ---
 
 こんにちは、DeepFlowsのHYです。

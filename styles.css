@@ -233,3 +233,35 @@ h3.no-anchor.listing-title {
 .lang-switch-container.is-en .lang-mini-slider {
   transform: translateX(18px);
 }
+
+/* ---------------------------------------------------------------------------
+   .fig-wide — 図版だけを本文カラムより広く見せる（記事の図に付ける）
+
+   Quarto 標準の .column-page はこのテーマでは使えない。グリッドの左側は
+   page-start が screen-start-inset と同一線に潰れているため画面端まで飛び、
+   右側は .margin-sidebar（目次）が body-end〜page-end を占めているため
+   目次の上に重なってしまう。そこで左の余白へ決め打ちで伸ばし、右は目次の
+   手前（body-end までの 1.5em）だけを使う。
+   画面が狭いときは何もしない＝本文幅のまま。
+--------------------------------------------------------------------------- */
+@media (min-width: 1280px) {
+  .fig-wide {
+    margin-left: -110px;
+    margin-right: -24px;
+  }
+  .fig-wide img {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .fig-wide {
+    margin-left: -180px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .fig-wide {
+    margin-left: -250px;
+  }
+}

@@ -1,0 +1,305 @@
+---
+title: "Volcanoes and Groundwater — How Magma Type Decides Water Chemistry and Hot Springs (Basalt, Andesite, Rhyolite with PHREEQC) | Groundwater Science #18"
+description: "Kusatsu discharges water at pH 2. Beppu discharges neutral chloride water. The deep waters of Shiraoi are soft and bicarbonate-rich. Why are the waters of volcanic districts so different from one another? The answer is the silica content of the magma. It fixes the viscosity, the eruption style and the shape of the aquifer; it fixes the rock-forming minerals and what weathering releases; it fixes the volatiles and the type of hot spring. This article dissolves basalt, andesite and rhyolite in PHREEQC, plots Japanese hot springs on a Cl–SO₄–HCO₃ diagram, and ties together what #2, #3, #11, #12 and #16 built."
+date: 2026-08-11
+categories: [Hydrology, Volcanoes, Magma, Geochemistry, Hot springs, PHREEQC]
+image: fig1_causal_chain.png
+author: "DeepFlows"
+toc: true
+toc-depth: 3
+number-sections: false
+code-fold: false
+lang: en
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/posts/groundwater/groundwater-sci18/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/posts/groundwater/groundwater-sci18/index-en" />
+---
+
+## Why are the waters of one volcanic country so unlike each other?
+
+The water flowing from the Yubatake of Kusatsu has a pH near 2 and will eat an iron nail in a few days. The water pumped at Beppu is neutral and dominated by chloride. The water from the deep wells at Shiraoi in Hokkaido is dilute, rich in bicarbonate, and soft on the tongue.
+
+All three are waters of volcanic districts. The same rain falls, enters the ground the same way, and reacts with rock the same way. What comes out is entirely different.
+
+Where does the difference come from? This article gives one answer: **the SiO₂ content of the magma.** That single number sets the shape of the vessel that holds the groundwater, sets the solutes that enter the water, and sets the chemistry of the hot spring. Three consequences branch from one cause.
+
+------------------------------------------------------------------------
+
+## Recap: we have the temperature and the strain — but not the source
+
+Before starting, it is worth listing what this series has already said about volcanic water, and what it has left unsaid.
+
+In [#16](/posts/groundwater/groundwater-sci16/index-en) we read the **temperature** of a geothermal reservoir from the Na–K–Mg ratios of hot spring water. The Giggenbach diagram and the silica geothermometer told us, from a single cup of water at the surface, how hot it is several hundred metres down. But we never asked **where that heat came from**.
+
+In [#17](/posts/groundwater/groundwater-sci17/index-en) we watched the water level in well GSH-1 fall for three months before the 2000 eruption of Usu volcano. Converted through the strain sensitivity calibrated from the tides, the fall corresponds to more than $7\times10^{-6}$ of extensional strain. Something was quietly prying the rock apart. We never named that something — **the magma itself**.
+
+In [#11](/posts/groundwater/groundwater-sci11/index-en) and [#12](/posts/groundwater/groundwater-sci12/index-en) we saw that the major-ion composition of groundwater falls into regional *types*, and that fluoride runs high in parts of Kumamoto. We showed the types existed; we did not ask **why the type changes from place to place** — that is, we did not look at the host rock.
+
+This article fills all three gaps at once. The tool for filling them is a single causal chain running from magma through rock to water (@fig-chain).
+
+![The backbone of this article. From one number — the SiO₂ content of the magma — three paths branch. The top path runs through polymerisation, viscosity and eruption style to the permeability of the aquifer (picking up #2 and #3). The middle path runs through the rock-forming minerals and what weathering releases to the water chemistry type (picking up #11 and #12). The bottom path runs through the dissolved volatiles and the hydrothermal fluid to the type of hot spring (picking up #16).](fig1_causal_chain.png){#fig-chain .fig-wide}
+
+To the reader this is an article about volcanoes. What it is actually doing is welding five earlier articles together.
+
+------------------------------------------------------------------------
+
+## What magma is — the minimum volcanology
+
+### A mixture of four things
+
+Magma is usually described as molten rock, but four things are mixed in it: the **melt** itself (a silicate liquid), **dissolved volatiles** (H₂O, CO₂, SO₂, H₂S, HCl), **crystals** that have already begun to grow, and **bubbles**. Rock rarely melts completely at depth; magma is normally produced by **partial melting**.
+
+Magma is classified by its SiO₂ content in weight per cent.
+
+| Name | SiO₂ | Typical temperature | Viscosity | Eruption style | Example |
+|---|---|---|---|---|---|
+| Basaltic (mafic) | 45–52 % | ~1200 °C | low | lava flows, quiet | Hawaii, shield volcanoes |
+| Andesitic (intermediate) | 52–63 % | ~1000 °C | moderate | stratovolcanoes | Japanese arc, Unzen |
+| Dacitic | 63–68 % | — | high | lava domes | Usu, Unzen-Fugendake |
+| Rhyolitic (felsic) | 68–77 % | ~800 °C | very high | explosive, Plinian, caldera-forming | Aso, Aira |
+
+### Why silica decides everything
+
+The reason lies in the structure of the melt. Silicon sits at the centre of a **Si–O tetrahedron**. As SiO₂ increases, these tetrahedra share oxygens and **polymerise** into chains and networks. A polymerised melt does not flow easily — its **viscosity is high**.
+
+The difference is enormous. A basaltic melt is $10\text{–}10^{3}$ Pa·s; a rhyolitic melt reaches $10^{5}\text{–}10^{9}$ Pa·s. That is six to eight orders of magnitude — far beyond the contrast between water ($10^{-3}$ Pa·s) and syrup.
+
+And viscosity decides the shape of the eruption. As magma rises and pressure drops, the dissolved volatiles — H₂O above all — separate as bubbles. **If the viscosity is low the bubbles float away**, and the magma spills out quietly as a lava flow. **If the viscosity is high the bubbles cannot escape**, pressure builds inside, and beyond a threshold the magma bursts. That is an explosive eruption.
+
+> One boundary should be stated here. The generation of magma and the petrology of igneous rocks belong to volcanologists and petrologists, and this article says nothing new there. It presents them at textbook level (Tatsumi 2003; Best 2003). **The weight of this article is not on what magma is, but on how the differences between magmas show up in water.**
+
+### Why Japanese volcanoes make andesite
+
+Magma is generated in three settings: mid-ocean ridges (decompression melting), hotspots (mantle plumes), and **subduction zones**. Japan is the third (@fig-subduction).
+
+![Where the magma of a Japanese volcano comes from. The oceanic plate subducts, and near 100 km depth its hydrous minerals dehydrate. The released H₂O enters the mantle wedge, lowers the melting point of the peridotite, and triggers partial melting (flux melting). The basaltic melt rises and, in a crustal magma chamber, raises its SiO₂ through crystallisation, assimilation and mixing. The gas leaving the vent is dominated by H₂O, followed by CO₂, SO₂, H₂S and HCl (treated in detail later in this article). On the right, those volatiles enter the shallow hydrothermal system and return to the surface as hot springs and groundwater. Depths are textbook orders of magnitude, not a section through any particular arc; the edifice above the surface is drawn exaggerated. This figure was produced by a generative AI image model (Google Gemini) and subsequently edited and corrected by the author.](fig2_subduction.jpg){#fig-subduction .fig-wide}
+
+The key word is **water**. The subducting oceanic plate carries water down inside hydrous minerals. Near 100 km depth that water is squeezed out and enters the overlying mantle. Dry peridotite does not melt until nearly 1500 °C, but adding water lowers the melting point by hundreds of degrees. This **flux melting** is the starting point of every Japanese volcano.
+
+The newborn melt is basaltic. On its way up through the crust, however, it stalls in a magma chamber, and the denser minerals — olivine, pyroxene, calcic plagioclase — crystallise and sink. **The remaining liquid is richer in SiO₂.** It also dissolves the crustal rocks around it (assimilation) and mixes with other batches. This is why Japanese volcanoes erupt mainly andesitic magma.
+
+**What makes subduction-zone volcanoes special for groundwater science is that water is the protagonist throughout.** Water triggered the melting; water is the most abundant volatile the magma carries; water is what emerges at the surface as a hot spring. The rest of this article follows that water along three branches.
+
+------------------------------------------------------------------------
+
+## Consequence 1 — the magma builds the vessel
+
+### Ten orders of magnitude inside one volcano
+
+Viscosity sets the eruption style, and the eruption style sets the geometry of the rock body. That geometry becomes the **aquifer** (@fig-aquifer).
+
+![(a) What eruptions stack up. A lava flow carries clinker — its broken top and base — and columnar joints in its interior. A pyroclastic flow deposit changes character with the degree of welding. Lava domes and lahar deposits are tight and often act as a lid. (b) The hydraulic conductivity of the same units on one logarithmic axis. The ranges are orders of magnitude taken from standard tables (Freeze & Cherry 1979 Table 2.2; Fetter 2001), not measurements from any single volcano.](fig3_volcanic_aquifer.png){#fig-aquifer .fig-wide}
+
+Look at panel (b). **Within a single volcanic edifice, hydraulic conductivity spans nearly ten orders of magnitude** — a range that swallows the whole contrast between clean sand and clay. And what creates that range is not chemical composition.
+
+- A **basaltic lava flow** breaks up its own top and base into **clinker** as it moves, and its interior cracks into **columnar joints** as it cools. The result is a fracture-dominated layer of very high permeability. The spring groups of Mt Fuji and the groundwater of Hawaii rest on that structure.
+- A **pyroclastic flow deposit** has its fate decided by the temperature and thickness at which it comes to rest. Hot and thick, it compacts and fuses under its own weight into **welded tuff**, dense and tight. Cooler, it stays **non-welded** — a loose framework of pumice and ash and an excellent aquifer. **The same deposit from the same eruption can be an aquifer in one place and an aquitard in another.**
+- **Lava domes** and **lahar deposits** are both tight. In geothermal systems these are the units that usually form the **caprock** sealing the deep hydrothermal fluid. Whatever is putting a lid on the reservoirs discussed in [#16](/posts/groundwater/groundwater-sci16/index-en) is generally a rock body of this kind.
+
+[#2](/posts/groundwater/groundwater-sci02/index-en) covered the types of aquifer and [#3](/posts/groundwater/groundwater-sci03/index-en) covered hydraulic conductivity. In a volcanic district, **both are created inside a single eruption**. A welded tuff over a non-welded pyroclastic deposit is already a complete confined aquifer.
+
+### The shape of the vessel decides where the springs are
+
+The **spring line** drawn in @fig-aquifer (a) is essential to volcanic hydrogeology. Where a permeable layer resting on a tight one is cut by the hillside, water spills out along that line. Springs are strung around the foot of a volcano because the stacking of the beds has been sliced by the topography.
+
+**The answer to "why does the water come out here?" is usually "because a particular eruption happened here some tens of thousands of years ago."** Hydrogeology in a volcanic district is partly the reading of a volcano's résumé.
+
+------------------------------------------------------------------------
+
+## Consequence 2 — the magma decides what dissolves
+
+### Different rock, different solutes
+
+Now the chemistry. The SiO₂ content of the magma decides which minerals crystallise when it solidifies. Those minerals decide what weathering hands over to the water.
+
+| | Main rock-forming minerals | Released by weathering |
+|---|---|---|
+| Basalt (mafic) | calcic plagioclase (anorthite), pyroxene, olivine | Ca²⁺, Mg²⁺, HCO₃⁻, SiO₂ |
+| Andesite (intermediate) | intermediate plagioclase, pyroxene, amphibole | Ca²⁺, Mg²⁺, Na⁺, HCO₃⁻ |
+| Rhyolite (felsic) | quartz, K-feldspar, albite, biotite, (apatite, fluorite) | Na⁺, K⁺, F⁻, SiO₂ |
+
+**This is where the fluoride of [#12](/posts/groundwater/groundwater-sci12/index-en) connects.** The fluorine-bearing minerals — biotite, amphibole, apatite, fluorite — all belong to felsic rocks. High-fluoride groundwater is confined to particular districts not by accident but by **geological necessity**. If the host rock does not carry fluorine, the water cannot.
+
+### Dissolving three rocks in PHREEQC
+
+Let us put numbers on the argument. Into CO₂-charged pure water ($P_{\mathrm{CO_2}} = 10^{-2}$ atm, 25 °C) we titrate mineral assemblages representing the three rock types and compare the resulting water. The calculation uses PHREEQC 3.8.6 with the public `llnl.dat` database.
+
+The assemblages (molar proportions):
+
+- **Basalt**: anorthite 0.55 / diopside 0.30 / forsterite 0.15
+- **Andesite**: anorthite 0.30 / albite 0.32 / K-feldspar 0.06 / diopside 0.22 / olivine 0.05 / quartz 0.05
+- **Rhyolite**: albite 0.40 / K-feldspar 0.30 / quartz 0.255 / phlogopite 0.03 / fluorite 0.015
+
+The primary minerals are added irreversibly through `REACTION` (incongruent weathering dissolution); only kaolinite, calcite, amorphous silica and fluorite are allowed to precipitate. A total of 2.5 mmol of rock is dissolved in 25 steps.
+
+```
+REACTION 1  Basalt assemblage
+    CaAl2Si2O8   0.55      # anorthite
+    CaMgSi2O6    0.30      # diopside
+    Mg2SiO4      0.15      # forsterite
+    2.5e-3 moles in 25 steps
+```
+
+The result is @fig-phreeqc.
+
+![(a) The water once 2.5 mmol of rock has dissolved (mg L⁻¹, logarithmic axis). A dash means the rock contains none of that element. Basalt yields a Ca–Mg–HCO₃ water; rhyolite yields a Na–K water carrying fluoride; andesite sits between them. (b) How much CO₂ each rock has taken out of the gas phase along the way — basalt consumes 2.4 times as much as rhyolite. PHREEQC 3.8.6, `llnl.dat`, 25 °C, $P_{\mathrm{CO_2}} = 10^{-2}$ atm.](fig4_rock_water.png){#fig-phreeqc .fig-wide}
+
+In numbers:
+
+| | Basalt | Andesite | Rhyolite |
+|---|---|---|---|
+| pH | 7.45 | 7.42 | 7.16 |
+| Ca²⁺ (mg/L) | 34 | 37 | 1.5 |
+| Mg²⁺ (mg/L) | 36 | 19 | 5.5 |
+| Na⁺ (mg/L) | — | 18 | 23 |
+| K⁺ (mg/L) | — | 5.9 | 32 |
+| HCO₃⁻ (mg/L) | 285 | 267 | 139 |
+| F⁻ (mg/L) | — | — | 1.4 |
+| CO₂ consumed (mmol/kg) | 6.3 | 5.1 | 2.6 |
+
+**What [#11](/posts/groundwater/groundwater-sci11/index-en) reported as an observation is reproduced here as a calculation.** Basalt gives Ca–Mg–HCO₃ water; rhyolite gives Na–K water. Fluoride appears only with rhyolite, reaching 1.4 mg/L — just short of the WHO drinking-water guideline value of 1.5 mg/L.
+
+**A low calcium concentration is good news for fluoride.** In this run the saturation index of fluorite stays at $-2.8$, so fluoride is not yet being capped by fluorite precipitation. The rhyolitic water holds only 1.5 mg/L of Ca, leaving plenty of room for fluoride to stay in solution. The relation seen in [#12](/posts/groundwater/groundwater-sci12/index-en) — the lower the calcium, the higher the fluoride — has its upstream cause here.
+
+### The limits of this calculation
+
+As in [#15](/posts/groundwater/groundwater-sci15/index-en), the line should be drawn honestly.
+
+- **Representing a rock by a mineral assemblage is an approximation.** Real volcanic rocks contain a great deal of **volcanic glass**, whose dissolution differs from crystalline minerals in both rate and stoichiometry. This calculation contains no glass.
+- **SiO₂ came out at 109 mg/L for all three rocks.** It is pinned at amorphous silica saturation, so silica carries no information about rock type here. Without kinetics, silica always runs to saturation — exactly the issue treated in [#15](/posts/groundwater/groundwater-sci15/index-en).
+- **This is an equilibrium calculation and has no time axis.** Real water chemistry depends on residence time; the horizontal axis "rock dissolved" is not time.
+- @fig-phreeqc is therefore **a teaching calculation that shows a tendency**, not a quantitative reproduction of any particular aquifer.
+
+------------------------------------------------------------------------
+
+## Consequence 3 — the magma decides the hot spring
+
+### The volatiles disappear in order
+
+The third branch is the most interesting. The volatiles the magma carried separate in sequence as pressure falls, roughly in the order of abundance
+
+$$\mathrm{H_2O} \;\gg\; \mathrm{CO_2} \;>\; \mathrm{SO_2} \;>\; \mathrm{H_2S} \;>\; \mathrm{HCl}$$
+
+Arc magmas dissolve a few per cent of water, and most of what leaves a volcano as gas is steam.
+
+What matters is that these species differ enormously in **reactivity**. Iwasaki et al. (1962) classified volcanic gases by the temperature of the fumarole: between 1200 and 800 °C, HCl, SO₂, CO₂ and H₂ dominate; below 60 °C the order becomes CO₂ > N₂ > H₂S.
+
+That change with temperature is also a change with distance. It is known as **Deville's law** — the character of a fumarole on an active volcano varies with its distance from the centre of the eruption (Iwasaki et al. 1963). The reactive species HCl, SO₂ and H₂S are consumed on the way up by reaction with rock and groundwater. **Only the poorly reactive CO₂ survives out to the margin.**
+
+### One volcano, four kinds of hot spring
+
+That order of disappearance becomes the map of hot spring types (@fig-springs).
+
+![How one volcano produces four kinds of hot spring. Near the centre, hot volcanic gas (HCl, SO₂, H₂S) blows directly into shallow groundwater and makes acid-sulfate water with pH below 3. At depth the same gas dissolves and reacts with the rock, ending up as a near-neutral Na–Cl brine — the geothermal reservoir. Steam and H₂S passing through the caprock are oxidised near the surface and give SO₄ waters; liquid rising along a fault gives neutral chloride waters. Only CO₂ reaches the margin, where it dissolves into shallow groundwater and produces HCO₃ waters. The classification follows the seven types of Yasukawa & Noda (2017); the figure is schematic and has no scale.](fig5_spring_types.png){#fig-springs .fig-wide}
+
+In 2010 the Geothermal Research Society of Japan sorted the hydraulic relationship between a geothermal reservoir and a nearby hot spring aquifer into five types: identical thermal water, seepage thermal water, steam heated, heat conduction, and independent. Applied to real data, however, some springs would not classify. Kasumi Yasukawa and Tetsuro Noda (2017) added two more — **CO₂ supply** and **volcanic gas supply** — making seven, and, crucially, **wrote down the thresholds**.
+
+| Type | Criterion from the water chemistry | Possible influence of geothermal development |
+|---|---|---|
+| Identical thermal water | Cl⁻ > 80 % of total anions and T > 90 °C | large |
+| Seepage thermal water | Cl⁻ type and T > 60 °C | medium |
+| Steam heated | SO₄²⁻ type | small |
+| Heat conduction | not Cl⁻ or SO₄²⁻ type and TDS < 1000 mg/L | very small |
+| Independent | T < 60 °C and not Cl⁻, SO₄²⁻ or HCO₃⁻ type | not identified |
+| CO₂ supply | HCO₃⁻ type | none or small |
+| Volcanic gas supply | pH < 3 and Cl⁻ > SO₄²⁻ | none |
+
+(compiled from Yasukawa & Noda 2017, Table 4)
+
+**The value of this table lies entirely in the fact that the thresholds are numbers.** The phrases "acid-sulfate water" and "neutral chloride water" fill the literature; tables saying where the line falls are rare.
+
+They applied the decision tree to the Kuju district of Oita Prefecture. Classifying the 84 hot and mineral springs of the Kuju volcanic group and its foothills (from the data set of Oita Prefecture 2006), **all seven types were found**. Almost every spring hotter than 90 °C was identical thermal water, and around the three geothermal power plants — Hatchobaru, Otake, and the Kuju Kanko Hotel plant — springs of the seepage thermal water and steam heated types were densely clustered. The CO₂ supply type, by contrast, was spread over the northern part of the area, away from any reservoir.
+
+**Classifying the water chemistry alone brings the geothermal reservoir into view.** The paper notes that the method may therefore serve as an exploration tool in its own right.
+
+### The Cl–SO₄–HCO₃ diagram — which volatile the water remembers
+
+In [#16](/posts/groundwater/groundwater-sci16/index-en) we read temperature from the Na–K–Mg ternary, the Giggenbach diagram. The same Giggenbach also gave an anion ternary for reading **origin** (Giggenbach 1991). Its three axes — Cl⁻, SO₄²⁻ and HCO₃⁻ — are precisely the destinations of the volatiles just discussed (@fig-ternary).
+
+![The Cl–SO₄–HCO₃ ternary. The SO₄ corner corresponds to volcanic gas and steam-heated origins, the Cl corner to deep hydrothermal fluid itself (mature waters), and the HCO₃ corner to the CO₂ supply type of the volcanic margin. Every point is a published measurement: the Quaternary volcanic district and the Shiraoi area of Hokkaido from Shigeno (2011) Table 3, and Ain Al-Harrah in Saudi Arabia from Rafiq et al. (2024) Table 2. Plotted on a weight basis (mg L⁻¹), as in the original method.](fig6_ternary.png){#fig-ternary .fig-wide}
+
+The figure reads straightforwardly.
+
+- **Noboribetsu** (red circles) sits almost on the Cl apex. Shigeno (2011) describes it as a hot, saline, slightly acidic Na–Ca–Cl water — deep hydrothermal fluid arriving with almost no dilution. One of the three samples has pH 4.3, and a magmatic contribution is inferred.
+- **Kawamata** (dark purple triangle) sits at the SO₄ apex: 7 mg/L of Cl against 1073 mg/L of SO₄, a textbook steam-heated water.
+- **Kitayuzawa** (orange squares) and **Karurusu** (purple diamond) fall between them — Na–Cl–SO₄ and Na–Ca–SO₄–HCO₃–Cl respectively, exactly as described in the paper.
+- **The deep waters of the Shiraoi area** (grey hexagons) line up along the Cl–HCO₃ base. They are a different family from the Quaternary volcanic waters and contain almost no sulfate: deep basinal waters, and the very waters on which the geothermometers of [#16](/posts/groundwater/groundwater-sci16/index-en) were used.
+- **Ain Al-Harrah** (blue crosses) clusters on the Cl–SO₄ side.
+
+> One note on Rafiq et al. (2024). Their abstract calls the water a Na–HCO₃ type, but both the measurements in their Table 2 (Cl 473–582, SO₄ 377–456, HCO₃ 64–90 mg/L) and their own §3.2.1 ("Cl-rich domain of mature geothermal water, which is close to Cl–SO₄") point to the Cl–SO₄ side. The figure plots the Table 2 values as they stand.
+
+**@fig-ternary and @fig-springs are saying the same thing.** A water's position on the ternary records which of the magmatic volatiles it remembers, and how strongly. Chloride is where the HCl went, sulfate is where SO₂ and H₂S went, and bicarbonate is where the CO₂ that survived to the margin went.
+
+------------------------------------------------------------------------
+
+## Back to Usu
+
+It is worth rereading the water-level fall of [#17](/posts/groundwater/groundwater-sci17/index-en) in the light of all this.
+
+Between December 1999 and March 2000, the level in well GSH-1 fell by about 5 m — more than $7\times10^{-6}$ of extensional strain. **What produced that extension was the volume of the rising magma.**
+
+The magma of Usu is dacitic, with SiO₂ between 63 and 68 % — viscous magma. High viscosity means bubbles cannot escape, and it means that rising magma advances by prying the surrounding rock apart. The water-level record read in #17 was the record of that prying.
+
+And after the eruption, what the mountain offers at the surface is the arrangement of @fig-springs: an acidic fumarolic field at the centre, a neutral hydrothermal system at depth, and CO₂-rich carbonated springs around the margin. **#17 read one magma ascent as physics; this article reads the same ascent as chemistry.**
+
+> The boundary drawn in [#17](/posts/groundwater/groundwater-sci17/index-en) still holds here. Water-level changes preceding an eruption indicate the *possibility* of a critical phenomenon; they are not prediction. Nothing in this article forecasts an eruption from magma chemistry.
+
+------------------------------------------------------------------------
+
+## Why knowing volcanic water is useful
+
+Four reasons.
+
+**Coexistence of geothermal development and hot springs.** This is the most pressing application. The decision tree of Yasukawa & Noda (2017) was built to assess whether a geothermal power plant will affect nearby hot springs. A spring of the identical thermal water type draws the same fluid as the reservoir and is strongly exposed; a volcanic gas supply spring is not connected to the reservoir at all and is not. **Measuring the water chemistry alone tells you what must be monitored and what need not be.** The authors define a zone of possible influence within 1 km horizontally, and a zone requiring examination between 1 and 5 km.
+
+**Protection of the hot spring resource.** Once the type is known, the monitoring item follows: flow rate for identical thermal water, chemical composition for steam heated water, temperature for heat conduction. That is far more effective than measuring everything indiscriminately.
+
+**Management of large volcanic aquifers.** Pyroclastic flow deposits form several of Japan's principal aquifers. Because their permeability is governed by the degree of welding, **the boundary of an aquifer need not coincide with a boundary on the geological map.** The same formation is a lid where welded and an aquifer where not.
+
+**And CO₂.** As @fig-phreeqc (b) shows, basalt takes 2.4 times as much CO₂ out of the water as rhyolite, because mafic minerals supply more of the cations — Ca and Mg — that can be fixed as carbonate. This leads straight into the next article.
+
+------------------------------------------------------------------------
+
+## Summary — from one number to three consequences
+
+The path traced in this article, folded back into three lines:
+
+| Path | Property of the magma | Intermediate | What appears in the water |
+|---|---|---|---|
+| Physics | SiO₂ → polymerisation → viscosity | eruption style → geometry of the rock body | permeability of the aquifer (ten orders of magnitude) |
+| Chemistry of the rock | SiO₂ → rock-forming minerals | what weathering releases | water chemistry type (Ca–Mg–HCO₃ ↔ Na–K–F) |
+| Chemistry of the fluid | SiO₂ → volatile budget | order of degassing and reaction | hot spring type (acid-sulfate, neutral chloride, bicarbonate) |
+
+The three are quite different physics and chemistry. Traced back, all three arrive at **one number: SiO₂**. When looking at water in a volcanic district, the first question to ask is what the rock is.
+
+And the view is not confined to volcanoes. **The chemistry of a water is the résumé of the rock it has touched.** The major ions of [#11](/posts/groundwater/groundwater-sci11/index-en), the fluoride of [#12](/posts/groundwater/groundwater-sci12/index-en), the residence time of [#15](/posts/groundwater/groundwater-sci15/index-en) and the geothermometers of [#16](/posts/groundwater/groundwater-sci16/index-en) are all asking the same question from different angles: **where has this water been, what has it met, and for how long?**
+
+------------------------------------------------------------------------
+
+## Coming next
+
+Of the volatiles treated here, the one that survives to the margin is CO₂. The next article takes CO₂ as its subject.
+
+The CO₂ a volcano sends from the interior of the Earth to the surface, and the CO₂ humanity is trying to send from the surface back underground, ride on **the same CO₂–water–rock reaction**. What happens when carbonated water meets basalt? What chemistry is carbon capture and storage, really? Where does the idea of using CO₂ as the working fluid of a geothermal plant come from? That basalt consumed the most CO₂ in @fig-phreeqc (b) was planted here for that article.
+
+The geothermal systems of [#16](/posts/groundwater/groundwater-sci16/index-en), the volcanic gases of this article, and CCS will meet in a single reaction.
+
+------------------------------------------------------------------------
+
+### References
+
+- Yasukawa, K. & Noda, T. (2017) Geochemical criteria to evaluate hydraulic and thermal relationship between geothermal reservoir and nearby hot spring aquifer. *Journal of the Geothermal Research Society of Japan* 39(4), 203–215. (in Japanese with English abstract)
+- Shigeno, H. (2011) Geochemical and isotopic characteristics and origins of "hot spring waters" in the Shiraoi area and three surrounding regions, Iburi district, Hokkaido, Japan. *Bulletin of the Geological Survey of Japan* 62(3/4), 143–176. (in Japanese with English abstract)
+- Giggenbach, W.F. (1991) Chemical techniques in geothermal exploration. In *Application of Geochemistry in Geothermal Reservoir Development*, UNITAR, pp. 119–144. Cited here as referenced by Rafiq et al. (2024).
+- Giggenbach, W.F. & Goguel, R.L. (1989) *Collection and Analysis of Geothermal and Volcanic Water and Gas Discharges*, 4th ed. Chemistry Division, DSIR.
+- Rafiq, J., Abu-Mahfouz, I.S., Soupios, P., Humphrey, J.D., Tawabini, B.S. (2024) Hydrochemical characterization, geothermometry, and origin of Ain Al-Harrah hot spring and its relationship to the Al-Lith geothermal system, Saudi Arabia. *ACS Omega* 9, 24807–24818.
+- Iwasaki, I., Ozawa, T., Yoshida, M., Katsura, T., Iwasaki, B., Kamada, M. (1962) Nature of volcanic gases and volcanic activity. *Bulletin Volcanologique* 24, 305–313.
+- Geothermal Research Society of Japan (2010) *Toward the Coexistence of Geothermal Power Generation and Hot Spring Use*. (in Japanese)
+- Tatsumi, Y. (2003) *Magmatology of Subduction Zones*. University of Tokyo Press. (in Japanese)
+- Best, M.G. (2003) *Igneous and Metamorphic Petrology*, 2nd ed. Blackwell.
+- Parkhurst, D.L. & Appelo, C.A.J. (2013) *Description of Input and Examples for PHREEQC Version 3*. USGS Techniques and Methods 6-A43.
+- Freeze, R.A. & Cherry, J.A. (1979) *Groundwater*. Prentice-Hall.
+- Fetter, C.W. (2001) *Applied Hydrogeology*, 4th ed. Prentice-Hall.

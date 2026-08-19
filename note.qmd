@@ -1,16 +1,10 @@
 ---
-title: "Field Notes (Japanese Only)"
+title: "Field Notes"
 pagetitle: "Field Notes — 温泉・地形・研究ノート"
 description: "温泉の泉質、地形と歴史のつながり、日々のシミュレーションで直面した失敗談まで。技術チュートリアルの枠に収まらない、研究者のエッセイと研究ノート。"
 number-sections: false
 crossref:
   chapters: false
-format:
-  html:
-    include-in-header:
-      - text: |
-          <link rel="alternate" hreflang="ja" href="https://deepflows.net/note" />
-          <link rel="alternate" hreflang="en" href="https://deepflows.net/note-en" />
 listing:
   - id: geo-onsen
     contents:
