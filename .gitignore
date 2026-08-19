@@ -2,6 +2,9 @@
 **/*.quarto_ipynb
 _site/
 
+# Claude Code のローカル設定（許可コマンドにローカルパスが残るため公開しない）
+.claude/
+
 # 環境変数（最重要）
 .env
 .dev.vars
