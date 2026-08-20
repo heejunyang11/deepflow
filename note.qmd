@@ -1,11 +1,20 @@
 ---
 title: "Field Notes"
-pagetitle: "Field Notes — 温泉・地形・研究ノート"
-description: "温泉の泉質、地形と歴史のつながり、日々のシミュレーションで直面した失敗談まで。技術チュートリアルの枠に収まらない、研究者のエッセイと研究ノート。"
+pagetitle: "Field Notes — 元素・温泉・地形・研究ノート"
+description: "周期表の元素をひとつずつ、学生にも分かる言葉で読み解く連載から、温泉の泉質、地形と歴史のつながり、日々のシミュレーションの失敗談まで。Series の技術チュートリアル以外の読み物をまとめた場所。"
 number-sections: false
 crossref:
   chapters: false
 listing:
+  - id: element-series
+    contents:
+      - "posts/note/element-*/index.qmd"
+    type: grid
+    fields: [date, title, image]
+    sort: "date asc"
+    categories: false
+    sort-ui: false
+    filter-ui: false
   - id: geo-onsen
     contents:
       - "posts/note/onsen-part1/index.qmd"
@@ -87,13 +96,27 @@ listing:
 
 **「データとコードの奥にある、自然界のドラマと試行錯誤の記録」**
 
-このページは、本格的な技術チュートリアル（[Series](/blog.qmd)）の枠には収まりきらない、多角的な視点から綴るエッセイおよび研究ノートです。
+このページは、本格的な技術チュートリアル（[Series](/blog.qmd)）以外の読み物をまとめた場所です。
 
-温泉の泉質を科学的に読み解くコラムや、地形・地理が歴史に与えた影響の考察から、日々のシミュレーションで直面した失敗談、泥臭いトラブルシューティングまで。研究者の「思考の過程」と「自然界への好奇心」を、飾らずに記録しています。
+周期表の元素をひとつずつ取り上げ、学生にも分かる言葉で読み解く連載。温泉の泉質を科学的に読み解くコラムや、地形・地理が歴史に与えた影響の考察。そして日々のシミュレーションで直面した失敗談から、泥臭いトラブルシューティングまで。研究者の「思考の過程」と「自然界への好奇心」を、飾らずに記録しています。
 
-:::: {.grid}
+::::::::::: grid
+:::: g-col-12
+```{=html}
+<div class="series-section-header">
+  <div class="series-heading">
+    <span class="series-icon">⚛️</span>
+    <span>Elements</span>
+  </div>
+  <p class="series-subheading">周期表の1マスずつを、身近な例を挙げながら分かりやすく読み解く。</p>
+</div>
+```
 
-::: {.g-col-12}
+::: {#element-series}
+:::
+::::
+
+:::: g-col-12
 ```{=html}
 <div class="series-section-header">
   <div class="series-heading">
@@ -104,11 +127,11 @@ listing:
 </div>
 ```
 
-:::{#geo-onsen}
+::: {#geo-onsen}
 :::
-:::
+::::
 
-::: {.g-col-12}
+:::: g-col-12
 ```{=html}
 <div class="series-section-header">
   <div class="series-heading">
@@ -119,11 +142,11 @@ listing:
 </div>
 ```
 
-:::{#lab-notes}
+::: {#lab-notes}
 :::
-:::
+::::
 
-::: {.g-col-12}
+:::: g-col-12
 ```{=html}
 <div class="series-section-header">
   <div class="series-heading">
@@ -134,8 +157,7 @@ listing:
 </div>
 ```
 
-:::{#groundwater}
+::: {#groundwater}
 :::
-:::
-
 ::::
+:::::::::::

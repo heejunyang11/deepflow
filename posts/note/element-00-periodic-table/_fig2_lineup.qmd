@@ -1,0 +1,132 @@
+```{=html}
+<style>
+/* 明暗の三段。カード地 #FDFAF3 に対するコントラスト比は
+   ink 14.4 : dim 7.0 : faint 4.8。faint は出典行に使うので、
+   小さい字でも読めるよう WCAG AA（4.5:1）を下回らせない。 */
+.elup{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;
+  --hb:#BE640A;--cov:#0F6C8A;--rt:#B02A37;--vdw:#8C8271;
+  --h:#5E96C4;--he:#D69A2E;--other:#C42B3C;--o:#D8552A;--e:#2F6DB2;
+  --card:#FFFDF9;--card2:#FDFAF3;--line:#E7DECC;
+  --panel:#FAF5EB;--line2:#ECE3D2;--tint:122,96,52;
+  position:relative;margin:2.2rem 0;padding:26px 26px 20px;border-radius:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 14px 30px -20px rgba(96,74,42,.34);
+  color:var(--ink);overflow:hidden;
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+/* 方眼紙の罫。明色になって初めて意味を持つ装飾なので、暗色版より少し出す。 */
+.elup::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(var(--tint),.07) 1px,transparent 1px) 0 0/100% 34px,
+    linear-gradient(90deg,rgba(var(--tint),.07) 1px,transparent 1px) 0 0/34px 100%;
+  mask-image:radial-gradient(120% 90% at 30% 0%,#000 30%,transparent 78%);}
+/* サイト側テーマの p / b / h5 への色指定を打ち消す。
+   ただしこの行は要素セレクタを含むので詳細度が (0,1,1) になる。
+   図の側の指定も p.〜 の形にして同着にしないと、こちらが勝ってしまう。 */
+.elup p,.elup b,.elup strong,.elup h5,.elup span,
+.elup em,.elup s,.elup u,.elup i,.elup sub,.elup sup{color:inherit;}
+p.elup-h{font-size:1.5rem;font-weight:800;letter-spacing:.01em;
+  margin:0 0 5px;color:var(--ink);}
+p.elup-s{font-size:.95rem;color:var(--dim);margin:0 0 4px;line-height:1.65;}
+.elup-read{margin:2px 8px 0;padding:15px 17px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:1rem;line-height:1.85;color:var(--ink);min-height:2.6em;}
+.elup-read b{color:var(--hb);}
+p.elup-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
+  line-height:1.7;}
+@media (max-width:820px){
+  .elup{padding:20px 12px 16px;}
+  .elup-h{font-size:1.25rem;}
+  .elup-s{font-size:.86rem;}
+  .elup-read{font-size:.92rem;margin:2px 2px 0;padding:13px 14px;}
+  .elup-src{font-size:.76rem;}
+}
+@media (prefers-reduced-motion:reduce){.elup *{animation:none !important;}}
+
+.elup-grid{display:grid;gap:10px;margin:18px 8px 0;
+  grid-template-columns:repeat(auto-fill,minmax(178px,1fr));}
+.elup-c{position:relative;display:flex;gap:11px;align-items:flex-start;
+  padding:12px 12px 12px 11px;border-radius:12px;cursor:default;
+  background:linear-gradient(180deg,rgba(190,100,10,.16),
+    rgba(190,100,10,.06));
+  border:1px solid rgba(190,100,10,.34);
+  transition:background .17s ease,border-color .17s ease,
+    transform .17s ease;}
+.elup-c:hover{background:rgba(190,100,10,.3);
+  border-color:rgba(190,100,10,.8);transform:translateY(-2px);}
+
+.elup-sym{position:relative;flex:0 0 auto;width:46px;height:46px;
+  display:flex;align-items:center;justify-content:center;border-radius:10px;
+  background:#FFFDF9;border:1px solid rgba(190,100,10,.45);}
+.elup-sym u{position:absolute;top:3px;left:5px;text-decoration:none;
+  font-size:.58rem;font-weight:600;color:rgba(138,72,6,.85);line-height:1;}
+.elup-sym b{font-size:1.35rem;font-weight:800;color:#8A4806;line-height:1;
+  margin-top:4px;}
+
+.elup-tx{min-width:0;padding-top:1px;}
+.elup-tx h5{margin:0;font-size:1rem;font-weight:800;color:var(--ink);
+  line-height:1.3;}
+.elup-tx s{display:block;text-decoration:none;margin-top:4px;
+  font-size:.79rem;line-height:1.5;color:var(--dim);}
+.elup-tx em{display:inline-block;margin-top:6px;padding:1px 7px;
+  border-radius:999px;font-style:normal;font-size:.68rem;font-weight:700;
+  color:#FDFAF3;background:var(--hb);}
+.elup-tx em.w{color:var(--faint);background:rgba(122,96,52,.133);
+  border:1px solid rgba(122,96,52,.228);}
+
+.elup-note{margin:16px 8px 0;padding:14px 16px;border-radius:11px;
+  background:rgba(122,96,52,.085);border:1px solid rgba(122,96,52,.152);
+  font-size:.9rem;line-height:1.8;color:var(--dim);}
+.elup-note b{color:var(--hb);}
+
+@media (max-width:820px){
+  .elup-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:8px;margin:14px 2px 0;}
+  .elup-c{padding:10px 9px;gap:9px;}
+  .elup-sym{width:40px;height:40px;}
+  .elup-sym b{font-size:1.15rem;}
+  .elup-tx h5{font-size:.9rem;}
+  .elup-tx s{font-size:.72rem;}
+  .elup-note{font-size:.82rem;margin:13px 2px 0;padding:12px 13px;}
+}
+</style>
+<div class="elup fig-wide" id="elup0">
+<p class="elup-h">この連載で取り上げる14元素</p>
+<p class="elup-s">カードにカーソルを合わせる（スマホはタップ）と、周期表のどこにいるかが分かります。</p>
+
+<div class="elup-grid">
+<div class="elup-c" data-detail="周期表のいちばん左上。1族に置かれていますが金属ではなく、どの仲間にも収まりきらない特別な元素です。"><div class="elup-sym"><u>1</u><b>H</b></div><div class="elup-tx"><h5>水素</h5><s>レモンの酸味は、138億年前の味</s><em>第1回</em></div></div>
+<div class="elup-c" data-detail="4本の手で骨組みを作れるので、生命の材料になりました。<b>ケイ素（Si）と同じ列</b>です。"><div class="elup-sym"><u>6</u><b>C</b></div><div class="elup-tx"><h5>炭素</h5><s>同じ元素から、ダイヤと鉛筆の芯</s><em>第2回</em></div></div>
+<div class="elup-c" data-detail="空気のおよそ8割はこの元素です。<b>リン（P）と同じ列</b>。"><div class="elup-sym"><u>7</u><b>N</b></div><div class="elup-tx"><h5>窒素</h5><s>空気の8割を占める、ほどけない結びつき</s><em class="w">15族</em></div></div>
+<div class="elup-c" data-detail="地殻の重さの半分近くを占めます。<b>硫黄（S）と同じ列</b>なので、ふるまいがよく似ています。"><div class="elup-sym"><u>8</u><b>O</b></div><div class="elup-tx"><h5>酸素</h5><s>呼吸と、錆と、岩の半分</s><em class="w">16族</em></div></div>
+<div class="elup-c" data-detail="<b>カリウム（K）と同じ列</b>。性格がよく似ているのは、そのためです。"><div class="elup-sym"><u>11</u><b>Na</b></div><div class="elup-tx"><h5>ナトリウム</h5><s>水で燃える金属が、食卓の塩になる</s><em class="w">1族</em></div></div>
+<div class="elup-c" data-detail="葉緑素の中心にすわっている元素です。<b>カルシウム（Ca）と同じ列</b>。"><div class="elup-sym"><u>12</u><b>Mg</b></div><div class="elup-tx"><h5>マグネシウム</h5><s>葉が緑である理由</s><em class="w">2族</em></div></div>
+<div class="elup-c" data-detail="地殻でいちばん多い金属です。安く作れるようになったのは19世紀の終わりでした。"><div class="elup-sym"><u>13</u><b>Al</b></div><div class="elup-tx"><h5>アルミニウム</h5><s>かつては金より高価だった金属</s><em class="w">13族</em></div></div>
+<div class="elup-c" data-detail="地殻では酸素に次いで多い元素。<b>炭素（C）と同じ列</b>なので、炭素と同じように骨組みを作れます。"><div class="elup-sym"><u>14</u><b>Si</b></div><div class="elup-tx"><h5>ケイ素</h5><s>砂から、コンピュータへ</s><em class="w">14族</em></div></div>
+<div class="elup-c" data-detail="<b>窒素（N）と同じ列</b>。生き物に必要な量は少ないのに、これが尽きると何も育ちません。"><div class="elup-sym"><u>15</u><b>P</b></div><div class="elup-tx"><h5>リン</h5><s>骨と、DNAと、農業を変えた元素</s><em class="w">15族</em></div></div>
+<div class="elup-c" data-detail="<b>酸素（O）と同じ列</b>。ふるまいも酸素とよく似ています。"><div class="elup-sym"><u>16</u><b>S</b></div><div class="elup-tx"><h5>硫黄</h5><s>温泉のにおい、火山の黄色</s><em class="w">16族</em></div></div>
+<div class="elup-c" data-detail="あと1個で電子が満ちるので、1族のナトリウムと出会うと<b>塩</b>になります。"><div class="elup-sym"><u>17</u><b>Cl</b></div><div class="elup-tx"><h5>塩素</h5><s>猛毒の気体が、水道を守っている</s><em class="w">17族</em></div></div>
+<div class="elup-c" data-detail="<b>ナトリウム（Na）と同じ列</b>ですが、体の中での役割は対照的です。"><div class="elup-sym"><u>19</u><b>K</b></div><div class="elup-tx"><h5>カリウム</h5><s>細胞が電気を使うための元素</s><em class="w">1族</em></div></div>
+<div class="elup-c" data-detail="<b>マグネシウム（Mg）と同じ列</b>。地下水の硬さを決めているのもこの元素です。"><div class="elup-sym"><u>20</u><b>Ca</b></div><div class="elup-tx"><h5>カルシウム</h5><s>骨、貝殻、そして鍾乳洞</s><em class="w">2族</em></div></div>
+<div class="elup-c" data-detail="この連載で取り上げる中で、<b>唯一の遷移金属</b>です。3〜12族のまん中あたりにいます。"><div class="elup-sym"><u>26</u><b>Fe</b></div><div class="elup-tx"><h5>鉄</h5><s>星の核融合の、終着駅</s><em class="w">遷移金属</em></div></div>
+</div>
+<p class="elup-note">この14個は、思いつきで選んだわけではありません。よく見ると、<b>同じ列の相棒がそろって入っています</b>——ナトリウムとカリウム（1族）、マグネシウムとカルシウム（2族）、炭素とケイ素（14族）、窒素とリン（15族）、酸素と硫黄（16族）。片方が生き物の側で、もう片方が岩石や地下水の側にいることが多く、<b>2つ並べて読むと、地球と生命が同じ仕組みでできている</b>のが見えてきます。</p>
+<div class="elup-read">まずは <b>水素（H）</b> から始めて、炭素（C）へ進みます。3回目以降の順番はまだ決めていません。カードにカーソルを合わせる（スマホはタップ）と、その元素が周期表のどの列にいるかが出ます。</div>
+<p class="elup-src">顔ぶれは、生き物と地球をかたちづくる主要な元素から選びました。今後増えることがあります。</p>
+</div>
+
+<script>
+(function(){
+  var r=document.getElementById('elup0');if(!r)return;
+  var out=r.querySelector('.elup-read');if(!out)return;
+  var base=out.innerHTML;
+  r.querySelectorAll('[data-detail]').forEach(function(n){
+    function on(){out.innerHTML=n.getAttribute('data-detail');}
+    n.addEventListener('mouseenter',on);
+    n.addEventListener('click',on);
+    n.addEventListener('mouseleave',function(){out.innerHTML=base;});
+  });
+})();
+</script>
+
+```

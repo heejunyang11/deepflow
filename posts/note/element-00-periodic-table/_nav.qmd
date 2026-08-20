@@ -1,0 +1,61 @@
+```{=html}
+
+<style>
+.enav{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;--hb:#BE640A;
+  --card:#FFFDF9;--line:#E7DECC;
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin:2.6rem 0 0;padding-top:1.8rem;
+  border-top:1px solid var(--line);
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+.enav-c{display:flex;flex-direction:column;gap:5px;
+  padding:15px 17px;border-radius:13px;
+  background:var(--card);border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05);
+  text-decoration:none;color:var(--ink);
+  transition:border-color .17s ease,box-shadow .17s ease,transform .17s ease;}
+a.enav-c:hover{border-color:var(--hb);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 12px 24px -18px rgba(96,74,42,.5);
+  transform:translateY(-2px);}
+a.enav-c:focus-visible{outline:2px solid var(--hb);outline-offset:2px;}
+.enav-next{text-align:right;}
+
+/* 継承色に負けないよう、要素セレクタを含む形で指定する */
+.enav .enav-lb{font-size:.78rem;font-weight:700;letter-spacing:.06em;
+  color:var(--hb);}
+.enav .enav-no{font-size:.72rem;font-weight:700;color:var(--faint);
+  font-variant-numeric:tabular-nums;}
+.enav .enav-ti{font-size:.97rem;font-weight:700;line-height:1.55;
+  color:var(--ink);}
+.enav .enav-soon{font-size:.78rem;color:var(--faint);line-height:1.5;}
+
+/* 未公開の回。リンクにしないので、枠を破線にして触れないことを示す */
+.enav-c.is-soon{background:transparent;border-style:dashed;box-shadow:none;}
+.enav .is-soon .enav-ti{color:var(--dim);font-weight:400;}
+
+/* 空き枠。#0 には前回がないので、桁を合わせるためだけに置く */
+.enav-c.is-void{visibility:hidden;}
+
+.enav-idx{grid-column:1 / -1;margin:4px 0 0;text-align:center;}
+/* サイト側の a{color:… !important} には勝てない。
+   文字色は中の span に持たせて回避する（図と同じ手）。 */
+.enav .enav-idx a{font-size:.86rem;text-decoration:none;
+  border-bottom:1px solid rgba(122,96,52,.28);padding-bottom:1px;}
+.enav .enav-idx a span{color:var(--faint);}
+.enav .enav-idx a:hover{border-bottom-color:var(--hb);}
+.enav .enav-idx a:hover span{color:var(--hb);}
+.enav .enav-idx a:focus-visible{outline:2px solid var(--hb);outline-offset:3px;}
+
+@media (max-width:640px){
+  .enav{grid-template-columns:1fr;gap:9px;margin-top:2.2rem;}
+  .enav-c{padding:13px 14px;}
+  .enav-c.is-void{display:none;}
+  .enav .enav-ti{font-size:.9rem;}
+}
+</style>
+
+<nav class="enav" aria-label="連載内の移動">
+<div class="enav-c is-void" aria-hidden="true"></div>
+<a class="enav-c enav-next" href="/posts/note/element-01-hydrogen/"><span class="enav-lb">次回 →</span><span class="enav-no">#1</span><span class="enav-ti">水素（H）— レモンの酸っぱさは、138億年前のビッグバンの味～？</span></a>
+<p class="enav-idx"><a href="/note"><span>⚛️ 元素の話 — 全体の一覧へ</span></a></p>
+</nav>
+```

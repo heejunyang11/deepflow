@@ -1,0 +1,299 @@
+```{=html}
+<style>
+/* 明暗の三段。カード地 #FDFAF3 に対するコントラスト比は
+   ink 14.4 : dim 7.0 : faint 4.8。faint は出典行に使うので、
+   小さい字でも読めるよう WCAG AA（4.5:1）を下回らせない。 */
+.eptb{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;
+  --hb:#BE640A;--cov:#0F6C8A;--rt:#B02A37;--vdw:#8C8271;
+  --h:#5E96C4;--he:#D69A2E;--other:#C42B3C;--o:#D8552A;--e:#2F6DB2;
+  --card:#FFFDF9;--card2:#FDFAF3;--line:#E7DECC;
+  --panel:#FAF5EB;--line2:#ECE3D2;--tint:122,96,52;
+  position:relative;margin:2.2rem 0;padding:26px 26px 20px;border-radius:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 14px 30px -20px rgba(96,74,42,.34);
+  color:var(--ink);overflow:hidden;
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+/* 方眼紙の罫。明色になって初めて意味を持つ装飾なので、暗色版より少し出す。 */
+.eptb::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(var(--tint),.07) 1px,transparent 1px) 0 0/100% 34px,
+    linear-gradient(90deg,rgba(var(--tint),.07) 1px,transparent 1px) 0 0/34px 100%;
+  mask-image:radial-gradient(120% 90% at 30% 0%,#000 30%,transparent 78%);}
+/* サイト側テーマの p / b / h5 への色指定を打ち消す。
+   ただしこの行は要素セレクタを含むので詳細度が (0,1,1) になる。
+   図の側の指定も p.〜 の形にして同着にしないと、こちらが勝ってしまう。 */
+.eptb p,.eptb b,.eptb strong,.eptb h5,.eptb span,
+.eptb em,.eptb s,.eptb u,.eptb i,.eptb sub,.eptb sup{color:inherit;}
+p.eptb-h{font-size:1.5rem;font-weight:800;letter-spacing:.01em;
+  margin:0 0 5px;color:var(--ink);}
+p.eptb-s{font-size:.95rem;color:var(--dim);margin:0 0 4px;line-height:1.65;}
+.eptb-read{margin:2px 8px 0;padding:15px 17px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:1rem;line-height:1.85;color:var(--ink);min-height:2.6em;}
+.eptb-read b{color:var(--hb);}
+p.eptb-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
+  line-height:1.7;}
+@media (max-width:820px){
+  .eptb{padding:20px 12px 16px;}
+  .eptb-h{font-size:1.25rem;}
+  .eptb-s{font-size:.86rem;}
+  .eptb-read{font-size:.92rem;margin:2px 2px 0;padding:13px 14px;}
+  .eptb-src{font-size:.76rem;}
+}
+@media (prefers-reduced-motion:reduce){.eptb *{animation:none !important;}}
+
+.eptb-scroll{margin:16px 0 0;overflow-x:auto;padding-bottom:6px;
+  -webkit-overflow-scrolling:touch;}
+.eptb-tbl{display:grid;min-width:812px;gap:3px;
+  grid-template-columns:repeat(18,1fr);
+  grid-template-rows:26px repeat(7,40px) 16px repeat(2,40px);}
+
+/* --- 族ヘッダー --- */
+.eptb-g{display:flex;align-items:center;justify-content:center;
+  border-radius:7px;font-size:.8rem;font-weight:700;letter-spacing:.02em;
+  color:var(--dim);background:rgba(122,96,52,.095);
+  border:1px solid rgba(122,96,52,.133);cursor:pointer;
+  transition:color .16s ease,background .16s ease,border-color .16s ease;}
+.eptb-g:hover{color:var(--ink);background:rgba(94,150,196,.16);
+  border-color:rgba(94,150,196,.4);}
+
+/* --- 元素のマス --- */
+.eptb-c{position:relative;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;border-radius:7px;
+  background:rgba(122,96,52,.085);
+  border:1px solid rgba(122,96,52,.152);cursor:default;
+  transition:opacity .16s ease,background .16s ease,
+    border-color .16s ease,transform .16s ease;}
+.eptb-c u{position:absolute;top:2px;left:4px;text-decoration:none;
+  font-size:.56rem;font-weight:600;color:var(--faint);line-height:1;}
+.eptb-c b{font-size:1.02rem;font-weight:800;color:var(--ink);line-height:1;
+  margin-top:3px;}
+.eptb-c:hover{background:rgba(94,150,196,.18);
+  border-color:rgba(94,150,196,.45);transform:translateY(-1px);}
+.eptb-c.dim{opacity:.28;}
+
+/* --- 連載で取り上げる 14 元素 --- */
+.eptb-c.pk{background:linear-gradient(180deg,rgba(190,100,10,.28),
+    rgba(190,100,10,.13));border-color:rgba(190,100,10,.6);
+  box-shadow:0 1px 2px rgba(190,100,10,.16);}
+.eptb-c.pk u{color:rgba(138,72,6,.9);}
+.eptb-c.pk b{color:#8A4806;}
+.eptb-c.pk:hover{background:rgba(190,100,10,.4);
+  border-color:rgba(190,100,10,.95);}
+.eptb-c.pk i{position:absolute;right:3px;bottom:3px;width:5px;height:5px;
+  border-radius:50%;background:var(--hb);font-style:normal;
+  animation:eptb-pulse 3.2s ease-in-out infinite;}
+@keyframes eptb-pulse{0%,100%{opacity:.35}50%{opacity:1}}
+
+/* --- f ブロックの差し込み位置 --- */
+.eptb-ph{display:flex;align-items:center;justify-content:center;
+  border-radius:7px;font-size:.58rem;line-height:1.25;text-align:center;
+  color:var(--faint);background:rgba(122,96,52,.057);
+  border:1px dashed rgba(122,96,52,.304);}
+.eptb-rw{display:flex;align-items:center;justify-content:flex-end;
+  padding-right:8px;font-size:.66rem;color:var(--faint);}
+
+.eptb-leg{display:flex;flex-wrap:wrap;gap:8px 20px;margin:14px 8px 0;
+  font-size:.84rem;color:var(--dim);align-items:center;}
+.eptb-leg span{display:inline-flex;align-items:center;gap:7px;}
+.eptb-leg em{width:13px;height:13px;border-radius:4px;font-style:normal;}
+.eptb-leg .k1{background:linear-gradient(180deg,rgba(190,100,10,.5),
+    rgba(190,100,10,.22));border:1px solid rgba(190,100,10,.75);}
+.eptb-leg .k2{background:rgba(122,96,52,.095);
+  border:1px solid rgba(122,96,52,.266);}
+/* 表の上に出す注意書き。
+   efig.py の共通CSS `.eptb p{color:inherit}` は詳細度 (0,1,1) なので、
+   ここも `p.` を付けて (0,1,1) に揃えないと色が効かない。 */
+p.eptb-hint{margin:16px 8px 0;font-size:.88rem;font-weight:700;
+  color:var(--rt);letter-spacing:.01em;}
+
+@media (max-width:820px){
+  .eptb-tbl{min-width:668px;gap:2px;
+    grid-template-rows:22px repeat(7,33px) 13px repeat(2,33px);}
+  .eptb-c b{font-size:.86rem;}
+  .eptb-c u{font-size:.5rem;}
+  .eptb-g{font-size:.68rem;}
+  .eptb-ph{font-size:.5rem;}
+  .eptb-rw{display:none;}
+  .eptb-leg{font-size:.76rem;gap:6px 14px;}
+  p.eptb-hint{font-size:.8rem;margin:13px 2px 0;}
+}
+</style>
+<div class="eptb fig-wide" id="eptb0">
+<p class="eptb-h">周期表 — 縦にならぶと、性格が似る</p>
+<p class="eptb-s">上の帯（族の番号）にカーソルを合わせる（スマホはタップ）と、その列だけが残ります。オレンジに光っているのが、この連載で取り上げる14元素です。</p>
+
+<p class="eptb-hint">横に切れている場合は、表を左右にスワイプしてください。</p>
+<div class="eptb-scroll"><div class="eptb-tbl">
+<div class="eptb-g" data-g="1" data-detail="<b>1族 — アルカリ金属</b>　いちばん外側の電子を <b>1個</b> だけ持っていて、それを手放したがります。水に入れると激しく反応するのは、そのためです。ナトリウム（Na）とカリウム（K）がこの列です。ただし<b>水素だけは例外</b>で、金属ではありません。" style="grid-row:1;grid-column:1 / span 1">1</div>
+<div class="eptb-g" data-g="2" data-detail="<b>2族 — アルカリ土類金属</b>　外側の電子は <b>2個</b>。1族ほど激しくはありませんが、やはり手放したがります。マグネシウム（Mg）とカルシウム（Ca）がここ。骨も、貝殻も、鍾乳洞も、この列の元素でできています。" style="grid-row:1;grid-column:2 / span 1">2</div>
+<div class="eptb-g" data-g="tm" data-detail="<b>3〜12族 — 遷移金属</b>　電子のやりとりが一段ややこしく、同じ元素がいくつもの姿をとります。金属の色や、磁石になる性質は、この区画から生まれます。<b>鉄（Fe）</b>はここの住人です。" style="grid-row:1;grid-column:3 / span 10">3 〜 12</div>
+<div class="eptb-g" data-g="13" data-detail="<b>13族</b>　外側の電子は <b>3個</b>。アルミニウム（Al）がここです。軽くて丈夫で、しかも表面に自分で保護膜を作ります。" style="grid-row:1;grid-column:13 / span 1">13</div>
+<div class="eptb-g" data-g="14" data-detail="<b>14族</b>　外側の電子は <b>4個</b>。手放すにも受け取るにも中途半端なので、<b>手をつないで骨組みを作る</b>ほうを選びます。炭素（C）が生命を、ケイ素（Si）が岩石を作れるのは、このためです。" style="grid-row:1;grid-column:14 / span 1">14</div>
+<div class="eptb-g" data-g="15" data-detail="<b>15族</b>　外側の電子は <b>5個</b>。あと3個で満ちるので、3本の手で結びつきます。窒素（N）とリン（P）。DNAの背骨は、この2つでできています。" style="grid-row:1;grid-column:15 / span 1">15</div>
+<div class="eptb-g" data-g="16" data-detail="<b>16族 — カルコゲン</b>　外側の電子は <b>6個</b>。あと2個ほしいので、2本の手で結びつきます。酸素（O）と硫黄（S）。呼吸も、温泉のにおいも、この列です。" style="grid-row:1;grid-column:16 / span 1">16</div>
+<div class="eptb-g" data-g="17" data-detail="<b>17族 — ハロゲン</b>　外側の電子は <b>7個</b>。<b>あと1個で満ちる</b>ので、何が何でも1個ほしがります。反応が激しいのは、そのためです。塩素（Cl）がここです。" style="grid-row:1;grid-column:17 / span 1">17</div>
+<div class="eptb-g" data-g="18" data-detail="<b>18族 — 貴ガス</b>　外側の電子が <b>満ちています</b>。ほしいものが何もないので、ほとんど何とも反応しません。ヘリウム（He）やネオン（Ne）。この列だけが、周期表の中で満ち足りています。" style="grid-row:1;grid-column:18 / span 1">18</div>
+<div class="eptb-c pk" data-g="1" data-detail="<b>水素（H）</b>　原子番号 1　／　第1回<br>レモンの酸味は、138億年前の味。" style="grid-row:2;grid-column:1"><u>1</u><b>H</b><i></i></div>
+<div class="eptb-c" data-g="18" data-detail="<b>ヘリウム（He）</b>　原子番号 2" style="grid-row:2;grid-column:18"><u>2</u><b>He</b></div>
+<div class="eptb-c" data-g="1" data-detail="<b>リチウム（Li）</b>　原子番号 3" style="grid-row:3;grid-column:1"><u>3</u><b>Li</b></div>
+<div class="eptb-c" data-g="2" data-detail="<b>ベリリウム（Be）</b>　原子番号 4" style="grid-row:3;grid-column:2"><u>4</u><b>Be</b></div>
+<div class="eptb-c" data-g="13" data-detail="<b>ホウ素（B）</b>　原子番号 5" style="grid-row:3;grid-column:13"><u>5</u><b>B</b></div>
+<div class="eptb-c pk" data-g="14" data-detail="<b>炭素（C）</b>　原子番号 6　／　第2回<br>同じ元素から、ダイヤモンドと鉛筆の芯ができる。" style="grid-row:3;grid-column:14"><u>6</u><b>C</b><i></i></div>
+<div class="eptb-c pk" data-g="15" data-detail="<b>窒素（N）</b>　原子番号 7　／　この連載で取り上げます<br>ポテトチップスの袋を満たしている、ほどけない結びつき。" style="grid-row:3;grid-column:15"><u>7</u><b>N</b><i></i></div>
+<div class="eptb-c pk" data-g="16" data-detail="<b>酸素（O）</b>　原子番号 8　／　この連載で取り上げます<br>呼吸と、錆と、岩の半分。" style="grid-row:3;grid-column:16"><u>8</u><b>O</b><i></i></div>
+<div class="eptb-c" data-g="17" data-detail="<b>フッ素（F）</b>　原子番号 9" style="grid-row:3;grid-column:17"><u>9</u><b>F</b></div>
+<div class="eptb-c" data-g="18" data-detail="<b>ネオン（Ne）</b>　原子番号 10" style="grid-row:3;grid-column:18"><u>10</u><b>Ne</b></div>
+<div class="eptb-c pk" data-g="1" data-detail="<b>ナトリウム（Na）</b>　原子番号 11　／　この連載で取り上げます<br>水に投げこむと燃える金属が、食卓の塩になる。" style="grid-row:4;grid-column:1"><u>11</u><b>Na</b><i></i></div>
+<div class="eptb-c pk" data-g="2" data-detail="<b>マグネシウム（Mg）</b>　原子番号 12　／　この連載で取り上げます<br>葉が緑である理由。" style="grid-row:4;grid-column:2"><u>12</u><b>Mg</b><i></i></div>
+<div class="eptb-c pk" data-g="13" data-detail="<b>アルミニウム（Al）</b>　原子番号 13　／　この連載で取り上げます<br>かつては金より高価だった金属。" style="grid-row:4;grid-column:13"><u>13</u><b>Al</b><i></i></div>
+<div class="eptb-c pk" data-g="14" data-detail="<b>ケイ素（Si）</b>　原子番号 14　／　この連載で取り上げます<br>砂から、コンピュータへ。" style="grid-row:4;grid-column:14"><u>14</u><b>Si</b><i></i></div>
+<div class="eptb-c pk" data-g="15" data-detail="<b>リン（P）</b>　原子番号 15　／　この連載で取り上げます<br>骨と、DNAと、農業を変えた元素。" style="grid-row:4;grid-column:15"><u>15</u><b>P</b><i></i></div>
+<div class="eptb-c pk" data-g="16" data-detail="<b>硫黄（S）</b>　原子番号 16　／　この連載で取り上げます<br>温泉のにおい、火山の黄色。" style="grid-row:4;grid-column:16"><u>16</u><b>S</b><i></i></div>
+<div class="eptb-c pk" data-g="17" data-detail="<b>塩素（Cl）</b>　原子番号 17　／　この連載で取り上げます<br>猛毒の気体が、水道とプールを守っている。" style="grid-row:4;grid-column:17"><u>17</u><b>Cl</b><i></i></div>
+<div class="eptb-c" data-g="18" data-detail="<b>アルゴン（Ar）</b>　原子番号 18" style="grid-row:4;grid-column:18"><u>18</u><b>Ar</b></div>
+<div class="eptb-c pk" data-g="1" data-detail="<b>カリウム（K）</b>　原子番号 19　／　この連載で取り上げます<br>細胞が電気を使うための元素。" style="grid-row:5;grid-column:1"><u>19</u><b>K</b><i></i></div>
+<div class="eptb-c pk" data-g="2" data-detail="<b>カルシウム（Ca）</b>　原子番号 20　／　この連載で取り上げます<br>骨、貝殻、そして鍾乳洞。" style="grid-row:5;grid-column:2"><u>20</u><b>Ca</b><i></i></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>スカンジウム（Sc）</b>　原子番号 21" style="grid-row:5;grid-column:3"><u>21</u><b>Sc</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>チタン（Ti）</b>　原子番号 22" style="grid-row:5;grid-column:4"><u>22</u><b>Ti</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>バナジウム（V）</b>　原子番号 23" style="grid-row:5;grid-column:5"><u>23</u><b>V</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>クロム（Cr）</b>　原子番号 24" style="grid-row:5;grid-column:6"><u>24</u><b>Cr</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>マンガン（Mn）</b>　原子番号 25" style="grid-row:5;grid-column:7"><u>25</u><b>Mn</b></div>
+<div class="eptb-c pk" data-g="tm" data-detail="<b>鉄（Fe）</b>　原子番号 26　／　この連載で取り上げます<br>星の核融合の、終着駅。" style="grid-row:5;grid-column:8"><u>26</u><b>Fe</b><i></i></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>コバルト（Co）</b>　原子番号 27" style="grid-row:5;grid-column:9"><u>27</u><b>Co</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ニッケル（Ni）</b>　原子番号 28" style="grid-row:5;grid-column:10"><u>28</u><b>Ni</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>銅（Cu）</b>　原子番号 29" style="grid-row:5;grid-column:11"><u>29</u><b>Cu</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>亜鉛（Zn）</b>　原子番号 30" style="grid-row:5;grid-column:12"><u>30</u><b>Zn</b></div>
+<div class="eptb-c" data-g="13" data-detail="<b>ガリウム（Ga）</b>　原子番号 31" style="grid-row:5;grid-column:13"><u>31</u><b>Ga</b></div>
+<div class="eptb-c" data-g="14" data-detail="<b>ゲルマニウム（Ge）</b>　原子番号 32" style="grid-row:5;grid-column:14"><u>32</u><b>Ge</b></div>
+<div class="eptb-c" data-g="15" data-detail="<b>ヒ素（As）</b>　原子番号 33" style="grid-row:5;grid-column:15"><u>33</u><b>As</b></div>
+<div class="eptb-c" data-g="16" data-detail="<b>セレン（Se）</b>　原子番号 34" style="grid-row:5;grid-column:16"><u>34</u><b>Se</b></div>
+<div class="eptb-c" data-g="17" data-detail="<b>臭素（Br）</b>　原子番号 35" style="grid-row:5;grid-column:17"><u>35</u><b>Br</b></div>
+<div class="eptb-c" data-g="18" data-detail="<b>クリプトン（Kr）</b>　原子番号 36" style="grid-row:5;grid-column:18"><u>36</u><b>Kr</b></div>
+<div class="eptb-c" data-g="1" data-detail="<b>ルビジウム（Rb）</b>　原子番号 37" style="grid-row:6;grid-column:1"><u>37</u><b>Rb</b></div>
+<div class="eptb-c" data-g="2" data-detail="<b>ストロンチウム（Sr）</b>　原子番号 38" style="grid-row:6;grid-column:2"><u>38</u><b>Sr</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>イットリウム（Y）</b>　原子番号 39" style="grid-row:6;grid-column:3"><u>39</u><b>Y</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ジルコニウム（Zr）</b>　原子番号 40" style="grid-row:6;grid-column:4"><u>40</u><b>Zr</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ニオブ（Nb）</b>　原子番号 41" style="grid-row:6;grid-column:5"><u>41</u><b>Nb</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>モリブデン（Mo）</b>　原子番号 42" style="grid-row:6;grid-column:6"><u>42</u><b>Mo</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>テクネチウム（Tc）</b>　原子番号 43" style="grid-row:6;grid-column:7"><u>43</u><b>Tc</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ルテニウム（Ru）</b>　原子番号 44" style="grid-row:6;grid-column:8"><u>44</u><b>Ru</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ロジウム（Rh）</b>　原子番号 45" style="grid-row:6;grid-column:9"><u>45</u><b>Rh</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>パラジウム（Pd）</b>　原子番号 46" style="grid-row:6;grid-column:10"><u>46</u><b>Pd</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>銀（Ag）</b>　原子番号 47" style="grid-row:6;grid-column:11"><u>47</u><b>Ag</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>カドミウム（Cd）</b>　原子番号 48" style="grid-row:6;grid-column:12"><u>48</u><b>Cd</b></div>
+<div class="eptb-c" data-g="13" data-detail="<b>インジウム（In）</b>　原子番号 49" style="grid-row:6;grid-column:13"><u>49</u><b>In</b></div>
+<div class="eptb-c" data-g="14" data-detail="<b>スズ（Sn）</b>　原子番号 50" style="grid-row:6;grid-column:14"><u>50</u><b>Sn</b></div>
+<div class="eptb-c" data-g="15" data-detail="<b>アンチモン（Sb）</b>　原子番号 51" style="grid-row:6;grid-column:15"><u>51</u><b>Sb</b></div>
+<div class="eptb-c" data-g="16" data-detail="<b>テルル（Te）</b>　原子番号 52" style="grid-row:6;grid-column:16"><u>52</u><b>Te</b></div>
+<div class="eptb-c" data-g="17" data-detail="<b>ヨウ素（I）</b>　原子番号 53" style="grid-row:6;grid-column:17"><u>53</u><b>I</b></div>
+<div class="eptb-c" data-g="18" data-detail="<b>キセノン（Xe）</b>　原子番号 54" style="grid-row:6;grid-column:18"><u>54</u><b>Xe</b></div>
+<div class="eptb-c" data-g="1" data-detail="<b>セシウム（Cs）</b>　原子番号 55" style="grid-row:7;grid-column:1"><u>55</u><b>Cs</b></div>
+<div class="eptb-c" data-g="2" data-detail="<b>バリウム（Ba）</b>　原子番号 56" style="grid-row:7;grid-column:2"><u>56</u><b>Ba</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ランタン（La）</b>　原子番号 57" style="grid-row:10;grid-column:4"><u>57</u><b>La</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>セリウム（Ce）</b>　原子番号 58" style="grid-row:10;grid-column:5"><u>58</u><b>Ce</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>プラセオジム（Pr）</b>　原子番号 59" style="grid-row:10;grid-column:6"><u>59</u><b>Pr</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ネオジム（Nd）</b>　原子番号 60" style="grid-row:10;grid-column:7"><u>60</u><b>Nd</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>プロメチウム（Pm）</b>　原子番号 61" style="grid-row:10;grid-column:8"><u>61</u><b>Pm</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>サマリウム（Sm）</b>　原子番号 62" style="grid-row:10;grid-column:9"><u>62</u><b>Sm</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ユウロピウム（Eu）</b>　原子番号 63" style="grid-row:10;grid-column:10"><u>63</u><b>Eu</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ガドリニウム（Gd）</b>　原子番号 64" style="grid-row:10;grid-column:11"><u>64</u><b>Gd</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>テルビウム（Tb）</b>　原子番号 65" style="grid-row:10;grid-column:12"><u>65</u><b>Tb</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ジスプロシウム（Dy）</b>　原子番号 66" style="grid-row:10;grid-column:13"><u>66</u><b>Dy</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ホルミウム（Ho）</b>　原子番号 67" style="grid-row:10;grid-column:14"><u>67</u><b>Ho</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>エルビウム（Er）</b>　原子番号 68" style="grid-row:10;grid-column:15"><u>68</u><b>Er</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ツリウム（Tm）</b>　原子番号 69" style="grid-row:10;grid-column:16"><u>69</u><b>Tm</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>イッテルビウム（Yb）</b>　原子番号 70" style="grid-row:10;grid-column:17"><u>70</u><b>Yb</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ルテチウム（Lu）</b>　原子番号 71" style="grid-row:10;grid-column:18"><u>71</u><b>Lu</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ハフニウム（Hf）</b>　原子番号 72" style="grid-row:7;grid-column:4"><u>72</u><b>Hf</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>タンタル（Ta）</b>　原子番号 73" style="grid-row:7;grid-column:5"><u>73</u><b>Ta</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>タングステン（W）</b>　原子番号 74" style="grid-row:7;grid-column:6"><u>74</u><b>W</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>レニウム（Re）</b>　原子番号 75" style="grid-row:7;grid-column:7"><u>75</u><b>Re</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>オスミウム（Os）</b>　原子番号 76" style="grid-row:7;grid-column:8"><u>76</u><b>Os</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>イリジウム（Ir）</b>　原子番号 77" style="grid-row:7;grid-column:9"><u>77</u><b>Ir</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>白金（Pt）</b>　原子番号 78" style="grid-row:7;grid-column:10"><u>78</u><b>Pt</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>金（Au）</b>　原子番号 79" style="grid-row:7;grid-column:11"><u>79</u><b>Au</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>水銀（Hg）</b>　原子番号 80" style="grid-row:7;grid-column:12"><u>80</u><b>Hg</b></div>
+<div class="eptb-c" data-g="13" data-detail="<b>タリウム（Tl）</b>　原子番号 81" style="grid-row:7;grid-column:13"><u>81</u><b>Tl</b></div>
+<div class="eptb-c" data-g="14" data-detail="<b>鉛（Pb）</b>　原子番号 82" style="grid-row:7;grid-column:14"><u>82</u><b>Pb</b></div>
+<div class="eptb-c" data-g="15" data-detail="<b>ビスマス（Bi）</b>　原子番号 83" style="grid-row:7;grid-column:15"><u>83</u><b>Bi</b></div>
+<div class="eptb-c" data-g="16" data-detail="<b>ポロニウム（Po）</b>　原子番号 84" style="grid-row:7;grid-column:16"><u>84</u><b>Po</b></div>
+<div class="eptb-c" data-g="17" data-detail="<b>アスタチン（At）</b>　原子番号 85" style="grid-row:7;grid-column:17"><u>85</u><b>At</b></div>
+<div class="eptb-c" data-g="18" data-detail="<b>ラドン（Rn）</b>　原子番号 86" style="grid-row:7;grid-column:18"><u>86</u><b>Rn</b></div>
+<div class="eptb-c" data-g="1" data-detail="<b>フランシウム（Fr）</b>　原子番号 87" style="grid-row:8;grid-column:1"><u>87</u><b>Fr</b></div>
+<div class="eptb-c" data-g="2" data-detail="<b>ラジウム（Ra）</b>　原子番号 88" style="grid-row:8;grid-column:2"><u>88</u><b>Ra</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>アクチニウム（Ac）</b>　原子番号 89" style="grid-row:11;grid-column:4"><u>89</u><b>Ac</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>トリウム（Th）</b>　原子番号 90" style="grid-row:11;grid-column:5"><u>90</u><b>Th</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>プロトアクチニウム（Pa）</b>　原子番号 91" style="grid-row:11;grid-column:6"><u>91</u><b>Pa</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ウラン（U）</b>　原子番号 92" style="grid-row:11;grid-column:7"><u>92</u><b>U</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ネプツニウム（Np）</b>　原子番号 93" style="grid-row:11;grid-column:8"><u>93</u><b>Np</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>プルトニウム（Pu）</b>　原子番号 94" style="grid-row:11;grid-column:9"><u>94</u><b>Pu</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>アメリシウム（Am）</b>　原子番号 95" style="grid-row:11;grid-column:10"><u>95</u><b>Am</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>キュリウム（Cm）</b>　原子番号 96" style="grid-row:11;grid-column:11"><u>96</u><b>Cm</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>バークリウム（Bk）</b>　原子番号 97" style="grid-row:11;grid-column:12"><u>97</u><b>Bk</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>カリホルニウム（Cf）</b>　原子番号 98" style="grid-row:11;grid-column:13"><u>98</u><b>Cf</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>アインスタイニウム（Es）</b>　原子番号 99" style="grid-row:11;grid-column:14"><u>99</u><b>Es</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>フェルミウム（Fm）</b>　原子番号 100" style="grid-row:11;grid-column:15"><u>100</u><b>Fm</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>メンデレビウム（Md）</b>　原子番号 101" style="grid-row:11;grid-column:16"><u>101</u><b>Md</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ノーベリウム（No）</b>　原子番号 102" style="grid-row:11;grid-column:17"><u>102</u><b>No</b></div>
+<div class="eptb-c" data-g="f" data-detail="<b>ローレンシウム（Lr）</b>　原子番号 103" style="grid-row:11;grid-column:18"><u>103</u><b>Lr</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ラザホージウム（Rf）</b>　原子番号 104" style="grid-row:8;grid-column:4"><u>104</u><b>Rf</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ドブニウム（Db）</b>　原子番号 105" style="grid-row:8;grid-column:5"><u>105</u><b>Db</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>シーボーギウム（Sg）</b>　原子番号 106" style="grid-row:8;grid-column:6"><u>106</u><b>Sg</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ボーリウム（Bh）</b>　原子番号 107" style="grid-row:8;grid-column:7"><u>107</u><b>Bh</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ハッシウム（Hs）</b>　原子番号 108" style="grid-row:8;grid-column:8"><u>108</u><b>Hs</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>マイトネリウム（Mt）</b>　原子番号 109" style="grid-row:8;grid-column:9"><u>109</u><b>Mt</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>ダームスタチウム（Ds）</b>　原子番号 110" style="grid-row:8;grid-column:10"><u>110</u><b>Ds</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>レントゲニウム（Rg）</b>　原子番号 111" style="grid-row:8;grid-column:11"><u>111</u><b>Rg</b></div>
+<div class="eptb-c" data-g="tm" data-detail="<b>コペルニシウム（Cn）</b>　原子番号 112" style="grid-row:8;grid-column:12"><u>112</u><b>Cn</b></div>
+<div class="eptb-c" data-g="13" data-detail="<b>ニホニウム（Nh）</b>　原子番号 113" style="grid-row:8;grid-column:13"><u>113</u><b>Nh</b></div>
+<div class="eptb-c" data-g="14" data-detail="<b>フレロビウム（Fl）</b>　原子番号 114" style="grid-row:8;grid-column:14"><u>114</u><b>Fl</b></div>
+<div class="eptb-c" data-g="15" data-detail="<b>モスコビウム（Mc）</b>　原子番号 115" style="grid-row:8;grid-column:15"><u>115</u><b>Mc</b></div>
+<div class="eptb-c" data-g="16" data-detail="<b>リバモリウム（Lv）</b>　原子番号 116" style="grid-row:8;grid-column:16"><u>116</u><b>Lv</b></div>
+<div class="eptb-c" data-g="17" data-detail="<b>テネシン（Ts）</b>　原子番号 117" style="grid-row:8;grid-column:17"><u>117</u><b>Ts</b></div>
+<div class="eptb-c" data-g="18" data-detail="<b>オガネソン（Og）</b>　原子番号 118" style="grid-row:8;grid-column:18"><u>118</u><b>Og</b></div>
+<div class="eptb-ph" data-g="f" data-detail="<b>ランタノイド</b>　15個まとめて、この1マスに入ります。性質がよく似ているので、表の下へ切り出して並べるのがふつうです。" style="grid-row:7;grid-column:3">La<br>〜Lu</div>
+<div class="eptb-ph" data-g="f" data-detail="<b>アクチノイド</b>　こちらも15個で1マス。ウラン（U）やプルトニウム（Pu）はこの仲間です。" style="grid-row:8;grid-column:3">Ac<br>〜Lr</div>
+<div class="eptb-rw" style="grid-row:10;grid-column:1 / span 3">ランタノイド</div>
+<div class="eptb-rw" style="grid-row:11;grid-column:1 / span 3">アクチノイド</div>
+</div></div>
+<div class="eptb-leg"><span><em class="k1"></em>この連載で取り上げる14元素</span><span><em class="k2"></em>そのほかの元素</span></div>
+<div class="eptb-read">縦の列は、いちばん外側の電子の数が同じ仲間です。<b>つまり、縦にならぶ元素は性格が似ます。</b>上の帯か、元素のマスにカーソルを合わせる（スマホはタップ）と、ここに説明が出ます。</div>
+<p class="eptb-src">配置は IUPAC の周期表に従いました。日本語名は日本化学会 原子量専門委員会「原子量表（2026）」に収録の名称で、118 元素すべてを照合しています。113番ニホニウムは理化学研究所のグループが発見し、2016年に命名されました。</p>
+</div>
+
+<script>
+(function(){
+  var r=document.getElementById('eptb0');if(!r)return;
+  var out=r.querySelector('.eptb-read');if(!out)return;
+  var base=out.innerHTML;
+  r.querySelectorAll('[data-detail]').forEach(function(n){
+    function on(){out.innerHTML=n.getAttribute('data-detail');}
+    n.addEventListener('mouseenter',on);
+    n.addEventListener('click',on);
+    n.addEventListener('mouseleave',function(){out.innerHTML=base;});
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var r=document.getElementById('eptb0');if(!r)return;
+  var cells=r.querySelectorAll('.eptb-c');
+  function set(g){
+    cells.forEach(function(c){
+      c.classList.toggle('dim', g!==null && c.getAttribute('data-g')!==g);
+    });
+  }
+  r.querySelectorAll('.eptb-g').forEach(function(h){
+    var g=h.getAttribute('data-g');
+    function on(){set(g);}
+    h.addEventListener('mouseenter',on);
+    h.addEventListener('click',on);
+    h.addEventListener('mouseleave',function(){set(null);});
+  });
+})();
+</script>
+```
