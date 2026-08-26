@@ -1,0 +1,305 @@
+```{=html}
+<style>
+/* 明暗の三段。カード地 #FDFAF3 に対するコントラスト比は
+   ink 14.4 : dim 7.0 : faint 4.8。faint は出典行に使うので、
+   小さい字でも読めるよう WCAG AA（4.5:1）を下回らせない。 */
+.ehand{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;
+  --hb:#BE640A;--cov:#0F6C8A;--rt:#B02A37;--vdw:#8C8271;
+  --h:#5E96C4;--he:#D69A2E;--other:#C42B3C;--o:#D8552A;--e:#2F6DB2;
+  --card:#FFFDF9;--card2:#FDFAF3;--line:#E7DECC;
+  --panel:#FAF5EB;--line2:#ECE3D2;--tint:122,96,52;
+  position:relative;margin:2.2rem 0;padding:26px 26px 20px;border-radius:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 14px 30px -20px rgba(96,74,42,.34);
+  color:var(--ink);overflow:hidden;
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+/* 方眼紙の罫。明色になって初めて意味を持つ装飾なので、暗色版より少し出す。 */
+.ehand::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(var(--tint),.07) 1px,transparent 1px) 0 0/100% 34px,
+    linear-gradient(90deg,rgba(var(--tint),.07) 1px,transparent 1px) 0 0/34px 100%;
+  mask-image:radial-gradient(120% 90% at 30% 0%,#000 30%,transparent 78%);}
+/* サイト側テーマの p / b / h5 への色指定を打ち消す。
+   ただしこの行は要素セレクタを含むので詳細度が (0,1,1) になる。
+   図の側の指定も p.〜 の形にして同着にしないと、こちらが勝ってしまう。 */
+.ehand p,.ehand b,.ehand strong,.ehand h5,.ehand span,
+.ehand em,.ehand s,.ehand u,.ehand i,.ehand sub,.ehand sup{color:inherit;}
+p.ehand-h{font-size:1.5rem;font-weight:800;letter-spacing:.01em;
+  margin:0 0 5px;color:var(--ink);}
+p.ehand-s{font-size:.95rem;color:var(--dim);margin:0 0 4px;line-height:1.65;}
+.ehand-read{margin:2px 8px 0;padding:15px 17px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:1rem;line-height:1.85;color:var(--ink);min-height:2.6em;}
+.ehand-read b{color:var(--hb);}
+p.ehand-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
+  line-height:1.7;}
+@media (max-width:820px){
+  .ehand{padding:20px 12px 16px;}
+  .ehand-h{font-size:1.25rem;}
+  .ehand-s{font-size:.86rem;}
+  .ehand-read{font-size:.92rem;margin:2px 2px 0;padding:13px 14px;}
+  .ehand-src{font-size:.76rem;}
+}
+@media (prefers-reduced-motion:reduce){.ehand *{animation:none !important;}}
+
+/* 1 行 5 列。分子は枠いっぱいまで大きくなる（上限を決め打ちしない）。
+
+   最小幅を 130px にしてあるのは、5 列を保てる下限だから。
+   .fig-wide が効くのは画面 1280px 以上だけで、それより狭いと図は本文幅
+   （最大 802px、内側の余白を引いて約 750px）に戻る。150px にすると
+   5*150+4*10=790px となって入らず、「4 列＋1 列」に折り返してしまう。
+   130px なら 5*130+4*10=690px で収まる。手の数が 0→1→2→3→4 と
+   一列に並ぶことがこの図の骨なので、折り返させてはいけない。 */
+.ehand-row{display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:10px;margin:18px 0 6px;}
+
+.ehand-cell{display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:10px 4px 12px;border-radius:14px;cursor:default;
+  background:rgba(122,96,52,.035);
+  border:1px solid rgba(122,96,52,.13);
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;}
+.ehand-cell:hover{background:rgba(190,100,10,.07);
+  border-color:rgba(190,100,10,.42);transform:translateY(-3px);}
+
+/* 炭素の枠だけは、触れる前から少し前に出しておく */
+.ehand-cell.is-key{background:rgba(190,100,10,.06);
+  border-color:rgba(190,100,10,.3);}
+
+.ehand-cell svg{display:block;width:100%;height:auto;
+  -webkit-user-select:none;user-select:none;}
+
+.ehand-n{font-size:1.6rem;font-weight:800;line-height:1.15;color:var(--ink);
+  font-variant-numeric:tabular-nums;margin-top:2px;}
+.ehand-n em{font-style:normal;font-size:.9rem;font-weight:700;margin-left:2px;}
+.ehand-cell.is-key .ehand-n{color:var(--hb);}
+.ehand-f{font-size:1.02rem;font-weight:700;color:var(--dim);}
+.ehand-nm{font-size:.8rem;color:var(--faint);}
+
+/* グラデーションの置き場。場所は取らせない */
+.ehand-defs{position:absolute;width:0;height:0;overflow:hidden;}
+
+@media (max-width:820px){
+  .ehand-row{grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
+    gap:7px;margin:14px 0 4px;}
+  .ehand-cell{padding:7px 3px 9px;border-radius:11px;}
+  .ehand-n{font-size:1.2rem;}
+  .ehand-f{font-size:.88rem;}
+  .ehand-nm{font-size:.72rem;}
+}
+</style>
+<div class="ehand fig-wide" id="ehand1">
+<p class="ehand-h">手の数は、外側の席で決まる</p>
+<p class="ehand-s">それぞれの分子はゆっくり回っています。つかんで動かせば自分で回せます。カーソルを合わせる（スマホはタップ）と、その元素の事情が下に出ます。</p>
+
+<svg class="ehand-defs" width="0" height="0" aria-hidden="true"><defs><radialGradient id="ehand-b-C" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#B0AEAB"/><stop offset="32%" stop-color="#635F5A"/><stop offset="72%" stop-color="#3A342E"/><stop offset="100%" stop-color="#2B251E"/></radialGradient><radialGradient id="ehand-b-H" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#F5F1E9"/><stop offset="32%" stop-color="#EBE3D4"/><stop offset="72%" stop-color="#E6DCC8"/><stop offset="100%" stop-color="#888072"/></radialGradient><radialGradient id="ehand-b-He" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#DCC79F"/><stop offset="32%" stop-color="#BA9041"/><stop offset="72%" stop-color="#A8730F"/><stop offset="100%" stop-color="#67470E"/></radialGradient><radialGradient id="ehand-b-N" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#AABFD8"/><stop offset="32%" stop-color="#5780B2"/><stop offset="72%" stop-color="#2A5E9E"/><stop offset="100%" stop-color="#233C5B"/></radialGradient><radialGradient id="ehand-b-O" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#E3B3A4"/><stop offset="32%" stop-color="#C7684B"/><stop offset="72%" stop-color="#B8401B"/><stop offset="100%" stop-color="#6F2C14"/></radialGradient><radialGradient id="ehand-hl" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="55%" stop-color="#FFFFFF" stop-opacity=".38"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient><linearGradient id="ehand-cyl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8B7F6B"/><stop offset="16%" stop-color="#C6BAA3"/><stop offset="38%" stop-color="#E4DBC9"/><stop offset="62%" stop-color="#C2B49B"/><stop offset="100%" stop-color="#7E7259"/></linearGradient></defs></svg>
+<div class="ehand-row">
+<div class="ehand-cell" data-detail="ヘリウムの外側の席は&lt;b&gt;2個で満席&lt;/b&gt;です（いちばん内側の席だけは、2個で埋まります）。ほしいものも、押しつけたいものもありません。手は&lt;b&gt;0本&lt;/b&gt;。ほかの原子とほとんど結びつかず、原子1個のまま漂っています。">
+<svg viewBox="0 0 111.0 111.0" class="" role="img" aria-label="He の立体模型"><g data-scene="1" transform="translate(55.50 55.50)"><g data-a="0"><circle cx="0.00" cy="-0.00" r="8.47" fill="url(#ehand-b-He)" stroke="#563C0D" stroke-opacity=".38" stroke-width="0.60" opacity="1.000"/><ellipse cx="-2.79" cy="-3.22" rx="2.88" ry="2.03" fill="url(#ehand-hl)" opacity="0.920" transform="rotate(-24 -2.79 -3.22)"/></g></g></svg>
+<span class="ehand-n">0<em>本</em></span>
+<span class="ehand-f">He</span>
+<span class="ehand-nm">ヘリウム</span>
+</div>
+<div class="ehand-cell" data-detail="水素の外側には電子が&lt;b&gt;1個&lt;/b&gt;。満席まであと1個です。相手と1個ずつ出し合って分け合えば席が埋まるので、手は&lt;b&gt;1本&lt;/b&gt;。水素どうしが手をつないだのが水素分子（H₂）で、その長さ &lt;b&gt;0.741 Å&lt;/b&gt; は、あらゆる結合の中でも最も短い部類です。">
+<svg viewBox="0 0 111.0 111.0" class="" role="img" aria-label="H の立体模型"><g data-scene="1" transform="translate(55.50 55.87)"><g data-a="0"><circle cx="-15.56" cy="-0.00" r="9.37" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="1.000"/><ellipse cx="-18.65" cy="-3.56" rx="3.19" ry="2.25" fill="url(#ehand-hl)" opacity="0.920" transform="rotate(-24 -18.65 -3.56)"/></g><g data-a="1"><circle cx="15.56" cy="-0.00" r="9.37" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="1.000"/><ellipse cx="12.47" cy="-3.56" rx="3.19" ry="2.25" fill="url(#ehand-hl)" opacity="0.920" transform="rotate(-24 12.47 -3.56)"/></g><g data-s="0" transform="translate(-6.19 -0.00) rotate(0.00)"><rect x="0" y="-3.80" width="12.37" height="7.60" rx="2.58" fill="url(#ehand-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="12.37" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g></g></svg>
+<span class="ehand-n">1<em>本</em></span>
+<span class="ehand-f">H₂</span>
+<span class="ehand-nm">水素</span>
+</div>
+<div class="ehand-cell" data-detail="酸素の外側には電子が&lt;b&gt;6個&lt;/b&gt;。満席まであと2個なので、手は&lt;b&gt;2本&lt;/b&gt;。2本の手で水素を1個ずつつかまえたのが水（H₂O）です。2本は一直線ではなく&lt;b&gt;104.5°&lt;/b&gt;に折れていて、この「くの字」が水のふるまいのほとんどを決めています。">
+<svg viewBox="0 0 111.0 111.0" class="" role="img" aria-label="O の立体模型"><g data-scene="1" transform="translate(55.50 66.10)"><g data-a="1"><circle cx="31.81" cy="-24.01" r="9.24" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="0.976"/><ellipse cx="28.76" cy="-27.52" rx="3.14" ry="2.22" fill="url(#ehand-hl)" opacity="0.898" transform="rotate(-24 28.76 -27.52)"/></g><g data-a="2"><circle cx="-31.81" cy="-24.01" r="9.24" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="0.976"/><ellipse cx="-34.86" cy="-27.52" rx="3.14" ry="2.22" fill="url(#ehand-hl)" opacity="0.898" transform="rotate(-24 -34.86 -27.52)"/></g><g data-s="0" transform="translate(15.78 -11.91) rotate(-37.04)"><rect x="0" y="-3.77" width="10.80" height="7.54" rx="2.56" fill="url(#ehand-cyl)" opacity="0.982"/><rect x="0" y="-3.77" width="10.80" height="7.54" rx="2.56" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-s="1" transform="translate(-15.78 -11.91) rotate(-142.96)"><rect x="0" y="-3.77" width="10.80" height="7.54" rx="2.56" fill="url(#ehand-cyl)" opacity="0.982"/><rect x="0" y="-3.77" width="10.80" height="7.54" rx="2.56" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-a="0"><circle cx="0.00" cy="-0.00" r="19.96" fill="url(#ehand-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.90" opacity="1.000"/><ellipse cx="-6.59" cy="-7.58" rx="6.79" ry="4.79" fill="url(#ehand-hl)" opacity="0.920" transform="rotate(-24 -6.59 -7.58)"/></g></g></svg>
+<span class="ehand-n">2<em>本</em></span>
+<span class="ehand-f">H₂O</span>
+<span class="ehand-nm">水</span>
+</div>
+<div class="ehand-cell" data-detail="窒素の外側には電子が&lt;b&gt;5個&lt;/b&gt;。あと3個で満席なので、手は&lt;b&gt;3本&lt;/b&gt;。3本で水素をつかまえたのがアンモニア（NH₃）です。手は平らに広がらず&lt;b&gt;三角錐&lt;/b&gt;に開きます。余った1組の電子が上から押さえるためで、角は&lt;b&gt;106.7°&lt;/b&gt;です。">
+<svg viewBox="0 0 111.0 111.0" class="" role="img" aria-label="N の立体模型"><g data-scene="1" transform="translate(55.50 49.74)"><g data-a="3"><circle cx="34.09" cy="20.04" r="8.99" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="0.933"/><ellipse cx="31.13" cy="16.62" rx="3.06" ry="2.16" fill="url(#ehand-hl)" opacity="0.859" transform="rotate(-24 31.13 16.62)"/></g><g data-a="2"><circle cx="-34.09" cy="20.04" r="8.99" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="0.933"/><ellipse cx="-37.06" cy="16.62" rx="3.06" ry="2.16" fill="url(#ehand-hl)" opacity="0.859" transform="rotate(-24 -37.06 16.62)"/></g><g data-s="2" transform="translate(17.22 10.12) rotate(30.45)"><rect x="0" y="-3.71" width="10.85" height="7.42" rx="2.52" fill="url(#ehand-cyl)" opacity="0.948"/><rect x="0" y="-3.71" width="10.85" height="7.42" rx="2.52" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-s="1" transform="translate(-17.22 10.12) rotate(149.55)"><rect x="0" y="-3.71" width="10.85" height="7.42" rx="2.52" fill="url(#ehand-cyl)" opacity="0.948"/><rect x="0" y="-3.71" width="10.85" height="7.42" rx="2.52" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-a="0"><circle cx="0.00" cy="-0.00" r="21.47" fill="url(#ehand-b-N)" stroke="#213349" stroke-opacity=".38" stroke-width="0.97" opacity="1.000"/><ellipse cx="-7.09" cy="-8.16" rx="7.30" ry="5.15" fill="url(#ehand-hl)" opacity="0.920" transform="rotate(-24 -7.09 -8.16)"/></g><g data-s="0" transform="translate(0.00 3.41) rotate(90.00)"><rect x="0" y="-4.04" width="1.85" height="8.09" rx="2.75" fill="url(#ehand-cyl)" opacity="1.000"/><rect x="0" y="-4.04" width="1.85" height="8.09" rx="2.75" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-a="1"><circle cx="0.00" cy="6.76" r="10.40" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="1.000"/><ellipse cx="-3.43" cy="2.80" rx="3.54" ry="2.50" fill="url(#ehand-hl)" opacity="0.920" transform="rotate(-24 -3.43 2.80)"/></g></g></svg>
+<span class="ehand-n">3<em>本</em></span>
+<span class="ehand-f">NH₃</span>
+<span class="ehand-nm">アンモニア</span>
+</div>
+<div class="ehand-cell is-key" data-detail="炭素の外側には電子が&lt;b&gt;4個&lt;/b&gt;。&lt;b&gt;満席まで、ちょうど半分&lt;/b&gt;です。押しつけるには多すぎ、奪い取るには足りない。残された道は「分け合う」しかありません。4本の手は&lt;b&gt;正四面体&lt;/b&gt;の頂点へ、たがいに&lt;b&gt;109.5°&lt;/b&gt;離れて伸びます。この形が、炭素にどこまでも枝分かれする自由を与えました。">
+<svg viewBox="0 0 111.0 111.0" class="" role="img" aria-label="C の立体模型"><g data-scene="1" transform="translate(55.50 65.83)"><g data-a="4"><circle cx="37.28" cy="19.67" r="8.94" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="0.925"/><ellipse cx="34.32" cy="16.27" rx="3.04" ry="2.15" fill="url(#ehand-hl)" opacity="0.851" transform="rotate(-24 34.32 16.27)"/></g><g data-a="3"><circle cx="-37.28" cy="19.67" r="8.94" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="0.925"/><ellipse cx="-40.23" cy="16.27" rx="3.04" ry="2.15" fill="url(#ehand-hl)" opacity="0.851" transform="rotate(-24 -40.23 16.27)"/></g><g data-s="3" transform="translate(18.77 9.90) rotate(27.82)"><rect x="0" y="-3.70" width="12.28" height="7.39" rx="2.51" fill="url(#ehand-cyl)" opacity="0.940"/><rect x="0" y="-3.70" width="12.28" height="7.39" rx="2.51" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-s="2" transform="translate(-18.77 9.90) rotate(152.18)"><rect x="0" y="-3.70" width="12.28" height="7.39" rx="2.51" fill="url(#ehand-cyl)" opacity="0.940"/><rect x="0" y="-3.70" width="12.28" height="7.39" rx="2.51" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-a="1"><circle cx="0.00" cy="-44.48" r="9.12" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="0.956"/><ellipse cx="-3.01" cy="-47.95" rx="3.10" ry="2.19" fill="url(#ehand-hl)" opacity="0.880" transform="rotate(-24 -3.01 -47.95)"/></g><g data-s="0" transform="translate(0.00 -22.39) rotate(-90.00)"><rect x="0" y="-3.74" width="12.96" height="7.48" rx="2.54" fill="url(#ehand-cyl)" opacity="0.965"/><rect x="0" y="-3.74" width="12.96" height="7.48" rx="2.54" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-a="0"><circle cx="0.00" cy="-0.00" r="22.98" fill="url(#ehand-b-C)" stroke="#27211A" stroke-opacity=".38" stroke-width="1.03" opacity="1.000"/><ellipse cx="-7.58" cy="-8.73" rx="7.81" ry="5.52" fill="url(#ehand-hl)" opacity="0.920" transform="rotate(-24 -7.58 -8.73)"/></g><g data-s="1" transform="translate(0.00 2.59) rotate(90.00)"><rect x="0" y="-4.07" width="1.50" height="8.13" rx="2.77" fill="url(#ehand-cyl)" opacity="1.000"/><rect x="0" y="-4.07" width="1.50" height="8.13" rx="2.77" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-a="2"><circle cx="0.00" cy="5.15" r="10.49" fill="url(#ehand-b-H)" stroke="#70685B" stroke-opacity=".38" stroke-width="0.60" opacity="1.000"/><ellipse cx="-3.46" cy="1.16" rx="3.57" ry="2.52" fill="url(#ehand-hl)" opacity="0.920" transform="rotate(-24 -3.46 1.16)"/></g></g></svg>
+<span class="ehand-n">4<em>本</em></span>
+<span class="ehand-f">CH₄</span>
+<span class="ehand-nm">メタン</span>
+</div>
+</div>
+<div class="ehand-read">ヘリウムは0本、水素は1本、酸素は2本、窒素は3本。そして<b>炭素は4本</b>です。多いから王様なのではありません。4本は<b>押しつけるにも受け取るにも中途半端な数</b>で、そのため炭素は相手を選ばず、炭素どうしでも果てしなくつながっていけます。</div>
+<p class="ehand-src">形は絵ではなく、実測値から立体を組んで投影したものです。棒の長さと角度は H–H 0.741 Å／O–H 0.958 Å・104.48°／N–H 1.012 Å・106.67°／C–H 1.087 Å・109.47°（NIST CCCBDB 収録の実験値）。球の大きさは共有結合半径（Cordero et al. 2008）で、5つの図はすべて同じ縮尺です。1 Å＝1億分の1センチ。右へ行くほど手が長いのは、周期表を左へ戻るほど原子が大きいためです。</p>
+</div>
+
+<script>
+(function(){
+  var r=document.getElementById('ehand1');if(!r)return;
+  var out=r.querySelector('.ehand-read');if(!out)return;
+  var base=out.innerHTML;
+  r.querySelectorAll('[data-detail]').forEach(function(n){
+    function on(){out.innerHTML=n.getAttribute('data-detail');}
+    n.addEventListener('mouseenter',on);
+    n.addEventListener('click',on);
+    n.addEventListener('mouseleave',function(){out.innerHTML=base;});
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var D = {"scale":42.0,"tilt":-13.0,"ball":0.72,"bw":7.6,"sec":19.0,"rad":{"H":0.31,"He":0.28,"C":0.76,"N":0.71,"O":0.66,"Si":1.11},"gop":0.42,"gr":0.72,"spin":1,"mol":[{"k":"He","vs":1.7,"a":[{"p":[0.0,0.0,0.0],"e":"He","g":0,"v":[0.0,0.0,0.0]}],"b":[]},{"k":"H","vs":1.7,"a":[{"p":[-0.3705,0.0,0.0],"e":"H","g":0,"v":[0.0,0.0,0.0]},{"p":[0.3705,0.0,0.0],"e":"H","g":0,"v":[0.0,0.0,0.0]}],"b":[[0,1]]},{"k":"O","vs":1.7,"a":[{"p":[0.0,0.0,0.0],"e":"O","g":0,"v":[0.0,0.0,0.0]},{"p":[0.75737,0.58665,0.0],"e":"H","g":0,"v":[0.0,0.0,0.0]},{"p":[-0.75737,0.58665,0.0],"e":"H","g":0,"v":[0.0,0.0,0.0]}],"b":[[0,1],[0,2]]},{"k":"N","vs":1.7,"a":[{"p":[0.0,0.0,0.0],"e":"N","g":0,"v":[0.0,0.0,0.0]},{"p":[0.0,-0.38148,0.93735],"e":"H","g":0,"v":[0.0,0.0,0.0]},{"p":[-0.81177,-0.38148,-0.46867],"e":"H","g":0,"v":[0.0,0.0,0.0]},{"p":[0.81177,-0.38148,-0.46867],"e":"H","g":0,"v":[0.0,0.0,0.0]}],"b":[[0,1],[0,2],[0,3]]},{"k":"C","vs":1.7,"a":[{"p":[0.0,0.0,0.0],"e":"C","g":0,"v":[0.0,0.0,0.0]},{"p":[0.0,1.087,0.0],"e":"H","g":0,"v":[0.0,0.0,0.0]},{"p":[0.0,-0.36233,1.02483],"e":"H","g":0,"v":[0.0,0.0,0.0]},{"p":[-0.88753,-0.36233,-0.51242],"e":"H","g":0,"v":[0.0,0.0,0.0]},{"p":[0.88753,-0.36233,-0.51242],"e":"H","g":0,"v":[0.0,0.0,0.0]}],"b":[[0,1],[0,2],[0,3],[0,4]]}]};
+  var root = document.getElementById('ehand1');
+  if(!root || !window.requestAnimationFrame) return;
+  var svgs = root.querySelectorAll('.ehand-cell svg[viewBox]');
+  if(!svgs.length) return;
+
+  var T = D.tilt * Math.PI / 180, cosT = Math.cos(T), sinT = Math.sin(T);
+  function spun(p, a){
+    var ca = Math.cos(a), sa = Math.sin(a);
+    var x = p[0]*ca + p[2]*sa, z = -p[0]*sa + p[2]*ca, y = p[1];
+    return [x*D.scale, -(y*cosT - z*sinT)*D.scale, y*sinT + z*cosT];
+  }
+  function clamp01(v){ return v < 0 ? 0 : (v > 1 ? 1 : v); }
+  // 手前のものは沈ませない。奥へ下がったぶんだけ薄くする
+  function fade(z, k){ return 1 - k*clamp01(-z); }
+  function rad(e, z, g){
+    return D.rad[e]*D.scale*D.ball*(1 + 0.11*z)*(g ? D.gr : 1);
+  }
+  // 節点は data-a / data-s の番号で拾う。並び順は奥行きで毎回入れ替わるので、
+  // 文書に現れる順を当てにしてはいけない。
+  function byIndex(g, attr){
+    var out = [], ns = g.querySelectorAll('['+attr+']');
+    for(var k=0;k<ns.length;k++) out[+ns[k].getAttribute(attr)] = ns[k];
+    return out;
+  }
+
+  // 速さを分子ごとに少しずらす。全部そろって真横を向くと、
+  // 一瞬だけ全部が平たく見えてしまうため。
+  var SPEED = [1.00, 1.07, 0.93, 1.12, 0.88, 1.04];
+  var mols = [];
+  for(var i=0;i<svgs.length && i<D.mol.length;i++){
+    var g = svgs[i].querySelector('[data-scene]');
+    if(!g) continue;
+    mols.push({def: D.mol[i], g: g, svg: svgs[i],
+      speed: SPEED[i % SPEED.length], spin: 0, ph: 0, drag: null, order: '',
+      atoms: byIndex(g, 'data-a'), sticks: byIndex(g, 'data-s')});
+  }
+  if(!mols.length) return;
+
+  function draw(m){
+    var pos = [], k, kids = [];
+    // 振動の位相。sin で行って戻る。ph=0 なら焼き込んだ静止画と同じ姿になる
+    var ph = m.def.vs ? Math.sin(m.ph) : 0;
+    function at(a){
+      return [a.p[0] + a.v[0]*ph, a.p[1] + a.v[1]*ph, a.p[2] + a.v[2]*ph];
+    }
+    for(k=0;k<m.def.a.length;k++) pos.push(spun(at(m.def.a[k]), m.spin));
+
+    for(k=0;k<m.atoms.length;k++){
+      var A = m.def.a[k], P0 = pos[k], r = rad(A.e, P0[2], A.g);
+      var op = fade(P0[2], 0.18) * (A.g ? D.gop : 1);
+      var c = m.atoms[k].firstChild, h = c.nextSibling;
+      c.setAttribute('cx', P0[0].toFixed(2));
+      c.setAttribute('cy', P0[1].toFixed(2));
+      c.setAttribute('r',  r.toFixed(2));
+      c.setAttribute('stroke-width', Math.max(0.6, r*0.045).toFixed(2));
+      c.setAttribute('opacity', op.toFixed(3));
+      var hx = P0[0] - r*0.33, hy = P0[1] - r*0.38;
+      h.setAttribute('cx', hx.toFixed(2));
+      h.setAttribute('cy', hy.toFixed(2));
+      h.setAttribute('rx', (r*0.34).toFixed(2));
+      h.setAttribute('ry', (r*0.24).toFixed(2));
+      h.setAttribute('opacity', (0.92*op).toFixed(3));
+      h.setAttribute('transform','rotate(-24 '+hx.toFixed(2)+' '+hy.toFixed(2)+')');
+      kids.push([P0[2], m.atoms[k]]);
+    }
+
+    for(k=0;k<m.sticks.length;k++){
+      var b = m.def.b[k], ai = m.def.a[b[0]], aj = m.def.a[b[1]];
+      var pi = at(ai), pj = at(aj);
+      var d = [pj[0]-pi[0], pj[1]-pi[1], pj[2]-pi[2]];
+      var n = Math.sqrt(d[0]*d[0]+d[1]*d[1]+d[2]*d[2]) || 1;
+      var ri = D.rad[ai.e]*D.ball*(ai.g ? D.gr : 1);
+      var rj = D.rad[aj.e]*D.ball*(aj.g ? D.gr : 1);
+      var s = spun([pi[0]+d[0]/n*ri, pi[1]+d[1]/n*ri, pi[2]+d[2]/n*ri], m.spin);
+      var t = spun([pj[0]-d[0]/n*rj, pj[1]-d[1]/n*rj, pj[2]-d[2]/n*rj], m.spin);
+      var z = (s[2]+t[2])/2, w = D.bw*(1 + 0.10*z);
+      var L = Math.sqrt((t[0]-s[0])*(t[0]-s[0]) + (t[1]-s[1])*(t[1]-s[1]));
+      var a = Math.atan2(t[1]-s[1], t[0]-s[0])*180/Math.PI;
+      m.sticks[k].setAttribute('transform',
+        'translate('+s[0].toFixed(2)+' '+s[1].toFixed(2)+') rotate('+a.toFixed(2)+')');
+      var r1 = m.sticks[k].firstChild, r2 = r1.nextSibling;
+      [r1, r2].forEach(function(rc){
+        rc.setAttribute('y', (-w/2).toFixed(2));
+        rc.setAttribute('width',  L.toFixed(2));
+        rc.setAttribute('height', w.toFixed(2));
+        rc.setAttribute('rx', (w*0.34).toFixed(2));
+      });
+      r1.setAttribute('opacity',
+        (fade(z, 0.22) * ((ai.g || aj.g) ? D.gop : 1)).toFixed(3));
+      kids.push([z, m.sticks[k]]);
+    }
+
+    // 奥のものから並べ直す。順番が変わったときだけ触る
+    kids.sort(function(p, q){ return p[0] - q[0]; });
+    var key = kids.map(function(p){
+      return p[1].getAttribute('data-a') !== null
+        ? 'a'+p[1].getAttribute('data-a') : 's'+p[1].getAttribute('data-s');
+    }).join(',');
+    if(key !== m.order){
+      m.order = key;
+      for(k=0;k<kids.length;k++) m.g.appendChild(kids[k][1]);
+    }
+  }
+
+  // つかんで回せるようにする。指でも動くが、縦のスクロールは邪魔しない
+  mols.forEach(function(m){
+    m.svg.style.touchAction = 'pan-y';
+    m.svg.style.cursor = 'grab';
+    m.svg.addEventListener('pointerdown', function(ev){
+      m.drag = {x: ev.clientX, spin: m.spin};
+      m.svg.style.cursor = 'grabbing';
+      if(m.svg.setPointerCapture) m.svg.setPointerCapture(ev.pointerId);
+    });
+    m.svg.addEventListener('pointermove', function(ev){
+      if(!m.drag) return;
+      m.spin = m.drag.spin + (ev.clientX - m.drag.x) * 0.014;
+      draw(m);
+    });
+    function release(){
+      if(m.drag){ m.drag = null; m.svg.style.cursor = 'grab'; }
+    }
+    m.svg.addEventListener('pointerup', release);
+    m.svg.addEventListener('pointercancel', release);
+    window.addEventListener('pointerup', release);   // 捕捉に失敗したとき用
+  });
+
+  // 動きを減らす設定なら、自分で回す以外は動かさない
+  if(window.matchMedia &&
+     window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var visible = true;
+  if(window.IntersectionObserver){
+    new IntersectionObserver(function(es){ visible = es[0].isIntersecting; },
+      {rootMargin: '80px'}).observe(root);
+  }
+  var last = 0, prev = 0;
+  function tick(now){
+    requestAnimationFrame(tick);
+    if(now - last < 33) return;              // 毎秒 30 コマで足りる
+    var dt = prev ? Math.min(0.1, (now - prev)/1000) : 0;
+    last = now; prev = now;
+    if(!visible) return;
+    var step = 2*Math.PI * dt / D.sec;
+    for(var i=0;i<mols.length;i++){
+      var m = mols[i];
+      if(D.spin && !m.drag) m.spin += step * m.speed;
+      if(m.def.vs) m.ph += 2*Math.PI * dt / m.def.vs;
+      if(D.spin || m.def.vs) draw(m);
+    }
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+
+```

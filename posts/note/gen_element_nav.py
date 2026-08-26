@@ -26,7 +26,9 @@ BASE = '/posts/note/'          # サイト内リンクは拡張子なし（CLAUD
 SERIES = [
     ('element-00-periodic-table', '#0', None),
     ('element-01-hydrogen',       '#1', None),
-    ('element-02-carbon',         '#2', '炭素（C）— 元素の王様'),
+    ('element-02-carbon',         '#2', None),
+    ('element-03-oxygen',         '#3', None),
+    ('element-04-nitrogen',       '#4', '窒素（N）— 空気の8割を、使えない'),
 ]
 
 CSS = """

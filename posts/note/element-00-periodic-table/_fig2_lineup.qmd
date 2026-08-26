@@ -95,7 +95,7 @@ p.elup-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
 <p class="elup-s">カードにカーソルを合わせる（スマホはタップ）と、周期表のどこにいるかが分かります。</p>
 
 <div class="elup-grid">
-<div class="elup-c" data-detail="周期表のいちばん左上。1族に置かれていますが金属ではなく、どの仲間にも収まりきらない特別な元素です。"><div class="elup-sym"><u>1</u><b>H</b></div><div class="elup-tx"><h5>水素</h5><s>レモンの酸味は、138億年前の味</s><em>第1回</em></div></div>
+<div class="elup-c" data-detail="周期表のいちばん左上。1族に置かれていますが金属ではなく、どの仲間にも収まりきらない特別な元素です。"><div class="elup-sym"><u>1</u><b>H</b></div><div class="elup-tx"><h5>水素</h5><s>朝の寝癖が、水で直る理由</s><em>第1回</em></div></div>
 <div class="elup-c" data-detail="4本の手で骨組みを作れるので、生命の材料になりました。<b>ケイ素（Si）と同じ列</b>です。"><div class="elup-sym"><u>6</u><b>C</b></div><div class="elup-tx"><h5>炭素</h5><s>同じ元素から、ダイヤと鉛筆の芯</s><em>第2回</em></div></div>
 <div class="elup-c" data-detail="空気のおよそ8割はこの元素です。<b>リン（P）と同じ列</b>。"><div class="elup-sym"><u>7</u><b>N</b></div><div class="elup-tx"><h5>窒素</h5><s>空気の8割を占める、ほどけない結びつき</s><em class="w">15族</em></div></div>
 <div class="elup-c" data-detail="地殻の重さの半分近くを占めます。<b>硫黄（S）と同じ列</b>なので、ふるまいがよく似ています。"><div class="elup-sym"><u>8</u><b>O</b></div><div class="elup-tx"><h5>酸素</h5><s>呼吸と、錆と、岩の半分</s><em class="w">16族</em></div></div>
@@ -108,7 +108,7 @@ p.elup-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
 <div class="elup-c" data-detail="あと1個で電子が満ちるので、1族のナトリウムと出会うと<b>塩</b>になります。"><div class="elup-sym"><u>17</u><b>Cl</b></div><div class="elup-tx"><h5>塩素</h5><s>猛毒の気体が、水道を守っている</s><em class="w">17族</em></div></div>
 <div class="elup-c" data-detail="<b>ナトリウム（Na）と同じ列</b>ですが、体の中での役割は対照的です。"><div class="elup-sym"><u>19</u><b>K</b></div><div class="elup-tx"><h5>カリウム</h5><s>細胞が電気を使うための元素</s><em class="w">1族</em></div></div>
 <div class="elup-c" data-detail="<b>マグネシウム（Mg）と同じ列</b>。地下水の硬さを決めているのもこの元素です。"><div class="elup-sym"><u>20</u><b>Ca</b></div><div class="elup-tx"><h5>カルシウム</h5><s>骨、貝殻、そして鍾乳洞</s><em class="w">2族</em></div></div>
-<div class="elup-c" data-detail="この連載で取り上げる中で、<b>唯一の遷移金属</b>です。3〜12族のまん中あたりにいます。"><div class="elup-sym"><u>26</u><b>Fe</b></div><div class="elup-tx"><h5>鉄</h5><s>星の核融合の、終着駅</s><em class="w">遷移金属</em></div></div>
+<div class="elup-c" data-detail="この連載で取り上げる中で、<b>唯一の遷移金属</b>です。3〜12族のまん中あたりにいます。"><div class="elup-sym"><u>26</u><b>Fe</b></div><div class="elup-tx"><h5>鉄</h5><s>血の赤さと、釘の錆は同じもの</s><em class="w">遷移金属</em></div></div>
 </div>
 <p class="elup-note">この14個は、思いつきで選んだわけではありません。よく見ると、<b>同じ列の相棒がそろって入っています</b>——ナトリウムとカリウム（1族）、マグネシウムとカルシウム（2族）、炭素とケイ素（14族）、窒素とリン（15族）、酸素と硫黄（16族）。片方が生き物の側で、もう片方が岩石や地下水の側にいることが多く、<b>2つ並べて読むと、地球と生命が同じ仕組みでできている</b>のが見えてきます。</p>
 <div class="elup-read">まずは <b>水素（H）</b> から始めて、炭素（C）へ進みます。3回目以降の順番はまだ決めていません。カードにカーソルを合わせる（スマホはタップ）と、その元素が周期表のどの列にいるかが出ます。</div>

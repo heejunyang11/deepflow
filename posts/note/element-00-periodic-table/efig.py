@@ -80,6 +80,18 @@ HOVER_JS = """
 """
 
 
+def attr(s):
+    """属性値に入れる文字列を安全にする。
+
+    読み取り帯へ差し替える文章には <b> などのタグが入っている。
+    生のまま属性に書くと、SVG の中では XML として不正になる。
+    実体参照にしておけば、JavaScript が getAttribute で読み戻したとき
+    元の HTML に戻るので、タグはそのまま効く。
+    """
+    return (s.replace('&', '&amp;').replace('<', '&lt;')
+             .replace('>', '&gt;').replace('"', '&quot;'))
+
+
 def css(prefix, extra=''):
     return '<style>' + (BASE_CSS % {'p': prefix}) + extra + '</style>'
 

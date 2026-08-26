@@ -1,0 +1,343 @@
+```{=html}
+<style>
+/* 明暗の三段。カード地 #FDFAF3 に対するコントラスト比は
+   ink 14.4 : dim 7.0 : faint 4.8。faint は出典行に使うので、
+   小さい字でも読めるよう WCAG AA（4.5:1）を下回らせない。 */
+.eir{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;
+  --hb:#BE640A;--cov:#0F6C8A;--rt:#B02A37;--vdw:#8C8271;
+  --h:#5E96C4;--he:#D69A2E;--other:#C42B3C;--o:#D8552A;--e:#2F6DB2;
+  --card:#FFFDF9;--card2:#FDFAF3;--line:#E7DECC;
+  --panel:#FAF5EB;--line2:#ECE3D2;--tint:122,96,52;
+  position:relative;margin:2.2rem 0;padding:26px 26px 20px;border-radius:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 14px 30px -20px rgba(96,74,42,.34);
+  color:var(--ink);overflow:hidden;
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+/* 方眼紙の罫。明色になって初めて意味を持つ装飾なので、暗色版より少し出す。 */
+.eir::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(var(--tint),.07) 1px,transparent 1px) 0 0/100% 34px,
+    linear-gradient(90deg,rgba(var(--tint),.07) 1px,transparent 1px) 0 0/34px 100%;
+  mask-image:radial-gradient(120% 90% at 30% 0%,#000 30%,transparent 78%);}
+/* サイト側テーマの p / b / h5 への色指定を打ち消す。
+   ただしこの行は要素セレクタを含むので詳細度が (0,1,1) になる。
+   図の側の指定も p.〜 の形にして同着にしないと、こちらが勝ってしまう。 */
+.eir p,.eir b,.eir strong,.eir h5,.eir span,
+.eir em,.eir s,.eir u,.eir i,.eir sub,.eir sup{color:inherit;}
+p.eir-h{font-size:1.5rem;font-weight:800;letter-spacing:.01em;
+  margin:0 0 5px;color:var(--ink);}
+p.eir-s{font-size:.95rem;color:var(--dim);margin:0 0 4px;line-height:1.65;}
+.eir-read{margin:2px 8px 0;padding:15px 17px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:1rem;line-height:1.85;color:var(--ink);min-height:2.6em;}
+.eir-read b{color:var(--hb);}
+p.eir-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
+  line-height:1.7;}
+@media (max-width:820px){
+  .eir{padding:20px 12px 16px;}
+  .eir-h{font-size:1.25rem;}
+  .eir-s{font-size:.86rem;}
+  .eir-read{font-size:.92rem;margin:2px 2px 0;padding:13px 14px;}
+  .eir-src{font-size:.76rem;}
+}
+@media (prefers-reduced-motion:reduce){.eir *{animation:none !important;}}
+
+.eir-row{display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(128px,1fr));
+  gap:9px;margin:18px 0 6px;}
+
+.eir-cell{display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:11px 4px 13px;border-radius:14px;cursor:default;
+  background:rgba(122,96,52,.035);
+  border:1px solid rgba(122,96,52,.13);
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;}
+.eir-cell:hover{transform:translateY(-3px);}
+.eir-cell.is-catch{background:rgba(190,100,10,.08);
+  border-color:rgba(190,100,10,.45);}
+.eir-cell svg{display:block;width:100%;height:auto;
+  -webkit-user-select:none;user-select:none;}
+
+.eir-f{font-size:1.1rem;font-weight:800;color:var(--ink);margin-top:3px;}
+.eir-nm{font-size:.74rem;color:var(--faint);}
+.eir-wn{font-size:.78rem;font-weight:700;color:var(--dim);
+  font-variant-numeric:tabular-nums;margin-top:3px;line-height:1.4;
+  text-align:center;}
+.eir-wn em{font-style:normal;display:block;font-weight:800;color:var(--ink);}
+.eir-v{font-size:.86rem;font-weight:800;margin-top:6px;
+  padding:3px 10px;border-radius:999px;white-space:nowrap;}
+.eir-v.is-pass{color:var(--dim);background:rgba(122,96,52,.1);}
+.eir-v.is-weak{color:#8A5A12;background:rgba(190,100,10,.16);}
+.eir-v.is-catch{color:#FFFDF9;background:var(--hb);}
+
+/* 波数と波長の対応。ここを外すと cm⁻¹ が読者に届かない */
+.eir-unit{margin:16px 8px 0;padding:13px 16px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:.9rem;line-height:1.85;color:var(--ink);}
+.eir-unit b{color:var(--hb);}
+.eir-unit code{font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:.94em;background:rgba(122,96,52,.09);padding:1px 6px;
+  border-radius:5px;color:var(--ink);}
+
+.eir-spec{margin:22px 8px 0;}
+.eir-spec svg{display:block;width:100%;height:auto;}
+
+/* まとめの表。2つの条件が両方そろうのは1行だけ、と目で分かるように */
+.eir-tw{margin:18px 8px 0;overflow-x:auto;}
+.eir-tab{width:100%;border-collapse:collapse;font-size:.86rem;
+  min-width:520px;}
+.eir-tab th,.eir-tab td{padding:8px 9px;text-align:center;
+  border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums;}
+.eir-tab th{font-size:.78rem;font-weight:700;color:var(--faint);
+  border-bottom:1.5px solid rgba(122,96,52,.3);}
+.eir-tab td:first-child,.eir-tab th:first-child{text-align:left;
+  white-space:nowrap;}
+.eir-tab tr.is-catch td{background:rgba(190,100,10,.09);font-weight:700;}
+.eir-tab tr.is-catch td:first-child{color:var(--hb);}
+.eir-yes{color:var(--hb);font-weight:800;}
+.eir-no{color:var(--faint);}
+.eir-heat{display:flex;align-items:center;gap:6px;justify-content:center;}
+.eir-heat u{display:block;height:8px;border-radius:4px;
+  background:linear-gradient(90deg,#D8874A,#B0561F);text-decoration:none;}
+
+.eir-cap{margin:13px 8px 0;font-size:.84rem;color:var(--dim);
+  line-height:1.75;}
+.eir-defs{position:absolute;width:0;height:0;overflow:hidden;}
+
+@media (max-width:820px){
+  .eir-row{grid-template-columns:repeat(auto-fit,minmax(108px,1fr));
+    gap:6px;margin:14px 0 4px;}
+  .eir-cell{padding:8px 2px 10px;border-radius:11px;}
+  .eir-f{font-size:.92rem;}
+  .eir-nm{font-size:.64rem;}
+  .eir-wn{font-size:.68rem;}
+  .eir-v{font-size:.74rem;padding:2px 7px;}
+  .eir-unit{margin:13px 2px 0;padding:11px 12px;font-size:.8rem;}
+  .eir-spec,.eir-tw{margin:16px 2px 0;}
+  .eir-cap{font-size:.78rem;margin:11px 2px 0;}
+}
+</style>
+<div class="eir fig-wide" id="eir1">
+<p class="eir-h">なぜ二酸化炭素だけが、熱をつかまえるのか</p>
+<p class="eir-s">5つとも揺れています。<b>そのうち3つは同じ二酸化炭素で、揺れ方だけが違います。</b>カーソルを合わせる（スマホはタップ）と、その揺れの事情が下に出ます。</p>
+
+<svg class="eir-defs" width="0" height="0" aria-hidden="true"><defs><radialGradient id="eir-b-C" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#B0AEAB"/><stop offset="32%" stop-color="#635F5A"/><stop offset="72%" stop-color="#3A342E"/><stop offset="100%" stop-color="#2B251E"/></radialGradient><radialGradient id="eir-b-N" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#AABFD8"/><stop offset="32%" stop-color="#5780B2"/><stop offset="72%" stop-color="#2A5E9E"/><stop offset="100%" stop-color="#233C5B"/></radialGradient><radialGradient id="eir-b-O" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#E3B3A4"/><stop offset="32%" stop-color="#C7684B"/><stop offset="72%" stop-color="#B8401B"/><stop offset="100%" stop-color="#6F2C14"/></radialGradient><radialGradient id="eir-hl" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="55%" stop-color="#FFFFFF" stop-opacity=".38"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient><linearGradient id="eir-cyl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8B7F6B"/><stop offset="16%" stop-color="#C6BAA3"/><stop offset="38%" stop-color="#E4DBC9"/><stop offset="62%" stop-color="#C2B49B"/><stop offset="100%" stop-color="#7E7259"/></linearGradient></defs></svg>
+<div class="eir-row">
+<div class="eir-cell" data-detail="窒素分子は&lt;b&gt;同じ原子2個&lt;/b&gt;。伸びても縮んでも左右が同じままなので、電気の偏りが&lt;b&gt;生まれません&lt;/b&gt;。赤外線は偏りを揺さぶって初めて吸われるので、窒素は熱を&lt;b&gt;素通り&lt;/b&gt;させます。しかもこの揺れのテンポは &lt;b&gt;2359 cm⁻¹＝4.24 μm&lt;/b&gt;。そこは地球がほとんど熱を出していない場所です。&lt;b&gt;二重の意味で、関係がありません。&lt;/b&gt;">
+<svg viewBox="0 0 176.1 176.1" class="" role="img" aria-label="窒素分子が伸びちぢみする様子"><g data-scene="1" transform="translate(88.07 89.39)"><g data-a="0"><circle cx="-28.55" cy="-0.00" r="19.20" fill="url(#eir-b-N)" stroke="#213349" stroke-opacity=".38" stroke-width="0.86" opacity="1.000"/><ellipse cx="-34.88" cy="-7.30" rx="6.53" ry="4.61" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 -34.88 -7.30)"/></g><g data-a="1"><circle cx="28.55" cy="-0.00" r="19.20" fill="url(#eir-b-N)" stroke="#213349" stroke-opacity=".38" stroke-width="0.86" opacity="1.000"/><ellipse cx="22.21" cy="-7.30" rx="6.53" ry="4.61" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 22.21 -7.30)"/></g><g data-s="0" transform="translate(-9.35 -0.00) rotate(0.00)"><rect x="0" y="-3.80" width="18.70" height="7.60" rx="2.58" fill="url(#eir-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="18.70" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g></g></svg>
+<span class="eir-f">N₂</span>
+<span class="eir-nm">窒素・伸びちぢみ</span>
+<span class="eir-wn">2359 cm⁻¹<em>＝ 4.24 μm</em></span>
+<span class="eir-v is-pass">素通り</span>
+</div>
+<div class="eir-cell" data-detail="これは二酸化炭素の別の揺れ方です。酸素2個が同じ向きへ、炭素が逆へ動くので、&lt;b&gt;片方の結合が伸びて片方が縮みます&lt;/b&gt;。左右の対称が崩れるので&lt;b&gt;電気の偏りが生まれ、赤外線を吸えます&lt;/b&gt;。ところがテンポが &lt;b&gt;2349 cm⁻¹＝4.26 μm&lt;/b&gt;。&lt;b&gt;そこには地球の熱がほとんどありません&lt;/b&gt;（山の頂上の 8% ほど）。吸う力はあるのに、吸うものが来ない——温室効果にはほぼ効きません。">
+<svg viewBox="0 0 176.1 176.1" class="" role="img" aria-label="二酸化炭素が逆向きに伸びちぢみする様子"><g data-scene="1" transform="translate(88.07 90.39)"><g data-a="0"><circle cx="0.00" cy="-0.00" r="20.55" fill="url(#eir-b-C)" stroke="#27211A" stroke-opacity=".38" stroke-width="0.92" opacity="1.000"/><ellipse cx="-6.78" cy="-7.81" rx="6.99" ry="4.93" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 -6.78 -7.81)"/></g><g data-a="1"><circle cx="-60.42" cy="-0.00" r="17.85" fill="url(#eir-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.80" opacity="1.000"/><ellipse cx="-66.31" cy="-6.78" rx="6.07" ry="4.28" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 -66.31 -6.78)"/></g><g data-a="2"><circle cx="60.42" cy="-0.00" r="17.85" fill="url(#eir-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.80" opacity="1.000"/><ellipse cx="54.53" cy="-6.78" rx="6.07" ry="4.28" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 54.53 -6.78)"/></g><g data-s="0" transform="translate(-20.55 -0.00) rotate(180.00)"><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="url(#eir-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-s="1" transform="translate(20.55 -0.00) rotate(0.00)"><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="url(#eir-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g></g></svg>
+<span class="eir-f">CO₂</span>
+<span class="eir-nm">二酸化炭素・逆向きに伸縮</span>
+<span class="eir-wn">2349 cm⁻¹<em>＝ 4.26 μm</em></span>
+<span class="eir-v is-weak">つかまえる</span>
+</div>
+<div class="eir-cell" data-detail="酸素も&lt;b&gt;同じ原子2個&lt;/b&gt;なので、理由は窒素とまったく同じです。左右対称のまま揺れるので、偏りが生まれず&lt;b&gt;素通り&lt;/b&gt;。ただし波長は &lt;b&gt;1580 cm⁻¹＝6.33 μm&lt;/b&gt; で、ここには地球の熱がそこそこあります（頂上の 54%）。&lt;b&gt;熱はあるのに、吸う仕組みが無い。&lt;/b&gt;窒素と酸素で空気の 99%。空気のほぼ全部が、熱に対して透明です。">
+<svg viewBox="0 0 176.1 176.1" class="" role="img" aria-label="酸素分子が伸びちぢみする様子"><g data-scene="1" transform="translate(88.07 89.42)"><g data-a="0"><circle cx="-31.41" cy="-0.00" r="17.85" fill="url(#eir-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.80" opacity="1.000"/><ellipse cx="-37.30" cy="-6.78" rx="6.07" ry="4.28" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 -37.30 -6.78)"/></g><g data-a="1"><circle cx="31.41" cy="-0.00" r="17.85" fill="url(#eir-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.80" opacity="1.000"/><ellipse cx="25.52" cy="-6.78" rx="6.07" ry="4.28" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 25.52 -6.78)"/></g><g data-s="0" transform="translate(-13.56 -0.00) rotate(0.00)"><rect x="0" y="-3.80" width="27.12" height="7.60" rx="2.58" fill="url(#eir-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="27.12" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g></g></svg>
+<span class="eir-f">O₂</span>
+<span class="eir-nm">酸素・伸びちぢみ</span>
+<span class="eir-wn">1580 cm⁻¹<em>＝ 6.33 μm</em></span>
+<span class="eir-v is-pass">素通り</span>
+</div>
+<div class="eir-cell" data-detail="これも二酸化炭素です。2つの酸素が&lt;b&gt;同時に外へ出て、同時に戻る&lt;/b&gt;。このとき左右の引っぱりが打ち消し合い、&lt;b&gt;偏りが生まれません&lt;/b&gt;。波長は &lt;b&gt;1333 cm⁻¹＝7.50 μm&lt;/b&gt;——&lt;b&gt;地球の熱がいちばん豊富にある帯（頂上の 79%）&lt;/b&gt;です。それでも吸いません。大事なのは分子の名前ではなく、&lt;b&gt;揺れ方が左右対称かどうか&lt;/b&gt;だけだと分かります。">
+<svg viewBox="0 0 176.1 176.1" class="" role="img" aria-label="二酸化炭素が対称に伸びちぢみする様子"><g data-scene="1" transform="translate(88.07 90.54)"><g data-a="0"><circle cx="0.00" cy="-0.00" r="20.55" fill="url(#eir-b-C)" stroke="#27211A" stroke-opacity=".38" stroke-width="0.92" opacity="1.000"/><ellipse cx="-6.78" cy="-7.81" rx="6.99" ry="4.93" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 -6.78 -7.81)"/></g><g data-a="1"><circle cx="-60.42" cy="-0.00" r="17.85" fill="url(#eir-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.80" opacity="1.000"/><ellipse cx="-66.31" cy="-6.78" rx="6.07" ry="4.28" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 -66.31 -6.78)"/></g><g data-a="2"><circle cx="60.42" cy="-0.00" r="17.85" fill="url(#eir-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.80" opacity="1.000"/><ellipse cx="54.53" cy="-6.78" rx="6.07" ry="4.28" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 54.53 -6.78)"/></g><g data-s="0" transform="translate(-20.55 -0.00) rotate(180.00)"><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="url(#eir-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-s="1" transform="translate(20.55 -0.00) rotate(0.00)"><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="url(#eir-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g></g></svg>
+<span class="eir-f">CO₂</span>
+<span class="eir-nm">二酸化炭素・対称に伸縮</span>
+<span class="eir-wn">1333 cm⁻¹<em>＝ 7.50 μm</em></span>
+<span class="eir-v is-pass">素通り</span>
+</div>
+<div class="eir-cell is-catch" data-detail="そして、この揺れ方。酸素2個が上へ、炭素が下へ動いて&lt;b&gt;「く」の字に折れます&lt;/b&gt;。折れた瞬間に左右の対称が崩れ、&lt;b&gt;電気の偏りが生まれる&lt;/b&gt;。波長は &lt;b&gt;667 cm⁻¹＝14.99 μm&lt;/b&gt;。そして地球はここで、頂上の 72% にあたる強さで熱を出しています。&lt;b&gt;「偏りが生まれる」と「そこに熱がある」が、両方そろう唯一の揺れ&lt;/b&gt;。これが温室効果の正体です。">
+<svg viewBox="0 0 176.1 176.1" class="" role="img" aria-label="二酸化炭素が折れ曲がる様子"><g data-scene="1" transform="translate(88.07 90.25)"><g data-a="0"><circle cx="0.00" cy="-0.00" r="20.55" fill="url(#eir-b-C)" stroke="#27211A" stroke-opacity=".38" stroke-width="0.92" opacity="1.000"/><ellipse cx="-6.78" cy="-7.81" rx="6.99" ry="4.93" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 -6.78 -7.81)"/></g><g data-a="1"><circle cx="-60.42" cy="-0.00" r="17.85" fill="url(#eir-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.80" opacity="1.000"/><ellipse cx="-66.31" cy="-6.78" rx="6.07" ry="4.28" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 -66.31 -6.78)"/></g><g data-a="2"><circle cx="60.42" cy="-0.00" r="17.85" fill="url(#eir-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.80" opacity="1.000"/><ellipse cx="54.53" cy="-6.78" rx="6.07" ry="4.28" fill="url(#eir-hl)" opacity="0.920" transform="rotate(-24 54.53 -6.78)"/></g><g data-s="0" transform="translate(-20.55 -0.00) rotate(180.00)"><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="url(#eir-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g><g data-s="1" transform="translate(20.55 -0.00) rotate(0.00)"><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="url(#eir-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="22.03" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g></g></svg>
+<span class="eir-f">CO₂</span>
+<span class="eir-nm">二酸化炭素・折れ曲がる</span>
+<span class="eir-wn">667 cm⁻¹<em>＝ 14.99 μm</em></span>
+<span class="eir-v is-catch">つかまえる</span>
+</div>
+</div>
+<div class="eir-unit"><b>cm⁻¹（波数）とは、「1 cm のあいだに波が何個入るか」</b>です。数が大きいほど波は短くなります。波長との関係はただの割り算で、<code>波長（μm）＝ 10000 ÷ 波数（cm⁻¹）</code>。たとえば <code>10000 ÷ 667 ＝ 15.0 μm</code>。化学では分子の揺れのテンポを cm⁻¹ で、気象では光を μm で呼ぶ習わしなので、この2つは<b>同じものの言い換え</b>だと思ってください。<br>そして分子は、<b>自分の揺れとテンポが合った波長の光だけ</b>を吸います（共鳴）。ブランコを押すのと同じで、合っていない間隔で押しても大きくなりません。ですから「この揺れは、この波長だけを吸う」という一対一の対応ができます。</div>
+<div class="eir-spec"><svg viewBox="0 0 900 262" role="img" aria-label="地球が出す赤外線の分布と、5つの揺れの波長"><defs><linearGradient id="eir-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D8874A" stop-opacity=".5"/><stop offset="100%" stop-color="#D8874A" stop-opacity=".1"/></linearGradient></defs><rect x="332.7" y="56.0" width="71.2" height="140.0" fill="rgba(190,100,10,.18)" stroke="rgba(190,100,10,.5)" stroke-width="1"/><path d="M58.0 196.0 L59.4 196.0 L60.7 196.0 L62.1 196.0 L63.4 196.0 L64.8 196.0 L66.1 196.0 L67.5 196.0 L68.9 196.0 L70.2 196.0 L71.6 196.0 L72.9 196.0 L74.3 196.0 L75.6 196.0 L77.0 196.0 L78.3 196.0 L79.7 196.0 L81.1 196.0 L82.4 196.0 L83.8 196.0 L85.1 196.0 L86.5 196.0 L87.8 196.0 L89.2 196.0 L90.6 196.0 L91.9 196.0 L93.3 196.0 L94.6 196.0 L96.0 196.0 L97.3 196.0 L98.7 196.0 L100.1 196.0 L101.4 196.0 L102.8 196.0 L104.1 196.0 L105.5 196.0 L106.8 196.0 L108.2 196.0 L109.6 195.9 L110.9 195.9 L112.3 195.9 L113.6 195.8 L115.0 195.8 L116.3 195.7 L117.7 195.6 L119.0 195.5 L120.4 195.4 L121.8 195.2 L123.1 195.0 L124.5 194.7 L125.8 194.4 L127.2 194.1 L128.5 193.7 L129.9 193.3 L131.3 192.8 L132.6 192.2 L134.0 191.6 L135.3 190.9 L136.7 190.2 L138.0 189.3 L139.4 188.4 L140.8 187.4 L142.1 186.4 L143.5 185.2 L144.8 184.0 L146.2 182.7 L147.5 181.3 L148.9 179.9 L150.3 178.4 L151.6 176.8 L153.0 175.1 L154.3 173.4 L155.7 171.6 L157.0 169.7 L158.4 167.8 L159.8 165.8 L161.1 163.8 L162.5 161.7 L163.8 159.6 L165.2 157.4 L166.5 155.2 L167.9 153.0 L169.2 150.7 L170.6 148.4 L172.0 146.1 L173.3 143.7 L174.7 141.4 L176.0 139.0 L177.4 136.6 L178.7 134.3 L180.1 131.9 L181.5 129.5 L182.8 127.2 L184.2 124.8 L185.5 122.5 L186.9 120.2 L188.2 117.9 L189.6 115.6 L191.0 113.4 L192.3 111.2 L193.7 109.0 L195.0 106.8 L196.4 104.7 L197.7 102.6 L199.1 100.6 L200.4 98.6 L201.8 96.6 L203.2 94.7 L204.5 92.8 L205.9 91.0 L207.2 89.2 L208.6 87.5 L209.9 85.8 L211.3 84.1 L212.7 82.5 L214.0 81.0 L215.4 79.5 L216.7 78.0 L218.1 76.6 L219.4 75.3 L220.8 74.0 L222.2 72.7 L223.5 71.5 L224.9 70.4 L226.2 69.3 L227.6 68.2 L228.9 67.2 L230.3 66.3 L231.7 65.4 L233.0 64.5 L234.4 63.7 L235.7 62.9 L237.1 62.2 L238.4 61.5 L239.8 60.9 L241.2 60.3 L242.5 59.7 L243.9 59.2 L245.2 58.7 L246.6 58.3 L247.9 57.9 L249.3 57.6 L250.6 57.3 L252.0 57.0 L253.4 56.7 L254.7 56.5 L256.1 56.4 L257.4 56.2 L258.8 56.1 L260.1 56.1 L261.5 56.0 L262.9 56.0 L264.2 56.0 L265.6 56.1 L266.9 56.1 L268.3 56.2 L269.6 56.4 L271.0 56.5 L272.4 56.7 L273.7 56.9 L275.1 57.1 L276.4 57.4 L277.8 57.7 L279.1 58.0 L280.5 58.3 L281.9 58.6 L283.2 59.0 L284.6 59.3 L285.9 59.7 L287.3 60.1 L288.6 60.5 L290.0 61.0 L291.3 61.4 L292.7 61.9 L294.1 62.4 L295.4 62.9 L296.8 63.4 L298.1 63.9 L299.5 64.4 L300.8 65.0 L302.2 65.5 L303.6 66.1 L304.9 66.7 L306.3 67.3 L307.6 67.9 L309.0 68.5 L310.3 69.1 L311.7 69.7 L313.1 70.3 L314.4 70.9 L315.8 71.6 L317.1 72.2 L318.5 72.9 L319.8 73.5 L321.2 74.2 L322.6 74.9 L323.9 75.5 L325.3 76.2 L326.6 76.9 L328.0 77.6 L329.3 78.3 L330.7 78.9 L332.0 79.6 L333.4 80.3 L334.8 81.0 L336.1 81.7 L337.5 82.4 L338.8 83.1 L340.2 83.8 L341.5 84.5 L342.9 85.2 L344.3 85.9 L345.6 86.6 L347.0 87.3 L348.3 88.0 L349.7 88.7 L351.0 89.4 L352.4 90.1 L353.8 90.8 L355.1 91.5 L356.5 92.2 L357.8 92.9 L359.2 93.6 L360.5 94.3 L361.9 95.0 L363.2 95.7 L364.6 96.4 L366.0 97.1 L367.3 97.7 L368.7 98.4 L370.0 99.1 L371.4 99.8 L372.7 100.5 L374.1 101.1 L375.5 101.8 L376.8 102.5 L378.2 103.1 L379.5 103.8 L380.9 104.5 L382.2 105.1 L383.6 105.8 L385.0 106.4 L386.3 107.1 L387.7 107.7 L389.0 108.4 L390.4 109.0 L391.7 109.6 L393.1 110.3 L394.5 110.9 L395.8 111.5 L397.2 112.1 L398.5 112.8 L399.9 113.4 L401.2 114.0 L402.6 114.6 L403.9 115.2 L405.3 115.8 L406.7 116.4 L408.0 117.0 L409.4 117.6 L410.7 118.2 L412.1 118.7 L413.4 119.3 L414.8 119.9 L416.2 120.5 L417.5 121.0 L418.9 121.6 L420.2 122.1 L421.6 122.7 L422.9 123.3 L424.3 123.8 L425.7 124.3 L427.0 124.9 L428.4 125.4 L429.7 126.0 L431.1 126.5 L432.4 127.0 L433.8 127.5 L435.2 128.0 L436.5 128.6 L437.9 129.1 L439.2 129.6 L440.6 130.1 L441.9 130.6 L443.3 131.1 L444.6 131.6 L446.0 132.1 L447.4 132.5 L448.7 133.0 L450.1 133.5 L451.4 134.0 L452.8 134.4 L454.1 134.9 L455.5 135.4 L456.9 135.8 L458.2 136.3 L459.6 136.7 L460.9 137.2 L462.3 137.6 L463.6 138.1 L465.0 138.5 L466.4 138.9 L467.7 139.4 L469.1 139.8 L470.4 140.2 L471.8 140.7 L473.1 141.1 L474.5 141.5 L475.9 141.9 L477.2 142.3 L478.6 142.7 L479.9 143.1 L481.3 143.5 L482.6 143.9 L484.0 144.3 L485.4 144.7 L486.7 145.1 L488.1 145.5 L489.4 145.8 L490.8 146.2 L492.1 146.6 L493.5 147.0 L494.8 147.3 L496.2 147.7 L497.6 148.1 L498.9 148.4 L500.3 148.8 L501.6 149.1 L503.0 149.5 L504.3 149.8 L505.7 150.2 L507.1 150.5 L508.4 150.8 L509.8 151.2 L511.1 151.5 L512.5 151.8 L513.8 152.2 L515.2 152.5 L516.6 152.8 L517.9 153.1 L519.3 153.5 L520.6 153.8 L522.0 154.1 L523.3 154.4 L524.7 154.7 L526.0 155.0 L527.4 155.3 L528.8 155.6 L530.1 155.9 L531.5 156.2 L532.8 156.5 L534.2 156.8 L535.5 157.1 L536.9 157.3 L538.3 157.6 L539.6 157.9 L541.0 158.2 L542.3 158.5 L543.7 158.7 L545.0 159.0 L546.4 159.3 L547.8 159.5 L549.1 159.8 L550.5 160.1 L551.8 160.3 L553.2 160.6 L554.5 160.8 L555.9 161.1 L557.3 161.3 L558.6 161.6 L560.0 161.8 L561.3 162.1 L562.7 162.3 L564.0 162.6 L565.4 162.8 L566.8 163.0 L568.1 163.3 L569.5 163.5 L570.8 163.7 L572.2 164.0 L573.5 164.2 L574.9 164.4 L576.2 164.7 L577.6 164.9 L579.0 165.1 L580.3 165.3 L581.7 165.5 L583.0 165.7 L584.4 166.0 L585.7 166.2 L587.1 166.4 L588.5 166.6 L589.8 166.8 L591.2 167.0 L592.5 167.2 L593.9 167.4 L595.2 167.6 L596.6 167.8 L598.0 168.0 L599.3 168.2 L600.7 168.4 L602.0 168.6 L603.4 168.8 L604.7 169.0 L606.1 169.1 L607.5 169.3 L608.8 169.5 L610.2 169.7 L611.5 169.9 L612.9 170.1 L614.2 170.2 L615.6 170.4 L616.9 170.6 L618.3 170.8 L619.7 170.9 L621.0 171.1 L622.4 171.3 L623.7 171.4 L625.1 171.6 L626.4 171.8 L627.8 171.9 L629.2 172.1 L630.5 172.3 L631.9 172.4 L633.2 172.6 L634.6 172.7 L635.9 172.9 L637.3 173.1 L638.7 173.2 L640.0 173.4 L641.4 173.5 L642.7 173.7 L644.1 173.8 L645.4 174.0 L646.8 174.1 L648.1 174.3 L649.5 174.4 L650.9 174.5 L652.2 174.7 L653.6 174.8 L654.9 175.0 L656.3 175.1 L657.6 175.2 L659.0 175.4 L660.4 175.5 L661.7 175.6 L663.1 175.8 L664.4 175.9 L665.8 176.0 L667.1 176.2 L668.5 176.3 L669.9 176.4 L671.2 176.6 L672.6 176.7 L673.9 176.8 L675.3 176.9 L676.6 177.1 L678.0 177.2 L679.4 177.3 L680.7 177.4 L682.1 177.5 L683.4 177.7 L684.8 177.8 L686.1 177.9 L687.5 178.0 L688.9 178.1 L690.2 178.2 L691.6 178.4 L692.9 178.5 L694.3 178.6 L695.6 178.7 L697.0 178.8 L698.3 178.9 L699.7 179.0 L701.1 179.1 L702.4 179.2 L703.8 179.3 L705.1 179.4 L706.5 179.6 L707.8 179.7 L709.2 179.8 L710.6 179.9 L711.9 180.0 L713.3 180.1 L714.6 180.2 L716.0 180.3 L717.3 180.4 L718.7 180.5 L720.1 180.6 L721.4 180.6 L722.8 180.7 L724.1 180.8 L725.5 180.9 L726.8 181.0 L728.2 181.1 L729.5 181.2 L730.9 181.3 L732.3 181.4 L733.6 181.5 L735.0 181.6 L736.3 181.7 L737.7 181.7 L739.0 181.8 L740.4 181.9 L741.8 182.0 L743.1 182.1 L744.5 182.2 L745.8 182.3 L747.2 182.3 L748.5 182.4 L749.9 182.5 L751.3 182.6 L752.6 182.7 L754.0 182.7 L755.3 182.8 L756.7 182.9 L758.0 183.0 L759.4 183.1 L760.8 183.1 L762.1 183.2 L763.5 183.3 L764.8 183.4 L766.2 183.4 L767.5 183.5 L768.9 183.6 L770.2 183.7 L771.6 183.7 L773.0 183.8 L774.3 183.9 L775.7 184.0 L777.0 184.0 L778.4 184.1 L779.7 184.2 L781.1 184.2 L782.5 184.3 L783.8 184.4 L785.2 184.4 L786.5 184.5 L787.9 184.6 L789.2 184.6 L790.6 184.7 L792.0 184.8 L793.3 184.8 L794.7 184.9 L796.0 185.0 L797.4 185.0 L798.7 185.1 L800.1 185.2 L801.5 185.2 L802.8 185.3 L804.2 185.3 L805.5 185.4 L806.9 185.5 L808.2 185.5 L809.6 185.6 L811.0 185.6 L812.3 185.7 L813.7 185.8 L815.0 185.8 L816.4 185.9 L817.7 185.9 L819.1 186.0 L820.4 186.1 L821.8 186.1 L823.2 186.2 L824.5 186.2 L825.9 186.3 L827.2 186.3 L828.6 186.4 L829.9 186.4 L831.3 186.5 L832.7 186.5 L834.0 186.6 L835.4 186.7 L836.7 186.7 L838.1 186.8 L839.4 186.8 L840.8 186.9 L842.2 186.9 L843.5 187.0 L844.9 187.0 L846.2 187.1 L847.6 187.1 L848.9 187.2 L850.3 187.2 L851.6 187.3 L853.0 187.3 L854.4 187.4 L855.7 187.4 L857.1 187.4 L858.4 187.5 L859.8 187.5 L861.1 187.6 L862.5 187.6 L863.9 187.7 L865.2 187.7 L866.6 187.8 L867.9 187.8 L869.3 187.9 L870.6 187.9 L872.0 187.9 L872.0 196.0 L58.0 196.0 Z" fill="url(#eir-sky)"/><path d="M58.0 196.0 L59.4 196.0 L60.7 196.0 L62.1 196.0 L63.4 196.0 L64.8 196.0 L66.1 196.0 L67.5 196.0 L68.9 196.0 L70.2 196.0 L71.6 196.0 L72.9 196.0 L74.3 196.0 L75.6 196.0 L77.0 196.0 L78.3 196.0 L79.7 196.0 L81.1 196.0 L82.4 196.0 L83.8 196.0 L85.1 196.0 L86.5 196.0 L87.8 196.0 L89.2 196.0 L90.6 196.0 L91.9 196.0 L93.3 196.0 L94.6 196.0 L96.0 196.0 L97.3 196.0 L98.7 196.0 L100.1 196.0 L101.4 196.0 L102.8 196.0 L104.1 196.0 L105.5 196.0 L106.8 196.0 L108.2 196.0 L109.6 195.9 L110.9 195.9 L112.3 195.9 L113.6 195.8 L115.0 195.8 L116.3 195.7 L117.7 195.6 L119.0 195.5 L120.4 195.4 L121.8 195.2 L123.1 195.0 L124.5 194.7 L125.8 194.4 L127.2 194.1 L128.5 193.7 L129.9 193.3 L131.3 192.8 L132.6 192.2 L134.0 191.6 L135.3 190.9 L136.7 190.2 L138.0 189.3 L139.4 188.4 L140.8 187.4 L142.1 186.4 L143.5 185.2 L144.8 184.0 L146.2 182.7 L147.5 181.3 L148.9 179.9 L150.3 178.4 L151.6 176.8 L153.0 175.1 L154.3 173.4 L155.7 171.6 L157.0 169.7 L158.4 167.8 L159.8 165.8 L161.1 163.8 L162.5 161.7 L163.8 159.6 L165.2 157.4 L166.5 155.2 L167.9 153.0 L169.2 150.7 L170.6 148.4 L172.0 146.1 L173.3 143.7 L174.7 141.4 L176.0 139.0 L177.4 136.6 L178.7 134.3 L180.1 131.9 L181.5 129.5 L182.8 127.2 L184.2 124.8 L185.5 122.5 L186.9 120.2 L188.2 117.9 L189.6 115.6 L191.0 113.4 L192.3 111.2 L193.7 109.0 L195.0 106.8 L196.4 104.7 L197.7 102.6 L199.1 100.6 L200.4 98.6 L201.8 96.6 L203.2 94.7 L204.5 92.8 L205.9 91.0 L207.2 89.2 L208.6 87.5 L209.9 85.8 L211.3 84.1 L212.7 82.5 L214.0 81.0 L215.4 79.5 L216.7 78.0 L218.1 76.6 L219.4 75.3 L220.8 74.0 L222.2 72.7 L223.5 71.5 L224.9 70.4 L226.2 69.3 L227.6 68.2 L228.9 67.2 L230.3 66.3 L231.7 65.4 L233.0 64.5 L234.4 63.7 L235.7 62.9 L237.1 62.2 L238.4 61.5 L239.8 60.9 L241.2 60.3 L242.5 59.7 L243.9 59.2 L245.2 58.7 L246.6 58.3 L247.9 57.9 L249.3 57.6 L250.6 57.3 L252.0 57.0 L253.4 56.7 L254.7 56.5 L256.1 56.4 L257.4 56.2 L258.8 56.1 L260.1 56.1 L261.5 56.0 L262.9 56.0 L264.2 56.0 L265.6 56.1 L266.9 56.1 L268.3 56.2 L269.6 56.4 L271.0 56.5 L272.4 56.7 L273.7 56.9 L275.1 57.1 L276.4 57.4 L277.8 57.7 L279.1 58.0 L280.5 58.3 L281.9 58.6 L283.2 59.0 L284.6 59.3 L285.9 59.7 L287.3 60.1 L288.6 60.5 L290.0 61.0 L291.3 61.4 L292.7 61.9 L294.1 62.4 L295.4 62.9 L296.8 63.4 L298.1 63.9 L299.5 64.4 L300.8 65.0 L302.2 65.5 L303.6 66.1 L304.9 66.7 L306.3 67.3 L307.6 67.9 L309.0 68.5 L310.3 69.1 L311.7 69.7 L313.1 70.3 L314.4 70.9 L315.8 71.6 L317.1 72.2 L318.5 72.9 L319.8 73.5 L321.2 74.2 L322.6 74.9 L323.9 75.5 L325.3 76.2 L326.6 76.9 L328.0 77.6 L329.3 78.3 L330.7 78.9 L332.0 79.6 L333.4 80.3 L334.8 81.0 L336.1 81.7 L337.5 82.4 L338.8 83.1 L340.2 83.8 L341.5 84.5 L342.9 85.2 L344.3 85.9 L345.6 86.6 L347.0 87.3 L348.3 88.0 L349.7 88.7 L351.0 89.4 L352.4 90.1 L353.8 90.8 L355.1 91.5 L356.5 92.2 L357.8 92.9 L359.2 93.6 L360.5 94.3 L361.9 95.0 L363.2 95.7 L364.6 96.4 L366.0 97.1 L367.3 97.7 L368.7 98.4 L370.0 99.1 L371.4 99.8 L372.7 100.5 L374.1 101.1 L375.5 101.8 L376.8 102.5 L378.2 103.1 L379.5 103.8 L380.9 104.5 L382.2 105.1 L383.6 105.8 L385.0 106.4 L386.3 107.1 L387.7 107.7 L389.0 108.4 L390.4 109.0 L391.7 109.6 L393.1 110.3 L394.5 110.9 L395.8 111.5 L397.2 112.1 L398.5 112.8 L399.9 113.4 L401.2 114.0 L402.6 114.6 L403.9 115.2 L405.3 115.8 L406.7 116.4 L408.0 117.0 L409.4 117.6 L410.7 118.2 L412.1 118.7 L413.4 119.3 L414.8 119.9 L416.2 120.5 L417.5 121.0 L418.9 121.6 L420.2 122.1 L421.6 122.7 L422.9 123.3 L424.3 123.8 L425.7 124.3 L427.0 124.9 L428.4 125.4 L429.7 126.0 L431.1 126.5 L432.4 127.0 L433.8 127.5 L435.2 128.0 L436.5 128.6 L437.9 129.1 L439.2 129.6 L440.6 130.1 L441.9 130.6 L443.3 131.1 L444.6 131.6 L446.0 132.1 L447.4 132.5 L448.7 133.0 L450.1 133.5 L451.4 134.0 L452.8 134.4 L454.1 134.9 L455.5 135.4 L456.9 135.8 L458.2 136.3 L459.6 136.7 L460.9 137.2 L462.3 137.6 L463.6 138.1 L465.0 138.5 L466.4 138.9 L467.7 139.4 L469.1 139.8 L470.4 140.2 L471.8 140.7 L473.1 141.1 L474.5 141.5 L475.9 141.9 L477.2 142.3 L478.6 142.7 L479.9 143.1 L481.3 143.5 L482.6 143.9 L484.0 144.3 L485.4 144.7 L486.7 145.1 L488.1 145.5 L489.4 145.8 L490.8 146.2 L492.1 146.6 L493.5 147.0 L494.8 147.3 L496.2 147.7 L497.6 148.1 L498.9 148.4 L500.3 148.8 L501.6 149.1 L503.0 149.5 L504.3 149.8 L505.7 150.2 L507.1 150.5 L508.4 150.8 L509.8 151.2 L511.1 151.5 L512.5 151.8 L513.8 152.2 L515.2 152.5 L516.6 152.8 L517.9 153.1 L519.3 153.5 L520.6 153.8 L522.0 154.1 L523.3 154.4 L524.7 154.7 L526.0 155.0 L527.4 155.3 L528.8 155.6 L530.1 155.9 L531.5 156.2 L532.8 156.5 L534.2 156.8 L535.5 157.1 L536.9 157.3 L538.3 157.6 L539.6 157.9 L541.0 158.2 L542.3 158.5 L543.7 158.7 L545.0 159.0 L546.4 159.3 L547.8 159.5 L549.1 159.8 L550.5 160.1 L551.8 160.3 L553.2 160.6 L554.5 160.8 L555.9 161.1 L557.3 161.3 L558.6 161.6 L560.0 161.8 L561.3 162.1 L562.7 162.3 L564.0 162.6 L565.4 162.8 L566.8 163.0 L568.1 163.3 L569.5 163.5 L570.8 163.7 L572.2 164.0 L573.5 164.2 L574.9 164.4 L576.2 164.7 L577.6 164.9 L579.0 165.1 L580.3 165.3 L581.7 165.5 L583.0 165.7 L584.4 166.0 L585.7 166.2 L587.1 166.4 L588.5 166.6 L589.8 166.8 L591.2 167.0 L592.5 167.2 L593.9 167.4 L595.2 167.6 L596.6 167.8 L598.0 168.0 L599.3 168.2 L600.7 168.4 L602.0 168.6 L603.4 168.8 L604.7 169.0 L606.1 169.1 L607.5 169.3 L608.8 169.5 L610.2 169.7 L611.5 169.9 L612.9 170.1 L614.2 170.2 L615.6 170.4 L616.9 170.6 L618.3 170.8 L619.7 170.9 L621.0 171.1 L622.4 171.3 L623.7 171.4 L625.1 171.6 L626.4 171.8 L627.8 171.9 L629.2 172.1 L630.5 172.3 L631.9 172.4 L633.2 172.6 L634.6 172.7 L635.9 172.9 L637.3 173.1 L638.7 173.2 L640.0 173.4 L641.4 173.5 L642.7 173.7 L644.1 173.8 L645.4 174.0 L646.8 174.1 L648.1 174.3 L649.5 174.4 L650.9 174.5 L652.2 174.7 L653.6 174.8 L654.9 175.0 L656.3 175.1 L657.6 175.2 L659.0 175.4 L660.4 175.5 L661.7 175.6 L663.1 175.8 L664.4 175.9 L665.8 176.0 L667.1 176.2 L668.5 176.3 L669.9 176.4 L671.2 176.6 L672.6 176.7 L673.9 176.8 L675.3 176.9 L676.6 177.1 L678.0 177.2 L679.4 177.3 L680.7 177.4 L682.1 177.5 L683.4 177.7 L684.8 177.8 L686.1 177.9 L687.5 178.0 L688.9 178.1 L690.2 178.2 L691.6 178.4 L692.9 178.5 L694.3 178.6 L695.6 178.7 L697.0 178.8 L698.3 178.9 L699.7 179.0 L701.1 179.1 L702.4 179.2 L703.8 179.3 L705.1 179.4 L706.5 179.6 L707.8 179.7 L709.2 179.8 L710.6 179.9 L711.9 180.0 L713.3 180.1 L714.6 180.2 L716.0 180.3 L717.3 180.4 L718.7 180.5 L720.1 180.6 L721.4 180.6 L722.8 180.7 L724.1 180.8 L725.5 180.9 L726.8 181.0 L728.2 181.1 L729.5 181.2 L730.9 181.3 L732.3 181.4 L733.6 181.5 L735.0 181.6 L736.3 181.7 L737.7 181.7 L739.0 181.8 L740.4 181.9 L741.8 182.0 L743.1 182.1 L744.5 182.2 L745.8 182.3 L747.2 182.3 L748.5 182.4 L749.9 182.5 L751.3 182.6 L752.6 182.7 L754.0 182.7 L755.3 182.8 L756.7 182.9 L758.0 183.0 L759.4 183.1 L760.8 183.1 L762.1 183.2 L763.5 183.3 L764.8 183.4 L766.2 183.4 L767.5 183.5 L768.9 183.6 L770.2 183.7 L771.6 183.7 L773.0 183.8 L774.3 183.9 L775.7 184.0 L777.0 184.0 L778.4 184.1 L779.7 184.2 L781.1 184.2 L782.5 184.3 L783.8 184.4 L785.2 184.4 L786.5 184.5 L787.9 184.6 L789.2 184.6 L790.6 184.7 L792.0 184.8 L793.3 184.8 L794.7 184.9 L796.0 185.0 L797.4 185.0 L798.7 185.1 L800.1 185.2 L801.5 185.2 L802.8 185.3 L804.2 185.3 L805.5 185.4 L806.9 185.5 L808.2 185.5 L809.6 185.6 L811.0 185.6 L812.3 185.7 L813.7 185.8 L815.0 185.8 L816.4 185.9 L817.7 185.9 L819.1 186.0 L820.4 186.1 L821.8 186.1 L823.2 186.2 L824.5 186.2 L825.9 186.3 L827.2 186.3 L828.6 186.4 L829.9 186.4 L831.3 186.5 L832.7 186.5 L834.0 186.6 L835.4 186.7 L836.7 186.7 L838.1 186.8 L839.4 186.8 L840.8 186.9 L842.2 186.9 L843.5 187.0 L844.9 187.0 L846.2 187.1 L847.6 187.1 L848.9 187.2 L850.3 187.2 L851.6 187.3 L853.0 187.3 L854.4 187.4 L855.7 187.4 L857.1 187.4 L858.4 187.5 L859.8 187.5 L861.1 187.6 L862.5 187.6 L863.9 187.7 L865.2 187.7 L866.6 187.8 L867.9 187.8 L869.3 187.9 L870.6 187.9 L872.0 187.9" fill="none" stroke="#B0561F" stroke-width="2.4" stroke-linejoin="round"/><line x1="58.0" y1="34.0" x2="872.0" y2="34.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><line x1="139.4" y1="34.0" x2="139.4" y2="39.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><text x="139.4" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">2500</text><line x1="159.8" y1="34.0" x2="159.8" y2="39.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><text x="159.8" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">2000</text><line x1="193.7" y1="34.0" x2="193.7" y2="39.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><text x="193.7" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">1500</text><line x1="261.5" y1="34.0" x2="261.5" y2="39.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><text x="261.5" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">1000</text><line x1="329.3" y1="34.0" x2="329.3" y2="39.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><text x="329.3" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">750</text><line x1="465.0" y1="34.0" x2="465.0" y2="39.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><text x="465.0" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">500</text><line x1="566.8" y1="34.0" x2="566.8" y2="39.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><text x="566.8" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">400</text><line x1="736.3" y1="34.0" x2="736.3" y2="39.0" stroke="rgba(122,96,52,.4)" stroke-width="1.2"/><text x="736.3" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">300</text><text x="10.0" y="29.0" font-size="12.5" fill="#7A6E5C" text-anchor="start">波数（cm⁻¹）</text><line x1="144.3" y1="184.5" x2="144.3" y2="196.0" stroke="#7A6E5C" stroke-width="1.4" stroke-dasharray="3 3" opacity=".85"/><circle cx="144.3" cy="184.5" r="5.5" fill="#7A6E5C" stroke="#FDFAF3" stroke-width="1.8"/><line x1="144.6" y1="184.2" x2="144.6" y2="196.0" stroke="#BE640A" stroke-width="1.4" stroke-dasharray="3 3" opacity=".85"/><circle cx="144.6" cy="184.2" r="5.5" fill="#BE640A" stroke="#FDFAF3" stroke-width="1.8"/><line x1="186.8" y1="120.3" x2="186.8" y2="196.0" stroke="#7A6E5C" stroke-width="1.4" stroke-dasharray="3 3" opacity=".85"/><circle cx="186.8" cy="120.3" r="5.5" fill="#7A6E5C" stroke="#FDFAF3" stroke-width="1.8"/><line x1="210.7" y1="84.9" x2="210.7" y2="196.0" stroke="#7A6E5C" stroke-width="1.4" stroke-dasharray="3 3" opacity=".85"/><circle cx="210.7" cy="84.9" r="5.5" fill="#7A6E5C" stroke="#FDFAF3" stroke-width="1.8"/><line x1="363.1" y1="95.6" x2="363.1" y2="196.0" stroke="#BE640A" stroke-width="1.4" stroke-dasharray="3 3" opacity=".85"/><circle cx="363.1" cy="95.6" r="7.5" fill="#BE640A" stroke="#FDFAF3" stroke-width="1.8"/><text x="363.1" y="65.6" font-size="15" font-weight="800" fill="#8A4A08" text-anchor="middle" paint-order="stroke" stroke="#FDFAF3" stroke-width="4">CO₂ の「く」の字</text><text x="363.1" y="83.6" font-size="13" font-weight="700" fill="#8A4A08" text-anchor="middle" paint-order="stroke" stroke="#FDFAF3" stroke-width="4">667 cm⁻¹ ＝ 15.0 μm</text><text x="262.6" y="44.0" font-size="13" fill="#8A3E14" text-anchor="middle" paint-order="stroke" stroke="#FDFAF3" stroke-width="4">地球の熱の山（頂上 10.1 μm）</text><line x1="58.0" y1="196.0" x2="872.0" y2="196.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><line x1="58.0" y1="196.0" x2="58.0" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="58.0" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">0</text><line x1="159.8" y1="196.0" x2="159.8" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="159.8" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">5</text><line x1="261.5" y1="196.0" x2="261.5" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="261.5" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">10</text><line x1="363.2" y1="196.0" x2="363.2" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="363.2" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">15</text><line x1="465.0" y1="196.0" x2="465.0" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="465.0" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">20</text><line x1="566.8" y1="196.0" x2="566.8" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="566.8" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">25</text><line x1="668.5" y1="196.0" x2="668.5" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="668.5" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">30</text><line x1="770.2" y1="196.0" x2="770.2" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="770.2" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">35</text><line x1="872.0" y1="196.0" x2="872.0" y2="201.0" stroke="rgba(122,96,52,.45)" stroke-width="1.2"/><text x="872.0" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle">40</text><text x="10.0" y="217.0" font-size="12.5" fill="#7A6E5C" text-anchor="start">波長（μm）</text><text x="28.0" y="126.0" font-size="12.5" fill="#7A6E5C" text-anchor="middle" transform="rotate(-90 28.0 126.0)">出す強さ</text></svg></div>
+<p class="eir-cap">オレンジ色の丸が<b>電気の偏りが生まれる揺れ</b>、灰色の丸が<b>生まれない揺れ</b>です。丸の高さが、そのままその波長に地球が出している熱の量になります。上の軸（波数 cm⁻¹）と下の軸（波長 μm）は同じ位置を指していて、目盛りの間隔が違うのは、両者が<b>逆数の関係</b>だからです。</p>
+<div class="eir-tw"><table class="eir-tab"><thead><tr><th>揺れ方</th><th>波数</th><th>波長</th><th>電気の偏り</th><th>そこにある地球の熱</th><th>結果</th></tr></thead><tbody><tr class=""><td>N₂ 伸びちぢみ</td><td>2359 cm⁻¹</td><td>4.24 μm</td><td class="eir-no">生まれない</td><td><span class="eir-heat"><u style="width:6px"></u>8</span></td><td>素通り</td></tr><tr class=""><td>CO₂ 逆向きに伸縮</td><td>2349 cm⁻¹</td><td>4.26 μm</td><td class="eir-yes">生まれる</td><td><span class="eir-heat"><u style="width:6px"></u>8</span></td><td>つかまえる</td></tr><tr class=""><td>O₂ 伸びちぢみ</td><td>1580 cm⁻¹</td><td>6.33 μm</td><td class="eir-no">生まれない</td><td><span class="eir-heat"><u style="width:37px"></u>54</span></td><td>素通り</td></tr><tr class=""><td>CO₂ 対称に伸縮</td><td>1333 cm⁻¹</td><td>7.50 μm</td><td class="eir-no">生まれない</td><td><span class="eir-heat"><u style="width:54px"></u>79</span></td><td>素通り</td></tr><tr class="is-catch"><td>CO₂ 折れ曲がる</td><td>667 cm⁻¹</td><td>14.99 μm</td><td class="eir-yes">生まれる</td><td><span class="eir-heat"><u style="width:49px"></u>72</span></td><td>つかまえる</td></tr></tbody></table></div>
+<p class="eir-cap">熱をつかまえるには、<b>①電気の偏りが生まれること</b>と<b>②その波長に地球の熱があること</b>の両方が要ります。①だけでは吸うものが来ず、②だけでは吸う仕組みがない。<b>両方そろっているのは、いちばん下の1行だけ</b>です。</p>
+<div class="eir-read">空気の <b>99%</b> を占める窒素と酸素は、どれだけ揺れても左右対称のままなので<b>偏りが生まれません</b>。二酸化炭素でさえ、対称に伸びちぢみする揺れ方（7.50 μm、<b>地球の熱がいちばん豊富な帯</b>）では素通りさせます。逆に、偏りが生まれる逆対称の揺れ方は 4.26 μm——<b>そこに地球の熱がほとんどありません</b>。残ったのは、折れ曲がる揺れ方ひとつ。<b>667 cm⁻¹ ＝ 15.0 μm</b> で偏りが生まれ、しかもそこは地球が山の頂上の7割の強さで熱を出している場所です。<b>この一致が、地球の気温を決めています。</b></div>
+<p class="eir-src">結合長は N–N 1.098 Å／O–O 1.208 Å（Huber &amp; Herzberg 1979）、CO₂ は C=O 1.162 Å・180°（Herzberg 1966）。振動数は CO₂ 667・1333・2349 cm⁻¹、N₂ 2359 cm⁻¹、O₂ 1580 cm⁻¹（いずれも NIST CCCBDB 収録の実験値。1333 cm⁻¹ と N₂・O₂ は赤外不活性）。波長は 10000÷波数 で換算しました。「地球の熱」は 15℃（288.15 K）の黒体をプランクの式で計算した強さで、ピーク（10.06 μm、ウィーンの変位則）を 100 とした相対値です。帯の幅（13.5〜17.0 μm）は 667 cm⁻¹ の吸収帯のおおよその広がりで、ここに入るエネルギーは地球が出す赤外線全体の約 16% にあたります。<b>揺れの振れ幅は実物よりずっと大きく、速さもずっと遅くしてあります</b>（実際は毎秒 10 兆回ほど）。変位は重心が動かないように重さで釣り合わせてあります。玉はこの図だけ小さめ（共有結合半径の0.52倍、ほかの図は0.72倍）に描いてあります。窒素は結合が短く原子が大きいので、同じ大きさのままでは動きが見えないためです。</p>
+</div>
+
+<script>
+(function(){
+  var r=document.getElementById('eir1');if(!r)return;
+  var out=r.querySelector('.eir-read');if(!out)return;
+  var base=out.innerHTML;
+  r.querySelectorAll('[data-detail]').forEach(function(n){
+    function on(){out.innerHTML=n.getAttribute('data-detail');}
+    n.addEventListener('mouseenter',on);
+    n.addEventListener('click',on);
+    n.addEventListener('mouseleave',function(){out.innerHTML=base;});
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var D = {"scale":52.0,"tilt":-13.0,"ball":0.52,"bw":7.6,"sec":19.0,"rad":{"H":0.31,"He":0.28,"C":0.76,"N":0.71,"O":0.66,"Si":1.11},"gop":0.42,"gr":0.72,"spin":0,"mol":[{"k":"n2","vs":1.5,"a":[{"p":[-0.549,0.0,0.0],"e":"N","g":0,"v":[-0.095,0.0,0.0]},{"p":[0.549,0.0,0.0],"e":"N","g":0,"v":[0.095,0.0,0.0]}],"b":[[0,1]]},{"k":"ca","vs":1.4,"a":[{"p":[0.0,0.0,0.0],"e":"C","g":0,"v":[-0.1332,0.0,0.0]},{"p":[-1.162,0.0,0.0],"e":"O","g":0,"v":[0.05,0.0,0.0]},{"p":[1.162,0.0,0.0],"e":"O","g":0,"v":[0.05,0.0,0.0]}],"b":[[0,1],[0,2]]},{"k":"o2","vs":1.9,"a":[{"p":[-0.604,0.0,0.0],"e":"O","g":0,"v":[-0.105,0.0,0.0]},{"p":[0.604,0.0,0.0],"e":"O","g":0,"v":[0.105,0.0,0.0]}],"b":[[0,1]]},{"k":"cs","vs":1.7,"a":[{"p":[0.0,0.0,0.0],"e":"C","g":0,"v":[0.0,0.0,0.0]},{"p":[-1.162,0.0,0.0],"e":"O","g":0,"v":[-0.13,0.0,0.0]},{"p":[1.162,0.0,0.0],"e":"O","g":0,"v":[0.13,0.0,0.0]}],"b":[[0,1],[0,2]]},{"k":"cb","vs":2.3,"a":[{"p":[0.0,0.0,0.0],"e":"C","g":0,"v":[0.0,-0.23977,0.0]},{"p":[-1.162,0.0,0.0],"e":"O","g":0,"v":[0.0,0.09,0.0]},{"p":[1.162,0.0,0.0],"e":"O","g":0,"v":[0.0,0.09,0.0]}],"b":[[0,1],[0,2]]}]};
+  var root = document.getElementById('eir1');
+  if(!root || !window.requestAnimationFrame) return;
+  var svgs = root.querySelectorAll('.eir-cell svg[viewBox]');
+  if(!svgs.length) return;
+
+  var T = D.tilt * Math.PI / 180, cosT = Math.cos(T), sinT = Math.sin(T);
+  function spun(p, a){
+    var ca = Math.cos(a), sa = Math.sin(a);
+    var x = p[0]*ca + p[2]*sa, z = -p[0]*sa + p[2]*ca, y = p[1];
+    return [x*D.scale, -(y*cosT - z*sinT)*D.scale, y*sinT + z*cosT];
+  }
+  function clamp01(v){ return v < 0 ? 0 : (v > 1 ? 1 : v); }
+  // 手前のものは沈ませない。奥へ下がったぶんだけ薄くする
+  function fade(z, k){ return 1 - k*clamp01(-z); }
+  function rad(e, z, g){
+    return D.rad[e]*D.scale*D.ball*(1 + 0.11*z)*(g ? D.gr : 1);
+  }
+  // 節点は data-a / data-s の番号で拾う。並び順は奥行きで毎回入れ替わるので、
+  // 文書に現れる順を当てにしてはいけない。
+  function byIndex(g, attr){
+    var out = [], ns = g.querySelectorAll('['+attr+']');
+    for(var k=0;k<ns.length;k++) out[+ns[k].getAttribute(attr)] = ns[k];
+    return out;
+  }
+
+  // 速さを分子ごとに少しずらす。全部そろって真横を向くと、
+  // 一瞬だけ全部が平たく見えてしまうため。
+  var SPEED = [1.00, 1.07, 0.93, 1.12, 0.88, 1.04];
+  var mols = [];
+  for(var i=0;i<svgs.length && i<D.mol.length;i++){
+    var g = svgs[i].querySelector('[data-scene]');
+    if(!g) continue;
+    mols.push({def: D.mol[i], g: g, svg: svgs[i],
+      speed: SPEED[i % SPEED.length], spin: 0, ph: 0, drag: null, order: '',
+      atoms: byIndex(g, 'data-a'), sticks: byIndex(g, 'data-s')});
+  }
+  if(!mols.length) return;
+
+  function draw(m){
+    var pos = [], k, kids = [];
+    // 振動の位相。sin で行って戻る。ph=0 なら焼き込んだ静止画と同じ姿になる
+    var ph = m.def.vs ? Math.sin(m.ph) : 0;
+    function at(a){
+      return [a.p[0] + a.v[0]*ph, a.p[1] + a.v[1]*ph, a.p[2] + a.v[2]*ph];
+    }
+    for(k=0;k<m.def.a.length;k++) pos.push(spun(at(m.def.a[k]), m.spin));
+
+    for(k=0;k<m.atoms.length;k++){
+      var A = m.def.a[k], P0 = pos[k], r = rad(A.e, P0[2], A.g);
+      var op = fade(P0[2], 0.18) * (A.g ? D.gop : 1);
+      var c = m.atoms[k].firstChild, h = c.nextSibling;
+      c.setAttribute('cx', P0[0].toFixed(2));
+      c.setAttribute('cy', P0[1].toFixed(2));
+      c.setAttribute('r',  r.toFixed(2));
+      c.setAttribute('stroke-width', Math.max(0.6, r*0.045).toFixed(2));
+      c.setAttribute('opacity', op.toFixed(3));
+      var hx = P0[0] - r*0.33, hy = P0[1] - r*0.38;
+      h.setAttribute('cx', hx.toFixed(2));
+      h.setAttribute('cy', hy.toFixed(2));
+      h.setAttribute('rx', (r*0.34).toFixed(2));
+      h.setAttribute('ry', (r*0.24).toFixed(2));
+      h.setAttribute('opacity', (0.92*op).toFixed(3));
+      h.setAttribute('transform','rotate(-24 '+hx.toFixed(2)+' '+hy.toFixed(2)+')');
+      kids.push([P0[2], m.atoms[k]]);
+    }
+
+    for(k=0;k<m.sticks.length;k++){
+      var b = m.def.b[k], ai = m.def.a[b[0]], aj = m.def.a[b[1]];
+      var pi = at(ai), pj = at(aj);
+      var d = [pj[0]-pi[0], pj[1]-pi[1], pj[2]-pi[2]];
+      var n = Math.sqrt(d[0]*d[0]+d[1]*d[1]+d[2]*d[2]) || 1;
+      var ri = D.rad[ai.e]*D.ball*(ai.g ? D.gr : 1);
+      var rj = D.rad[aj.e]*D.ball*(aj.g ? D.gr : 1);
+      var s = spun([pi[0]+d[0]/n*ri, pi[1]+d[1]/n*ri, pi[2]+d[2]/n*ri], m.spin);
+      var t = spun([pj[0]-d[0]/n*rj, pj[1]-d[1]/n*rj, pj[2]-d[2]/n*rj], m.spin);
+      var z = (s[2]+t[2])/2, w = D.bw*(1 + 0.10*z);
+      var L = Math.sqrt((t[0]-s[0])*(t[0]-s[0]) + (t[1]-s[1])*(t[1]-s[1]));
+      var a = Math.atan2(t[1]-s[1], t[0]-s[0])*180/Math.PI;
+      m.sticks[k].setAttribute('transform',
+        'translate('+s[0].toFixed(2)+' '+s[1].toFixed(2)+') rotate('+a.toFixed(2)+')');
+      var r1 = m.sticks[k].firstChild, r2 = r1.nextSibling;
+      [r1, r2].forEach(function(rc){
+        rc.setAttribute('y', (-w/2).toFixed(2));
+        rc.setAttribute('width',  L.toFixed(2));
+        rc.setAttribute('height', w.toFixed(2));
+        rc.setAttribute('rx', (w*0.34).toFixed(2));
+      });
+      r1.setAttribute('opacity',
+        (fade(z, 0.22) * ((ai.g || aj.g) ? D.gop : 1)).toFixed(3));
+      kids.push([z, m.sticks[k]]);
+    }
+
+    // 奥のものから並べ直す。順番が変わったときだけ触る
+    kids.sort(function(p, q){ return p[0] - q[0]; });
+    var key = kids.map(function(p){
+      return p[1].getAttribute('data-a') !== null
+        ? 'a'+p[1].getAttribute('data-a') : 's'+p[1].getAttribute('data-s');
+    }).join(',');
+    if(key !== m.order){
+      m.order = key;
+      for(k=0;k<kids.length;k++) m.g.appendChild(kids[k][1]);
+    }
+  }
+
+  // つかんで回せるようにする。指でも動くが、縦のスクロールは邪魔しない
+  mols.forEach(function(m){
+    m.svg.style.touchAction = 'pan-y';
+    m.svg.style.cursor = 'grab';
+    m.svg.addEventListener('pointerdown', function(ev){
+      m.drag = {x: ev.clientX, spin: m.spin};
+      m.svg.style.cursor = 'grabbing';
+      if(m.svg.setPointerCapture) m.svg.setPointerCapture(ev.pointerId);
+    });
+    m.svg.addEventListener('pointermove', function(ev){
+      if(!m.drag) return;
+      m.spin = m.drag.spin + (ev.clientX - m.drag.x) * 0.014;
+      draw(m);
+    });
+    function release(){
+      if(m.drag){ m.drag = null; m.svg.style.cursor = 'grab'; }
+    }
+    m.svg.addEventListener('pointerup', release);
+    m.svg.addEventListener('pointercancel', release);
+    window.addEventListener('pointerup', release);   // 捕捉に失敗したとき用
+  });
+
+  // 動きを減らす設定なら、自分で回す以外は動かさない
+  if(window.matchMedia &&
+     window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var visible = true;
+  if(window.IntersectionObserver){
+    new IntersectionObserver(function(es){ visible = es[0].isIntersecting; },
+      {rootMargin: '80px'}).observe(root);
+  }
+  var last = 0, prev = 0;
+  function tick(now){
+    requestAnimationFrame(tick);
+    if(now - last < 33) return;              // 毎秒 30 コマで足りる
+    var dt = prev ? Math.min(0.1, (now - prev)/1000) : 0;
+    last = now; prev = now;
+    if(!visible) return;
+    var step = 2*Math.PI * dt / D.sec;
+    for(var i=0;i<mols.length;i++){
+      var m = mols[i];
+      if(D.spin && !m.drag) m.spin += step * m.speed;
+      if(m.def.vs) m.ph += 2*Math.PI * dt / m.def.vs;
+      if(D.spin || m.def.vs) draw(m);
+    }
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+
+```

@@ -1,0 +1,289 @@
+```{=html}
+<style>
+/* 明暗の三段。カード地 #FDFAF3 に対するコントラスト比は
+   ink 14.4 : dim 7.0 : faint 4.8。faint は出典行に使うので、
+   小さい字でも読めるよう WCAG AA（4.5:1）を下回らせない。 */
+.ospin{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;
+  --hb:#BE640A;--cov:#0F6C8A;--rt:#B02A37;--vdw:#8C8271;
+  --h:#5E96C4;--he:#D69A2E;--other:#C42B3C;--o:#D8552A;--e:#2F6DB2;
+  --card:#FFFDF9;--card2:#FDFAF3;--line:#E7DECC;
+  --panel:#FAF5EB;--line2:#ECE3D2;--tint:122,96,52;
+  position:relative;margin:2.2rem 0;padding:26px 26px 20px;border-radius:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 14px 30px -20px rgba(96,74,42,.34);
+  color:var(--ink);overflow:hidden;
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+/* 方眼紙の罫。明色になって初めて意味を持つ装飾なので、暗色版より少し出す。 */
+.ospin::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(var(--tint),.07) 1px,transparent 1px) 0 0/100% 34px,
+    linear-gradient(90deg,rgba(var(--tint),.07) 1px,transparent 1px) 0 0/34px 100%;
+  mask-image:radial-gradient(120% 90% at 30% 0%,#000 30%,transparent 78%);}
+/* サイト側テーマの p / b / h5 への色指定を打ち消す。
+   ただしこの行は要素セレクタを含むので詳細度が (0,1,1) になる。
+   図の側の指定も p.〜 の形にして同着にしないと、こちらが勝ってしまう。 */
+.ospin p,.ospin b,.ospin strong,.ospin h5,.ospin span,
+.ospin em,.ospin s,.ospin u,.ospin i,.ospin sub,.ospin sup{color:inherit;}
+p.ospin-h{font-size:1.5rem;font-weight:800;letter-spacing:.01em;
+  margin:0 0 5px;color:var(--ink);}
+p.ospin-s{font-size:.95rem;color:var(--dim);margin:0 0 4px;line-height:1.65;}
+.ospin-read{margin:2px 8px 0;padding:15px 17px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:1rem;line-height:1.85;color:var(--ink);min-height:2.6em;}
+.ospin-read b{color:var(--hb);}
+p.ospin-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
+  line-height:1.7;}
+@media (max-width:820px){
+  .ospin{padding:20px 12px 16px;}
+  .ospin-h{font-size:1.25rem;}
+  .ospin-s{font-size:.86rem;}
+  .ospin-read{font-size:.92rem;margin:2px 2px 0;padding:13px 14px;}
+  .ospin-src{font-size:.76rem;}
+}
+@media (prefers-reduced-motion:reduce){.ospin *{animation:none !important;}}
+
+.ospin-row{display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;margin:18px 0 4px;}
+
+.ospin-cell{display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:13px 10px 15px;border-radius:14px;cursor:default;
+  background:rgba(122,96,52,.035);
+  border:1px solid rgba(122,96,52,.13);
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;}
+.ospin-cell:hover{transform:translateY(-3px);}
+.ospin-cell.is-key{background:rgba(190,100,10,.07);
+  border-color:rgba(190,100,10,.42);}
+.ospin-cell svg.ospin-mol{display:block;width:100%;max-width:210px;height:auto;
+  -webkit-user-select:none;user-select:none;}
+
+.ospin-f{font-size:1.34rem;font-weight:800;color:var(--ink);margin-top:2px;}
+.ospin-nm{font-size:.8rem;color:var(--faint);}
+.ospin-v{font-size:.98rem;font-weight:800;margin-top:9px;
+  padding:4px 13px;border-radius:999px;white-space:nowrap;}
+.ospin-v.is-no{color:var(--dim);background:rgba(122,96,52,.1);}
+.ospin-v.is-yes{color:#FFFDF9;background:var(--hb);}
+
+.ospin-cap{margin:14px 8px 0;font-size:.84rem;color:var(--dim);
+  line-height:1.75;}
+/* 凡例。矢印の意味を、図と本文のあいだで一度だけ言う場所 */
+.ospin-key{display:flex;align-items:center;gap:11px;
+  margin:16px 8px 0;padding:10px 14px;border-radius:10px;
+  background:rgba(190,100,10,.075);border:1px solid rgba(190,100,10,.22);
+  font-size:.86rem;color:var(--ink);line-height:1.7;}
+.ospin-key svg{flex:none;width:14px;height:26px;}
+.ospin-key b{color:var(--hb);}
+.ospin-defs{position:absolute;width:0;height:0;overflow:hidden;}
+
+@media (max-width:820px){
+  .ospin-row{gap:9px;margin:14px 0 2px;}
+  .ospin-cell{padding:10px 6px 11px;border-radius:11px;}
+  .ospin-f{font-size:1.08rem;}
+  .ospin-v{font-size:.86rem;padding:3px 10px;}
+  .ospin-cap{font-size:.78rem;margin:11px 2px 0;}
+  .ospin-key{font-size:.79rem;margin:13px 2px 0;padding:9px 11px;gap:9px;}
+}
+</style>
+<div class="ospin fig-wide" id="ospin1">
+<p class="ospin-h">酸素は、磁石にくっつく</p>
+<p class="ospin-s">空気の中で圧倒的に多いのは窒素です。ところが<b>液体窒素は磁石に反応せず、液体酸素は磁石に引き寄せられます</b>。この違いが、私たちが燃えない理由につながっています。カーソルを合わせる（スマホはタップ）と、その事情が下に出ます。</p>
+
+<svg class="ospin-defs" width="0" height="0" aria-hidden="true"><defs><radialGradient id="ospin-b-N" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#AABFD8"/><stop offset="32%" stop-color="#5780B2"/><stop offset="72%" stop-color="#2A5E9E"/><stop offset="100%" stop-color="#233C5B"/></radialGradient><radialGradient id="ospin-b-O" cx="34%" cy="26%" r="76%"><stop offset="0%" stop-color="#E3B3A4"/><stop offset="32%" stop-color="#C7684B"/><stop offset="72%" stop-color="#B8401B"/><stop offset="100%" stop-color="#6F2C14"/></radialGradient><radialGradient id="ospin-hl" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="55%" stop-color="#FFFFFF" stop-opacity=".38"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient><linearGradient id="ospin-cyl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8B7F6B"/><stop offset="16%" stop-color="#C6BAA3"/><stop offset="38%" stop-color="#E4DBC9"/><stop offset="62%" stop-color="#C2B49B"/><stop offset="100%" stop-color="#7E7259"/></linearGradient></defs></svg>
+<div class="ospin-row">
+<div class="ospin-cell" data-detail="窒素は、いちばん外側の部屋が&lt;b&gt;2つとも空&lt;/b&gt;です。その下の部屋はすべて&lt;b&gt;2個ずつ対&lt;/b&gt;で埋まっています。電子が対になると磁石の性質は打ち消し合うので、窒素は&lt;b&gt;磁石に引かれません&lt;/b&gt;。しかも電子の向きを変えるには &lt;b&gt;50,204 cm⁻¹&lt;/b&gt;（600.6 kJ/mol）も要ります。びくともしない——これが窒素です。">
+<svg viewBox="0 0 115.5 115.5" class="ospin-mol" role="img" aria-label="窒素分子の立体模型"><g data-scene="1" transform="translate(57.73 59.13)"><g data-a="0"><circle cx="-29.64" cy="-0.00" r="23.77" fill="url(#ospin-b-N)" stroke="#213349" stroke-opacity=".38" stroke-width="1.07" opacity="1.000"/><ellipse cx="-37.48" cy="-9.03" rx="8.08" ry="5.70" fill="url(#ospin-hl)" opacity="0.920" transform="rotate(-24 -37.48 -9.03)"/></g><g data-a="1"><circle cx="29.64" cy="-0.00" r="23.77" fill="url(#ospin-b-N)" stroke="#213349" stroke-opacity=".38" stroke-width="1.07" opacity="1.000"/><ellipse cx="21.79" cy="-9.03" rx="8.08" ry="5.70" fill="url(#ospin-hl)" opacity="0.920" transform="rotate(-24 21.79 -9.03)"/></g><g data-s="0" transform="translate(-5.87 -0.00) rotate(0.00)"><rect x="0" y="-3.80" width="11.73" height="7.60" rx="2.58" fill="url(#ospin-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="11.73" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g></g></svg>
+<span class="ospin-f">N₂</span>
+<span class="ospin-nm">窒素 ／ 結合の長さ 1.098 Å</span>
+<svg viewBox="0 0 220 132" role="img" aria-label="いちばん外側の部屋に入る電子"><text x="110.0" y="14" font-size="12.5" fill="#7A6E5C" text-anchor="middle">いちばん外側の部屋</text><rect x="56.0" y="26.0" width="46.0" height="30.0" rx="5" fill="#FFFDF9" stroke="rgba(122,96,52,.45)" stroke-width="1.4"/><rect x="118.0" y="26.0" width="46.0" height="30.0" rx="5" fill="#FFFDF9" stroke="rgba(122,96,52,.45)" stroke-width="1.4"/><text x="79.0" y="45.0" font-size="12" fill="#A79A85" text-anchor="middle">空</text><text x="141.0" y="45.0" font-size="12" fill="#A79A85" text-anchor="middle">空</text><rect x="56.0" y="78.0" width="108.0" height="26" rx="6" fill="rgba(122,96,52,.1)" stroke="rgba(122,96,52,.28)" stroke-width="1.2"/><text x="110.0" y="95.0" font-size="12.5" fill="#5F5546" text-anchor="middle">下の部屋は、すべて2個ずつ対で満席</text><text x="110.0" y="126.0" font-size="13" font-weight="700" fill="#7A6E5C" text-anchor="middle">対になっていない電子は 0 個</text></svg>
+<span class="ospin-v is-no">磁石に引かれない</span>
+</div>
+<div class="ospin-cell is-key" data-detail="酸素は窒素より電子が&lt;b&gt;2個多い&lt;/b&gt;。その2個は、同じ部屋には入れません。&lt;b&gt;別々の部屋に、同じ向きで&lt;/b&gt;入ります。つまり&lt;b&gt;対になっていない電子が2個&lt;/b&gt;ある。これが打ち消されずに残るので、&lt;b&gt;液体酸素は磁石に引き寄せられます&lt;/b&gt;。そして対にするには &lt;b&gt;7,882 cm⁻¹&lt;/b&gt;（94.3 kJ/mol）——窒素の6.4分の1で済みます。&lt;b&gt;酸素は、いつでも反応したがっている&lt;/b&gt;のです。">
+<svg viewBox="0 0 115.5 115.5" class="ospin-mol" role="img" aria-label="酸素分子の立体模型"><g data-scene="1" transform="translate(57.73 59.16)"><g data-a="0"><circle cx="-32.60" cy="-0.00" r="22.10" fill="url(#ospin-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.99" opacity="1.000"/><ellipse cx="-39.89" cy="-8.40" rx="7.51" ry="5.30" fill="url(#ospin-hl)" opacity="0.920" transform="rotate(-24 -39.89 -8.40)"/></g><g data-a="1"><circle cx="32.60" cy="-0.00" r="22.10" fill="url(#ospin-b-O)" stroke="#5C2612" stroke-opacity=".38" stroke-width="0.99" opacity="1.000"/><ellipse cx="25.31" cy="-8.40" rx="7.51" ry="5.30" fill="url(#ospin-hl)" opacity="0.920" transform="rotate(-24 25.31 -8.40)"/></g><g data-s="0" transform="translate(-10.51 -0.00) rotate(0.00)"><rect x="0" y="-3.80" width="21.01" height="7.60" rx="2.58" fill="url(#ospin-cyl)" opacity="1.000"/><rect x="0" y="-3.80" width="21.01" height="7.60" rx="2.58" fill="none" stroke="#6F6450" stroke-opacity=".26" stroke-width=".7"/></g></g></svg>
+<span class="ospin-f">O₂</span>
+<span class="ospin-nm">酸素 ／ 結合の長さ 1.208 Å</span>
+<svg viewBox="0 0 220 132" role="img" aria-label="いちばん外側の部屋に入る電子"><text x="110.0" y="14" font-size="12.5" fill="#7A6E5C" text-anchor="middle">いちばん外側の部屋</text><rect x="56.0" y="26.0" width="46.0" height="30.0" rx="5" fill="#FFFDF9" stroke="rgba(122,96,52,.45)" stroke-width="1.4"/><rect x="118.0" y="26.0" width="46.0" height="30.0" rx="5" fill="#FFFDF9" stroke="rgba(122,96,52,.45)" stroke-width="1.4"/><g stroke="#BE640A" fill="#BE640A" stroke-width="2.1" stroke-linecap="round"><line x1="79.0" y1="50.3" x2="79.0" y2="31.7"/><polygon points="79.0,31.7 75.4,36.7 82.6,36.7" stroke="none"/></g><g stroke="#BE640A" fill="#BE640A" stroke-width="2.1" stroke-linecap="round"><line x1="141.0" y1="50.3" x2="141.0" y2="31.7"/><polygon points="141.0,31.7 137.4,36.7 144.6,36.7" stroke="none"/></g><rect x="56.0" y="78.0" width="108.0" height="26" rx="6" fill="rgba(122,96,52,.1)" stroke="rgba(122,96,52,.28)" stroke-width="1.2"/><text x="110.0" y="95.0" font-size="12.5" fill="#5F5546" text-anchor="middle">下の部屋は、すべて2個ずつ対で満席</text><text x="110.0" y="126.0" font-size="13" font-weight="800" fill="#BE640A" text-anchor="middle">対になっていない電子が 2 個</text></svg>
+<span class="ospin-v is-yes">磁石に引かれる</span>
+</div>
+</div>
+<p class="ospin-key"><svg viewBox="0 0 14 26" aria-hidden="true"><g stroke="#BE640A" fill="#BE640A" stroke-width="2.1" stroke-linecap="round"><line x1="7.0" y1="22.3" x2="7.0" y2="3.7"/><polygon points="7.0,3.7 3.4,8.7 10.6,8.7" stroke="none"/></g></svg><span>矢印 <b>1本が、電子1個</b>。矢印の向きが、本文でいう「向き」です。同じ向きにそろっているのが、酸素だけの特徴になります。</span></p>
+<p class="ospin-cap">電子は、同じ部屋に入るときは<b>必ず逆向きの2個で対</b>になります。対になると磁石の性質は打ち消し合います。ところが酸素は電子が2個多く、その2個は<b>別々の部屋に、同じ向きで</b>入ることになる。打ち消されずに残ったこの2個が、酸素を磁石に引き寄せています。</p>
+<div style="margin:22px 8px 0"><svg viewBox="0 0 900 236" role="img" aria-label="電子の向きを変えるのに要るエネルギーの比較"><line x1="120.0" y1="196.0" x2="830.0" y2="196.0" stroke="rgba(122,96,52,.4)" stroke-width="1.3"/><text x="110.0" y="201.0" font-size="13" fill="#5F5546" text-anchor="end">いまの姿</text><rect x="165.0" y="34.0" width="230" height="162.0" rx="7" fill="#7A6E5C" opacity="0.16"/><line x1="165.0" y1="34.0" x2="395.0" y2="34.0" stroke="#7A6E5C" stroke-width="2.6"/><text x="280.0" y="8.0" font-size="15" font-weight="800" fill="#7A6E5C" text-anchor="middle">窒素 N₂</text><text x="280.0" y="26.0" font-size="14" font-weight="700" fill="#7A6E5C" text-anchor="middle">50,204 cm⁻¹</text><text x="280.0" y="120.0" font-size="13" fill="#5F5546" text-anchor="middle">600.6 kJ/mol ／ 0.20 μm</text><rect x="545.0" y="170.6" width="230" height="25.4" rx="7" fill="#BE640A" opacity="0.20"/><line x1="545.0" y1="170.6" x2="775.0" y2="170.6" stroke="#BE640A" stroke-width="2.6"/><text x="660.0" y="144.6" font-size="15" font-weight="800" fill="#BE640A" text-anchor="middle">酸素 O₂</text><text x="660.0" y="162.6" font-size="14" font-weight="700" fill="#BE640A" text-anchor="middle">7,882 cm⁻¹</text><text x="660.0" y="188.3" font-size="13" fill="#5F5546" text-anchor="middle">94.3 kJ/mol ／ 1.27 μm</text><text x="90.0" y="155.0" font-size="13" fill="#7A6E5C" text-anchor="end" transform="rotate(-90 90.0 155.0)">電子の向きを変えるのに要るエネルギー</text><text x="660.0" y="124.6" font-size="14" font-weight="800" fill="#BE640A" text-anchor="middle">窒素の 6.4 分の 1</text></svg></div>
+<p class="ospin-cap">対になっていない2個を<b>対にそろえる</b>のに要るエネルギーです。<b>本文でいう「壁」の高さが、これにあたります。</b>窒素は 50,204 cm⁻¹、酸素はその<b>6.4分の1</b>の 7,882 cm⁻¹。<b>波長になおすと 1.27 μm</b>——<a href="/posts/note/element-02-carbon/">前回</a>覚えた「10000 ÷ 波数」を、そのまま使えます。</p>
+<div class="ospin-read">酸素は、いちばん外側に<b>対になっていない電子を2個</b>持っています。そのため液体酸素は磁石に引き寄せられ、液体窒素は引かれません。そして——ここからが本題です。私たちの体を作っている分子は、電子がすべて対になっています。<b>向きのそろっていない酸素は、そのままでは反応できません。</b>どちらかが向きを変えるまで、待たされる。この「待たされる」が、<b>21%の酸素に囲まれていても私たちが燃えない理由</b>です。火にマッチが要るのも、体温で酸素を使うのに鉄を含む酵素が要るのも、すべて同じ理由からです。</div>
+<p class="ospin-src">結合の長さと電子の状態は NIST Chemistry WebBook 収録の実験値です。O₂ の基底状態は X ³Σg⁻（結合長 1.20752 Å）で、最初の励起状態 a ¹Δg までが 7,882.39 cm⁻¹。N₂ の基底状態は X ¹Σg⁺（結合長 1.097685 Å）で、最初の励起状態 A ³Σu⁺ までが 50,203.63 cm⁻¹。kJ/mol への換算は 1 cm⁻¹ ＝ 11.96266 J/mol、波長への換算は 10000 ÷ 波数 です。「対になっていない電子が2個ある」ことは、項記号の左肩の 3（三重項）から直接読み取れます。酸素がなぜ反応しにくいままでいられるのかの理論的な検討は <b>Borden, Hoffmann, Stuyver &amp; Chen (2017)</b> <i>J. Am. Chem. Soc.</i> 139, 9010–9018 にあります。「部屋」の絵は電子の入り方を簡単にしたもので、実際にはいちばん外側の2つは π* とよばれる軌道です。</p>
+</div>
+
+<script>
+(function(){
+  var r=document.getElementById('ospin1');if(!r)return;
+  var out=r.querySelector('.ospin-read');if(!out)return;
+  var base=out.innerHTML;
+  r.querySelectorAll('[data-detail]').forEach(function(n){
+    function on(){out.innerHTML=n.getAttribute('data-detail');}
+    n.addEventListener('mouseenter',on);
+    n.addEventListener('click',on);
+    n.addEventListener('mouseleave',function(){out.innerHTML=base;});
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var D = {"scale":54.0,"tilt":-13.0,"ball":0.62,"bw":7.6,"sec":21.0,"rad":{"H":0.31,"He":0.28,"C":0.76,"N":0.71,"O":0.66,"Si":1.11},"gop":0.42,"gr":0.72,"spin":1,"mol":[{"k":"n2","vs":1.7,"a":[{"p":[-0.54884,0.0,0.0],"e":"N","g":0,"v":[0.0,0.0,0.0]},{"p":[0.54884,0.0,0.0],"e":"N","g":0,"v":[0.0,0.0,0.0]}],"b":[[0,1]]},{"k":"o2","vs":1.7,"a":[{"p":[-0.60376,0.0,0.0],"e":"O","g":0,"v":[0.0,0.0,0.0]},{"p":[0.60376,0.0,0.0],"e":"O","g":0,"v":[0.0,0.0,0.0]}],"b":[[0,1]]}]};
+  var root = document.getElementById('ospin1');
+  if(!root || !window.requestAnimationFrame) return;
+  var svgs = root.querySelectorAll('.ospin-mol');
+  if(!svgs.length) return;
+
+  var T = D.tilt * Math.PI / 180, cosT = Math.cos(T), sinT = Math.sin(T);
+  function spun(p, a){
+    var ca = Math.cos(a), sa = Math.sin(a);
+    var x = p[0]*ca + p[2]*sa, z = -p[0]*sa + p[2]*ca, y = p[1];
+    return [x*D.scale, -(y*cosT - z*sinT)*D.scale, y*sinT + z*cosT];
+  }
+  function clamp01(v){ return v < 0 ? 0 : (v > 1 ? 1 : v); }
+  // 手前のものは沈ませない。奥へ下がったぶんだけ薄くする
+  function fade(z, k){ return 1 - k*clamp01(-z); }
+  function rad(e, z, g){
+    return D.rad[e]*D.scale*D.ball*(1 + 0.11*z)*(g ? D.gr : 1);
+  }
+  // 節点は data-a / data-s の番号で拾う。並び順は奥行きで毎回入れ替わるので、
+  // 文書に現れる順を当てにしてはいけない。
+  function byIndex(g, attr){
+    var out = [], ns = g.querySelectorAll('['+attr+']');
+    for(var k=0;k<ns.length;k++) out[+ns[k].getAttribute(attr)] = ns[k];
+    return out;
+  }
+
+  // 速さを分子ごとに少しずらす。全部そろって真横を向くと、
+  // 一瞬だけ全部が平たく見えてしまうため。
+  var SPEED = [1.00, 1.07, 0.93, 1.12, 0.88, 1.04];
+  var mols = [];
+  for(var i=0;i<svgs.length && i<D.mol.length;i++){
+    var g = svgs[i].querySelector('[data-scene]');
+    if(!g) continue;
+    mols.push({def: D.mol[i], g: g, svg: svgs[i],
+      speed: SPEED[i % SPEED.length], spin: 0, ph: 0, drag: null, order: '',
+      atoms: byIndex(g, 'data-a'), sticks: byIndex(g, 'data-s')});
+  }
+  if(!mols.length) return;
+
+  function draw(m){
+    var pos = [], k, kids = [];
+    // 振動の位相。sin で行って戻る。ph=0 なら焼き込んだ静止画と同じ姿になる
+    var ph = m.def.vs ? Math.sin(m.ph) : 0;
+    function at(a){
+      return [a.p[0] + a.v[0]*ph, a.p[1] + a.v[1]*ph, a.p[2] + a.v[2]*ph];
+    }
+    for(k=0;k<m.def.a.length;k++) pos.push(spun(at(m.def.a[k]), m.spin));
+
+    for(k=0;k<m.atoms.length;k++){
+      var A = m.def.a[k], P0 = pos[k], r = rad(A.e, P0[2], A.g);
+      var op = fade(P0[2], 0.18) * (A.g ? D.gop : 1);
+      var c = m.atoms[k].firstChild, h = c.nextSibling;
+      c.setAttribute('cx', P0[0].toFixed(2));
+      c.setAttribute('cy', P0[1].toFixed(2));
+      c.setAttribute('r',  r.toFixed(2));
+      c.setAttribute('stroke-width', Math.max(0.6, r*0.045).toFixed(2));
+      c.setAttribute('opacity', op.toFixed(3));
+      var hx = P0[0] - r*0.33, hy = P0[1] - r*0.38;
+      h.setAttribute('cx', hx.toFixed(2));
+      h.setAttribute('cy', hy.toFixed(2));
+      h.setAttribute('rx', (r*0.34).toFixed(2));
+      h.setAttribute('ry', (r*0.24).toFixed(2));
+      h.setAttribute('opacity', (0.92*op).toFixed(3));
+      h.setAttribute('transform','rotate(-24 '+hx.toFixed(2)+' '+hy.toFixed(2)+')');
+      kids.push([P0[2], m.atoms[k]]);
+    }
+
+    for(k=0;k<m.sticks.length;k++){
+      var b = m.def.b[k], ai = m.def.a[b[0]], aj = m.def.a[b[1]];
+      var pi = at(ai), pj = at(aj);
+      var d = [pj[0]-pi[0], pj[1]-pi[1], pj[2]-pi[2]];
+      var n = Math.sqrt(d[0]*d[0]+d[1]*d[1]+d[2]*d[2]) || 1;
+      var ri = D.rad[ai.e]*D.ball*(ai.g ? D.gr : 1);
+      var rj = D.rad[aj.e]*D.ball*(aj.g ? D.gr : 1);
+      var s = spun([pi[0]+d[0]/n*ri, pi[1]+d[1]/n*ri, pi[2]+d[2]/n*ri], m.spin);
+      var t = spun([pj[0]-d[0]/n*rj, pj[1]-d[1]/n*rj, pj[2]-d[2]/n*rj], m.spin);
+      var z = (s[2]+t[2])/2, w = D.bw*(1 + 0.10*z);
+      var L = Math.sqrt((t[0]-s[0])*(t[0]-s[0]) + (t[1]-s[1])*(t[1]-s[1]));
+      var a = Math.atan2(t[1]-s[1], t[0]-s[0])*180/Math.PI;
+      m.sticks[k].setAttribute('transform',
+        'translate('+s[0].toFixed(2)+' '+s[1].toFixed(2)+') rotate('+a.toFixed(2)+')');
+      var r1 = m.sticks[k].firstChild, r2 = r1.nextSibling;
+      [r1, r2].forEach(function(rc){
+        rc.setAttribute('y', (-w/2).toFixed(2));
+        rc.setAttribute('width',  L.toFixed(2));
+        rc.setAttribute('height', w.toFixed(2));
+        rc.setAttribute('rx', (w*0.34).toFixed(2));
+      });
+      r1.setAttribute('opacity',
+        (fade(z, 0.22) * ((ai.g || aj.g) ? D.gop : 1)).toFixed(3));
+      kids.push([z, m.sticks[k]]);
+    }
+
+    // 奥のものから並べ直す。順番が変わったときだけ触る
+    kids.sort(function(p, q){ return p[0] - q[0]; });
+    var key = kids.map(function(p){
+      return p[1].getAttribute('data-a') !== null
+        ? 'a'+p[1].getAttribute('data-a') : 's'+p[1].getAttribute('data-s');
+    }).join(',');
+    if(key !== m.order){
+      m.order = key;
+      for(k=0;k<kids.length;k++) m.g.appendChild(kids[k][1]);
+    }
+  }
+
+  // つかんで回せるようにする。指でも動くが、縦のスクロールは邪魔しない
+  mols.forEach(function(m){
+    m.svg.style.touchAction = 'pan-y';
+    m.svg.style.cursor = 'grab';
+    m.svg.addEventListener('pointerdown', function(ev){
+      m.drag = {x: ev.clientX, spin: m.spin};
+      m.svg.style.cursor = 'grabbing';
+      if(m.svg.setPointerCapture) m.svg.setPointerCapture(ev.pointerId);
+    });
+    m.svg.addEventListener('pointermove', function(ev){
+      if(!m.drag) return;
+      m.spin = m.drag.spin + (ev.clientX - m.drag.x) * 0.014;
+      draw(m);
+    });
+    function release(){
+      if(m.drag){ m.drag = null; m.svg.style.cursor = 'grab'; }
+    }
+    m.svg.addEventListener('pointerup', release);
+    m.svg.addEventListener('pointercancel', release);
+    window.addEventListener('pointerup', release);   // 捕捉に失敗したとき用
+  });
+
+  // 動きを減らす設定なら、自分で回す以外は動かさない
+  if(window.matchMedia &&
+     window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var visible = true;
+  if(window.IntersectionObserver){
+    new IntersectionObserver(function(es){ visible = es[0].isIntersecting; },
+      {rootMargin: '80px'}).observe(root);
+  }
+  var last = 0, prev = 0;
+  function tick(now){
+    requestAnimationFrame(tick);
+    if(now - last < 33) return;              // 毎秒 30 コマで足りる
+    var dt = prev ? Math.min(0.1, (now - prev)/1000) : 0;
+    last = now; prev = now;
+    if(!visible) return;
+    var step = 2*Math.PI * dt / D.sec;
+    for(var i=0;i<mols.length;i++){
+      var m = mols[i];
+      if(D.spin && !m.drag) m.spin += step * m.speed;
+      if(m.def.vs) m.ph += 2*Math.PI * dt / m.def.vs;
+      if(D.spin || m.def.vs) draw(m);
+    }
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+
+```

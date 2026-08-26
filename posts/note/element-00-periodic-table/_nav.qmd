@@ -55,7 +55,7 @@ a.enav-c:focus-visible{outline:2px solid var(--hb);outline-offset:2px;}
 
 <nav class="enav" aria-label="連載内の移動">
 <div class="enav-c is-void" aria-hidden="true"></div>
-<a class="enav-c enav-next" href="/posts/note/element-01-hydrogen/"><span class="enav-lb">次回 →</span><span class="enav-no">#1</span><span class="enav-ti">水素（H）— レモンの酸っぱさは、138億年前のビッグバンの味～？</span></a>
+<a class="enav-c enav-next" href="/posts/note/element-01-hydrogen/"><span class="enav-lb">次回 →</span><span class="enav-no">#1</span><span class="enav-ti">水素（H）— 朝の寝癖は、なぜ水で直るのか</span></a>
 <p class="enav-idx"><a href="/note"><span>⚛️ 元素の話 — 全体の一覧へ</span></a></p>
 </nav>
 ```
