@@ -12,3 +12,5 @@ _site/
 # Python
 __pycache__/
 *.pyc
+# 検証依頼パック（作業用。Quarto にも git にも入れない）
+posts/note/_review/

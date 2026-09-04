@@ -1,0 +1,120 @@
+```{=html}
+<style>
+/* 明暗の三段。カード地 #FDFAF3 に対するコントラスト比は
+   ink 14.4 : dim 7.0 : faint 4.8。faint は出典行に使うので、
+   小さい字でも読めるよう WCAG AA（4.5:1）を下回らせない。 */
+.nfix{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;
+  --hb:#BE640A;--cov:#0F6C8A;--rt:#B02A37;--vdw:#8C8271;
+  --h:#5E96C4;--he:#D69A2E;--other:#C42B3C;--o:#D8552A;--e:#2F6DB2;
+  --card:#FFFDF9;--card2:#FDFAF3;--line:#E7DECC;
+  --panel:#FAF5EB;--line2:#ECE3D2;--tint:122,96,52;
+  position:relative;margin:2.2rem 0;padding:26px 26px 20px;border-radius:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 14px 30px -20px rgba(96,74,42,.34);
+  color:var(--ink);overflow:hidden;
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+/* 方眼紙の罫。明色になって初めて意味を持つ装飾なので、暗色版より少し出す。 */
+.nfix::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(var(--tint),.07) 1px,transparent 1px) 0 0/100% 34px,
+    linear-gradient(90deg,rgba(var(--tint),.07) 1px,transparent 1px) 0 0/34px 100%;
+  mask-image:radial-gradient(120% 90% at 30% 0%,#000 30%,transparent 78%);}
+/* サイト側テーマの p / b / h5 への色指定を打ち消す。
+   ただしこの行は要素セレクタを含むので詳細度が (0,1,1) になる。
+   図の側の指定も p.〜 の形にして同着にしないと、こちらが勝ってしまう。 */
+.nfix p,.nfix b,.nfix strong,.nfix h5,.nfix span,
+.nfix em,.nfix s,.nfix u,.nfix i,.nfix sub,.nfix sup{color:inherit;}
+p.nfix-h{font-size:1.5rem;font-weight:800;letter-spacing:.01em;
+  margin:0 0 5px;color:var(--ink);}
+p.nfix-s{font-size:.95rem;color:var(--dim);margin:0 0 4px;line-height:1.65;}
+.nfix-read{margin:2px 8px 0;padding:15px 17px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:1rem;line-height:1.85;color:var(--ink);min-height:2.6em;}
+.nfix-read b{color:var(--hb);}
+p.nfix-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
+  line-height:1.7;}
+@media (max-width:820px){
+  .nfix{padding:20px 12px 16px;}
+  .nfix-h{font-size:1.25rem;}
+  .nfix-s{font-size:.86rem;}
+  .nfix-read{font-size:.92rem;margin:2px 2px 0;padding:13px 14px;}
+  .nfix-src{font-size:.76rem;}
+}
+@media (prefers-reduced-motion:reduce){.nfix *{animation:none !important;}}
+
+.nfix{--lit:#C1650A;--bio:#2E6E4E;--hb:#5E96C4;}
+.nfix-lab{margin:20px 8px 10px;font-size:.92rem;color:var(--dim);}
+.nfix-rows{display:grid;gap:15px;margin:0 8px;}
+.nfix-r{cursor:default;}
+.nfix-r .hd{display:flex;align-items:baseline;gap:10px;margin:0 0 6px;}
+.nfix-r .nm{font-size:1.04rem;font-weight:800;color:var(--c);}
+.nfix-r .sb{font-size:.84rem;color:var(--dim);margin-left:auto;
+  text-align:right;line-height:1.5;}
+.nfix-tr{position:relative;height:28px;border-radius:7px;
+  background:rgba(122,96,52,.07);border:1px solid rgba(122,96,52,.13);
+  overflow:hidden;transition:background .18s ease;}
+.nfix-r:hover .nfix-tr{background:rgba(122,96,52,.15);}
+.nfix-bd{position:absolute;top:0;bottom:0;left:0;border-radius:6px;
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--c) 36%,transparent),
+    color-mix(in srgb,var(--c) 82%,transparent));}
+/* 推定に幅があるので、右端をぼかす */
+.nfix-bd::after{content:"";position:absolute;top:0;bottom:0;right:0;
+  width:34%;background:linear-gradient(90deg,transparent,rgba(255,253,249,.6));}
+.nfix-tk{position:absolute;top:-2px;bottom:-2px;width:2px;
+  background:var(--c);opacity:.85;}
+.nfix-vl{position:absolute;top:50%;transform:translateY(-50%);
+  font-size:.84rem;font-weight:700;color:var(--ink);white-space:nowrap;
+  padding:0 10px;}
+
+.nfix-hit{margin:22px 8px 6px;padding:17px 19px;border-radius:12px;
+  background:rgba(193,101,10,.09);border:1px solid rgba(193,101,10,.28);}
+.nfix-hit .a{font-size:1.4rem;font-weight:800;color:var(--lit);
+  line-height:1.5;}
+.nfix-hit .b{font-size:.9rem;color:var(--dim);margin-top:5px;
+  line-height:1.75;}
+.nfix-hit .b b{color:var(--ink);}
+
+@media (max-width:820px){
+  .nfix-lab{font-size:.84rem;margin:16px 2px 9px;}
+  .nfix-rows{margin:0 2px;gap:12px;}
+  .nfix-r .nm{font-size:.9rem;}
+  .nfix-r .sb{display:none;}
+  .nfix-tr{height:24px;}
+  .nfix-vl{font-size:.74rem;padding:0 7px;}
+  .nfix-hit{margin:17px 2px 4px;padding:13px 14px;}
+  .nfix-hit .a{font-size:1.08rem;}
+  .nfix-hit .b{font-size:.8rem;}
+}
+</style>
+<div class="nfix fig-wide" id="nfix5">
+<p class="nfix-h">941 の鍵を、誰が開けているのか</p>
+<p class="nfix-s">1 年あたりに開かれる窒素の量です。棒はすべて同じ物差し。行にカーソルを合わせる（スマホはタップ）と説明が出ます。</p>
+
+<p class="nfix-lab">1 年に開かれる窒素の量（100 万トン単位）</p>
+<div class="nfix-rows">
+<div class="nfix-r" data-detail="稲妻の温度は&lt;b&gt;約 3 万度&lt;/b&gt;。太陽の表面（約 6 千度）よりはるかに熱い。この一瞬の高温と電気が三重結合を引き裂き、砕けた窒素が雨に溶けて土に落ちます。&lt;b&gt;ただし量はごくわずかで、稲を育てるには遠く及びません。&lt;/b&gt;" style="--c:var(--lit)"><div class="hd"><span class="nm">雷</span><span class="sb">瞬間 3 万度でこじ開ける</span></div><div class="nfix-tr"><div class="nfix-bd" style="width:2.78%"></div><div class="nfix-tk" style="left:1.67%"></div><div class="nfix-vl" style="left:4.18%">3 〜 5</div></div></div>
+<div class="nfix-r" data-detail="いちばん有名なのはマメ科の根に住む&lt;b&gt;根粒菌&lt;/b&gt;です。豆を引き抜けば、根に小さな粒がびっしり付いているのが見えます。ただし担い手はそれだけではなく、&lt;b&gt;土の中で単独で暮らす細菌も、海に漂う藍藻（シアノバクテリア）も、同じことをしています&lt;/b&gt;。&lt;b&gt;人類が高温高圧の工場でやることを、常温常圧でやってのける。&lt;/b&gt;" style="--c:var(--bio)"><div class="hd"><span class="nm">生き物</span><span class="sb">根粒菌・土の細菌・藍藻</span></div><div class="nfix-tr"><div class="nfix-bd" style="width:97.22%"></div><div class="nfix-tk" style="left:55.56%"></div><div class="nfix-vl" style="left:0">100 〜 175</div></div></div>
+<div class="nfix-r" data-detail="1909 年にハーバーが原理を示し、ボッシュが工場にしました。&lt;b&gt;いま地球にいる人のおよそ半分が、この反応で作られた窒素を食べています。&lt;/b&gt;100 年以上たっても、原理は変わっていません。" style="--c:var(--hb)"><div class="hd"><span class="nm">ハーバー・ボッシュ法</span><span class="sb">高温高圧＋鉄の触媒</span></div><div class="nfix-tr"><div class="nfix-bd" style="width:66.67%"></div><div class="nfix-tk" style="left:55.56%"></div><div class="nfix-vl" style="left:0">100 〜 120</div></div></div>
+</div>
+<div class="nfix-hit" data-detail="分母の取り方で数字が変わります。&lt;b&gt;自然に開かれる分（雷＋生き物）を分母にすると 2〜5%、人間の工場まで含めた総量を分母にすると 1〜2%&lt;/b&gt; です。なお講演資料などで「雷が植物の栄養の 10〜20% を供給する」とされることがありますが、&lt;b&gt;上の推定とは桁が合いません&lt;/b&gt;。"><div class="a">自然に開かれる分のうち、雷は 2〜5%</div><div class="b"><b>雷が稲を育てるという言い伝えを、これで説明することはできません。</b>雷が届ける窒素は、陸地に配っても 1 ヘクタールあたり 0.3 キロほど。水稲が必要とする量（100 キロ前後）の <b>1% にも足りません</b>。そして雷と生き物を合わせても、<b>80 億人を食べさせるには足りませんでした。</b></div></div>
+<div class="nfix-read">三重結合を開けるのは、自然界では <b>雷</b>（瞬間 3 万度）と<b>生き物</b>（常温常圧）の 2 通りでした。そこへ 20 世紀に <b>ハーバー・ボッシュ法</b>が加わります。量で見ると <b>雷はごくわずか</b>で、<b>人間の工場は、地球上の生き物ぜんぶに匹敵する量を開けている</b>ことが分かります。<b>「雷が稲を育てる」は、この図では説明がつきません。</b>その答えは記事の最後にあります。</div>
+<p class="nfix-src">年あたりの固定量（Tg N＝100 万トン）：雷 3〜5、生物的固定 100〜175、ハーバー・ボッシュ法 100〜120。<b>いずれも推定に幅があるので、棒の右端をぼかしてあります</b>（#3 酸素の収支図と同じ描き方です）。<b>割合は分母の取り方で変わります</b>——自然に開かれる分（雷＋生き物）を分母にすると 2〜5%、人工固定まで含めた総量を分母にすると 1〜2% です。本文は前者を使っています。生物的固定の推定は文献差が大きく、陸域だけで 60〜90 Tg N/年 とする報告もあります。</p>
+</div>
+
+<script>
+(function(){
+  var r=document.getElementById('nfix5');if(!r)return;
+  var out=r.querySelector('.nfix-read');if(!out)return;
+  var base=out.innerHTML;
+  r.querySelectorAll('[data-detail]').forEach(function(n){
+    function on(){out.innerHTML=n.getAttribute('data-detail');}
+    n.addEventListener('mouseenter',on);
+    n.addEventListener('click',on);
+    n.addEventListener('mouseleave',function(){out.innerHTML=base;});
+  });
+})();
+</script>
+
+```

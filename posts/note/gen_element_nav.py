@@ -28,7 +28,8 @@ SERIES = [
     ('element-01-hydrogen',       '#1', None),
     ('element-02-carbon',         '#2', None),
     ('element-03-oxygen',         '#3', None),
-    ('element-04-nitrogen',       '#4', '窒素（N）— 空気の8割を、使えない'),
+    ('element-04-nitrogen',       '#4', None),
+    ('element-05-silicon',        '#5', 'ケイ素（Si）— 砂から、計算する道具へ'),
 ]
 
 CSS = """

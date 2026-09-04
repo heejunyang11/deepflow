@@ -16,9 +16,15 @@
 
 使い方:
   python make_review_packet.py element-03-oxygen
-  -> review_element-03-oxygen.md ができる。これを丸ごと貼って検証を頼む。
+  -> _review/element-03-oxygen.md ができる。これを丸ごと貼って検証を頼む。
 
-出力: review_<フォルダ名>.md
+**出力先が _review/ なのは、Quarto に拾わせないため。**
+posts/ 配下に .md を置くと listing が記事として収集し、
+サイトに「検証のお願い」というページが出てしまう（2026-08-26 に実際に起きた。
+_site/ に HTML が生成され、sitemap.xml と search.json にも載った）。
+Quarto は先頭が _ のディレクトリを出力対象から外すので、そこへ逃がす。
+
+出力: _review/<フォルダ名>.md
 """
 import io
 import os
@@ -148,10 +154,15 @@ def build(folder):
         o.append(u'\n## 記事末尾の「もっと知りたい人へ」\n')
         o.append(m.group(1).strip())
 
-    out = 'review_%s.md' % os.path.basename(folder.rstrip('/\\'))
+    # Quarto に拾われない場所へ出す（先頭が _ のディレクトリは出力対象外）
+    here = os.path.dirname(os.path.abspath(__file__))
+    outdir = os.path.join(here, '_review')
+    if not os.path.isdir(outdir):
+        os.makedirs(outdir)
+    out = os.path.join(outdir, '%s.md' % os.path.basename(folder.rstrip('/\\')))
     io.open(out, 'w', encoding='utf-8', newline='\n').write(u'\n'.join(o))
-    print(u'saved %-34s  文 %d ／ うち数値を含む文 %d ／ %.1f KB'
-          % (out, n,
+    print(u'saved %-40s  文 %d ／ うち数値を含む文 %d ／ %.1f KB'
+          % (os.path.relpath(out, here), n,
              sum(1 for l in o if l.endswith(u'**[数]**')),
              os.path.getsize(out) / 1024.0))
 

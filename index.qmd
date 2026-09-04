@@ -2,7 +2,7 @@
 title: "DeepFlows"
 subtitle: "Science beneath the surface"
 pagetitle: "地下水科学・地球化学・データ解析のサイエンスブログ"
-description: "地下水流動解析（MODFLOW）と地球化学モデリング（PHREEQC）、Python によるデータ解析を、研究者が実例とコードで解説するサイエンスブログ。運営者は査読付き論文27編の Heejun Yang, Ph.D."
+description: "地下水流動解析（MODFLOW）と地球化学モデリング（PHREEQC）、Python によるデータ解析を、研究者が実例とコードで解説するサイエンスブログ。元素の話・温泉の科学まで、水と地球の科学を扱います。"
 page-layout: full
 title-block-banner: true
 format:
@@ -299,7 +299,7 @@ listing:
   line-height: 1.75;
   color: #6B7280;
 }
-/* Calc カードだけはリンクにする。見た目は他の3枚と揃え、押せることだけを
+/* 元素の話と Calc の 2 枚はリンクにする。見た目は他の 3 枚と揃え、押せることだけを
    ホバーで示す（カード自体が <a> なので下線は消す）。 */
 a.pillar-card {
   display: block;
@@ -393,28 +393,36 @@ a.pillar-card:hover {
     <p class="about-site-lead">
       扱うのは、教科書的な知識の暗記ではありません。MODFLOW による地下水流動解析、PHREEQC による水と岩石の化学反応のモデリング、そして Python によるデータの可視化まで、<strong>研究の現場で実際に使われている手法</strong>を、つまずいた過程やうまくいかなかった試行錯誤も含めて、具体的に解説します。地下水を学ぶ学生の方、水資源・環境分野の技術者の方、そして数値解析やデータサイエンスに関心のあるすべての方に向けた内容です。
     </p>
+    <p class="about-site-lead">
+      このサイトの図とコードは、<strong>AI アシスタント（Claude Code）を使って作っています。</strong>分子の立体を計算して図を描き出すスクリプト、記事に出てくる数値を一次資料と突き合わせる照合、書き上げた原稿の読み返し——手を動かす部分の多くを任せています。いっぽう、何を書くか、どう説明するか、そして出てきた数字を信用してよいかの<strong>判断は、すべて運営者が行っています。</strong>出典に当たれないことは書かない、という方針も変えていません。<strong>AI とどう仕事をするかは、このサイトの題材のひとつでもあります。</strong>
+    </p>
   </div>
 
   <div class="pillars">
     <div class="pillar-card">
       <div class="pillar-icon">📘</div>
       <div class="pillar-name">地下水科学入門</div>
-      <div class="pillar-text">帯水層・透水係数・涵養といった基礎概念から、淡水レンズや潮汐応答の時系列解析まで。全17回で体系的に学べる入門連載です。</div>
+      <div class="pillar-text">帯水層・透水係数・涵養といった基礎概念から、淡水レンズや潮汐応答の時系列解析、地震・火山と地下水まで。<strong>これまでに18回</strong>、日英で公開しています。</div>
     </div>
     <div class="pillar-card">
       <div class="pillar-icon">⚗️</div>
       <div class="pillar-name">PHREEQC 地球化学モデリング</div>
-      <div class="pillar-text">水質計算の基礎から、反応経路モデリングや逆計算まで。全19回にわたり、地球化学シミュレーションを実例とコードで解説します。</div>
+      <div class="pillar-text">水質計算の基礎から、反応経路モデリングや逆計算まで。<strong>全20回</strong>にわたり、地球化学シミュレーションを実例とコードで解説します。</div>
     </div>
     <div class="pillar-card">
       <div class="pillar-icon">🗒️</div>
       <div class="pillar-name">フィールドノート</div>
-      <div class="pillar-text">温泉の泉質、地形と歴史のつながり、日々の計算で直面した失敗談まで。技術解説の枠に収まらない、多角的なエッセイ集です。</div>
+      <div class="pillar-text">別府の湯はなぜあの泉質なのか。関ヶ原の地形は歴史に何をしたのか。偏微分方程式の手なずけ方から、AI と組んでコードを書く話まで。<strong>技術解説の枠に収まらない</strong>エッセイ集です。</div>
     </div>
+    <a href="/posts/note/element-00-periodic-table/" class="pillar-card">
+      <div class="pillar-icon">⚛️</div>
+      <div class="pillar-name">元素の話</div>
+      <div class="pillar-text">寝癖はなぜ水で直るのか。稲妻はなぜ「稲の妻」と書くのか。<strong>高校生から読める</strong>科学の話を、動く図とともに。水素・炭素・酸素・窒素と進んでいます。<span class="pillar-more">＞ 序章から読む</span></div>
+    </a>
     <a href="/calc/" class="pillar-card">
       <div class="pillar-icon">🧮</div>
       <div class="pillar-name">オンライン計算機</div>
-      <div class="pillar-text">ダルシー則・揚水試験・蒸発散・水質の単位換算を、インストール不要でブラウザ上で計算できます。式の出典と、<strong>その式が成り立たなくなる条件</strong>まで表示するのが他の計算機との違いです。<span class="pillar-more">＞ Calc を開く（英語）</span></div>
+      <div class="pillar-text">ダルシー則・揚水試験・蒸発散・電荷収支・水質の単位換算を、インストール不要でブラウザ上で計算できます。式の出典と、<strong>その式が成り立たなくなる条件</strong>まで表示するのが他の計算機との違いです。<span class="pillar-more">＞ Calc を開く（英語）</span></div>
     </a>
   </div>
 
@@ -422,7 +430,7 @@ a.pillar-card:hover {
     <img src="/profile.png" class="author-avatar" alt="運営者プロフィール画像">
     <div class="author-info">
       <div class="author-name">運営者：Heejun Yang, Ph.D.</div>
-      <div class="author-desc">水文学・地下水流動解析・地球化学を専門とする研究者。査読付き学術論文27編。研究で培ってきた手法を、できるだけ平易な言葉で共有しています。 ＞ プロフィールと業績一覧を見る</div>
+      <div class="author-desc">水文学・地下水流動解析・地球化学を専門とする研究者。研究で培ってきた手法を、できるだけ平易な言葉で共有しています。 ＞ プロフィールと業績一覧を見る</div>
     </div>
   </a>
 </div>

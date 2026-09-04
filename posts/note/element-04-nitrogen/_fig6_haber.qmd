@@ -1,0 +1,123 @@
+```{=html}
+<style>
+/* 明暗の三段。カード地 #FDFAF3 に対するコントラスト比は
+   ink 14.4 : dim 7.0 : faint 4.8。faint は出典行に使うので、
+   小さい字でも読めるよう WCAG AA（4.5:1）を下回らせない。 */
+.nhab{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;
+  --hb:#BE640A;--cov:#0F6C8A;--rt:#B02A37;--vdw:#8C8271;
+  --h:#5E96C4;--he:#D69A2E;--other:#C42B3C;--o:#D8552A;--e:#2F6DB2;
+  --card:#FFFDF9;--card2:#FDFAF3;--line:#E7DECC;
+  --panel:#FAF5EB;--line2:#ECE3D2;--tint:122,96,52;
+  position:relative;margin:2.2rem 0;padding:26px 26px 20px;border-radius:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 14px 30px -20px rgba(96,74,42,.34);
+  color:var(--ink);overflow:hidden;
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+/* 方眼紙の罫。明色になって初めて意味を持つ装飾なので、暗色版より少し出す。 */
+.nhab::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(var(--tint),.07) 1px,transparent 1px) 0 0/100% 34px,
+    linear-gradient(90deg,rgba(var(--tint),.07) 1px,transparent 1px) 0 0/34px 100%;
+  mask-image:radial-gradient(120% 90% at 30% 0%,#000 30%,transparent 78%);}
+/* サイト側テーマの p / b / h5 への色指定を打ち消す。
+   ただしこの行は要素セレクタを含むので詳細度が (0,1,1) になる。
+   図の側の指定も p.〜 の形にして同着にしないと、こちらが勝ってしまう。 */
+.nhab p,.nhab b,.nhab strong,.nhab h5,.nhab span,
+.nhab em,.nhab s,.nhab u,.nhab i,.nhab sub,.nhab sup{color:inherit;}
+p.nhab-h{font-size:1.5rem;font-weight:800;letter-spacing:.01em;
+  margin:0 0 5px;color:var(--ink);}
+p.nhab-s{font-size:.95rem;color:var(--dim);margin:0 0 4px;line-height:1.65;}
+.nhab-read{margin:2px 8px 0;padding:15px 17px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:1rem;line-height:1.85;color:var(--ink);min-height:2.6em;}
+.nhab-read b{color:var(--hb);}
+p.nhab-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
+  line-height:1.7;}
+@media (max-width:820px){
+  .nhab{padding:20px 12px 16px;}
+  .nhab-h{font-size:1.25rem;}
+  .nhab-s{font-size:.86rem;}
+  .nhab-read{font-size:.92rem;margin:2px 2px 0;padding:13px 14px;}
+  .nhab-src{font-size:.76rem;}
+}
+@media (prefers-reduced-motion:reduce){.nhab *{animation:none !important;}}
+
+.nhab{--gua:#8C7A4A;--war:#B02A37;--air:#5E96C4;--now:#2E6E4E;}
+.nhab-tl{position:relative;margin:22px 8px 0;padding-left:96px;}
+/* 縦の背骨 */
+.nhab-tl::before{content:"";position:absolute;left:78px;top:10px;bottom:10px;
+  width:2px;background:linear-gradient(180deg,
+    var(--gua) 0%,var(--war) 34%,var(--air) 66%,var(--now) 100%);
+  opacity:.55;border-radius:2px;}
+.nhab-e{position:relative;padding:0 0 20px;cursor:default;}
+.nhab-e:last-child{padding-bottom:2px;}
+.nhab-yr{position:absolute;left:-96px;top:1px;width:64px;text-align:right;
+  font-size:.9rem;font-weight:800;color:var(--c);
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
+.nhab-dot{position:absolute;left:-24px;top:5px;width:13px;height:13px;
+  border-radius:50%;background:var(--c);
+  box-shadow:0 0 0 3px #FFFDF9,0 0 0 4px var(--c);}
+.nhab-e h5{margin:0 0 3px;font-size:1.04rem;font-weight:800;color:var(--ink);
+  line-height:1.5;}
+.nhab-e p{margin:0;font-size:.9rem;color:var(--dim);line-height:1.8;}
+.nhab-e:hover h5{color:var(--c);}
+
+.nhab-now{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin:22px 8px 6px;}
+.nhab-n{padding:15px 14px;border-radius:12px;text-align:center;
+  background:rgba(46,110,78,.08);border:1px solid rgba(46,110,78,.24);}
+.nhab-n b{display:block;font-size:1.14rem;font-weight:800;color:var(--now);
+  line-height:1.45;}
+.nhab-n s{display:block;text-decoration:none;font-size:.8rem;color:var(--dim);
+  line-height:1.6;margin-top:4px;}
+
+@media (max-width:820px){
+  .nhab-tl{margin:18px 2px 0;padding-left:74px;}
+  .nhab-tl::before{left:58px;}
+  .nhab-yr{left:-74px;width:48px;font-size:.78rem;}
+  .nhab-dot{left:-20px;width:11px;height:11px;}
+  .nhab-e h5{font-size:.92rem;}
+  .nhab-e p{font-size:.8rem;}
+  .nhab-now{grid-template-columns:1fr;gap:7px;margin:18px 2px 4px;}
+  .nhab-n{padding:12px 12px;}
+  .nhab-n b{font-size:1rem;}
+  .nhab-n s{font-size:.75rem;}
+}
+</style>
+<div class="nhab fig-wide" id="nhab6">
+<p class="nhab-h">糞 → 戦争 → 空気</p>
+<p class="nhab-s">窒素を手に入れるために、人類がたどった百年です。各行にカーソルを合わせる（スマホはタップ）と説明が出ます。</p>
+
+<div class="nhab-tl">
+<div class="nhab-e" data-detail="&lt;b&gt;グアノ&lt;/b&gt;＝ペルー沖のチンチャ諸島などに積もった海鳥の糞。&lt;b&gt;カリーチ（チリ硝石）&lt;/b&gt;＝アタカマ砂漠の鉱床で、こちらは糞ではなく、&lt;b&gt;海塩や大気で生じた硝酸が1000万年規模の乾燥のもとで積もったもの&lt;/b&gt;です。&lt;b&gt;別の場所の、別のもの&lt;/b&gt;でした。" style="--c:var(--gua)"><span class="nhab-yr">1840年代</span><span class="nhab-dot"></span><h5>2つの資源が、見つかる</h5><p>グアノ＝ペルー沖のチンチャ諸島などに積もった海鳥の糞。カリーチ（チリ硝石）＝アタカマ砂漠の鉱床で、こちらは糞ではなく、海塩や大気で生じた硝酸が1000万年規模の乾燥のもとで積もったものです。別の場所の、別のものでした。</p></div>
+<div class="nhab-e" data-detail="&lt;b&gt;グアノ諸島法&lt;/b&gt;（8月18日成立）。無人でどこの国のものでもないグアノの島は、&lt;b&gt;アメリカ市民が合衆国領として主張してよい&lt;/b&gt;という法律です。100 を超える島が申し立てられ、&lt;b&gt;いくつかは現在もアメリカ領&lt;/b&gt;です。" style="--c:var(--gua)"><span class="nhab-yr">1856年8月</span><span class="nhab-dot"></span><h5>アメリカが、法律を作る</h5><p>グアノ諸島法（8月18日成立）。無人でどこの国のものでもないグアノの島は、アメリカ市民が合衆国領として主張してよいという法律です。100 を超える島が申し立てられ、いくつかは現在もアメリカ領です。</p></div>
+<div class="nhab-e" data-detail="チリ対ペルー＋ボリビア。きっかけは&lt;b&gt;ボリビアがチリ系の硝石会社にかけた輸出税&lt;/b&gt;でした。争われたのは&lt;b&gt;グアノではなくカリーチ&lt;/b&gt;で、名前がそう言っています（&lt;b&gt;Saltpeter War&lt;/b&gt;）。&lt;b&gt;ボリビアは海岸州を失って内陸国になりました&lt;/b&gt;（正式な割譲は1904年の条約）。" style="--c:var(--war)"><span class="nhab-yr">1879–83</span><span class="nhab-dot"></span><h5>硝石戦争</h5><p>チリ対ペルー＋ボリビア。きっかけはボリビアがチリ系の硝石会社にかけた輸出税でした。争われたのはグアノではなくカリーチで、名前がそう言っています（Saltpeter War）。ボリビアは海岸州を失って内陸国になりました（正式な割譲は1904年の条約）。</p></div>
+<div class="nhab-e" data-detail="ドイツには硝石が出ません。&lt;b&gt;海を封鎖されれば、畑も軍隊も止まる。&lt;/b&gt;フリッツ・ハーバーが狙ったのは、頭の上に無限にある&lt;b&gt;空気&lt;/b&gt;でした。答えは&lt;b&gt;鉄の触媒&lt;/b&gt;——高温高圧の中で、鉄が三重結合を開く手助けをする。" style="--c:var(--air)"><span class="nhab-yr">1909年</span><span class="nhab-dot"></span><h5>ハーバー、空気に手をつける</h5><p>ドイツには硝石が出ません。海を封鎖されれば、畑も軍隊も止まる。フリッツ・ハーバーが狙ったのは、頭の上に無限にある空気でした。答えは鉄の触媒——高温高圧の中で、鉄が三重結合を開く手助けをする。</p></div>
+<div class="nhab-e" data-detail="カール・ボッシュが工場の規模まで持ち上げます。「&lt;b&gt;空気からパンを作る&lt;/b&gt;」と呼ばれた技術です。そして&lt;b&gt;同じ技術が、爆薬を無尽蔵にしました&lt;/b&gt;。硝石が要らないということは、火薬も輸入が要らないということです。" style="--c:var(--air)"><span class="nhab-yr">1913年</span><span class="nhab-dot"></span><h5>ボッシュ、工場にする</h5><p>カール・ボッシュが工場の規模まで持ち上げます。「空気からパンを作る」と呼ばれた技術です。そして同じ技術が、爆薬を無尽蔵にしました。硝石が要らないということは、火薬も輸入が要らないということです。</p></div>
+<div class="nhab-e" data-detail="&lt;b&gt;100 年以上たったいまも、当時見つかった鉄触媒を使っています。&lt;/b&gt;変わったのは規模だけ。&lt;b&gt;人類が使うエネルギーの 1〜2% が、空気から窒素を引きはがすことに使われています。&lt;/b&gt;" style="--c:var(--now)"><span class="nhab-yr">現在</span><span class="nhab-dot"></span><h5>原理は、変わっていません</h5><p>100 年以上たったいまも、当時見つかった鉄触媒を使っています。変わったのは規模だけ。人類が使うエネルギーの 1〜2% が、空気から窒素を引きはがすことに使われています。</p></div>
+</div>
+<div class="nhab-now">
+<div class="nhab-n"><b>年 1.7 億トン</b><s>アンモニアの生産量。約 8 割が肥料になります</s></div>
+<div class="nhab-n"><b>世界のエネルギーの 1〜2%</b><s>941 という数字が、そのまま電気代になっています</s></div>
+<div class="nhab-n"><b>人口の約半分</b><s>2000 年で 44%、2008 年で 48% という推定です</s></div>
+</div>
+<div class="nhab-read">火薬にも肥料にも、窒素の化合物が要ります。ところが空気からは取れないので、<b>大量に手に入れるには掘るしかありませんでした</b>。そのために——<b>アメリカは法律を作って島を取りに行き、チリとペルーとボリビアは戦争をしました</b>。ボリビアはそのとき海を失い、いまも内陸国のままです。そして 20 世紀に、ドイツの化学者が<b>空気から取る方法</b>を見つけます。<b>その方法は 100 年以上たったいまも同じで、人類の約半分を養い、世界のエネルギーの 1〜2% を使っています。</b></div>
+<p class="nhab-src">グアノ諸島法は <b>1856 年 8 月 18 日成立</b>（上院通過 7 月 24 日、下院通過 8 月 16 日）。硝石戦争（太平洋戦争）は 1879〜1883 年で、きっかけはボリビアがチリ系の硝石会社に課した輸出税で、<b>争われたのはグアノではなくカリーチ（チリ硝石）</b>でした。ペルーとの講和は 1883 年、ボリビア海岸州の正式な割譲は 1904 年の条約です。ハーバー・ボッシュ法は<b>アルヴィン・ミタシュが見つけた鉄触媒</b>を現在も使っており、原理は開発当初から根本的に変わっていません。人口の割合は Erisman <i>et al.</i> (2008) <i>Nature Geoscience</i> 1, 636–639 による推定で、<b>「世界人口の約半分」であって「体内の窒素の約半分」ではありません</b>。</p>
+</div>
+
+<script>
+(function(){
+  var r=document.getElementById('nhab6');if(!r)return;
+  var out=r.querySelector('.nhab-read');if(!out)return;
+  var base=out.innerHTML;
+  r.querySelectorAll('[data-detail]').forEach(function(n){
+    function on(){out.innerHTML=n.getAttribute('data-detail');}
+    n.addEventListener('mouseenter',on);
+    n.addEventListener('click',on);
+    n.addEventListener('mouseleave',function(){out.innerHTML=base;});
+  });
+})();
+</script>
+
+```

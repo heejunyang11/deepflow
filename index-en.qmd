@@ -3,7 +3,7 @@ title: "DeepFlows"
 subtitle: "Science beneath the surface"
 lang: en
 pagetitle: "Groundwater Science, Geochemistry and Data Analysis"
-description: "A science blog by a researcher: groundwater flow modeling (MODFLOW), geochemical modeling (PHREEQC), and data analysis with Python, explained with real examples and code. Written by Heejun Yang, Ph.D., author of 27 peer-reviewed papers."
+description: "A science blog by a researcher: groundwater flow modeling (MODFLOW), geochemical modeling (PHREEQC), and data analysis with Python, explained with real examples and code. Written by Heejun Yang, Ph.D."
 page-layout: full
 title-block-banner: true
 format:
@@ -300,7 +300,7 @@ listing:
   line-height: 1.75;
   color: #6B7280;
 }
-/* Calc カードだけはリンクにする。見た目は他の3枚と揃え、押せることだけを
+/* 元素の話と Calc の 2 枚はリンクにする。見た目は他の 3 枚と揃え、押せることだけを
    ホバーで示す（カード自体が <a> なので下線は消す）。 */
 a.pillar-card {
   display: block;
@@ -393,28 +393,36 @@ a.pillar-card:hover {
     <p class="about-site-lead">
       This is not about memorizing textbook facts. From groundwater flow analysis with MODFLOW, to modeling water–rock chemical reactions with PHREEQC, to data visualization with Python, we explain <strong>the very methods used in real research</strong>—including the dead ends and the trial-and-error that rarely make it into published papers. The content is written for students learning hydrogeology, engineers in the water-resource and environmental fields, and anyone curious about numerical analysis and data science.
     </p>
+    <p class="about-site-lead">
+      The figures and code on this site are built with <strong>an AI assistant (Claude Code).</strong> Scripts that compute molecular geometry and draw the figures, cross-checks of every number against its primary source, read-throughs of finished drafts—much of the hands-on work is delegated. What is not: deciding what to write, how to explain it, and whether a number can be trusted. <strong>Those remain entirely the author's.</strong> The rule that nothing goes in unless it can be traced to a source has not changed either. <strong>How to work alongside AI is itself one of this site's subjects.</strong>
+    </p>
   </div>
 
   <div class="pillars">
     <div class="pillar-card">
       <div class="pillar-icon">📘</div>
       <div class="pillar-name">Introduction to Groundwater Science</div>
-      <div class="pillar-text">From core concepts—aquifers, hydraulic conductivity, recharge—to time-series analysis of freshwater lenses and tidal response. A 17-part series for learning systematically.</div>
+      <div class="pillar-text">From core concepts—aquifers, hydraulic conductivity, recharge—to time-series analysis of freshwater lenses, tidal response, and how earthquakes and volcanoes move groundwater. <strong>18 parts so far</strong>, in Japanese and English.</div>
     </div>
     <div class="pillar-card">
       <div class="pillar-icon">⚗️</div>
       <div class="pillar-name">PHREEQC Geochemical Modeling</div>
-      <div class="pillar-text">From the basics of water-quality calculation to reaction-path modeling and inverse modeling. A 19-part series explaining geochemical simulation with real examples and code.</div>
+      <div class="pillar-text">From the basics of water-quality calculation to reaction-path modeling and inverse modeling. A <strong>20-part series</strong> explaining geochemical simulation with real examples and code.</div>
     </div>
     <div class="pillar-card">
       <div class="pillar-icon">🗒️</div>
       <div class="pillar-name">Field Notes</div>
-      <div class="pillar-text">Hot-spring water chemistry, the links between landforms and history, and the failures faced in everyday computation. Essays that don't fit the tutorial format.</div>
+      <div class="pillar-text">Why the hot springs of Beppu carry the chemistry they do. What the terrain at Sekigahara did to history. Taming partial differential equations; writing code alongside an AI. <strong>Essays that don't fit the tutorial format.</strong></div>
     </div>
+    <a href="/posts/note/element-00-periodic-table/" class="pillar-card">
+      <div class="pillar-icon">⚛️</div>
+      <div class="pillar-name">The Elements</div>
+      <div class="pillar-text">Why bed hair straightens with water. Why the Japanese word for lightning literally means "the rice plant's spouse." Science a high-school reader can follow, with figures that move—hydrogen, carbon, oxygen, nitrogen so far. <strong>Written in Japanese.</strong><span class="pillar-more">＞ Start from the prologue</span></div>
+    </a>
     <a href="/calc/" class="pillar-card">
       <div class="pillar-icon">🧮</div>
       <div class="pillar-name">Online Calculators</div>
-      <div class="pillar-text">Darcy's law, pumping tests, evapotranspiration and water-chemistry unit conversion, worked out in your browser with nothing to install. Each tool cites its equation and states <strong>where that equation stops being valid</strong>.<span class="pillar-more">＞ Open Calc</span></div>
+      <div class="pillar-text">Darcy's law, pumping tests, evapotranspiration, charge balance and water-chemistry unit conversion, worked out in your browser with nothing to install. Each tool cites its equation and states <strong>where that equation stops being valid</strong>.<span class="pillar-more">＞ Open Calc</span></div>
     </a>
   </div>
 
@@ -422,7 +430,7 @@ a.pillar-card:hover {
     <img src="/profile.png" class="author-avatar" alt="Author profile photo">
     <div class="author-info">
       <div class="author-name">Author: Heejun Yang, Ph.D.</div>
-      <div class="author-desc">A researcher specializing in hydrology, groundwater flow analysis, and geochemistry, with 27 peer-reviewed publications. Sharing the methods built up through years of research, in the plainest language possible. ＞ See full profile and publications</div>
+      <div class="author-desc">A researcher specializing in hydrology, groundwater flow analysis, and geochemistry. Sharing the methods built up through years of research, in the plainest language possible. ＞ See full profile and publications</div>
     </div>
   </a>
 </div>
