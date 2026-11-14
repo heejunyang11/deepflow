@@ -173,6 +173,61 @@ say("2桁の水和数 ·10H2O",       P("Na2SO4·10H2O") === "Na₂SO₄·10H₂
 // SVG に流し込むので HTML タグが混ざってはいけない（混ざると丸ごと描画されない）
 say("HTML タグを含まない",       !/[<>]/.test(P("CaSO4·2H2O") + P("CaCO3")));
 
+/* [本] 本文が数値で主張していること
+   ---------------------------------------------------------------------------
+   例題そのものは上で押さえてあるが、解説の地の文が出す数字（水和水 21 %、
+   硬度 100 mg/L as CaCO3、アルカリ度 244 mg/L、海水で 2.5 % など）は
+   検査に入っていなかった。2026-09-07 の日本語化にあわせて追加する。 */
+
+console.log("\n[本] 本文の主張");
+{
+  const gyp = cfg.compute(byMass("CaSO4·2H2O", 172.164, 2), "Cn");
+
+  // 「石膏の2つの結晶水は質量の 21 %」「無水の 136.14 を使うと5分の1以上の過小評価」
+  say("結晶水は四捨五入して 21 %", gyp.wH2O.toFixed(0) === "21");
+  const M_ANHY = 40.078 + 32.06 + 4 * 15.999;              // 136.137
+  near("無水の M",              M_ANHY,                      136.14, 1e-4);
+  near("水和の M",              gyp.M,                       172.17, 1e-4);
+  say("過小評価は5分の1を超える", (1 - M_ANHY / gyp.M) > 0.20);
+
+  // 「硫酸 480 mg/L はおよそ 0.86 g/L の石膏、カルシウムはおよそ 200 mg/L」
+  const so4 = cfg.compute(byMass("SO4", 480, 2), "Cn");
+  const gy2 = cfg.compute(byMolar("CaSO4·2H2O", so4.Cn, 2), "Cm");
+  near("溶けた石膏 (g/L)",       gy2.Cm,                      0.86,  5e-3);
+  near("随伴する Ca (mg/L)",     gy2.Cn * 40.078,             200,   2e-3);
+  // 「実測が 120 mg/L なら、およそ 80 mg/L がどこかへ行った」
+  near("不足する Ca (mg/L)",     gy2.Cn * 40.078 - 120,       80,    5e-3);
+
+  // 本文の「SO4 は 96.06 g/mol」
+  say("M(SO4) は 96.06 と書ける", so4.M.toFixed(2) === "96.06");
+
+  // 「硬度 2.0 meq/L は 100 mg/L as CaCO3」
+  const hard = cfg.compute(byMolar("CaCO3", 1.0, 2), "Cm");
+  near("2.0 meq/L の CaCO3 換算", hard.asCaCO3,               100.086, 1e-6);
+  say("四捨五入して 100 mg/L",     hard.asCaCO3.toFixed(0) === "100");
+
+  // 「アルカリ度 200 mg/L as CaCO3 = 4.0 meq/L = 実際の HCO3 として 244 mg/L」
+  const EQ_CACO3 = (40.078 + 12.011 + 3 * 15.999) / 2;      // 50.043
+  near("200 mg/L as CaCO3 の meq/L", 200 / EQ_CACO3,         4.0,   1e-3);
+  const hco3 = cfg.compute(byMolar("HCO3", 200 / EQ_CACO3, 1), "Cm");
+  near("それは HCO3 で何 mg/L か",   hco3.Cm * 1000,          244,   1e-3);
+
+  // 換算係数 50.04
+  near("as CaCO3 の換算係数",        EQ_CACO3,               50.04, 1e-3);
+
+  // 「海水の密度 1.025 kg/L では、mg/L は ppm より およそ 2.5 % 大きい」
+  near("海水での mg/L と ppm の差 (%)", (1.025 - 1) * 100,   2.5,   1e-9);
+
+  // 「1 mmol/L はちょうど 1 mol/m3」——compute の入出力の規約そのもの
+  near("1 mmol/L = 1 mol/m³",   cfg.compute(byMolar("CaCO3", 1, 2), "Cm").Cn, 1, 1e-12);
+
+  // 判定のしきい値（本文の 1 g/L と、かん水の 35 g/L）
+  state("999 mg/L → good",   byMass("NaCl", 999,   1), "Cn", "good");
+  state("1001 mg/L → warn",  byMass("NaCl", 1001,  1), "Cn", "warn");
+  state("34999 mg/L → warn", byMass("NaCl", 34999, 1), "Cn", "warn");
+  state("35001 mg/L → crit", byMass("NaCl", 35001, 1), "Cn", "crit");
+}
+
 if (checks === 0) {
   console.log("\n" + TOOL + ": 検証がまだ 1 件も書かれていない。TODO を埋めること。");
   process.exit(1);

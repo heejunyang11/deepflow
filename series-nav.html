@@ -70,7 +70,10 @@
     const navIndexText = document.getElementById('nav-index-text');
     const navIndex = document.getElementById('nav-index');
     navIndexText.innerText = isEnglish ? "Series Index" : "シリーズ一覧へ";
-    navIndex.href = isEnglish ? "/blog-en" : "/blog";
+    // ローカルプレビューの静的サーバーは拡張子を補わないので、
+    // ここだけ .html を足す（switch-lang.html と同じ理由・同じ作法）。
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    navIndex.href = (isEnglish ? "/blog-en" : "/blog") + (isLocal ? ".html" : "");
 
     // URLからプレフィックスと番号を抽出
     // パターン例: /posts/phreeqc/phreeqc-part16/ または /posts/groundwater/groundwater-sci02/index.html

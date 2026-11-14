@@ -30,6 +30,9 @@ SERIES = [
     ('element-03-oxygen',         '#3', None),
     ('element-04-nitrogen',       '#4', None),
     ('element-05-silicon',        '#5', 'ケイ素（Si）— 砂から、計算する道具へ'),
+    ('element-06-aluminium',      '#6', 'アルミニウム（Al）— 1円玉は、むかし金より高い金属でした'),
+    ('element-07-sodium',         '#7', 'ナトリウム（Na）— 海は、なぜしょっぱいのか'),
+    ('element-08-chlorine',       '#8', '塩素（Cl）— おとなしい塩と、恐ろしいガス'),
 ]
 
 CSS = """
@@ -93,8 +96,12 @@ def title_of(folder):
     p = os.path.join(HERE, folder, 'index.qmd')
     if not os.path.exists(p):
         return None
-    m = re.search(r'^title:\s*"(.*)"\s*$',
-                  io.open(p, encoding='utf-8').read(), re.M)
+    src = io.open(p, encoding='utf-8').read()
+    # draft: true の回は Quarto が出力しないので、リンクにすると 404 になる。
+    # 書き上がっていても「準備中」として扱う（2026-11-14 #6 を寝かせるときに追加）。
+    if re.search(r'^draft:\s*true\b', src, re.M):    # 行末コメントがあってもよい
+        return None
+    m = re.search(r'^title:\s*"(.*)"\s*$', src, re.M)
     if not m:
         return None
     # 「…｜元素の話 #1」の後半は前後リンクでは邪魔になるので落とす

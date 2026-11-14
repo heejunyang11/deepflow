@@ -1,0 +1,8 @@
+# 「PHREEQCで解く化学」シリーズ共通の設定。
+# 既存の posts/phreeqc/_metadata.yml と同じく、記事末尾に前後ナビを入れる。
+# series-nav.html は URL 末尾の「英字プレフィックス＋数字」から前後の回を
+# 自動で判定するので、phreeqc-chem01 … という命名なら追記は要らない。
+format:
+  html:
+    include-after-body:
+      - ../../series-nav.html

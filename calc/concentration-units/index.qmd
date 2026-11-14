@@ -1,12 +1,13 @@
 ---
-title: "Concentration Unit Converter for Minerals and Water Analyses"
-subtitle: "mg/L ↔ mmol/L ↔ meq/L ↔ mg/L as CaCO₃, from a chemical formula you type — including hydrated minerals, so a dissolved mass converts straight into the ions it releases."
-description: "Free concentration unit converter for water chemistry. Type any mineral or salt formula to get molar mass, then convert mg/L to mmol/L, meq/L and mg/L as CaCO3, with the element-by-element breakdown of what dissolution releases."
+title: "濃度単位の換算 計算機"
+subtitle: "化学式を打ち込むだけで、mg/L ↔ mmol/L ↔ meq/L ↔ mg/L as CaCO₃ を相互に換算します。水和鉱物にも対応しているので、溶けた質量が、そこから放たれるイオンの量へそのまま繋がります。"
+description: "水質化学のための濃度単位の無料換算ツール。鉱物や塩の化学式を打ち込むとモル質量が出て、mg/L を mmol/L・meq/L・mg/L as CaCO3 へ換算できます。溶解によって何が放たれるかを元素ごとに内訳表で表示。"
 date: 2026-08-10
-lang: en
-categories: [Chemistry]
+lang: ja
+order: 4          # 扉の並び順（流動3本 → 化学2本）
+categories: [化学]
 number-sections: false
-toc-title: "On this page"
+toc-title: "目次"
 format:
   html:
     html-math-method: katex
@@ -18,10 +19,10 @@ format:
 ---
 
 ::: {.gw-attest}
-[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
-[Hydrated mineral formulas supported]{.gw-chip}
-[Density-limit check on mg/L ≈ ppm]{.gw-chip}
-[Sources: IUPAC 2021 atomic weights · Hem 1985 · APHA 2017]{.gw-chip}
+[✓ 水文地質学者（Ph.D.）が監修]{.gw-chip .verified}
+[水和鉱物の化学式に対応]{.gw-chip}
+[mg/L ≒ ppm が成り立つ密度の範囲を判定]{.gw-chip}
+[出典：IUPAC 2021 原子量 · Hem 1985 · APHA 2017]{.gw-chip}
 :::
 
 ```{=html}
@@ -32,10 +33,10 @@ format:
 <template id="calc-figure">
   <figure>
     <svg viewBox="0 0 680 130" role="img" aria-labelledby="figTitle figDesc">
-      <title id="figTitle">Mass composition of the entered formula</title>
-      <desc id="figDesc">A single horizontal bar divided into segments, one per element in the formula. The width of each segment is that element's share of the compound's mass, and the segment is labelled with the element symbol and its percentage.</desc>
+      <title id="figTitle">入力した化学式の質量組成</title>
+      <desc id="figDesc">1本の横棒が、化学式に含まれる元素の数だけ区画に分かれています。各区画の幅は、その元素が化合物の質量に占める割合です。区画には元素記号とその百分率が書かれています。</desc>
 
-      <text class="gw-tx-sm" x="40" y="34">share of the formula mass</text>
+      <text class="gw-tx-sm" x="40" y="34">式量に占める割合</text>
 
       <rect class="gw-seg-a" id="seg0" x="40" y="46" width="0" height="42"></rect>
       <rect class="gw-seg-b" id="seg1" x="40" y="46" width="0" height="42"></rect>
@@ -53,7 +54,7 @@ format:
 
       <text class="gw-tx" id="figname" x="40" y="112"></text>
     </svg>
-    <figcaption>Segments are drawn in order of the elements as they appear in the formula, and each is labelled only when it is wide enough to hold the text. Oxygen usually dominates, which is why a mineral's mass tells you much less about the water than its stoichiometry does.</figcaption>
+    <figcaption>区画は、化学式に現れる順に並べてあります。ラベルは、文字が入りきる幅のある区画にだけ書かれます。たいていは酸素が大半を占めます。<b>鉱物の質量が水について語ることは、その化学量論が語ることよりはるかに少ない</b>——その理由がここに見えています。</figcaption>
   </figure>
 </template>
 
@@ -76,208 +77,203 @@ format:
 </style>
 ```
 
-## What to enter for what you want
+## 何を入れると、何が得られるか
 
-Type a formula, give a concentration, and every other way of stating that
-concentration appears at once. **Solve for** decides only which of the two
-concentration boxes is treated as the unknown; everything else is computed
-regardless.
+化学式を打ち込み、濃度をひとつ与えれば、その濃度の別の言い方がすべて一度に出ます。
+**逆算する量**が決めているのは、2つある濃度の欄のどちらを未知数として扱うかだけで、
+それ以外はどちらを選んでも計算されます。
 
-| To find | Enter | Read it in |
+| 求めたいもの | 入力する量 | どこを読むか |
 |---|---|---|
-| **mmol/L from a laboratory report in mg/L** | Formula, mass concentration | Headline (solve for molar) |
-| **mg/L needed to make up a standard** | Formula, molar concentration | Headline (solve for mass) |
-| **meq/L for a charge balance** | Add the charge per formula unit | Milliequivalents |
-| **Hardness or alkalinity as CaCO₃** | Same, with the right charge | mg/L as CaCO₃ |
-| **What a dissolving mineral releases** | Mineral formula, its concentration | Element breakdown table |
-| **Molar mass alone** | Formula only | Molar mass |
+| **mg/L の分析報告から mmol/L へ** | 化学式・質量濃度 | 見出しの数字（モル濃度を逆算） |
+| **標準液を作るのに要る mg/L** | 化学式・モル濃度 | 見出しの数字（質量濃度を逆算） |
+| **イオンバランスに使う meq/L** | 上に、式量あたりの電荷を足す | 当量濃度 |
+| **CaCO₃ 換算の硬度・アルカリ度** | 同上、電荷を正しく入れて | mg/L as CaCO₃ |
+| **鉱物が溶けると何が出てくるか** | 鉱物の化学式と、その濃度 | 元素ごとの内訳表 |
+| **モル質量だけ知りたい** | 化学式だけ | モル質量 |
 
-The charge box affects only the two equivalent-based outputs. Molar mass, the
-element breakdown and the two concentration boxes do not depend on it, so an
-uncertain charge never contaminates the rest of the conversion.
+電荷の欄は、当量にもとづく2つの出力にしか効きません。モル質量・元素の内訳・2つの濃度欄は
+電荷に依存しないので、**電荷が不確かでも、換算の残りが汚染されることはありません。**
 
-## The groundwater question it answers
+## 地下水と、どうつながるか
 
-A water analysis arrives as a column of milligrams per litre. Nothing in that column
-is directly comparable to anything else in it: 100 mg/L of sulphate and 100 mg/L of
-calcium are not the same amount of anything. Converting to moles makes them
-comparable as *particles*, and converting to equivalents makes them comparable as
-*charge* — which is the only form in which a water analysis can be checked for
-internal consistency at all.
+水質分析は、1リットルあたりのミリグラムが縦に並んだ表として届きます。その表の中の数字は、
+どれ一つとして互いに直接比べられません。硫酸イオン 100 mg/L とカルシウム 100 mg/L は、
+何の量としても同じではないのです。モルに換算すると **粒子の数**として比べられるようになり、
+当量に換算すると **電荷**として比べられるようになります。そして電荷こそ、水質分析の内的な
+整合性を確かめられる唯一の形です。
 
-The step after that is the one this tool is really built for. Groundwater chemistry
-is largely the record of which minerals have dissolved along a flow path, and the
-stoichiometry of a mineral formula converts a concentration into a quantity of rock:
+その次の一歩が、この計算機の本来の目的です。地下水の化学は、**流路に沿ってどの鉱物が
+溶けてきたかの記録**であることが多く、鉱物の化学式が持つ化学量論は、濃度を岩石の量へ
+翻訳してくれます。
 
 ::: {.gw-eq}
-$$n_{\text{mineral}} = \frac{C_{\text{ion}}}{M_{\text{ion}}} \cdot \frac{1}{\nu}$$
+$$n_{\text{鉱物}} = \frac{C_{\text{イオン}}}{M_{\text{イオン}}} \cdot \frac{1}{\nu}$$
 :::
 
-where $\nu$ is the number of moles of that ion released per mole of mineral. A water
-carrying 480 mg/L of sulphate in a gypsum-bearing formation has, if gypsum is the only
-sulphate source, dissolved about 0.86 g of gypsum per litre of water — and must
-therefore have gained roughly 200 mg/L of calcium in the process. If the measured
-calcium is far from that, something else is happening: cation exchange, calcite
-precipitation, or a second sulphate source. **That comparison is the entire logic of
-inverse geochemical modelling**, and it begins with a unit conversion.
+ここで $\nu$ は、鉱物1モルあたりに放たれるそのイオンのモル数です。石膏を含む地層で
+硫酸イオンを 480 mg/L 運んでいる水は、硫酸の供給源が石膏だけだとすれば、1リットルあたり
+およそ 0.86 g の石膏を溶かしてきたことになります。**そしてその過程で、カルシウムを
+およそ 200 mg/L 得ているはずです。** 実測のカルシウムがそこから大きく外れていれば、
+別のことが起きています。陽イオン交換、方解石の沈殿、あるいは第2の硫酸供給源です。
+**この突き合わせこそが逆解析的な地球化学モデリングの論理そのもの**であり、それは単位換算から
+始まります。
 
-Hydrated minerals are where hand conversions go wrong most often, which is why the
-parser here handles them explicitly. Gypsum is CaSO₄·2H₂O, and the two waters of
-crystallisation are 21 % of its mass. Using the anhydrous mass of 136.14 g/mol instead
-of 172.17 g/mol under-states the dissolved mineral by more than a fifth.
+水和鉱物は、手計算での換算がいちばん狂いやすいところです。このページのパーサーが水和物を
+明示的に扱うのは、そのためです。石膏は CaSO₄·2H₂O であり、**2つの結晶水が質量の 21 % を
+占めます。** 172.17 g/mol ではなく無水の 136.14 g/mol を使うと、溶けた鉱物の量を
+5分の1以上も過小に見積もることになります。
 
-## What the conversions say
+## 換算式が言っていること
 
-### From mass to moles
+### 質量からモルへ
 
 ::: {.gw-eq}
 $$c\ [\text{mmol L}^{-1}] = \frac{C\ [\text{mg L}^{-1}]}{M\ [\text{g mol}^{-1}]}$$
 :::
 
-The units work out because milligrams per gram and millimoles per mole carry the same
-factor of a thousand, which cancels. This is the one conversion that is exact, in the
-sense that it involves nothing but the periodic table.
+単位が合うのは、ミリグラム毎グラムとミリモル毎モルが同じ1000という係数を持っていて、
+それが約分されるからです。**この換算だけは厳密**です。周期表以外に何も含んでいない、
+という意味で。
 
-### From moles to equivalents
+### モルから当量へ
 
 ::: {.gw-eq}
 $$c\ [\text{meq L}^{-1}] = c\ [\text{mmol L}^{-1}] \times z$$
 :::
 
-$z$ is the charge carried per formula unit: 2 for Ca²⁺ and SO₄²⁻, 1 for Na⁺, HCO₃⁻ and
-Cl⁻, 3 for Al³⁺. For a neutral mineral it is the charge released on dissolution — 2 for
-calcite, which yields Ca²⁺ and CO₃²⁻, and 4 for dolomite, which yields two divalent
-cations. Equivalents are what make the charge-balance check possible, because charge is
-conserved when a mineral dissolves and mass is not.
+$z$ は式量あたりに運ばれる電荷です。Ca²⁺ と SO₄²⁻ なら 2、Na⁺・HCO₃⁻・Cl⁻ なら 1、
+Al³⁺ なら 3 です。中性の鉱物なら、溶解によって放たれる電荷になります。方解石は Ca²⁺ と
+CO₃²⁻ を出すので 2、ドロマイトは2価の陽イオンを2つ出すので 4 です。イオンバランスの検査が
+成り立つのは当量のおかげです。**鉱物が溶けるとき保存されるのは電荷であって、質量では
+ないからです。**
 
-### "As CaCO₃", the convention that confuses everyone
+### 「CaCO₃ 換算」——誰もが混乱する慣習
 
-Water hardness and alkalinity are conventionally reported not as themselves but as the
-mass of calcium carbonate that would carry the same charge. The conversion is a
-consequence of calcite's equivalent mass:
+水の硬度とアルカリ度は、慣習としてそれ自体では報告されず、**同じ電荷を運ぶ炭酸カルシウムの
+質量**として報告されます。換算係数は、方解石の当量質量から出てきます。
 
 ::: {.gw-eq}
 $$C\ [\text{mg L}^{-1}\text{ as CaCO}_3] = c\ [\text{meq L}^{-1}] \times \frac{M_{\text{CaCO}_3}}{2} = c \times 50.04$$
 :::
 
-So 2.0 meq/L of hardness is 100 mg/L as CaCO₃ whether the hardness came from calcium,
-magnesium, or a mixture. This is why two laboratories can report the "same" hardness
-with entirely different calcium numbers, and why an alkalinity of 200 mg/L as CaCO₃
-means 4.0 meq/L of bicarbonate — that is, 244 mg/L of actual HCO₃⁻.
+ですから硬度 2.0 meq/L は、その硬度がカルシウム由来でもマグネシウム由来でも、両者の
+混合でも、100 mg/L as CaCO₃ です。2つの試験所が「同じ」硬度を、まったく違うカルシウムの
+数字とともに報告できるのはこのためです。そして**アルカリ度 200 mg/L as CaCO₃ とは
+重炭酸イオン 4.0 meq/L のこと**——すなわち、実際の HCO₃⁻ として 244 mg/L のことです。
 
-### The variables
+### 変数
 
-| Symbol | Quantity | SI unit | Note |
+| 記号 | 意味 | SI単位 | 注意 |
 |---|---|---|---|
-| *C* | Mass concentration | kg m⁻³ | 1 mg/L = 1 g/m³ = 10⁻³ kg/m³ |
-| *c* | Molar concentration | mol m⁻³ | 1 mmol/L = 1 mol/m³ exactly |
-| *M* | Molar mass | g mol⁻¹ | From the formula and atomic weights |
-| *z* | Charge per formula unit | — | Equivalents released per mole |
-| *M*/*z* | Equivalent mass | g eq⁻¹ | Mass carrying one mole of charge |
+| *C* | 質量濃度 | kg m⁻³ | 1 mg/L = 1 g/m³ = 10⁻³ kg/m³ |
+| *c* | モル濃度 | mol m⁻³ | 1 mmol/L = 1 mol/m³（厳密に等しい） |
+| *M* | モル質量 | g mol⁻¹ | 化学式と原子量から決まる |
+| *z* | 式量あたりの電荷 | — | 1モルあたりに放たれる当量数 |
+| *M*/*z* | 当量質量 | g eq⁻¹ | 1モルの電荷を運ぶ質量 |
 
-## Formulas the parser accepts
+## パーサーが受け付ける書き方
 
-| Written as | Read as | Example |
+| 書き方 | 読まれ方 | 例 |
 |---|---|---|
-| Element symbols with counts | The obvious | `CaCO3`, `SiO2` |
-| Nested parentheses | Multiplied through | `CaMg(CO3)2`, `Ca(OH)2` |
-| Water of crystallisation | Hydrate expanded | `CaSO4·2H2O`, `MgSO4*7H2O` |
-| A bare ion, charge omitted | The neutral formula mass | `SO4`, `HCO3`, `Ca` |
+| 元素記号と個数 | そのまま | `CaCO3`、`SiO2` |
+| 入れ子の括弧 | 中まで掛け合わせる | `CaMg(CO3)2`、`Ca(OH)2` |
+| 結晶水 | 水和物として展開 | `CaSO4·2H2O`、`MgSO4*7H2O` |
+| 電荷を省いたイオン | 中性の式量として | `SO4`、`HCO3`、`Ca` |
 
-Charges are **not** written into the formula — enter them in the charge box instead.
-`SO4` returns the mass of the sulphate group, 96.06 g/mol, which is what a laboratory
-means when it reports sulphate in mg/L.
+**電荷は化学式の中に書きません。**電荷の欄に入れてください。`SO4` は硫酸基の質量
+96.06 g/mol を返します。試験所が硫酸イオンを mg/L で報告するときに意味しているのも、
+この量です。
 
-Solid-solution notation such as `(Mg,Fe)2SiO4` is **rejected rather than guessed at**.
-An olivine of unstated composition has no single molar mass, and a converter that
-silently took the magnesium end-member would be inventing a number. Enter the
-end-member you mean, `Mg2SiO4` or `Fe2SiO4`, or the actual composition.
+`(Mg,Fe)2SiO4` のような固溶体の表記は、**推測せずに拒否します。** 組成の分からない橄欖石に
+単一のモル質量はありませんし、黙ってマグネシウム端成分を採る換算器は、数字を捏造している
+ことになります。意図する端成分を `Mg2SiO4` か `Fe2SiO4` と入れるか、実際の組成を
+入れてください。
 
-## When it breaks down
+## この換算が成り立たなくなるとき
 
-**mg/L stops equalling ppm when the solution stops weighing 1.000 kg per litre.**
-Milligrams per litre is mass per unit *volume*; parts per million is mass per unit
-*mass*. They coincide only while the density of the solution is 1.000 kg/L, which holds
-to within 0.1 % for fresh water and fails progressively as salinity rises. At seawater
-salinity the density is about 1.025 kg/L, so a value in mg/L is about 2.5 % larger than
-the same quantity in ppm. The verdict line watches the total concentration and says
-which regime you are in.
+**溶液の重さが1リットルあたり 1.000 kg でなくなると、mg/L は ppm と等しくなくなります。**
+1リットルあたりのミリグラムは**体積**あたりの質量であり、百万分率は**質量**あたりの質量です。
+両者が一致するのは、溶液の密度が 1.000 kg/L であるあいだだけです。淡水では 0.1 % 以内で
+成り立ち、塩分が上がるにつれて徐々に崩れます。海水の塩分では密度がおよそ 1.025 kg/L なので、
+mg/L の値は同じ量を ppm で表した値より **およそ 2.5 % 大きく**なります。判定の行が全濃度を
+見張っていて、いまどちらの領域にいるかを告げます。
 
-The same divergence affects **molarity versus molality**. Concentrations in mol/L are
-temperature-dependent, because the volume of the solution expands on warming while its
-mass does not. For brines, for geothermal waters, and for anything that will enter a
-Pitzer-model speciation calculation, molality (mol per kg of *water*) is the correct
-quantity and this converter does not produce it.
+同じずれは **モル濃度と質量モル濃度**のあいだにも効きます。mol/L の濃度は温度に依存します。
+温めれば溶液の体積は膨張しますが、質量は変わらないからです。かん水、地熱水、そして
+ピッツァー式の化学種計算にかけるものについては、**質量モル濃度（水 1 kg あたりのモル数）**が
+正しい量です。この換算器はそれを出しません。
 
-**Atomic weights are conventional values for terrestrial material.** They carry the
-uncertainty of natural isotopic variation, which is negligible for water chemistry but
-not for isotope work. Do not use these masses to convert isotope-specific
-concentrations.
+**原子量は、地球上の物質に対する慣用値です。** 天然の同位体比の変動にともなう不確かさを
+抱えていますが、これは水質化学では無視できるもので、同位体を扱う仕事ではそうではありません。
+**同位体別の濃度の換算に、ここの質量を使わないでください。**
 
-## Worked example
+## 例題
 
 ::: {.gw-worked}
-**Problem.** A water from a gypsum-bearing formation reports SO₄ = 480 mg/L. How much
-gypsum has dissolved, how much calcium should accompany it, and what is the sulphate in
-the units a charge balance needs?
+**問題。** 石膏を含む地層から採れた水が、SO₄ = 480 mg/L と報告されました。石膏はどれだけ
+溶けたのか、それに伴うカルシウムはいくらのはずか、そしてイオンバランスに必要な単位で硫酸イオンは
+いくらになるでしょうか。
 
-1. Enter `SO4`, mass concentration `480` mg/L, charge `2`.
-2. Molar mass of SO₄: `32.06 + 4 × 15.999 = 96.056 g/mol`
-3. Molar concentration: `480 / 96.056 = 4.997 mmol/L`
-4. Equivalents: `4.997 × 2 = 9.994 meq/L`, and as calcium carbonate `9.994 × 50.043 = 500.1 mg/L as CaCO₃`
-5. Now enter `CaSO4·2H2O` with molar concentration `4.997` mmol/L — one mole of gypsum per mole of sulphate. The mass box gives **`860.3 mg/L` of gypsum dissolved**, and the breakdown table gives the calcium that came with it: **`200.3 mg/L`**
+1. `SO4` を入れ、質量濃度 `480` mg/L、電荷 `2` とします。
+2. SO₄ のモル質量：`32.06 + 4 × 15.999 = 96.056 g/mol`
+3. モル濃度：`480 / 96.056 = 4.997 mmol/L`
+4. 当量：`4.997 × 2 = 9.994 meq/L`。炭酸カルシウム換算では `9.994 × 50.043 = 500.1 mg/L as CaCO₃`
+5. つぎに `CaSO4·2H2O` を入れ、モル濃度に `4.997` mmol/L を与えます。硫酸イオン1モルにつき石膏1モルだからです。質量の欄が **溶けた石膏 `860.3 mg/L`** を示し、内訳表がそれに伴ったカルシウム **`200.3 mg/L`** を示します。
 
-If the analysis reports calcium near 200 mg/L, gypsum dissolution explains the water.
-If it reports 120 mg/L, roughly 80 mg/L of calcium has gone somewhere — most likely
-exchanged for sodium on clays, or precipitated as calcite. **The gap is the finding, and
-it only became visible after the units were made comparable.** Note that step 4 and step
-5 use the same 4.997 mmol/L: moles are the currency in which stoichiometry is written,
-which is why the conversion has to come first.
+分析値のカルシウムが 200 mg/L 前後であれば、石膏の溶解でこの水は説明できます。もし
+120 mg/L と報告されているなら、**カルシウムがおよそ 80 mg/L どこかへ行った**ことになります。
+粘土の上でナトリウムと交換されたか、方解石として沈殿したか、でしょう。**この差こそが発見
+であり、単位を比べられる形にして初めて見えたもの**です。手順4と手順5が同じ 4.997 mmol/L を
+使っていることに注意してください。**化学量論が書かれている通貨はモル**です。換算が先に
+来なければならない理由は、ここにあります。
 :::
 
-## Frequently asked
+## よくある質問
 
-### Why does the calculator not deduce the charge from the formula?
+### なぜ化学式から電荷を推定してくれないのですか
 
-Because it cannot be done reliably from a formula string. Iron may be Fe²⁺ or Fe³⁺,
-sulphur ranges from S²⁻ to S⁶⁺, and nothing in `FeSO4` announces which. Guessing would
-produce a plausible, wrong meq/L that then propagates into a charge balance. Entering
-the charge takes one keystroke and keeps the assumption visible.
+化学式の文字列からでは、確実にはできないからです。鉄は Fe²⁺ かもしれないし Fe³⁺ かも
+しれません。硫黄は S²⁻ から S⁶⁺ まで幅があり、`FeSO4` という綴りはどちらであるかを何も
+語っていません。推測すれば、もっともらしいが誤った meq/L が出て、それがイオンバランスへ
+そのまま流れ込みます。**電荷を入力するのはキー1つ**であり、仮定を目に見えるところに
+留めておけます。
 
-### What charge should I use for a mineral rather than an ion?
+### イオンではなく鉱物のとき、電荷には何を入れればよいですか
 
-The total positive charge released per formula unit: 2 for calcite (CaCO₃) and gypsum
-(CaSO₄·2H₂O), 4 for dolomite (CaMg(CO₃)₂), 1 for halite (NaCl). If you are converting a
-mineral mass rather than balancing charge, leave it at any value and ignore the two
-equivalent outputs.
+式量あたりに放たれる正電荷の総量です。方解石（CaCO₃）と石膏（CaSO₄·2H₂O）は 2、
+ドロマイト（CaMg(CO₃)₂）は 4、岩塩（NaCl）は 1 です。電荷を釣り合わせるのではなく
+鉱物の質量を換算したいだけであれば、電荷は何でもよく、当量系の2つの出力を無視して
+ください。
 
-### Is 1 mmol/L really exactly 1 mol/m³?
+### 1 mmol/L は、本当にちょうど 1 mol/m³ なのですか
 
-Yes, and it is the one piece of luck in this subject. A cubic metre is a thousand
-litres and a mole is a thousand millimoles, so the two factors cancel exactly. The
-calculator works internally in mol/m³ for that reason.
+そうです。そしてこれは、この分野で唯一の幸運です。1立方メートルは1000リットル、1モルは
+1000ミリモルなので、2つの係数がちょうど打ち消し合います。この計算機が内部で mol/m³ を
+使っているのも、そのためです。
 
-### My laboratory reports nitrate "as N". How do I convert it?
+### 試験所が硝酸イオンを「N 換算」で報告してきました。どう換算しますか
 
-Enter `N` for the as-N value and `NO3` for the as-nitrate value; the ratio of the two
-molar masses, 62.004 / 14.007 = 4.427, is the conversion factor. A nitrate of 10 mg/L
-as N is 44.3 mg/L as NO₃ — the same water, and the difference between passing and
-failing a drinking-water standard if the basis is not stated.
+N 換算の値には `N` を、硝酸イオンとしての値には `NO3` を入れてください。2つのモル質量の比
+62.004 / 14.007 = 4.427 が換算係数です。**硝酸イオン 10 mg/L as N は、44.3 mg/L as NO₃**
+です。同じ水なのに、基準がどちらで書かれているかが示されていなければ、飲料水基準に
+適合するかどうかが分かれてしまいます。
 
-## Related calculators
+## 関連する計算機
 
 ::: {.gw-related}
-- [**Charge balance error**<span>Whether the analysis these units feed is consistent</span>](../charge-balance/)
-- [**Darcy's law**<span>Groundwater flow through a porous medium</span>](../darcy-law/)
+- [**イオンバランス**<span>この単位に揃えた分析値が、そもそも整合しているか</span>](../charge-balance/)
+- [**ダルシーの法則**<span>多孔質媒体を通る地下水の流れ</span>](../darcy-law/)
+- [**基準蒸発散量**<span>溶質を濃縮する側の量。涵養の残差になる</span>](../reference-et/)
 :::
 
-## Read further
+## さらに読む
 
-[PHREEQC from Scratch #2: Analyzing Seawater with Speciation](../../posts/phreeqc/phreeqc-part2/index-en.qmd)
-takes an analysis in exactly these units and computes what the ions are actually doing
-in solution — the step immediately after this one.
+[PHREEQCをゼロから始める #2：Speciationで海水を解析する](../../posts/phreeqc/phreeqc-part2/index.qmd)
+では、まさにこの単位で書かれた分析値を出発点に、**溶液の中でイオンが実際に何をしているのか**
+を計算しています。この換算のすぐ次の一歩にあたります。
 
-## References
+## 参考文献
 
 ::: {.gw-refs}
 1. Hem, J.D. (1985) *Study and Interpretation of the Chemical Characteristics of Natural Water*, 3rd ed. U.S. Geological Survey Water-Supply Paper 2254. Chapter 3.
@@ -290,11 +286,10 @@ in solution — the step immediately after this one.
 [HY]{.gw-badge}
 
 ::: {}
-**Reviewed by Heejun Yang, Ph.D.**
+**監修：Heejun Yang, Ph.D.**
 
-Hydrogeologist working on groundwater time-series analysis and water–rock
-interaction modelling. Equations, unit conversions, and reference values on this
-page were checked against the primary sources listed above.
+地下水の時系列解析と水–岩石反応のモデリングを専門とする水文地質学者です。このページの式・
+単位換算・代表値は、上に挙げた文献（原論文と教科書）と突き合わせて確認しています。
 :::
 :::
 
@@ -331,12 +326,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function parseFormula(src) {
     var s = String(src || "").trim();
-    if (!s) throw new ParseError("Enter a chemical formula.");
-    if (s.length > 120) throw new ParseError("Formula too long.");
+    if (!s) throw new ParseError("化学式を入れてください。");
+    if (s.length > 120) throw new ParseError("化学式が長すぎます。");
     if (/[,]/.test(s))
-      throw new ParseError("Solid-solution notation such as (Mg,Fe) has no single molar mass — enter one end-member.");
+      throw new ParseError("(Mg,Fe) のような固溶体の表記には、単一のモル質量がありません。端成分を1つ入れてください。");
     if (!/^[A-Za-z0-9()·•*.\s]+$/.test(s))
-      throw new ParseError("Unexpected character. Use element symbols, digits, parentheses and · for hydrates.");
+      throw new ParseError("使えない文字があります。元素記号・数字・括弧、そして水和物の中点（·）だけを使ってください。");
 
     // 水和水の中点（·, •, *）を括弧表記に開く: CaSO4·2H2O → CaSO4(H2O)2
     s = s.replace(/[·•*]/g, "·");
@@ -348,17 +343,17 @@ document.addEventListener("DOMContentLoaded", function () {
     var depth = 0, maxDepth = 0;
     for (var i = 0; i < s.length; i++) {
       if (s[i] === "(") { depth++; maxDepth = Math.max(maxDepth, depth); }
-      if (s[i] === ")") { depth--; if (depth < 0) throw new ParseError("Unbalanced parentheses."); }
+      if (s[i] === ")") { depth--; if (depth < 0) throw new ParseError("括弧が対応していません。"); }
     }
-    if (depth !== 0) throw new ParseError("Unbalanced parentheses.");
-    if (maxDepth > 5) throw new ParseError("Too many nested parentheses.");
+    if (depth !== 0) throw new ParseError("括弧が対応していません。");
+    if (maxDepth > 5) throw new ParseError("括弧の入れ子が深すぎます。");
 
     // 出現順を保った元素の配列を返す（図の帯を式の並びどおりに描くため）
     var order = [];
     var counts = {};
 
     function add(sym, n) {
-      if (!(sym in AW)) throw new ParseError("Unknown element: " + sym);
+      if (!(sym in AW)) throw new ParseError("知らない元素です：" + sym);
       if (!(sym in counts)) { counts[sym] = 0; order.push(sym); }
       counts[sym] += n;
     }
@@ -369,13 +364,13 @@ document.addEventListener("DOMContentLoaded", function () {
       while (pos < s.length) {
         var ch = s[pos];
         if (ch === ")") {
-          if (!stopAtParen) throw new ParseError("Unbalanced parentheses.");
+          if (!stopAtParen) throw new ParseError("括弧が対応していません。");
           return;
         }
         if (ch === "(") {
           pos++;
           var inner = collect();
-          if (s[pos] !== ")") throw new ParseError("Unbalanced parentheses.");
+          if (s[pos] !== ")") throw new ParseError("括弧が対応していません。");
           pos++;
           var mult = readNumber();
           for (var k = 0; k < inner.order.length; k++) {
@@ -384,7 +379,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           continue;
         }
-        if (!/[A-Z]/.test(ch)) throw new ParseError("Element symbols must start with a capital letter.");
+        if (!/[A-Z]/.test(ch)) throw new ParseError("元素記号は大文字で始めてください。");
         var sym2 = ch;
         pos++;
         while (pos < s.length && /[a-z]/.test(s[pos])) { sym2 += s[pos]; pos++; }
@@ -407,12 +402,12 @@ document.addEventListener("DOMContentLoaded", function () {
       while (pos < s.length && /[0-9.]/.test(s[pos])) { num += s[pos]; pos++; }
       if (num === "") return 1;
       var val = parseFloat(num);
-      if (!isFinite(val) || val <= 0) throw new ParseError("Invalid subscript.");
+      if (!isFinite(val) || val <= 0) throw new ParseError("添字の数値が不正です。");
       return val;
     }
 
     parseGroup(false);
-    if (!order.length) throw new ParseError("Enter a chemical formula.");
+    if (!order.length) throw new ParseError("化学式を入れてください。");
 
     var M = 0;
     order.forEach(function (sym) { M += AW[sym] * counts[sym]; });
@@ -460,30 +455,30 @@ document.addEventListener("DOMContentLoaded", function () {
     _pretty: prettyFormula,
 
     inputs: [
-      { id:"formula", type:"text", sym:"", label:"Chemical formula", short:"Formula",
+      { id:"formula", type:"text", sym:"", label:"化学式", short:"化学式",
         value:"CaSO4·2H2O",
-        hint:"minerals, salts or ions — charges are entered separately",
+        hint:"鉱物・塩・イオン。電荷は別の欄に入れる",
         presets:[
-          { label:"Calcite",  value:"CaCO3" },
-          { label:"Dolomite", value:"CaMg(CO3)2" },
-          { label:"Gypsum",   value:"CaSO4·2H2O" },
-          { label:"Halite",   value:"NaCl" },
-          { label:"Epsomite", value:"MgSO4·7H2O" },
-          { label:"Sulphate", value:"SO4" },
-          { label:"Bicarbonate", value:"HCO3" }
+          { label:"方解石",   value:"CaCO3" },
+          { label:"ドロマイト", value:"CaMg(CO3)2" },
+          { label:"石膏",     value:"CaSO4·2H2O" },
+          { label:"岩塩",     value:"NaCl" },
+          { label:"エプソマイト", value:"MgSO4·7H2O" },
+          { label:"硫酸イオン", value:"SO4" },
+          { label:"重炭酸イオン", value:"HCO3" }
         ] },
 
-      { id:"Cm", sym:"C", label:"Mass concentration", short:"Mass",
+      { id:"Cm", sym:"C", label:"質量濃度", short:"質量",
         value:"172.164", min:0,
         units:{ "mg/L":1e-3, "g/L":1, "µg/L":1e-6 } },
 
-      { id:"Cn", sym:"c", label:"Molar concentration", short:"Molar",
+      { id:"Cn", sym:"c", label:"モル濃度", short:"モル",
         value:"1", min:0,
         units:{ "mmol/L":1, "mol/L":1000, "µmol/L":1e-3 } },
 
-      { id:"z", sym:"z", label:"Charge per formula unit", short:"Charge",
+      { id:"z", sym:"z", label:"式量あたりの電荷", short:"電荷",
         value:"2", min:0, step:1,
-        hint:"equivalents released per mole; 2 for Ca²⁺ and SO₄²⁻" }
+        hint:"1モルあたりに放たれる当量数。Ca²⁺ と SO₄²⁻ なら 2" }
     ],
 
     // v.Cm は kg/m³（= g/L）、v.Cn は mol/m³（= mmol/L）で渡ってくる。
@@ -493,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function () {
         parsed = parseFormula(v.formula);
       } catch (e) {
         // 式が読めないときは全体を止める。分子量が無ければどの出力も意味を持たない。
-        return { err: e.message || "Invalid formula" };
+        return { err: e.message || "化学式が読めません" };
       }
 
       var M = parsed.M;                       // g/mol
@@ -525,33 +520,33 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     headline: {
-      Cn: { key:"Cn", sym:"c", label:"Molar concentration", unit:"mmol/L" },
-      Cm: { key:"Cm", sym:"C", label:"Mass concentration", unit:"mg/L", scale:1000 }
+      Cn: { key:"Cn", sym:"c", label:"モル濃度", unit:"mmol/L" },
+      Cm: { key:"Cm", sym:"C", label:"質量濃度", unit:"mg/L", scale:1000 }
     },
 
     outputs: [
-      { key:"M",        sym:"M",   label:"Molar mass", unit:"g/mol", sig:5 },
-      { key:"meq",      sym:"",    label:"Milliequivalents", unit:"meq/L" },
-      { key:"asCaCO3",  sym:"",    label:"Expressed as calcium carbonate", unit:"mg/L as CaCO₃" },
-      { key:"eqMass",   sym:"M/z", label:"Equivalent mass", unit:"g/eq" },
-      { key:"wH2O",     sym:"",    label:"Water of crystallisation", unit:"wt %" }
+      { key:"M",        sym:"M",   label:"モル質量", unit:"g/mol", sig:5 },
+      { key:"meq",      sym:"",    label:"当量濃度", unit:"meq/L" },
+      { key:"asCaCO3",  sym:"",    label:"炭酸カルシウム換算", unit:"mg/L as CaCO₃" },
+      { key:"eqMass",   sym:"M/z", label:"当量質量", unit:"g/eq" },
+      { key:"wH2O",     sym:"",    label:"結晶水", unit:"wt %" }
     ],
 
     check: function (r) {
       if (r.err) return GwCalc.crit(r.err);
-      if (!isFinite(r.mgL)) return GwCalc.warn("Enter a concentration.");
+      if (!isFinite(r.mgL)) return GwCalc.warn("濃度を入れてください。");
       // mg/L と ppm が一致するのは溶液密度が 1.000 kg/L のあいだだけ。
       if (r.mgL < 1000)
-        return GwCalc.ok("Fresh water — mg/L and ppm agree to better than 0.1 %.");
+        return GwCalc.ok("淡水の範囲です。mg/L と ppm は 0.1 % より良い精度で一致します。");
       if (r.mgL < 35000)
-        return GwCalc.warn("Above 1 g/L the solution density leaves 1.000 kg/L: mg/L and ppm now differ by up to a few per cent.");
-      return GwCalc.crit("Brine range. Use molality (mol per kg of water); mg/L and mol/L are no longer interchangeable with ppm and molality.");
+        return GwCalc.warn("1 g/L を超えると溶液の密度が 1.000 kg/L から離れます。mg/L と ppm は数 % まで食い違います。");
+      return GwCalc.crit("かん水の範囲です。質量モル濃度（水 1 kg あたりのモル数）を使ってください。mg/L と mol/L は、もはや ppm や質量モル濃度と読み替えられません。");
     },
 
     footnote:
-      '<p><span class="gw-key">Charge is yours to declare</span> The formula fixes the ' +
-      'molar mass, but not the charge — Fe²⁺ and Fe³⁺ are written the same way. The two ' +
-      'equivalent-based outputs follow the charge box, nothing else does.</p>',
+      '<p><span class="gw-key">電荷は、あなたが宣言するもの</span> 化学式が決めるのは' +
+      'モル質量であって、電荷ではありません。Fe²⁺ と Fe³⁺ は同じ綴りだからです。' +
+      '電荷の欄に従うのは当量系の2つの出力だけで、ほかのどれも従いません。</p>',
 
     onUpdate: function (r, v, root) {
       var X0 = 40, FULL = 600;
@@ -616,12 +611,12 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       box.innerHTML = "";
-      box.appendChild(cell("p", "What this concentration releases, element by element"));
+      box.appendChild(cell("p", "この濃度が放つもの——元素ごとの内訳"));
 
       var table = document.createElement("table");
       var thead = document.createElement("thead");
       var htr = document.createElement("tr");
-      ["Element", "Per formula unit", "Atomic weight", "mg/L", "mmol/L"]
+      ["元素", "式量あたりの個数", "原子量", "mg/L", "mmol/L"]
         .forEach(function (h) { htr.appendChild(cell("th", h)); });
       thead.appendChild(htr);
       table.appendChild(thead);

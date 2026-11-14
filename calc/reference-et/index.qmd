@@ -1,12 +1,13 @@
 ---
-title: "Reference Evapotranspiration Calculator"
-subtitle: "ET₀ from latitude, temperature, humidity, wind and sunshine — computed five ways at once, so you can see how far the shortcut methods drift from the FAO-56 standard at your site."
-description: "Free reference evapotranspiration calculator. Computes FAO-56 Penman–Monteith ET0 alongside Hargreaves–Samani, Priestley–Taylor, Turc and Makkink, reports net radiation and day length, and flags when the shortcut methods diverge."
+title: "基準蒸発散量 計算機"
+subtitle: "緯度・気温・湿度・風速・日照時間から基準蒸発散量 ET₀ を求めます。5つの手法で同時に計算するので、簡便法が FAO-56 の標準からどれだけ外れるかが、その場所の条件で見えます。"
+description: "基準蒸発散量の無料計算機。FAO-56 ペンマン・モンティース法の ET0 を、ハーグリーブス・サマニ／プリーストリー・テイラー／ターク／マッキンクと並べて計算し、純放射量と可照時間も表示。簡便法が使えない条件を自動判定します。"
 date: 2026-08-10
-lang: en
-categories: [Flow]
+lang: ja
+order: 3          # 扉の並び順（流動3本 → 化学2本）
+categories: [流動]
 number-sections: false
-toc-title: "On this page"
+toc-title: "目次"
 format:
   html:
     html-math-method: katex
@@ -18,10 +19,10 @@ format:
 ---
 
 ::: {.gw-attest}
-[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
-[SI units · metric and US wind speeds]{.gw-chip}
-[Method-divergence check]{.gw-chip}
-[Sources: Allen et al. 1998 (FAO-56) · Hargreaves & Samani 1985 · Priestley & Taylor 1972]{.gw-chip}
+[✓ 水文地質学者（Ph.D.）が監修]{.gw-chip .verified}
+[SI単位・風速は m/s ・km/h・mph に対応]{.gw-chip}
+[手法間のばらつきで適用限界を判定]{.gw-chip}
+[出典：Allen et al. 1998（FAO-56） · Hargreaves & Samani 1985 · Priestley & Taylor 1972]{.gw-chip}
 :::
 
 ```{=html}
@@ -30,10 +31,10 @@ format:
 <template id="calc-figure">
   <figure>
     <svg viewBox="0 0 680 300" role="img" aria-labelledby="figTitle figDesc">
-      <title id="figTitle">Reference evapotranspiration estimated by five methods</title>
-      <desc id="figDesc">A horizontal bar chart. The top bar is the FAO-56 Penman-Monteith estimate, drawn in teal, and a dashed line is dropped from its end across the chart. The four bars below it are the Hargreaves-Samani, Priestley-Taylor, Turc and Makkink estimates, drawn in brass. The distance between each brass bar and the dashed line is the error that method would introduce.</desc>
+      <title id="figTitle">5つの手法で推定した基準蒸発散量</title>
+      <desc id="figDesc">横棒グラフです。いちばん上の棒が FAO-56 ペンマン・モンティース法の推定値で、青緑色で描かれ、その先端から破線が下へ伸びています。その下の4本は、ハーグリーブス・サマニ、プリーストリー・テイラー、ターク、マッキンクの推定値で、真鍮色で描かれています。それぞれの棒と破線との距離が、その手法を使ったときに入り込む誤差です。</desc>
 
-      <!-- 目盛（0〜12 mm/day を x=170〜620 に写す） -->
+      <!-- 目盛（0〜12 mm/日 を x=170〜620 に写す） -->
       <line class="gw-datum" x1="170" y1="44" x2="170" y2="272"></line>
       <line class="gw-datum" x1="282.5" y1="44" x2="282.5" y2="272"></line>
       <line class="gw-datum" x1="395" y1="44" x2="395" y2="272"></line>
@@ -44,7 +45,7 @@ format:
       <text class="gw-tx-sm" x="395" y="288" text-anchor="middle">6</text>
       <text class="gw-tx-sm" x="507.5" y="288" text-anchor="middle">9</text>
       <text class="gw-tx-sm" x="620" y="288" text-anchor="middle">12</text>
-      <text class="gw-tx-sm" x="395" y="26" text-anchor="middle">reference evapotranspiration (mm/day)</text>
+      <text class="gw-tx-sm" x="395" y="26" text-anchor="middle">基準蒸発散量（mm/日）</text>
 
       <!-- FAO-56 Penman–Monteith（基準） -->
       <text class="gw-tx" x="162" y="66" text-anchor="end">FAO-56 PM</text>
@@ -70,265 +71,286 @@ format:
       <rect class="gw-bar-ani" id="bar-mk" x="170" y="234" width="0" height="22"></rect>
       <text class="gw-tx-sm" id="val-mk" x="176" y="250">—</text>
     </svg>
-    <figcaption>The teal bar is the FAO-56 Penman–Monteith estimate, the standard against which the others are judged. The dashed line drops from its tip: every brass bar that falls short of it is a method that would under-estimate evapotranspiration at this site, and every bar that crosses it over-estimates.</figcaption>
+    <figcaption>青緑色の棒が FAO-56 ペンマン・モンティース法の推定値で、ほかの手法はこれを基準に評価されます。その先端から破線が下りています。破線に届かない真鍮色の棒は、この地点で蒸発散量を過小に見積もる手法であり、破線を越えた棒は過大に見積もる手法です。</figcaption>
   </figure>
 </template>
 ```
 
-## What to enter for what you want
+## 何を入れると、何が得られるか
 
-Latitude and day of year fix the astronomy — how much solar radiation reaches the top
-of the atmosphere and how long the sun is up — so those two are needed for every
-method. Everything else describes the weather at the surface.
+緯度と年内通日が天文の条件を決めます。大気の上端に届く日射がどれだけで、太陽が何時間
+出ているか、ということです。この2つはどの手法にも必要です。残りの入力は、地表付近の
+気象を表しています。
 
-| To find | Enter | Read it in |
+| 求めたいもの | 入力する量 | どこを読むか |
 |---|---|---|
-| **ET₀, the reference value** | All seven inputs | Headline |
-| **ET₀ where you only have temperature** | Latitude, day, both temperatures | Hargreaves–Samani |
-| **ET₀ over a wet surface** | Add humidity and sunshine | Priestley–Taylor |
-| **Whether a shortcut is safe here** | All seven inputs | Method spread, and the verdict |
-| **Net radiation for an energy budget** | All except wind | Net radiation *R*~n~ |
-| **Day length at this latitude and date** | Latitude, day of year | Daylight hours *N* |
+| **基準蒸発散量 ET₀** | 7つの入力すべて | 見出しの数字 |
+| **気温しか無いときの ET₀** | 緯度・通日・最高気温・最低気温 | ハーグリーブス・サマニ |
+| **湿った面からの ET₀** | 上に湿度と日照時間を足す | プリーストリー・テイラー |
+| **ここで簡便法を使ってよいか** | 7つの入力すべて | 手法間のばらつき、と判定 |
+| **熱収支に使う純放射量** | 風速以外のすべて | 純放射量 *R*~n~ |
+| **この緯度・この日の可照時間** | 緯度・年内通日 | 可照時間 *N* |
 
-Wind speed enters the Penman–Monteith estimate only. Increase it and the headline
-moves while the four bars below stay where they are — which is the whole reason
-the shortcut methods fail in windy, dry places. Sunshine hours drive everything
-except Hargreaves–Samani, which infers cloudiness from the daily temperature range
-instead of being told.
+風速はペンマン・モンティース法にだけ効きます。風速を上げると見出しの数字だけが動き、
+下の4本は動きません。**乾いて風の強い場所で簡便法が破綻するのは、まさにこれが理由です。**
+日照時間はハーグリーブス・サマニ以外のすべてに効きます。ハーグリーブス・サマニだけは、
+雲の量を日較差（最高気温と最低気温の差）から推し量るので、日照時間を教える必要が
+ありません。
 
-## The groundwater question it answers
+## 地下水と、どうつながるか
 
-Evapotranspiration is not groundwater flow, and it sits on this site for a reason:
-**it is the largest term standing between rainfall and recharge, and recharge is
-what is left after it.** In the simplest annual budget,
+蒸発散は地下水の流動そのものではありません。それでもこのサイトに置いてあるのには理由が
+あります。**降水と涵養のあいだに立ちはだかる最大の項が蒸発散であり、涵養はその引き算の
+残りだからです。** いちばん単純な年間の水収支で書くと、
 
 ::: {.gw-eq}
 $$R = P - ET_a - Q_s$$
 :::
 
-where $P$ is precipitation, $ET_a$ actual evapotranspiration, $Q_s$ surface runoff
-and $R$ recharge. The arithmetic is unforgiving. Take a temperate site with
-$P = 1200$ mm and $ET_a = 950$ mm and negligible runoff: recharge is 250 mm. Now
-suppose the evapotranspiration estimate was 10 % too low — a smaller error than the
-spread between the methods on this page in most climates. $ET_a$ becomes 1045 mm and
-recharge becomes 155 mm, a **38 % error in the quantity you actually wanted**. Recharge
-is a small residual of two large numbers, so it inherits their absolute errors, not
-their relative ones.
+となります。$P$ が降水量、$ET_a$ が実蒸発散量、$Q_s$ が地表流出、$R$ が涵養量です。
+この引き算は容赦がありません。温帯のある地点で $P = 1200$ mm、$ET_a = 950$ mm、
+地表流出は無視できるとしましょう。涵養量は 250 mm です。ここで、蒸発散量の見積もりが
+1割低かったとします。このページの5手法が多くの気候で示すばらつきよりも、小さな誤差です。
+$ET_a$ は 1045 mm になり、涵養量は 155 mm になります。**本当に知りたかった量が
+38 % ずれた**ことになります。涵養量は大きな数どうしの引き算の小さな残りなので、
+相対誤差ではなく**絶対誤差のほうを受け継いでしまう**のです。
 
-That is why the divergence between methods is displayed here as prominently as the
-answer itself. Choosing Turc over Penman–Monteith because the wind data were missing
-is not a minor methodological preference; in a water balance it can move the recharge
-estimate by half.
+このページで、答えそのものと同じくらい大きくばらつきを表示しているのは、そのためです。
+風速のデータが無かったからペンマン・モンティースではなくタークを選ぶ、というのは、
+手法の好みの問題ではありません。水収支のなかでは、涵養量の見積もりを半分ほども動かし得ます。
 
-One caution before the residual is taken: this calculator returns **reference**
-evapotranspiration, the demand a short, well-watered grass surface would exert. Real
-land covers do less (or, for phreatophytes with roots in the water table, more).
-Getting from ET₀ to $ET_a$ requires crop or vegetation coefficients and a soil-moisture
-accounting the calculator does not attempt.
+引き算をする前に、ひとつ注意があります。この計算機が返すのは **基準**蒸発散量です。
+背丈の低い、水を十分に与えられた芝生の面が示すであろう蒸発の要求量を指します。多くの
+土地被覆はこれより少なく蒸発散しますが、**上回るものもあります。** 水を十分に与えられた
+水稲（FAO-56 の作物係数で 1.05〜1.20）や、根を地下水面まで下ろした
+**地下水依存植生**（phreatophyte）がその例です。ET₀ から $ET_a$ へ
+渡るには、作物係数や植生係数と、土壌水分の収支計算が要ります。この計算機はそこまでは
+踏み込みません。
 
-## What the equations say
+## 式が言っていること
 
-### FAO-56 Penman–Monteith
+### FAO-56 ペンマン・モンティース法（Penman–Monteith）
 
-Penman's insight in 1948 was that evaporation is driven from two sides at once. Energy
-must be supplied to break the hydrogen bonds — that is the radiation term — and the
-vapour must then be carried away, or the air above the surface saturates and the
-process stalls. That is the aerodynamic term. Monteith added surface resistance so the
-formulation applied to vegetation rather than open water, and FAO-56 fixed the
-resistances to those of a hypothetical 0.12 m grass sward so that the result became a
-reproducible *reference*.
+1948年のペンマンの着眼は、**蒸発が二方向から同時に駆動される**ということでした。水素結合を
+切るためのエネルギーが供給されなければなりません。これが放射項です。そのうえで水蒸気が
+運び去られなければ、地表の上の空気が飽和して過程が止まってしまいます。これが空気力学項です。
+モンティースは表面抵抗を加え、開水面ではなく植生にあてはまる形にしました。FAO-56 はさらに
+抵抗を、高さ 0.12 m の仮想的な芝生の値に固定しました。こうして結果が、誰が計算しても同じに
+なる **基準** になったのです。
 
 ::: {.gw-eq}
 $$ET_0 = \frac{0.408\,\Delta\,(R_n - G) + \gamma\,\dfrac{900}{T + 273}\,u_2\,(e_s - e_a)}{\Delta + \gamma\,(1 + 0.34\,u_2)}$$
 :::
 
-The first term in the numerator is energy, the second is drying power. In a humid,
-calm climate the first dominates and the radiation-only methods work; in an arid,
-windy one the second can exceed it, and any method that ignores wind and humidity
-collapses.
+分子の第1項がエネルギー、第2項が乾燥力です。湿潤で穏やかな気候では第1項が支配的になり、
+放射だけを使う手法でも用が足ります。乾燥して風の強い気候では第2項が第1項を上回ることがあり、
+風速と湿度を無視する手法はそこで崩れます。
 
-The psychrometric constant follows from atmospheric pressure, which follows from
-elevation:
+乾湿計定数は気圧から決まり、気圧は標高から決まります。
 
 ::: {.gw-eq}
 $$P = 101.3\left(\frac{293 - 0.0065\,z}{293}\right)^{5.26}, \qquad \gamma = 0.000665\,P$$
 :::
 
-Saturation vapour pressure and its slope come from temperature alone. Note that $e_s$
-is the **average of the values at $T_{max}$ and $T_{min}$**, not the value at the mean
-temperature; because the curve is convex, using the mean temperature under-estimates
-$e_s$ and therefore the drying power.
+飽和水蒸気圧とその勾配は、気温だけから決まります。ここで $e_s$ が
+**$T_{max}$ での値と $T_{min}$ での値の平均**であって、平均気温での値ではないことに
+注意してください。この曲線は下に凸なので、平均気温を代入すると $e_s$ を小さく見積もり、
+したがって乾燥力も小さく見積もることになります。
 
 ::: {.gw-eq}
 $$e^{\circ}(T) = 0.6108\,\exp\!\left(\frac{17.27\,T}{T + 237.3}\right), \qquad \Delta = \frac{4098\,e^{\circ}(T_{mean})}{(T_{mean} + 237.3)^2}$$
 :::
 
-Extraterrestrial radiation is pure geometry — the sun's distance, its declination, and
-how long it stays above the horizon:
+大気外日射量は、純粋に幾何の問題です。太陽までの距離、太陽の赤緯、そして太陽が地平線の
+上にいる時間の長さで決まります。
 
 ::: {.gw-eq}
 $$R_a = \frac{24 \times 60}{\pi}\,G_{sc}\,d_r\,\bigl[\omega_s \sin\varphi \sin\delta + \cos\varphi \cos\delta \sin\omega_s\bigr]$$
 :::
 
-with $\omega_s = \arccos(-\tan\varphi \tan\delta)$, from which daylight hours are
-$N = 24\,\omega_s / \pi$. Sunshine hours then convert $R_a$ to the radiation that
-actually arrives, $R_s = (0.25 + 0.50\,n/N)\,R_a$, and the long-wave loss is subtracted
-to give $R_n$. Daily soil heat flux $G$ is taken as zero, which is standard for periods
-of a day or longer.
+ここで $\omega_s = \arccos(-\tan\varphi \tan\delta)$ であり、可照時間は
+$N = 24\,\omega_s / \pi$ と求まります。実際に日が照った時間 $n$ との比 $n/N$ は
+**日照率**と呼ばれ、これが $R_a$ を、地表へ届く全天日射量
+$R_s = (0.25 + 0.50\,n/N)\,R_a$ に変換します（オングストローム式）。
 
-### The four shortcuts
+ここから先は2段になります。まず**アルベド** $\alpha = 0.23$（FAO-56 の基準芝生の値）で反射される分を除いたものが正味短波放射量
+$R_{ns} = (1-\alpha)R_s$ です。ここからさらに正味長波放射量 $R_{nl}$ を差し引いたものが
+$R_n$ になります。日単位の地中熱流量 $G$ はゼロとしています。1日以上の期間ではこれが標準です。
 
-Each was built for the data that were available, not out of carelessness.
+### 4つの簡便法
 
-**Hargreaves–Samani** needs only temperature. The daily range $T_{max} - T_{min}$ is
-used as a proxy for cloudiness: clear days heat up and cool off more than overcast ones.
+いずれも、手を抜いたのではなく、**手元にあるデータで組み立てられたもの**です。
+
+**ハーグリーブス・サマニ法**（Hargreaves–Samani）は気温しか要りません。日較差 $T_{max} - T_{min}$ を雲量の
+代わりに使います。晴れた日は、曇った日よりも大きく暖まり、大きく冷えるからです。
 
 ::: {.gw-eq}
 $$ET_0 = 0.0023\,(T_{mean} + 17.8)\sqrt{T_{max} - T_{min}}\;\frac{R_a}{\lambda}$$
 :::
 
-**Priestley–Taylor** deletes the aerodynamic term and multiplies the radiation term by
-an empirical $\alpha = 1.26$, which was calibrated over extensive wet surfaces where
-the air is close to saturation.
+**プリーストリー・テイラー法**（Priestley–Taylor）は空気力学項を丸ごと落とし、放射項に経験的な係数
+$\alpha = 1.26$ を掛けます。この係数は、空気が飽和に近い、広く湿った面の上で
+較正されたものです。**上のアルベド $\alpha = 0.23$ と記号が重なりますが、別の量です。**
+どちらもその分野で定着した記号なので、改名せずに併記しています。
 
 ::: {.gw-eq}
 $$ET_0 = \alpha\,\frac{\Delta}{\Delta + \gamma}\,\frac{R_n - G}{\lambda}$$
 :::
 
-**Turc** and **Makkink** are regressions on solar radiation and temperature, both fitted
-in humid mid-latitude climates — Turc in France, Makkink in the Netherlands. Turc carries
-a correction that switches on below 50 % relative humidity, an admission that the fit
-was never meant for dry air.
+**ターク法**（Turc）と**マッキンク法**（Makkink）は、日射量と気温に対する回帰式です。
+どちらも湿潤な中緯度の気候で当てはめられました。タークはフランス、マッキンクはオランダです。
 
 ::: {.gw-eq}
 $$ET_{0,\text{Turc}} = 0.013\,\frac{T_{mean}}{T_{mean} + 15}\,(23.88\,R_s + 50), \qquad ET_{0,\text{Makkink}} = 0.65\,\frac{\Delta}{\Delta + \gamma}\,\frac{R_s}{\lambda}$$
 :::
 
-The latent heat of vaporisation $\lambda$ is taken as 2.45 MJ kg⁻¹, its value at 20 °C;
-dividing an energy flux in MJ m⁻² day⁻¹ by it converts to mm of water per day.
+タークには、相対湿度が 50 % を下回ったときだけ効く補正が付いています。この計算機も実装しています。
 
-### The variables
+::: {.gw-eq}
+$$ET_{0,\text{Turc}} \;\rightarrow\; ET_{0,\text{Turc}}\left(1 + \frac{50 - RH}{70}\right)\qquad (RH < 50\ \%)$$
+:::
 
-| Symbol | Quantity | SI unit | Note |
+この補正の存在そのものが、**この回帰がもともと乾いた空気を想定していなかった**ことの
+告白でもあります。
+
+蒸発潜熱 $\lambda$ は 2.45 MJ kg⁻¹ としています。20 ℃ での値です。MJ m⁻² 日⁻¹ の
+エネルギー流束をこれで割ると、1日あたりの水の深さ（mm）になります。
+
+### 変数
+
+| 記号 | 意味 | SI単位 | 注意 |
 |---|---|---|---|
-| *ET*~0~ | Reference evapotranspiration | mm day⁻¹ | For 0.12 m grass, not for your land cover |
-| *R*~n~ | Net radiation at the surface | MJ m⁻² day⁻¹ | Short-wave gain minus long-wave loss |
-| *R*~a~ | Extraterrestrial radiation | MJ m⁻² day⁻¹ | Astronomy only; no weather in it |
-| *R*~s~ | Solar radiation at the surface | MJ m⁻² day⁻¹ | From sunshine hours via Ångström |
-| *G* | Soil heat flux | MJ m⁻² day⁻¹ | Taken as 0 for daily and longer periods |
-| Δ | Slope of the vapour pressure curve | kPa °C⁻¹ | Rises steeply with temperature |
-| γ | Psychrometric constant | kPa °C⁻¹ | ≈ 0.067 at sea level; falls with elevation |
-| *e*~s~ − *e*~a~ | Vapour pressure deficit | kPa | The drying power of the air |
-| *u*~2~ | Wind speed at 2 m | m s⁻¹ | Measurements at 10 m must be reduced first |
-| *N* | Daylight hours | h | Not the same as sunshine hours *n* |
+| *ET*~0~ | 基準蒸発散量 | mm 日⁻¹ | 高さ 0.12 m の芝生に対する値。手元の土地被覆の値ではない |
+| *R*~n~ | 地表の純放射量 | MJ m⁻² 日⁻¹ | 短波の入射から長波の損失を引いたもの |
+| *R*~a~ | 大気外日射量 | MJ m⁻² 日⁻¹ | 天文だけで決まる。気象は入っていない |
+| *R*~s~ | 全天日射量（地表に届く日射量） | MJ m⁻² 日⁻¹ | 日照時間からオングストローム式で求める |
+| *R*~ns~ | 正味短波放射量 | MJ m⁻² 日⁻¹ | (1 − α)*R*~s~。反射分を除いたもの |
+| *R*~nl~ | 正味長波放射量 | MJ m⁻² 日⁻¹ | 地表から失われる分。*R*~n~ = *R*~ns~ − *R*~nl~ |
+| α | アルベド（反射率） | – | 基準芝生では 0.23 に固定。プリーストリー・テイラーの係数 α（1.26）とは別の量 |
+| *G* | 地中熱流量 | MJ m⁻² 日⁻¹ | 1日以上の期間では 0 とする |
+| Δ | 飽和水蒸気圧曲線の勾配 | kPa °C⁻¹ | 気温とともに急に立ち上がる |
+| γ | 乾湿計定数 | kPa °C⁻¹ | 海面でおよそ 0.067。標高が上がると下がる |
+| *e*~s~ − *e*~a~ | 水蒸気圧飽差（VPD） | kPa | 空気の乾燥力そのもの |
+| *u*~2~ | 高さ 2 m の風速 | m s⁻¹ | 10 m での実測値は、先に換算する必要がある |
+| *N* | 可照時間（日長） | h | 太陽が地平線の上にいる時間。実際に日が照った時間 *n* とは別 |
 
-## Typical values
+## 代表値
 
-Reference evapotranspiration for grass, as a rough sanity check on the headline.
+芝生に対する基準蒸発散量です。見出しの数字が桁として妥当かを確かめる目安に使ってください。
 
-| Climate | ET₀, cool season | ET₀, warm season | Annual |
+| 気候 | ET₀（寒候期） | ET₀（暖候期） | 年間 |
 |---|---:|---:|---:|
-| Humid temperate (NW Europe, N Japan) | 0.5–1.5 | 3–5 | 500–700 |
-| Warm humid subtropical (S Japan, SE China) | 1.5–2.5 | 4–6 | 900–1200 |
-| Mediterranean | 1–2 | 5–7 | 1100–1400 |
-| Semi-arid continental | 0.5–2 | 6–9 | 1200–1700 |
-| Hot desert | 2–4 | 8–12 | 1800–2600 |
+| 湿潤温帯（北西ヨーロッパ、北日本） | 0.5–1.5 | 3–5 | 500–700 |
+| 温暖湿潤亜熱帯（南日本、中国南東部） | 1.5–2.5 | 4–6 | 900–1200 |
+| 地中海性 | 1–2 | 5–7 | 1100–1400 |
+| 半乾燥内陸 | 0.5–2 | 6–9 | 1200–1700 |
+| 高温砂漠 | 2–4 | 8–12 | 1800–2600 |
 
-Daily values in mm day⁻¹, annual totals in mm. Ranges after Allen et al. (1998),
-Chapter 1, and are indicative only.
+日値は mm 日⁻¹、年間値は mm です。**Allen et al. (1998) 第1章の気候区分別の範囲を土台に、
+日本の読者向けに区分を整理し直したもの**で、区分名と地域名はこのサイトによります。
+桁の見当として使ってください。
 
-## When it breaks down
+## 簡便法が使えなくなるとき
 
-**The shortcuts fail where the aerodynamic term matters.** This is the failure mode the
-calculator watches. It computes all five estimates and reports their spread as a
-percentage of the Penman–Monteith value. Below about 25 % the methods are telling the
-same story; above 40 % they are not, and in that regime the divergence is almost always
-advective — dry air, strong wind, or both — which the radiation-based methods have no
-way to see. The verdict line states which regime you are in.
+**簡便法は、空気力学項が効く場所で破綻します。** この計算機が見張っているのは、この
+破綻の仕方です。5つの推定値をすべて計算し、そのばらつきをペンマン・モンティース値に対する
+百分率で報告します。**およそ 25 % を下回っていれば、5手法は同じことを語っています。40 % を
+超えると、もはや同じことを語っていません。** そしてその領域でのばらつきは、ほぼ必ず移流によるもの
+——乾いた空気か、強い風か、その両方——です。放射をもとにした手法には、これを見る手立てが
+ありません。判定の行が、いまどちらの領域にいるかを示します。
 
-**Reference is not actual.** ET₀ is defined for a specific hypothetical surface. A pine
-forest, a paddy field and a bare gravel plain in identical weather have quite different
-actual evapotranspiration, and only the paddy comes close to ET₀.
+**この 25 % と 40 % は、文献の値ではなくこのサイトの設計判断です。** FAO-56 は手法間の
+ばらつきに閾値を与えていません。5手法を代表的な気候で走らせ、簡便法の選択が水収支の
+結論を変えはじめる境目として置いたものです。
 
-**Sub-daily periods are outside the formulation.** The FAO-56 daily equation assumes
-$G = 0$ and uses daily mean quantities. For hourly work the coefficients change.
+**基準は、実際ではありません。** ET₀ は特定の仮想的な面に対して定義された量です。松林と
+水田と裸の礫地は、同じ気象条件でもまったく違う実蒸発散量を示します。このうち ET₀ に近い
+のは水田だけです。
 
-**Near the poles the geometry degenerates.** Above roughly 66.5° latitude the sun does
-not set (or rise) at midsummer, $\arccos$ runs out of domain, and the day length is
-clamped at 24 hours. Treat high-latitude summer results as approximate.
+**1日より短い期間は、この定式化の外です。** FAO-56 の日単位の式は $G = 0$ を仮定し、
+日平均の量を使っています。時間単位の計算では係数が変わります。
 
-**Wind must be at 2 m.** Standard meteorological stations often measure at 10 m, where
-speeds are roughly 30 % higher. Feeding a 10 m speed in directly will inflate ET₀.
+**極域に近づくと、幾何が破綻します。** 緯度およそ 66.5° を超えると、**真夏には太陽が沈まず、
+真冬には昇りません。** どちらでも $-\tan\varphi\tan\delta$ が ±1 を外れて $\arccos$ の
+定義域から出るので、可照時間は **24 時間と 0 時間の両側で頭打ち**にしてあります。
+高緯度の夏と冬の結果は、近似として扱ってください。
 
-## Worked example
+**風速は高さ 2 m の値でなければなりません。** 標準的な気象観測は 10 m で測っていることが
+多く、そこでの風速はおよそ3割強（FAO-56 式(47)で 1.34 倍）高く出ます。10 m の値をそのまま入れると、ET₀ が過大になります。**10 m の実測値には 0.75 を掛けてから入れてください。**
+
+## 例題
 
 ::: {.gw-worked}
-**Problem.** Naha, Okinawa, on 15 July. Latitude 26.2 °N, elevation 28 m,
-*T*~max~ = 32 °C, *T*~min~ = 27 °C, mean relative humidity 78 %, wind 3.5 m s⁻¹ at 2 m,
-7.0 hours of bright sunshine. How large is the difference between methods in a warm,
-humid, moderately windy maritime climate?
+**問題。** 沖縄・那覇、7月15日。緯度 26.2 °N、標高 28 m、*T*~max~ = 32 ℃、
+*T*~min~ = 27 ℃、平均相対湿度 78 %、高さ 2 m の風速 3.5 m s⁻¹、日照時間 7.0 時間。
+温暖・湿潤で、そこそこ風のある海洋性の気候では、手法による差はどのくらいになるでしょうか。
 
-1. Mean temperature: `(32 + 27)/2 = 29.5 °C`
-2. Pressure and psychrometric constant: `P = 100.97 kPa`, `γ = 0.0671 kPa/°C`
-3. Vapour pressures: `es = (4.759 + 3.561)/2 = 4.160 kPa`, `ea = 0.78 × 4.160 = 3.245 kPa`, so the deficit is only `0.915 kPa`
-4. Slope: `Δ = 0.2374 kPa/°C`
-5. Astronomy for day 196: `δ = 0.3746 rad`, `ωs = 1.7655 rad`, so `N = 13.49 h` and `Ra = 40.18 MJ/m²/day`
-6. Radiation: `Rs = (0.25 + 0.50 × 7.0/13.49) × 40.18 = 20.47`, `Rns = 15.76`, `Rnl = 2.05`, hence `Rn = 13.72 MJ/m²/day`
-7. Penman–Monteith: **`ET0 = 5.12 mm/day`**
-8. The others: `Hargreaves 3.99`, `Priestley–Taylor 5.50`, `Turc 4.64`, `Makkink 4.23 mm/day`
+1. 平均気温：`(32 + 27)/2 = 29.5 ℃`
+2. 気圧と乾湿計定数：`P = 100.97 kPa`、`γ = 0.0671 kPa/℃`
+3. 水蒸気圧：`es = (4.755 + 3.565)/2 = 4.160 kPa`、`ea = 0.78 × 4.160 = 3.245 kPa`。したがって飽差はわずか `0.915 kPa`
+4. 勾配：`Δ = 0.2374 kPa/℃`
+5. 通日 196 の天文量：`δ = 0.3746 rad`、`ωs = 1.7655 rad`。したがって `N = 13.49 h`、`Ra = 40.18 MJ/m²/日`
+6. 放射：`Rs = (0.25 + 0.50 × 7.0/13.49) × 40.18 = 20.47`。反射分を除いて `Rns = (1 − 0.23) × 20.47 = 15.76`、長波の損失が `Rnl = 2.05`。よって `Rn = 15.76 − 2.05 = 13.72 MJ/m²/日`
+7. ペンマン・モンティース：**`ET0 = 5.12 mm/日`**
+8. ほかの手法：`ハーグリーブス 3.99`、`プリーストリー・テイラー 5.50`、`ターク 4.64`、`マッキンク 4.23 mm/日`
 
-The spread is 29 % of the reference value, and the verdict flags it. Hargreaves–Samani
-is the outlier at 22 % low, and the reason is visible in the inputs: the daily temperature
-range is only 5 °C, because the sea keeps the nights warm. Hargreaves reads a small range
-as heavy cloud and reduces its estimate accordingly, when in fact the sky was half clear.
-**On small maritime islands the temperature-range proxy misfires**, and using it for a
-recharge budget would inflate recharge by roughly the same 1.1 mm/day it lost from
-evapotranspiration — some 400 mm a year, which on a limestone island is the difference
-between a sustainable and an over-drawn lens.
+ばらつきは基準値の 29 % で、判定がそれを警告します。**いちばん外れているのは
+ハーグリーブス・サマニで、22 % 低く出ています。** 理由は入力を見れば分かります。日較差がわずか 5 ℃ しかありません。
+海が夜を暖かく保つからです。ハーグリーブスは小さな日較差を「厚い雲」と読み、それに応じて
+推定値を下げます。実際には空は半分晴れていたのに、です。**海に囲まれた小さな島では、
+日較差を雲量の代わりに使う仕組みが的を外します。**
+
+マッキンクも 17 % 低く出ていますが、**こちらは理由が別**です。日較差とは関係がありません。
+オランダの湿潤で日射の弱い条件で較正された係数 0.65 が、亜熱帯の高い日射量には
+そのままでは合わないためです。 これを涵養量の計算に使えば、蒸発散量から
+削られたのと同じ 1.1 mm/日 だけ、涵養量が水増しされます。**これは7月のこの1日についての差**
+です。同じずれが1年続くとすれば年 400 mm を超えますが、日較差も ET₀ も季節で変わるので、
+この外挿はあくまで桁の見当です。それでも石灰岩の島では、淡水レンズが持続するか、
+汲み過ぎになるかを分ける桁にあたります。
 :::
 
-## Frequently asked
+## よくある質問
 
-### Which method should I use if I only have monthly climate normals?
+### 月別の平年値しか無いときは、どの手法を使えばよいですか
 
-Penman–Monteith, still. FAO-56 is explicit that the equation may be applied to monthly
-mean data, and doing so is far better than switching to a temperature-only method. If
-humidity is missing, estimate $e_a$ from $T_{min}$ (dewpoint ≈ $T_{min}$ in humid
-climates) rather than abandoning the equation.
+それでもペンマン・モンティースです。FAO-56 は、この式を月平均値に適用してよいと明記して
+います。そうするほうが、気温だけの手法へ乗り換えるよりはるかに良い結果になります。湿度が
+欠けている場合は、式を捨てるのではなく、$T_{min}$ から $e_a$ を推定してください（湿潤気候
+では露点温度がおおむね $T_{min}$ に等しくなります）。
 
-### Why does Hargreaves–Samani need latitude if it only uses temperature?
+### ハーグリーブス・サマニは気温しか使わないのに、なぜ緯度が要るのですか
 
-Because it does not only use temperature. It uses $R_a$, which is astronomy, and scales
-it by the temperature range. The name is misleading — it is a radiation method wearing a
-thermometer.
+気温しか使わない、というのが正しくないからです。この手法は $R_a$——つまり天文の量——を
+使い、それを日較差で伸縮させています。名前が誤解を招くのであって、**実体は温度計を
+身につけた放射法**です。
 
-### My station reports solar radiation directly. Can I skip sunshine hours?
+### 観測所が日射量を直接記録しています。日照時間を飛ばせますか
 
-Not in this version. The calculator derives $R_s$ from sunshine hours via the Ångström
-relation with the default coefficients (0.25, 0.50). If you have measured $R_s$, back
-out the equivalent sunshine hours: $n = N\,(R_s/R_a - 0.25)/0.50$.
+この版では飛ばせません。この計算機は、既定の係数（0.25、0.50）を使ったオングストローム式で
+日照時間から $R_s$ を導いています。実測の $R_s$ がある場合は、等価な日照時間を逆算して
+入れてください：$n = N\,(R_s/R_a - 0.25)/0.50$。
 
-### Is α = 1.26 in Priestley–Taylor universal?
+### プリーストリー・テイラーの α = 1.26 は、どこでも使える値ですか
 
-No. It was calibrated over extensive saturated surfaces. Values from 1.05 for dry
-canopies to 1.7 for advective conditions appear in the literature. Treating 1.26 as a
-constant is exactly the assumption that fails when the spread on this page grows.
+いいえ。広く飽和した面の上で較正された値です。文献には、乾いた樹冠に対する 1.05 から、
+移流の効く条件での 1.7 まで現れます。**1.26 を定数として扱うこと自体が、このページの
+ばらつきが大きくなったときに破綻する仮定です。**
 
-## Related calculators
+## 関連する計算機
 
 ::: {.gw-related}
-- [**Darcy's law**<span>Where the recharge goes once it reaches the water table</span>](../darcy-law/)
-- [**Theis solution**<span>Transient drawdown from a pumping well</span>](../theis-solution/)
+- [**ダルシーの法則**<span>地下水面に届いた涵養量が、その先どう流れるか</span>](../darcy-law/)
+- [**タイス式**<span>揚水井のまわりの非定常水位低下</span>](../theis-solution/)
+- [**濃度単位の換算**<span>蒸発で濃くなった水の、濃度の読み替え</span>](../concentration-units/)
 :::
 
-## Read further
+## さらに読む
 
-The water balance this calculator feeds is set out in
-[The Water Cycle Explained: Where Does the Rain Go?](../../posts/groundwater/groundwater-sci01/index-en.qmd),
-the opening article of the Groundwater Science series, which follows a raindrop from
-precipitation through the unsaturated zone to the water table.
+この計算機が支える水収支そのものを書いた記事が
+[水循環とは？雨はどこへ行くのか — 地下水と水収支の基礎](../../posts/groundwater/groundwater-sci01/index.qmd)
+です（地下水科学入門 #1）。一粒の雨を、降水から不飽和帯を通って地下水面まで追いかけています。
 
-## References
+## 参考文献
 
 ::: {.gw-refs}
 1. Allen, R.G., Pereira, L.S., Raes, D. & Smith, M. (1998) *Crop Evapotranspiration — Guidelines for Computing Crop Water Requirements.* FAO Irrigation and Drainage Paper 56, Rome. Chapters 1–4.
@@ -344,11 +366,10 @@ precipitation through the unsaturated zone to the water table.
 [HY]{.gw-badge}
 
 ::: {}
-**Reviewed by Heejun Yang, Ph.D.**
+**監修：Heejun Yang, Ph.D.**
 
-Hydrogeologist working on groundwater time-series analysis and water–rock
-interaction modelling. Equations, unit conversions, and reference values on this
-page were checked against the primary sources listed above.
+地下水の時系列解析と水–岩石反応のモデリングを専門とする水文地質学者です。このページの式・単位換算・
+代表値は、上に挙げた文献（原論文と教科書）と突き合わせて確認しています。
 :::
 :::
 
@@ -371,47 +392,47 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // 年間の可照時間合計。Blaney–Criddle は使っていないが、
-  // 日長の妥当性を確かめるために内部で使う余地を残してある。
+  // 可照時間の妥当性を確かめるために内部で使う余地を残してある。
 
   GwCalc.mount("#calc", {
 
     figure: "#calc-figure",
 
     inputs: [
-      { id:"lat", sym:"φ", label:"Latitude", short:"Latitude",
+      { id:"lat", sym:"φ", label:"緯度", short:"緯度",
         value:"35", min:-90, max:90, step:0.5,
-        hint:"degrees, negative in the southern hemisphere" },
+        hint:"度。南半球は負の値で入れる" },
 
-      { id:"J", sym:"J", label:"Day of year", short:"Day",
+      { id:"J", sym:"J", label:"年内通日", short:"通日",
         value:"196", min:1, max:366, step:1,
-        hint:"1 = 1 Jan",
-        presets:[ { label:"15 Jan", value:15 }, { label:"15 Apr", value:105 },
-                  { label:"15 Jul", value:196 }, { label:"15 Oct", value:288 } ] },
+        hint:"1 = 1月1日",
+        presets:[ { label:"1月15日", value:15 }, { label:"4月15日", value:105 },
+                  { label:"7月15日", value:196 }, { label:"10月15日", value:288 } ] },
 
-      { id:"z", sym:"z", label:"Elevation", short:"Elevation",
+      { id:"z", sym:"z", label:"標高", short:"標高",
         value:"50", min:-400, step:10,
         units:{ "m":1, "ft":0.3048 } },
 
-      { id:"Tmax", sym:"T<sub>max</sub>", label:"Maximum temperature",
+      { id:"Tmax", sym:"T<sub>max</sub>", label:"最高気温", short:"最高気温",
         value:"30", step:0.5, units:{ "°C":1 } },
 
-      { id:"Tmin", sym:"T<sub>min</sub>", label:"Minimum temperature",
+      { id:"Tmin", sym:"T<sub>min</sub>", label:"最低気温", short:"最低気温",
         value:"20", step:0.5, units:{ "°C":1 } },
 
-      { id:"RH", sym:"RH", label:"Mean relative humidity",
+      { id:"RH", sym:"RH", label:"平均相対湿度", short:"相対湿度",
         value:"60", min:1, max:100, step:5, units:{ "%":1 } },
 
-      { id:"u2", sym:"u₂", label:"Wind speed at 2 m", short:"Wind",
+      { id:"u2", sym:"u₂", label:"高さ 2 m の風速", short:"風速",
         value:"1.8", min:0, step:0.1,
         units:{ "m/s":1, "km/h":0.2777778, "mph":0.44704 },
         presetUnit:"m/s",
-        presets:[ { label:"Calm", value:0.5 }, { label:"Light", value:2 },
-                  { label:"Breezy", value:4 }, { label:"Windy", value:7 } ] },
+        presets:[ { label:"静穏", value:0.5 }, { label:"弱い", value:2 },
+                  { label:"やや強い", value:4 }, { label:"強い", value:7 } ] },
 
-      { id:"n", sym:"n", label:"Bright sunshine", short:"Sunshine",
+      { id:"n", sym:"n", label:"日照時間", short:"日照",
         value:"8", min:0, max:24, step:0.5,
-        units:{ "h/day":1 },
-        hint:"hours per day, not day length" }
+        units:{ "h/日":1 },
+        hint:"実際に日が照った時間（1日あたり）。可照時間ではない" }
     ],
 
     compute: function (v) {
@@ -476,39 +497,39 @@ document.addEventListener("DOMContentLoaded", function () {
                vpd:es - ea, Tmean:Tmean };
     },
 
-    headline: { key:"pm", sym:"ET₀", label:"FAO-56 Penman–Monteith", unit:"mm/day" },
+    headline: { key:"pm", sym:"ET₀", label:"FAO-56 ペンマン・モンティース", unit:"mm/日" },
 
     outputs: [
-      { key:"hs",     sym:"ET₀", label:"Hargreaves–Samani", unit:"mm/day", note:"temperature only" },
-      { key:"pt",     sym:"ET₀", label:"Priestley–Taylor",  unit:"mm/day", note:"radiation only" },
-      { key:"turc",   sym:"ET₀", label:"Turc",              unit:"mm/day", note:"humid climates" },
-      { key:"mk",     sym:"ET₀", label:"Makkink",           unit:"mm/day", note:"humid climates" },
-      { key:"spread", sym:"",    label:"Spread between methods", unit:"% of PM" },
-      { key:"Rn",     sym:"R<sub>n</sub>", label:"Net radiation", unit:"MJ/m²/day" },
-      { key:"Ra",     sym:"R<sub>a</sub>", label:"Extraterrestrial radiation", unit:"MJ/m²/day" },
-      { key:"N",      sym:"N",   label:"Daylight hours", unit:"h" }
+      { key:"hs",     sym:"ET₀", label:"ハーグリーブス・サマニ", unit:"mm/日", note:"気温だけ" },
+      { key:"pt",     sym:"ET₀", label:"プリーストリー・テイラー",  unit:"mm/日", note:"放射だけ" },
+      { key:"turc",   sym:"ET₀", label:"ターク",              unit:"mm/日", note:"湿潤気候向け" },
+      { key:"mk",     sym:"ET₀", label:"マッキンク",           unit:"mm/日", note:"湿潤気候向け" },
+      { key:"spread", sym:"",    label:"手法間のばらつき", unit:"PM比 %" },
+      { key:"Rn",     sym:"R<sub>n</sub>", label:"純放射量", unit:"MJ/m²/日" },
+      { key:"Ra",     sym:"R<sub>a</sub>", label:"大気外日射量", unit:"MJ/m²/日" },
+      { key:"N",      sym:"N",   label:"可照時間", unit:"h" }
     ],
 
     check: function (r) {
-      if (!isFinite(r.pm)) return GwCalc.warn("Enter all seven inputs to compare the methods.");
-      if (!isFinite(r.spread)) return GwCalc.warn("Method comparison unavailable.");
+      if (!isFinite(r.pm)) return GwCalc.warn("7つの入力をすべて入れると、手法を比べられます。");
+      if (!isFinite(r.spread)) return GwCalc.warn("手法の比較ができません。");
       if (r.spread < 25)
-        return GwCalc.ok("Methods agree within " + r.spread.toFixed(0) +
-                         " % — radiation drives evaporation here, so the shortcuts are defensible.");
+        return GwCalc.ok("手法間の差は " + r.spread.toFixed(0) +
+                         " % に収まっています。ここでは放射が蒸発を駆動しているので、簡便法を使っても差し支えありません。");
       if (r.spread < 40)
-        return GwCalc.warn("Methods differ by " + r.spread.toFixed(0) +
-                           " % — the shortcuts are drifting. Use Penman–Monteith for a water balance.");
-      return GwCalc.crit("Methods differ by " + r.spread.toFixed(0) +
-                         " % — advection dominates. Radiation- and temperature-based estimates are not usable here.");
+        return GwCalc.warn("手法間の差が " + r.spread.toFixed(0) +
+                           " % あります。簡便法がずれはじめています。水収支にはペンマン・モンティースを使ってください。");
+      return GwCalc.crit("手法間の差が " + r.spread.toFixed(0) +
+                         " % あります。移流が支配的です。放射や気温にもとづく推定値は、ここでは使えません。");
     },
 
     footnote:
-      '<p><span class="gw-key">Reference, not actual</span> ET₀ is the demand of a 0.12 m ' +
-      'grass surface with ample water. Actual evapotranspiration needs a crop or vegetation ' +
-      'coefficient and a soil-moisture balance on top of this number.</p>',
+      '<p><span class="gw-key">基準であって、実際ではありません</span> ET₀ は、水を十分に与えられた' +
+      '高さ 0.12 m の芝生が示す蒸発の要求量です。実蒸発散量を出すには、この数値の上に' +
+      '作物係数（または植生係数）と土壌水分の収支計算が要ります。</p>',
 
     onUpdate: function (r, v, root) {
-      var X0 = 170, FULL = 450, MAX = 12;   // 0〜12 mm/day を 450 px に写す
+      var X0 = 170, FULL = 450, MAX = 12;   // 0〜12 mm/日 を 450 px に写す
       function px(val) {
         if (!isFinite(val) || val <= 0) return 0;
         return Math.min(val / MAX, 1) * FULL;

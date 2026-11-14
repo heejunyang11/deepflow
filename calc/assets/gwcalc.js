@@ -79,11 +79,36 @@ window.GwCalc = (function () {
     return sym ? ' <em class="gw-sym">' + sym + "</em>" : "";
   }
 
+  /* ---- UI の文字列（ページの <html lang> で切り替える） --------------------
+     Calc は日本語が既定。英語版を持つページ（2026-11-14〜 charge-balance）は
+     front matter の lang: en で <html lang="en"> になり、ここで英語に切り替わる。
+     画面に出る語を変えるときは、本文中の参照も grep で洗うこと（CALC.md の地雷）。 */
+
+  var UI = {
+    ja: {
+      solveFor:      "逆算する量",
+      solveForGroup: "逆算する量の選択",
+      unitFor:       function (label) { return label + " の単位"; }
+    },
+    en: {
+      solveFor:      "Solve for",
+      solveForGroup: "Quantity to solve for",
+      unitFor:       function (label) { return "Unit for " + label; }
+    }
+  };
+
+  function ui() {
+    var lang = (typeof document !== "undefined" && document.documentElement &&
+                document.documentElement.lang) || "";
+    return /^en\b/i.test(lang) ? UI.en : UI.ja;
+  }
+
   /* ---- 本体 ------------------------------------------------------------ */
 
   function mount(selector, cfg) {
     var root = typeof selector === "string" ? document.querySelector(selector) : selector;
     if (!root) { console.error("GwCalc: mount target not found:", selector); return; }
+    var T = ui();
 
     var inputs = cfg.inputs || [];
     var solveFor = cfg.solveFor || null;          // 例: ["Q","K","dh"]
@@ -111,10 +136,10 @@ window.GwCalc = (function () {
 
     /* --- solve-for タブ --- */
     if (solveFor) {
-      paneIn.appendChild(el("p", "gw-panetitle", "Solve for"));
+      paneIn.appendChild(el("p", "gw-panetitle", T.solveFor));
       var tabs = el("div", "gw-solvefor");
       tabs.setAttribute("role", "group");
-      tabs.setAttribute("aria-label", "Quantity to solve for");
+      tabs.setAttribute("aria-label", T.solveForGroup);
       solveFor.forEach(function (id) {
         var def = inputs.filter(function (f) { return f.id === id; })[0] || {};
         var b = el("button", null, (def.short || def.label || id) + symHTML(def.sym));
@@ -170,7 +195,7 @@ window.GwCalc = (function () {
       combo.appendChild(inp);
 
       var sel = el("select");
-      sel.setAttribute("aria-label", "Unit for " + f.label);
+      sel.setAttribute("aria-label", T.unitFor(f.label));
       if (f.units) {
         Object.keys(f.units).forEach(function (u) {
           var o = el("option", null, u);
@@ -352,5 +377,6 @@ window.GwCalc = (function () {
     return { update: update, fields: fields, setTarget: setTarget };
   }
 
-  return { mount: mount, fmt: fmt, ok: ok, warn: warn, crit: crit, sup: sup };
+  // _ui は検証用（_verify が言語の切り替えを確かめる）。ページからは使わない。
+  return { mount: mount, fmt: fmt, ok: ok, warn: warn, crit: crit, sup: sup, _ui: ui };
 })();

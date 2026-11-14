@@ -1,0 +1,186 @@
+```{=html}
+<style>
+/* 明暗の三段。カード地 #FDFAF3 に対するコントラスト比は
+   ink 14.4 : dim 7.0 : faint 4.8。faint は出典行に使うので、
+   小さい字でも読めるよう WCAG AA（4.5:1）を下回らせない。 */
+.nanrv{--ink:#2B2621;--dim:#5F5546;--faint:#7A6E5C;
+  --hb:#BE640A;--cov:#0F6C8A;--rt:#B02A37;--vdw:#8C8271;
+  --h:#5E96C4;--he:#D69A2E;--other:#C42B3C;--o:#D8552A;--e:#2F6DB2;
+  --card:#FFFDF9;--card2:#FDFAF3;--line:#E7DECC;
+  --panel:#FAF5EB;--line2:#ECE3D2;--tint:122,96,52;
+  position:relative;margin:2.2rem 0;padding:26px 26px 20px;border-radius:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,42,.05),0 14px 30px -20px rgba(96,74,42,.34);
+  color:var(--ink);overflow:hidden;
+  font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;}
+/* 方眼紙の罫。明色になって初めて意味を持つ装飾なので、暗色版より少し出す。 */
+.nanrv::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(var(--tint),.07) 1px,transparent 1px) 0 0/100% 34px,
+    linear-gradient(90deg,rgba(var(--tint),.07) 1px,transparent 1px) 0 0/34px 100%;
+  mask-image:radial-gradient(120% 90% at 30% 0%,#000 30%,transparent 78%);}
+/* サイト側テーマの p / b / h5 への色指定を打ち消す。
+   ただしこの行は要素セレクタを含むので詳細度が (0,1,1) になる。
+   図の側の指定も p.〜 の形にして同着にしないと、こちらが勝ってしまう。 */
+.nanrv p,.nanrv b,.nanrv strong,.nanrv h5,.nanrv span,
+.nanrv em,.nanrv s,.nanrv u,.nanrv i,.nanrv sub,.nanrv sup{color:inherit;}
+p.nanrv-h{font-size:1.5rem;font-weight:800;letter-spacing:.01em;
+  margin:0 0 5px;color:var(--ink);}
+p.nanrv-s{font-size:.95rem;color:var(--dim);margin:0 0 4px;line-height:1.65;}
+.nanrv-read{margin:2px 8px 0;padding:15px 17px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line2);
+  font-size:1rem;line-height:1.85;color:var(--ink);min-height:2.6em;}
+.nanrv-read b{color:var(--hb);}
+p.nanrv-src{margin:12px 8px 0;font-size:.82rem;color:var(--faint);
+  line-height:1.7;}
+@media (max-width:820px){
+  .nanrv{padding:20px 12px 16px;}
+  .nanrv-h{font-size:1.25rem;}
+  .nanrv-s{font-size:.86rem;}
+  .nanrv-read{font-size:.92rem;margin:2px 2px 0;padding:13px 14px;}
+  .nanrv-src{font-size:.76rem;}
+}
+@media (prefers-reduced-motion:reduce){.nanrv *{animation:none !important;}}
+
+.nanrv{--na:#7B4FA0;--k:#B9A7C9;}
+.nanrv-wrap{margin:14px 8px 0;}
+.nanrv-wrap svg{display:block;width:100%;height:auto;}
+.nanrv-wrap text{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;}
+.nanrv-out{fill:#EEF3F6;}
+.nanrv-in{fill:#F6F0E4;}
+.nanrv-mem{fill:#D9C9A8;}
+.nanrv-rg{font-size:13px;font-weight:800;fill:var(--ink);}
+.nanrv-cn{font-size:11.5px;fill:var(--dim);text-anchor:end;font-variant-numeric:tabular-nums;}
+.nanrv-na{fill:var(--na);}
+.nanrv-k{fill:var(--k);}
+.nanrv-chw{fill:#8A6B36;}
+.nanrv-gate{fill:#8A6B36;transform-box:fill-box;transform-origin:left center;
+  animation:nanrv-gate 4s ease-in-out infinite;}
+@keyframes nanrv-gate{0%,22%{transform:rotate(0deg);}28%,42%{transform:rotate(-80deg);}
+  50%,100%{transform:rotate(0deg);}}
+.nanrv-flow{opacity:0;animation:nanrv-flow 4s ease-in infinite;}
+@keyframes nanrv-flow{0%,24%{transform:translateY(0);opacity:0;}
+  27%{opacity:1;}44%{transform:translateY(58px);opacity:1;}50%,100%{transform:translateY(58px);opacity:0;}}
+.nanrv-lb{font-size:11.5px;font-weight:700;fill:var(--ink);text-anchor:middle;}
+.nanrv-pump{fill:#F2E6CF;stroke:#8A6B36;stroke-width:2;}
+.nanrv-parr{fill:none;stroke:#8A6B36;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.nanrv-chg,.nanrv-pg{cursor:default;}
+.nanrv-gbg{fill:rgba(122,96,52,.04);stroke:var(--line2);}
+.nanrv-gl{stroke:var(--line);stroke-width:1;}
+.nanrv-zero{stroke-dasharray:4 4;stroke:var(--faint);}
+.nanrv-gv{font-size:11px;fill:var(--dim);text-anchor:end;font-variant-numeric:tabular-nums;}
+.nanrv-gax{font-size:11.5px;font-weight:700;fill:var(--dim);}
+.nanrv-gax2{font-size:11px;fill:var(--faint);text-anchor:end;}
+.nanrv-tr0{fill:none;stroke:var(--line);stroke-width:3;}
+.nanrv-tr{fill:none;stroke:var(--na);stroke-width:3.2;stroke-linecap:round;
+  stroke-dasharray:100;stroke-dashoffset:0;animation:nanrv-draw 4s linear infinite;}
+@keyframes nanrv-draw{0%,10%{stroke-dashoffset:100;}70%,100%{stroke-dashoffset:0;}}
+.nanrv-ann{font-size:11.5px;font-weight:800;fill:var(--na);}
+.nanrv-pl{font-size:10px;fill:#8A6B36;text-anchor:end;}
+.nanrv-ann2{font-size:11.5px;font-weight:700;fill:var(--dim);}
+@media (max-width:820px){.nanrv-wrap{margin:10px 0 0;}}
+</style>
+<div class="nanrv fig-wide" id="nanrv1">
+<p class="nanrv-h">神経の信号は、ナトリウムが流れこむ一瞬です</p>
+<p class="nanrv-s">左は神経の細胞の膜の断面、右はそのとき膜の内側の電位がどう動くかです。膜の門（チャネル）が開くと、外に多いナトリウムが中へ流れこみます。カーソルを合わせる（スマホはタップ）と説明が出ます。</p>
+
+<div class="nanrv-wrap"><svg viewBox="0 0 680 300" role="img" aria-label="神経の細胞膜の断面と、信号が通るときの膜の電位の変化。外に多いナトリウムがチャネルを通って流れこみ、電位がマイナス70ミリボルトから一瞬プラス30ミリボルトへ振れる">
+<rect class="nanrv-out" x="20" y="30" width="310" height="102" rx="8"/>
+<rect class="nanrv-in" x="20" y="150" width="310" height="112" rx="8"/>
+<g data-detail="&lt;b&gt;細胞の外&lt;/b&gt;：ナトリウムが多く（1 L あたり約145ミリモル）、カリウムは少ない（約4）。">
+<text class="nanrv-rg" x="30" y="48">細胞の外</text>
+<text class="nanrv-cn" x="320" y="48">Na⁺ 約145　K⁺ 約4</text>
+<circle class="nanrv-na" cx="177.2" cy="96.4" r="5"/>
+<circle class="nanrv-na" cx="84.8" cy="91.7" r="5"/>
+<circle class="nanrv-na" cx="212.1" cy="109.2" r="5"/>
+<circle class="nanrv-na" cx="58.9" cy="78.8" r="5"/>
+<circle class="nanrv-na" cx="57.9" cy="110.2" r="5"/>
+<circle class="nanrv-na" cx="230.3" cy="62.6" r="5"/>
+<circle class="nanrv-na" cx="312.9" cy="119.8" r="5"/>
+<circle class="nanrv-na" cx="219.0" cy="98.2" r="5"/>
+<circle class="nanrv-na" cx="77.0" cy="60.9" r="5"/>
+<circle class="nanrv-na" cx="183.1" cy="63.7" r="5"/>
+<circle class="nanrv-na" cx="86.4" cy="75.0" r="5"/>
+<circle class="nanrv-na" cx="40.6" cy="88.8" r="5"/>
+<circle class="nanrv-na" cx="180.5" cy="99.7" r="5"/>
+<circle class="nanrv-na" cx="317.3" cy="121.7" r="5"/>
+<circle class="nanrv-na" cx="122.2" cy="74.2" r="5"/>
+<circle class="nanrv-na" cx="114.7" cy="64.4" r="5"/>
+<circle class="nanrv-k" cx="306.0" cy="112.5" r="5"/>
+<circle class="nanrv-k" cx="32.2" cy="73.0" r="5"/>
+</g>
+<g data-detail="&lt;b&gt;細胞の内&lt;/b&gt;：カリウムが多く（約140ミリモル）、ナトリウムは少ない（約12）。ふだん、内側は外側より&lt;b&gt;約70ミリボルト、マイナス&lt;/b&gt;です。">
+<text class="nanrv-rg" x="30" y="252">細胞の内</text>
+<text class="nanrv-cn" x="320" y="252">Na⁺ 約12　K⁺ 約140</text>
+<circle class="nanrv-na" cx="312.4" cy="191.8" r="5"/>
+<circle class="nanrv-na" cx="52.9" cy="208.1" r="5"/>
+<circle class="nanrv-k" cx="56.9" cy="187.3" r="5"/>
+<circle class="nanrv-k" cx="307.7" cy="217.1" r="5"/>
+<circle class="nanrv-k" cx="65.7" cy="181.2" r="5"/>
+<circle class="nanrv-k" cx="60.9" cy="168.2" r="5"/>
+<circle class="nanrv-k" cx="192.0" cy="195.3" r="5"/>
+<circle class="nanrv-k" cx="86.5" cy="215.2" r="5"/>
+<circle class="nanrv-k" cx="69.5" cy="209.1" r="5"/>
+<circle class="nanrv-k" cx="65.3" cy="193.5" r="5"/>
+<circle class="nanrv-k" cx="92.9" cy="182.9" r="5"/>
+<circle class="nanrv-k" cx="309.7" cy="220.2" r="5"/>
+<circle class="nanrv-k" cx="119.0" cy="225.9" r="5"/>
+<circle class="nanrv-k" cx="92.3" cy="191.6" r="5"/>
+<circle class="nanrv-k" cx="60.7" cy="233.3" r="5"/>
+<circle class="nanrv-k" cx="93.0" cy="182.1" r="5"/>
+<circle class="nanrv-k" cx="116.7" cy="169.1" r="5"/>
+</g>
+<rect class="nanrv-mem" x="20" y="132" width="310" height="18"/>
+<g class="nanrv-chg" data-detail="&lt;b&gt;ナトリウムの通り道（チャネル）&lt;/b&gt;：信号が来ると一瞬だけ開き、外に多いナトリウムが&lt;b&gt;どっと内へ流れこみます&lt;/b&gt;。プラスが入ってくるので、内側の電位がマイナスからプラスへひっくり返ります。">
+<rect class="nanrv-chw" x="133" y="128" width="10" height="26"/>
+<rect class="nanrv-chw" x="157" y="128" width="10" height="26"/>
+<rect class="nanrv-gate" x="143" y="130" width="14" height="6"/>
+<text class="nanrv-lb" x="150" y="122">チャネル</text>
+<circle class="nanrv-na nanrv-flow" cx="150" cy="110" r="5" style="animation-delay:0.00s"/>
+<circle class="nanrv-na nanrv-flow" cx="150" cy="110" r="5" style="animation-delay:0.18s"/>
+<circle class="nanrv-na nanrv-flow" cx="150" cy="110" r="5" style="animation-delay:0.36s"/>
+</g>
+<g class="nanrv-pg" data-detail="&lt;b&gt;ポンプ（ナトリウム–カリウムポンプ）&lt;/b&gt;：エネルギーを使って、ナトリウムを外へくみ出し、カリウムを内へくみ入れます。&lt;b&gt;濃さの差を作るのはこちら&lt;/b&gt;、その差を一気に流して信号にするのがチャネルです。">
+<circle class="nanrv-pump" cx="270" cy="141" r="15"/>
+<path class="nanrv-parr" d="M265 130 l0 -26 m-4 6 l4 -6 l4 6"/>
+<path class="nanrv-parr" d="M275 152 l0 26 m-4 -6 l4 6 l4 -6"/>
+<text class="nanrv-lb" x="270" y="102">ポンプ</text>
+<text class="nanrv-pl" x="260" y="120">Na⁺ を外へ</text>
+<text class="nanrv-pl" x="260" y="172">K⁺ を内へ</text>
+</g>
+<g data-detail="&lt;b&gt;活動電位&lt;/b&gt;：チャネルが開いてナトリウムが流れこむと、膜の内側は約−70 mV から一瞬 &lt;b&gt;+30 mV&lt;/b&gt; ほどへ振れます。すぐにカリウムが外へ出て元に戻ります。全体で数ミリ秒（1ミリ秒は1000分の1秒）の出来事です。">
+<rect class="nanrv-gbg" x="400" y="40" width="260" height="200" rx="6"/>
+<line class="nanrv-gl" x1="400" y1="209.2" x2="660" y2="209.2"/>
+<text class="nanrv-gv" x="394" y="213.2">-70</text>
+<line class="nanrv-gl nanrv-zero" x1="400" y1="101.5" x2="660" y2="101.5"/>
+<text class="nanrv-gv" x="394" y="105.5">0</text>
+<line class="nanrv-gl" x1="400" y1="55.4" x2="660" y2="55.4"/>
+<text class="nanrv-gv" x="394" y="59.4">+30</text>
+<text class="nanrv-gax" x="400" y="30">膜の内側の電位（ミリボルト）</text>
+<text class="nanrv-gax2" x="660" y="258">時間 → （全体で約5ミリ秒）</text>
+<path class="nanrv-tr0" d="M400.0 209.2 C408.7 209.2 441.2 211.8 452.0 209.2 C462.8 206.7 461.1 209.2 465.0 193.8 C468.9 178.5 472.4 140.0 475.4 116.9 C478.4 93.8 480.6 60.5 483.2 55.4 C485.8 50.3 486.7 63.1 491.0 86.2 C495.3 109.2 503.6 171.3 509.2 193.8 C514.8 216.4 518.7 216.4 524.8 221.5 C530.9 226.7 535.2 226.2 545.6 224.6 C556.0 223.1 575.1 214.9 587.2 212.3 C599.3 209.7 606.3 209.7 618.4 209.2 C630.5 208.7 653.1 209.2 660.0 209.2"/>
+<path class="nanrv-tr" d="M400.0 209.2 C408.7 209.2 441.2 211.8 452.0 209.2 C462.8 206.7 461.1 209.2 465.0 193.8 C468.9 178.5 472.4 140.0 475.4 116.9 C478.4 93.8 480.6 60.5 483.2 55.4 C485.8 50.3 486.7 63.1 491.0 86.2 C495.3 109.2 503.6 171.3 509.2 193.8 C514.8 216.4 518.7 216.4 524.8 221.5 C530.9 226.7 535.2 226.2 545.6 224.6 C556.0 223.1 575.1 214.9 587.2 212.3 C599.3 209.7 606.3 209.7 618.4 209.2 C630.5 208.7 653.1 209.2 660.0 209.2" pathLength="100"/>
+<text class="nanrv-ann" x="495.2" y="59.4">← Na⁺ が流れこむ</text>
+<text class="nanrv-ann2" x="519.8" y="155.4">← K⁺ が出て戻る</text>
+</g>
+</svg></div>
+<div class="nanrv-read"><b>ポンプ</b>がエネルギーを使ってナトリウムを外へくみ出し、濃さの差を作っておきます。信号が来ると<b>チャネル</b>が開き、ナトリウムがどっと流れこんで、電位が一瞬<b>マイナスからプラスへ</b>ひっくり返ります。ダムに水をためておいて、水門を開けるのに似ています。</div>
+<p class="nanrv-src">模式図です。粒の数は濃さの比をおおまかに写しただけです。濃さ（1 L あたりのミリモル）は外 Na 約145・K 約4、内 Na 約12・K 約140、電位は静止時約 −70 mV・頂点約 +30 mV で、いずれも生理学の教科書に載る代表値です。細胞の種類によって違います。ポンプは Na⁺/K⁺-ATPase、通り道は電位依存性ナトリウムチャネルと呼ばれる、別々のタンパク質です。</p>
+</div>
+
+<script>
+(function(){
+  var r=document.getElementById('nanrv1');if(!r)return;
+  var out=r.querySelector('.nanrv-read');if(!out)return;
+  var base=out.innerHTML;
+  r.querySelectorAll('[data-detail]').forEach(function(n){
+    function on(){out.innerHTML=n.getAttribute('data-detail');}
+    n.addEventListener('mouseenter',on);
+    n.addEventListener('click',on);
+    n.addEventListener('mouseleave',function(){out.innerHTML=base;});
+  });
+})();
+</script>
+
+```

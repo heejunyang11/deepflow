@@ -14,3 +14,7 @@ __pycache__/
 *.pyc
 # 検証依頼パック（作業用。Quarto にも git にも入れない）
 posts/note/_review/
+calc/_review/
+
+# Quarto のレンダー時にプロジェクト直下へ出る中間フォルダ（本体は _site/ に入る）
+/*_files/

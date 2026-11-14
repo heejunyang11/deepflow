@@ -14,6 +14,9 @@ new_tool.py — 新しい計算機ページの雛形を作る。
 URL は calc/ 直下のフラット構成で、category は front matter の
 `categories:` に入って一覧ページの絞り込みに使われる（URL には出ない）。
 
+Calc セクションは 2026-09-07 から**日本語のみ**である（HY 判断）。雛形も日本語で
+出るようにしてある。URL のスラッグだけは英語のまま付けること。
+
 既存ファイルがあれば何もせず終了する。標準ライブラリだけで動く。
 
 書き足すのは compute() と解説文だけになるよう、入力欄の生成・単位換算・
@@ -37,8 +40,8 @@ for _s in (sys.stdout, sys.stderr):
 # 一覧ページ（calc/index.qmd）の categories に出るラベル。
 # Recharge & streamflow は 2026-08-10 に廃止した（DeepFlows 統合時の HY 判断）。
 CATEGORIES = {
-    "flow":      "Flow",
-    "chemistry": "Chemistry",
+    "flow":      "流動",
+    "chemistry": "化学",
 }
 
 
@@ -51,12 +54,12 @@ CATEGORIES = {
 TPL_QMD = '''---
 title: "@@TITLE@@"
 subtitle: "TODO ひとことで何を計算するか。検索結果にも出るので具体的に。"
-description: "TODO 120〜160字。何を計算し、どの単位系に対応し、何を検証するか。キーワードを前に置く。"
+description: "TODO 120〜160字。何を計算し、どの単位系に対応し、何を検証するか。キーワードを前に置く。日本語で書く。"
 date: @@DATE@@
-lang: en
+lang: ja
 categories: [@@CATEGORY@@]
 number-sections: false
-toc-title: "On this page"
+toc-title: "目次"
 format:
   html:
     html-math-method: katex
@@ -70,10 +73,10 @@ draft: true
 ---
 
 ::: {.gw-attest}
-[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
-[SI and US customary units]{.gw-chip}
-[TODO validity check]{.gw-chip}
-[Sources: TODO]{.gw-chip}
+[✓ 水文地質学者（Ph.D.）が監修]{.gw-chip .verified}
+[SI単位・米国慣用単位に対応]{.gw-chip}
+[TODO 適用限界の判定]{.gw-chip}
+[出典：TODO]{.gw-chip}
 :::
 
 ```{=html}
@@ -97,20 +100,20 @@ draft: true
 </template>
 ```
 
-## What to enter for what you want
+## 何を入れると、何が得られるか
 
-Every derived quantity is computed on every keystroke, so **Solve for** does not
-decide what you can see — it only decides which variable is treated as the unknown.
+すべての導出量は、キーを打つたびに計算し直しています。**逆算する量**の切り替えは、
+見られる量を決めるものではありません。**どれを未知数として扱うか**を決めるだけです。
 
-| To find | Enter | Read it in |
+| 求めたいもの | 入力する量 | どこを読むか |
 |---|---|---|
-| **TODO** | TODO | Headline |
+| **TODO** | TODO | 見出しの数字 |
 | **TODO** | TODO | TODO |
 
 TODO どの入力がどの出力にしか効かないかを書く。効き方の狭い入力（間隙率が
 流量に無関係、粒径が判定にしか使われない、など）は必ずここで断っておく。
 
-## What the equation says
+## 式が言っていること
 
 TODO その式が生まれた背景と、何を主張しているか。
 
@@ -121,9 +124,9 @@ $$TODO$$
 TODO 符号や近似が消える箇所は途中式を省かない。微分形 → 有限差分 → 相殺、の
 ように段階を式で示すこと。結果だけ書くと検算できないページになる。
 
-### The variables
+### 変数
 
-| Symbol | Quantity | SI unit | Note |
+| 記号 | 意味 | SI単位 | 注意 |
 |---|---|---|---|
 | *TODO* | TODO | TODO | TODO |
 
@@ -135,7 +138,7 @@ TODO
 
 TODO 材料別の物性値など。出典（著者・年・表番号）を必ず添える。
 
-## When it breaks down
+## 式が成り立たなくなるとき
 
 TODO 適用限界。どの条件で式が成り立たなくなり、そのとき何を使うべきか。
 **この節と `check()` の判定は必ず対応させること。**
@@ -144,10 +147,10 @@ TODO 適用限界。どの条件で式が成り立たなくなり、そのとき
 $$TODO$$
 :::
 
-## Worked example
+## 例題
 
 ::: {.gw-worked}
-**Problem.** TODO 数値を追える問題。誤りやすい点が現れるものを選ぶ。
+**問題。** TODO 数値を追える問題。誤りやすい点が現れるものを選ぶ。
 
 1. TODO: `計算式 = 値`
 2. TODO
@@ -155,7 +158,7 @@ $$TODO$$
 TODO 誤った扱いをすると答えが何倍ずれるかを示す。
 :::
 
-## Frequently asked
+## よくある質問
 
 ### TODO
 
@@ -165,7 +168,7 @@ TODO
 
 TODO
 
-## Related calculators
+## 関連する計算機
 
 ::: {.gw-related}
 - [**TODO**<span>TODO</span>](../TODO/)
@@ -173,14 +176,14 @@ TODO
 
 TODO 公開済みのツールだけを並べる。リンク切れを作らない。4〜6本。
 
-## Read further
+## さらに読む
 
 TODO このツールの背景を書いた DeepFlows の記事へ 1 本だけリンクする。
-書き方は `](../../posts/groundwater/groundwater-sciXX/index-en.qmd)` の .qmd 直リンク。
+書き方は `](../../posts/groundwater/groundwater-sciXX/index.qmd)` の .qmd 直リンク。
 拡張子なしの絶対パス（/posts/...）で書くと**ローカルプレビューで 404 になる**。
-英語記事なので必ず index-en を指すこと（index.qmd だと日本語版へ飛ぶ）。
+Calc は日本語のみなので、リンク先は日本語版（`index.qmd`）を指すこと。
 
-## References
+## 参考文献
 
 ::: {.gw-refs}
 1. TODO 著者 (年) *書名または論文名.* 出版社/誌名.
@@ -190,11 +193,10 @@ TODO このツールの背景を書いた DeepFlows の記事へ 1 本だけリ�
 [HY]{.gw-badge}
 
 ::: {}
-**Reviewed by Heejun Yang, Ph.D.**
+**監修：Heejun Yang, Ph.D.**
 
-Hydrogeologist working on groundwater time-series analysis and water–rock
-interaction modelling. Equations, unit conversions, and reference values on this
-page were checked against the primary sources listed above.
+地下水の時系列解析と水–岩石反応のモデリングを専門とする水文地質学者です。このページの
+式・単位換算・代表値は、上に挙げた文献（原論文と教科書）と突き合わせて確認しています。
 :::
 :::
 

@@ -1,0 +1,529 @@
+---
+title: "Charge Balance Error Calculator"
+subtitle: "Check whether a water analysis is internally consistent — and, when it is not, which measurement to suspect."
+description: "Free charge balance error calculator for water analyses. Converts mg/L to meq/L, sums cations and anions, checks the result against the ±5 % criterion, and also computes TDS, total hardness, ionic strength and electrical conductivity."
+date: 2026-08-10
+lang: en
+categories: [Chemistry]
+number-sections: false
+toc-title: "On this page"
+format:
+  html:
+    html-math-method: katex
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="/calc/assets/gwcalc.css" />
+          <link rel="stylesheet" href="/calc/assets/gwcalc-page.css" />
+          <script src="/calc/assets/gwcalc.js" defer></script>
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/calc/charge-balance/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/calc/charge-balance/index-en" />
+---
+
+::: {.gw-attest}
+[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
+[mg/L or meq/L input]{.gw-chip}
+[±5 % criterion built in]{.gw-chip}
+[Sources: Hem 1985 · Freeze &amp; Cherry 1979]{.gw-chip}
+:::
+
+```{=html}
+<div id="calc"></div>
+
+<template id="calc-figure">
+  <figure>
+    <svg viewBox="0 0 680 210" role="img" aria-labelledby="figTitle figDesc">
+      <title id="figTitle">Cation and anion balance</title>
+      <desc id="figDesc">Two horizontal bars that should be the same length. The upper bar is the sum of cations and the lower bar the sum of anions, both in milliequivalents per litre. The difference in length is the charge balance error.</desc>
+
+      <text class="gw-tx-sm" x="16" y="42">CATIONS</text>
+      <text class="gw-tx-sm" x="16" y="122">ANIONS</text>
+
+      <g id="catBar"></g>
+      <g id="aniBar"></g>
+
+      <line class="gw-dim-aux" id="balanceMark" x1="100" y1="30" x2="100" y2="150"></line>
+
+      <text class="gw-tx-sm" id="catTotal" x="664" y="42" text-anchor="end">–</text>
+      <text class="gw-tx-sm" id="aniTotal" x="664" y="122" text-anchor="end">–</text>
+
+      <line class="gw-dim" id="gapBar" x1="100" y1="170" x2="100" y2="170"
+            marker-start="url(#arrowDim3)" marker-end="url(#arrowDim3)"></line>
+      <text class="gw-tx gw-tx-area" id="gapLabel" x="100" y="192" text-anchor="middle"></text>
+    </svg>
+    <figcaption>Electroneutrality requires the two bars to be the same length. The vertical line marks where the shorter bar ought to reach; the gap up to it is the charge that cannot be accounted for. A difference that is easy to miss in a column of numbers is obvious in the figure.</figcaption>
+  </figure>
+</template>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="arrowDim3" markerWidth="9" markerHeight="8" refX="8.4" refY="4" orient="auto-start-reverse">
+      <path class="gw-dim-head" d="M0,0.6 L9,4 L0,7.4 Z"></path>
+    </marker>
+  </defs>
+</svg>
+```
+
+## What to enter for what you want
+
+Enter the analysis as reported — normally in mg/L. Each field is converted to
+milliequivalents internally, because **that is the only unit in which charges can
+be added**.
+
+| To find | Enter | Read it in |
+|---|---|---|
+| **Whether the analysis balances** | all eight ions | Headline (%) and the verdict line |
+| **How much charge is missing** | all eight ions | Difference (meq/L) |
+| **Total dissolved solids (TDS)** | all eight ions | TDS (calculated) |
+| **Total hardness** | Ca and Mg | Total hardness (as CaCO₃) |
+| **Ionic strength for activity corrections** | all eight ions | Ionic strength |
+| **A rough electrical conductivity** | the four cations | Electrical conductivity (approx.) |
+
+Leave a field at 0 if that species was not measured — but read the note below
+first. **To this calculation, an ion that was not measured and an ion that is not
+there produce the same number,** even though they mean entirely different things.
+
+## Why the charges must balance
+
+A solution cannot carry a net charge. Every water sample, however complicated,
+satisfies electroneutrality exactly:
+
+::: {.gw-eq}
+$$\sum_{\text{cations}} m_i z_i \;=\; \sum_{\text{anions}} m_i \lvert z_i \rvert$$
+:::
+
+This is neither an approximation nor a modelling assumption; **it is a property of
+the water itself.** So when a laboratory report fails to balance, **the water is
+not wrong — the analysis is.** That is why the charge balance is the most useful
+single check you can run on a water analysis, and it needs nothing but addition.
+
+The imbalance is conventionally expressed as a percentage of the total. That
+percentage is the **charge balance error (CBE)**; in practice it is often simply
+called the ion balance.
+
+::: {.gw-eq}
+$$\text{CBE} \;=\; \frac{\sum \text{cations} - \sum \text{anions}}
+{\sum \text{cations} + \sum \text{anions}}\times 100\ \%$$
+:::
+
+All sums are in **milliequivalents per litre (meq/L)**. Watch the denominator.
+**Some textbooks divide by the mean of the two sums rather than their total, and
+that doubles the reported error.** Before comparing a published value with the one
+on this page, always check which convention it used.
+
+### From mg/L to meq/L
+
+Charges cannot be added in mg/L. A milligram of Ca²⁺ and a milligram of Na⁺ carry
+different amounts of charge, **because Ca²⁺ carries twice the charge of Na⁺ per
+mole, and the two also have different molar masses.** The conversion therefore
+divides by the equivalent weight — the molar mass divided by the absolute charge:
+
+::: {.gw-eq}
+$$\text{meq/L} \;=\; \frac{\text{mg/L}}{M / \lvert z \rvert}$$
+:::
+
+| Ion | *M* (g/mol) | *z* | Equivalent weight |
+|---|---|---|---|
+| Ca²⁺ | 40.078 | +2 | 20.039 |
+| Mg²⁺ | 24.305 | +2 | 12.153 |
+| Na⁺ | 22.990 | +1 | 22.990 |
+| K⁺ | 39.098 | +1 | 39.098 |
+| HCO₃⁻ | 61.016 | −1 | 61.016 |
+| SO₄²⁻ | 96.06 | −2 | 48.030 |
+| Cl⁻ | 35.453 | −1 | 35.453 |
+| NO₃⁻ | 62.004 | −1 | 62.004 |
+
+## What counts as acceptable
+
+The conventional criterion is **±5 %**, and most published analyses of reasonable
+quality fall within ±2 %. Beyond 5 %, something is wrong. **Above 10 %, the
+analysis should not be used for geochemical modelling.** If water that does not
+balance is modelled as it is, the ionic strength, the activity coefficients and
+every saturation index carry the error. And if a charge-balancing option is used
+(`charge` in PHREEQC), **the whole error is loaded onto the one ion you chose.**
+
+Note that PHREEQC's `SOLUTION` **does not balance the charge by default.** It
+speciates the solution at the concentrations given and reports the imbalance as a
+percent error. What this calculator adds is that **you can check before the
+analysis goes in.**
+
+Dilute waters need one qualification. **When the total is small, the percentage
+becomes unstable.** A discrepancy of 0.1 meq/L is 1 % of a mineralised groundwater
+with a total of 10 meq/L, but 20 % of a rainwater with a total of 0.5 meq/L. For
+very dilute samples, judge by the absolute difference in meq/L rather than by the
+percentage. The calculator shows both.
+
+### Three quantities reported alongside the balance
+
+These are not part of the charge balance itself, but they follow from the same
+input, so they are shown with it. **Here is how each one is calculated.**
+
+**Total hardness** is the sum of Ca²⁺ and Mg²⁺ expressed as calcium carbonate.
+1 meq/L corresponds to 50.04 mg/L as CaCO₃.
+
+::: {.gw-eq}
+$$\text{Total hardness} = (c_{\text{Ca}} + c_{\text{Mg}}) \times 50.04\qquad [\text{meq/L} \rightarrow \text{mg/L as CaCO}_3]$$
+:::
+
+**Ionic strength** is the quantity needed for activity coefficients. It is
+computed **on a molar basis (mol/L)**. For dilute groundwater the difference from
+the molal basis (mol/kg) is negligible; for brines it is not.
+
+::: {.gw-eq}
+$$I = \frac{1}{2}\sum_i m_i z_i^{2}$$
+:::
+
+**Electrical conductivity** follows a rule of thumb from Hem (1985): **100 times
+the cation sum in meq/L.** It gives the order of magnitude only and is no
+substitute for a measurement. Because it does not build the value up from the
+equivalent conductance of each ion, **it can be off by tens of percent for water
+of unusual composition.**
+
+::: {.gw-eq}
+$$EC\ [\mu\text{S/cm}] \;\approx\; 100 \times \sum \text{cations}\ [\text{meq/L}]$$
+:::
+
+**TDS (total dissolved solids)** is the sum of these eight ions converted back to
+mg/L. **It does not include silica.** Many groundwaters contain 10–50 mg/L of it,
+so when comparing with a measured residue on evaporation, expect the calculated
+value to be lower by about that much.
+
+## Diagnosing the imbalance
+
+A failed balance tells you *that* something is wrong, and **its sign narrows down
+*what*.** This is where the check earns its keep.
+
+**Cations in excess** — most often bicarbonate. HCO₃⁻ is rarely measured directly;
+it is usually calculated from titrated alkalinity, and it is also the ion most
+often missing from a partial analysis. If the water comes from a carbonate terrain
+and the cation excess is roughly equal to the HCO₃⁻ you would expect, that is
+almost certainly the answer.
+
+**Anions in excess** — look for a cation that was not measured. Iron and manganese
+in reducing groundwater, ammonium in contaminated water and aluminium at low pH
+all carry significant charge, yet they are routinely left out of standard analysis
+suites.
+
+**The imbalance equals exactly half the contribution of one divalent ion** —
+suspect a valence error in the unit conversion. It happens most often with Ca²⁺ or
+SO₄²⁻: dividing by the molar mass instead of the equivalent weight halves **that
+ion's contribution only.** The total is off by a factor of two only when that one
+divalent ion makes up nearly all of its side, so looking for "the total is off by
+two" will miss it. Make this mistake on Ca²⁺ in the worked example below and the
+CBE becomes **−22 %**.
+
+**Off by roughly a factor of ten, in either direction** — a decimal point. It
+usually slips in during transcription, not in the laboratory.
+
+## Worked example
+
+::: {.gw-worked}
+**Problem.** A spring in a limestone terrain returns the following analysis, in
+mg/L. Does it balance?
+
+Ca 65, Mg 8.0, Na 12, K 2.0, HCO₃ 210, SO₄ 22, Cl 18, NO₃ 5.0
+
+1. Convert the cations: `Ca 65/20.039 = 3.244`, `Mg 8.0/12.153 = 0.658`, `Na 12/22.990 = 0.522`, `K 2.0/39.098 = 0.051` meq/L
+2. Sum: `Σ cations = 4.475 meq/L`
+3. Convert the anions: `HCO₃ 210/61.016 = 3.442`, `SO₄ 22/48.030 = 0.458`, `Cl 18/35.453 = 0.508`, `NO₃ 5.0/62.004 = 0.081` meq/L
+4. Sum: `Σ anions = 4.488 meq/L`
+5. `CBE = (4.4751 − 4.4881)/(4.4751 + 4.4881) × 100 = −0.15 %`
+
+The analysis balances comfortably. Note also that **HCO₃⁻ alone accounts for about
+77 % of the anion charge, and Ca²⁺ alone for about 72 % of the cation charge.**
+That is the signature of water that has dissolved calcite, and it fits the
+limestone setting.
+
+**Now suppose the calcium had been transcribed as 85 mg/L instead of 65.**
+
+`Ca 85/20.039 = 4.242`, so `Σ cations = 5.473` and `CBE = +9.9 %`. The imbalance
+is 0.985 meq/L, which converts back to **19.7 mg/L of Ca²⁺**.
+
+The transcription error was 20.0 mg/L, so the recovered figure is close but not
+exact: it is 0.3 mg/L short. That 0.3 mg/L is **exactly the −0.013 meq/L the
+analysis was already out by before anything was mistyped.** **The balance recovers
+the size of an error, not its exact value,** because it only ever sees the net of
+every error present. That is still enough to point at the species to suspect —
+which is what the check is for.
+:::
+
+## Frequently asked questions
+
+### Should I enter 0 for ions that were not measured?
+
+You have no other choice — but understand what it means. **To this calculation, an
+ion that was not measured and an ion that is absent are indistinguishable.** Leave
+out HCO₃⁻ from a carbonate water and you get a large cation excess that looks like
+an analytical failure. If a species was not measured, treat a one-sided imbalance
+not as evidence of error but as **a hypothesis about that species.**
+
+### My rainwater sample is 30 % out, yet the absolute difference is tiny. Why?
+
+Because the percentage is divided by a very small total. At a total of 0.3 meq/L,
+an absolute error of 0.05 meq/L — perfectly acceptable precision for a dilute
+sample — is 17 %. Judge dilute waters by the absolute difference. Standard Methods
+(APHA/AWWA/WEF) gives **±0.2 meq/L as the criterion when the anion sum is below
+3 meq/L.**
+
+### If the balance is good, is the analysis correct?
+
+No, and this is worth being clear about. **The charge balance is a necessary
+condition, not a sufficient one.** Two errors of opposite sign cancel, and an
+error in something that carries no charge and so never enters the sums — a neutral
+species such as silica, or the pH itself — cannot be detected by this check. A
+balanced analysis has passed one test, not every test.
+
+**Dissolved organic matter is a different case: it does carry charge,** as the
+anions of organic acids. Those anions are not among the eight measured here, so
+they leave **an apparent cation excess** — the measured anions come up short. If
+water from a peatland or an organic-rich aquifer shows a cation excess that
+bicarbonate does not explain, suspect organic anions first.
+
+### May I let PHREEQC adjust an ion to force the balance?
+
+**Only when you know which ion is uncertain, and why.** Speciation codes can
+balance the charge on a species you choose. That is a legitimate use when the
+species was estimated rather than measured; balancing on pH or on Cl⁻ is common
+practice. **Balancing on a species that was carefully measured hides the error
+instead of resolving it,** and every saturation index calculated from there on
+inherits it.
+
+## Related calculators
+
+The other calculators in this section are currently available in Japanese only.
+The numbers, units and formulas on them can still be followed as they are.
+
+::: {.gw-related}
+- [**Concentration units**<span>mg/L, mmol/L and meq/L from a mineral formula (Japanese)</span>](../concentration-units/)
+- [**Darcy's law**<span>Groundwater flow through a porous medium (Japanese)</span>](../darcy-law/)
+- [**Theis solution**<span>Transient drawdown around a pumping well (Japanese)</span>](../theis-solution/)
+:::
+
+## Read further
+
+An analysis that passes this check is exactly what goes into a speciation run.
+[PHREEQC from Scratch #2: Analyzing Seawater with Speciation](../../posts/phreeqc/phreeqc-part2/index-en.qmd)
+starts from a water analysis of the same shape and calculates **what the ions are
+actually doing in solution.**
+
+## References
+
+::: {.gw-refs}
+1. Hem, J.D. (1985) *Study and Interpretation of the Chemical Characteristics of Natural Water*, 3rd ed. U.S. Geological Survey Water-Supply Paper 2254.
+2. Freeze, R.A. & Cherry, J.A. (1979) *Groundwater.* Prentice-Hall, Englewood Cliffs, NJ. Chapter 3.
+3. APHA/AWWA/WEF (2017) *Standard Methods for the Examination of Water and Wastewater*, 23rd ed. Section 1030 E, Anion–Cation Balance.
+4. Appelo, C.A.J. & Postma, D. (2005) *Geochemistry, Groundwater and Pollution*, 2nd ed. Balkema, Leiden.
+:::
+
+::: {.gw-author}
+[HY]{.gw-badge}
+
+::: {}
+**Reviewed by Heejun Yang, Ph.D.**
+
+A hydrogeologist specialising in groundwater time-series analysis and the
+modelling of water–rock interaction. The equivalent weights and acceptance
+criteria on this page have been checked against the sources listed above
+(original papers and textbooks).
+:::
+:::
+
+```{=html}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  /* 当量重量 (mg/meq) = モル質量 / |電荷|。mg/L をこれで割ると meq/L になる。
+     モル質量は IUPAC 2021 の標準原子量から。
+     ※ 計算部分（ION・field・compute）は日本語版 index.qmd と同一に保つこと。
+       _verify/charge-balance.js が両ファイルで同じ数値になるかを照合している。 */
+  var ION = {
+    Ca:   { eqw: 20.039, z: 2, label: "Ca²⁺",  side: "cat" },
+    Mg:   { eqw: 12.153, z: 2, label: "Mg²⁺",  side: "cat" },
+    Na:   { eqw: 22.990, z: 1, label: "Na⁺",   side: "cat" },
+    K:    { eqw: 39.098, z: 1, label: "K⁺",    side: "cat" },
+    HCO3: { eqw: 61.016, z: 1, label: "HCO₃⁻", side: "ani" },
+    SO4:  { eqw: 48.030, z: 2, label: "SO₄²⁻", side: "ani" },
+    Cl:   { eqw: 35.453, z: 1, label: "Cl⁻",   side: "ani" },
+    NO3:  { eqw: 62.004, z: 1, label: "NO₃⁻",  side: "ani" }
+  };
+
+  var CATS = ["Ca", "Mg", "Na", "K"];
+  var ANIS = ["HCO3", "SO4", "Cl", "NO3"];
+
+  // 入力欄は mg/L と meq/L を切り替えられる。内部の基準は meq/L。
+  function field(id, value) {
+    var d = ION[id];
+    var u = {};
+    u["mg/L"]  = 1 / d.eqw;
+    u["meq/L"] = 1;
+    return { id: id, sym: d.label, label: d.label, value: value,
+             min: 0, step: 1, units: u };
+  }
+
+  var api = GwCalc.mount("#calc", {
+
+    figure: "#calc-figure",
+
+    inputs: [
+      field("Ca", "65"), field("Mg", "8.0"), field("Na", "12"), field("K", "2.0"),
+      field("HCO3", "210"), field("SO4", "22"), field("Cl", "18"), field("NO3", "5.0")
+    ],
+
+    compute: function (v) {
+      var cat = 0, ani = 0, tds = 0, ionic = 0, missing = 0;
+      var parts = { cat: [], ani: [] };
+
+      Object.keys(ION).forEach(function (id) {
+        var meq = v[id];
+        if (!isFinite(meq) || meq < 0) { missing++; meq = 0; }
+        var d = ION[id];
+        if (d.side === "cat") { cat += meq; } else { ani += meq; }
+        parts[d.side].push({ id: id, label: d.label, meq: meq });
+        tds   += meq * d.eqw;              // meq/L を mg/L に戻して合計
+        ionic += meq * d.z;                // I = ½ Σ m z² = ½ Σ (meq × z) / 1000
+      });
+
+      var total = cat + ani;
+      if (!(total > 0)) return {};
+
+      var diff = cat - ani;
+      var cbe  = diff / total * 100;
+
+      // Ca と Mg だけが硬度に寄与する。1 meq/L = 50.04 mg/L as CaCO₃
+      var hardness = ((isFinite(v.Ca) ? v.Ca : 0) + (isFinite(v.Mg) ? v.Mg : 0)) * 50.04;
+
+      return {
+        cat: cat, ani: ani, diff: diff, absdiff: Math.abs(diff), cbe: cbe,
+        tds: tds, hardness: hardness,
+        ionic: 0.5 * ionic / 1000,
+        ec: cat * 100,                     // Hem (1985) の目安。あくまで概算
+        parts: parts
+      };
+    },
+
+    headline: { key: "cbe", sym: "", label: "Charge balance error", unit: "%" },
+
+    outputs: [
+      { key:"cat",      sym:"Σ⁺", label:"Sum of cations",          unit:"meq/L" },
+      { key:"ani",      sym:"Σ⁻", label:"Sum of anions",           unit:"meq/L" },
+      { key:"diff",     sym:"Δ",  label:"Difference",              unit:"meq/L", note:"cations − anions" },
+      { key:"tds",      sym:"",   label:"TDS (calculated)",        unit:"mg/L",  note:"these eight ions only" },
+      { key:"hardness", sym:"",   label:"Total hardness",          unit:"mg/L",  note:"as CaCO₃" },
+      { key:"ionic",    sym:"I",  label:"Ionic strength",          unit:"mol/L" },
+      { key:"ec",       sym:"",   label:"Electrical conductivity", unit:"µS/cm", note:"approx." }
+    ],
+
+    check: function (r) {
+      if (!isFinite(r.cbe)) {
+        return GwCalc.warn("Enter at least one cation and one anion.");
+      }
+      var a    = Math.abs(r.cbe);
+      var side = r.diff > 0 ? "Cations" : "Anions";
+      var lack = r.diff > 0 ? "anion" : "cation";
+      var pct  = GwCalc.fmt(a, 3);
+      var meq  = GwCalc.fmt(Math.abs(r.diff), 3);
+
+      // 希薄な水では百分率が不安定になるので、絶対差で判断する
+      if (r.ani < 3 && Math.abs(r.diff) <= 0.2) {
+        return GwCalc.ok(
+          "Acceptable for a dilute sample. The difference is " + meq + " meq/L, within the " +
+          "±0.2 meq/L criterion that Standard Methods applies when the anion sum is below " +
+          "3 meq/L. At this dilution the percentage (" + pct + " %) is not reliable; " +
+          "judge by the absolute value.");
+      }
+      if (a <= 5) {
+        return GwCalc.ok(
+          "The analysis balances. |CBE| = " + pct + " %, within the conventional ±5 % criterion" +
+          (a <= 2 ? ". It is also within ±2 %, typical of a high-quality analysis." : "."));
+      }
+      if (a <= 10) {
+        return GwCalc.warn(
+          "The analysis does not balance. " + side + " are in excess by " + pct + " %, leaving " +
+          meq + " meq/L of " + lack + " charge unaccounted for. Before discarding the " +
+          "analysis, check whether that " + lack + " was simply not measured — bicarbonate " +
+          "on the anion side, iron or ammonium on the cation side.");
+      }
+      return GwCalc.crit(
+        "Do not use this analysis for modelling. |CBE| = " + pct + " % (" + side.toLowerCase() +
+        " in excess by " + meq + " meq/L) cannot be explained by analytical scatter. Common " +
+        "causes are a missing major ion, a valence error in the unit conversion, or a " +
+        "misplaced decimal point.");
+    },
+
+    footnote:
+      '<p><span class="gw-key">Why it holds</span> A solution cannot carry a net charge, ' +
+      'so in the water itself the two sums are equal. A failure to balance is a statement ' +
+      'about the <em>analysis</em>, not about the sample.</p>' +
+      '<p><span class="gw-key">Reading the sign</span> A cation excess usually means a ' +
+      'missing anion, and the anion most often missing is HCO₃⁻: it is calculated from ' +
+      'titrated alkalinity rather than measured, so partial analyses leave it out. An ' +
+      'anion excess points to unmeasured Fe²⁺, Mn²⁺ or NH₄⁺.</p>',
+
+    onUpdate: function (r) { drawBars(r); }
+  });
+
+  /* ---- 陽イオン・陰イオンの棒を描く ------------------------------------
+     色でイオンを区別せず、区切り線と直接ラベルで読ませる。長さの差が
+     そのまま電荷の不足量になる。 */
+
+  var X0 = 100, XMAX = 560, YC = 24, YA = 104, BH = 30;
+
+  function drawBars(res) {
+    var $ = function (id) { return document.getElementById(id); };
+    if (!res || !res.parts) return;
+
+    var span = Math.max(res.cat, res.ani);
+    if (!(span > 0)) return;
+    var px = function (meq) { return (meq / span) * XMAX; };
+
+    function bar(gid, list, y, cls) {
+      var g = $(gid);
+      while (g.firstChild) g.removeChild(g.firstChild);
+      var x = X0;
+      list.forEach(function (p) {
+        var w = px(p.meq);
+        if (w <= 0) return;
+        var seg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        seg.setAttribute("class", cls);
+        seg.setAttribute("x", x.toFixed(1));
+        seg.setAttribute("y", y);
+        seg.setAttribute("width", Math.max(w - 1, 0.5).toFixed(1));
+        seg.setAttribute("height", BH);
+        g.appendChild(seg);
+
+        // 幅が足りるセグメントだけ直接ラベルを置く
+        if (w > 34) {
+          var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          t.setAttribute("class", "gw-tx-seg");
+          t.setAttribute("x", (x + w / 2).toFixed(1));
+          t.setAttribute("y", y + BH / 2 + 4);
+          t.setAttribute("text-anchor", "middle");
+          t.textContent = p.label;
+          g.appendChild(t);
+        }
+        x += w;
+      });
+    }
+
+    bar("catBar", res.parts.cat, YC, "gw-bar-cat");
+    bar("aniBar", res.parts.ani, YA, "gw-bar-ani");
+
+    $("catTotal").textContent = GwCalc.fmt(res.cat, 3) + " meq/L";
+    $("aniTotal").textContent = GwCalc.fmt(res.ani, 3) + " meq/L";
+
+    // 揃うべき位置に基準線を引き、短い側との差を寸法線で示す
+    var xEnd = X0 + px(span);
+    $("balanceMark").setAttribute("x1", xEnd);
+    $("balanceMark").setAttribute("x2", xEnd);
+
+    var shorter = Math.min(res.cat, res.ani);
+    var xShort  = X0 + px(shorter);
+    $("gapBar").setAttribute("x1", xShort);
+    $("gapBar").setAttribute("x2", xEnd);
+    $("gapLabel").setAttribute("x", (xShort + xEnd) / 2);
+    $("gapLabel").textContent = (Math.abs(res.diff) > 1e-9)
+      ? GwCalc.fmt(Math.abs(res.diff), 2) + " meq/L missing"
+      : "";
+  }
+});
+</script>
+```

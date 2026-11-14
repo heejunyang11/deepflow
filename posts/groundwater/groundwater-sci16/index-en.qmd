@@ -112,7 +112,7 @@ The judge of that is precisely the Giggenbach Na-K-Mg diagram. If a water lies o
 
 ## Check it yourself — reproduction with PHREEQC
 
-The temperature-sweep figure of this article (silica geothermometry) can be reproduced by the reader's own hands. In PHREEQC, enter the measured composition of the hot-spring water, sweep the temperature with `REACTION_TEMPERATURE`, and output the SI of each mineral. The temperature at which SI crosses zero is that mineral thermometer's answer. Calcite's retrograde solubility also appears naturally in the same calculation. For how to build the input deck, see the equilibrium-calculation article of the [PHREEQC introductory series](/posts/phreeqc/).
+The temperature-sweep figure of this article (silica geothermometry) can be reproduced by the reader's own hands. In PHREEQC, enter the measured composition of the hot-spring water, sweep the temperature with `REACTION_TEMPERATURE`, and output the SI of each mineral. The temperature at which SI crosses zero is that mineral thermometer's answer. Calcite's retrograde solubility also appears naturally in the same calculation. For how to build the input deck, see the equilibrium-calculation article of the [PHREEQC introductory series](../../../blog-en.qmd).
 
 ------------------------------------------------------------------------
 

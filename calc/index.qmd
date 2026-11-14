@@ -1,9 +1,9 @@
 ---
-title: "Groundwater Calculators"
-pagetitle: "Groundwater Calculators — Darcy's Law, Theis Solution, Evapotranspiration and Water Chemistry"
-subtitle: "Browser-based tools for groundwater flow and water chemistry. Every calculator shows the equation it uses, cites where that equation came from, and tells you when it stops being valid."
-description: "Free groundwater calculators: Darcy's law, the Theis solution for pumping tests, reference evapotranspiration by five methods, charge balance error, and concentration unit conversion from a mineral formula."
-lang: en
+title: "地下水の計算機"
+pagetitle: "地下水の計算機 — ダルシーの法則・タイス式・蒸発散量・水質化学"
+subtitle: "地下水の流動と水質化学のための、ブラウザで動く計算ツールです。どの計算機も、使っている式・その式の出典・そして式が成り立たなくなる条件を、いっしょに示します。"
+description: "無料の地下水計算機。ダルシーの法則、揚水試験のタイス式、5手法による基準蒸発散量、イオンバランス、そして化学式からの濃度単位換算。"
+lang: ja
 number-sections: false
 toc: false
 listing:
@@ -12,7 +12,7 @@ listing:
     - "*/index.qmd"
   type: grid
   grid-columns: 3
-  sort: "title asc"
+  sort: "order asc"
   fields: [title, description, categories]
   categories: true
   filter-ui: false
@@ -25,61 +25,58 @@ format:
 ---
 
 ::: {.gw-lede}
-Most engineering calculators give you a number and nothing else — no equation, no
-source, and no warning when you have pushed a formula past the range it was
-derived for. Darcy's law quietly stops describing reality above a pore Reynolds
-number of about 1, and nothing on the web tells you when you have crossed it.
-These tools do.
+たいていの技術計算サイトは、数字だけを返してきます。式も、出典も、そして「その式が
+導かれた範囲を踏み越えましたよ」という警告もありません。ダルシーの法則は、粒子
+レイノルズ数が 1 を超えたあたりから静かにずれはじめ、10 に届くころには現実を
+描かなくなりますが、それを教えてくれるページはウェブ上にほとんどありません。
+**ここの計算機は、それを教えます。**
 
-Nothing is uploaded. Every calculation runs in your browser.
+**入力した数値がサーバーへ送られることはありません。**計算はすべて、あなたのブラウザの
+中で走ります。
 :::
 
-## All tools
+## 計算機の一覧
 
 ::: {#all-tools}
 :::
 
-## Why another calculator
+## なぜ、もうひとつ計算機を作るのか
 
 ::: {.gw-lede}
-Three things are different here, and each of them exists because getting them
-wrong is common in practice.
+ここには3つの違いがあります。そしてそのどれもが、**実務で取り違えられることが多いから**
+存在しています。
 
-**Every tool states where it stops working.** A formula has a domain of validity,
-and outside it the answer is not merely imprecise — it is wrong. The Darcy
-calculator computes a pore Reynolds number and tells you which regime you are in.
-The Theis calculator reports whether the Cooper–Jacob approximation may be used at
-your radius and time. Tools that follow will do the same for their own limits.
+**どの計算機も、それが成り立たなくなる場所を明示します。** 式には成り立つ範囲があり、
+その外では答えは「精度が落ちる」のではなく、**端的に誤り**です。ダルシーの計算機は粒子
+レイノルズ数を計算し、いまどの領域にいるかを告げます。タイスの計算機は、あなたの距離と
+時間でクーパー・ヤコブの近似を使ってよいかどうかを報告します。今後増えるツールも、
+それぞれの限界について同じことをします。
 
-**Every equation is sourced.** Not "as found in the literature", but the actual
-paper or textbook, with the table number where a reference value came from. You
-should be able to check the work.
+**どの式にも出典があります。** 「文献にあるとおり」ではなく、実際の論文または教科書を、
+代表値を引いた表の番号まで添えて示します。**読者が計算を検算できる**ようにするためです。
 
-**Quantities that are easy to confuse are shown side by side.** Darcy flux and
-seepage velocity differ by a factor of 1/*n*; using one where the other belongs
-is the most frequent error in contaminant travel-time work. Both appear in the
-output, always.
+**取り違えやすい量は、必ず並べて表示します。** ダルシー流束と実流速は、**有効間隙率 *n* の
+逆数（1/*n*）倍**だけ違い、一方を他方の場所で使うことが、汚染物質の到達時間の計算で
+いちばん多い誤りです。この2つは、常に両方とも出力に並びます。
 :::
 
-## The articles behind the tools
+## 計算機の背後にある記事
 
 ::: {.gw-lede}
-These calculators are the working end of the writing on this site. The
-[Groundwater Science series](../blog-en.qmd) derives the equations and then solves the
-same problems numerically with MODFLOW, FloPy and PHREEQC — the pumping test the
-Theis calculator evaluates at a point is fitted to a full drawdown curve in the
-series, and the water analysis this charge-balance tool validates is the input a
-speciation run begins with.
+これらの計算機は、このサイトで書いている文章の「実際に手を動かす端」にあたります。
+[連載シリーズ](../blog.qmd)（地下水科学入門と PHREEQC）では、同じ式を導いたうえで、同じ問題を MODFLOW・
+FloPy・PHREEQC で数値的にも解いています。タイスの計算機が1点で評価する揚水試験は、
+連載では水位低下曲線の全体に当てはめられていますし、このイオンバランスの計算機が確かめる水質
+分析値は、化学種計算がそこから始まる入力そのものです。
 :::
 
 ::: {.gw-author}
 [HY]{.gw-badge}
 
 ::: {}
-**Built and maintained by Heejun Yang, Ph.D.**
+**制作・維持：Heejun Yang, Ph.D.**
 
-Hydrogeologist working on groundwater time-series analysis and water–rock
-interaction modelling. Every tool here is checked against a worked example from
-the literature before it is published.
+地下水の時系列解析と水–岩石反応のモデリングを専門とする水文地質学者です。ここにある
+どのツールも、公開する前に文献の例題と突き合わせて確認しています。
 :::
 :::

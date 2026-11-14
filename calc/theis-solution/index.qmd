@@ -1,12 +1,13 @@
 ---
-title: "Theis Solution Calculator"
-subtitle: "Transient drawdown around a pumping well in a confined aquifer — and whether the Cooper–Jacob straight-line approximation may be used instead."
-description: "Free Theis equation calculator. Computes transient drawdown, transmissivity, or pumping rate in a confined aquifer, evaluates the well function W(u), and reports when the Cooper-Jacob approximation is valid."
+title: "タイス式 計算機"
+subtitle: "被圧帯水層で、揚水井のまわりの水位低下が時間とともにどう進むか（非定常水位低下）を求めます。クーパー・ヤコブの直線近似に置き換えてよいかどうかも、あわせて判定します。"
+description: "タイス式（テイス式）の無料計算機。被圧帯水層の水位低下量・透水量係数・揚水量を相互に逆算し、井戸関数 W(u) を評価します。クーパー・ヤコブの直線近似が使える条件かどうかを、誤差つきで判定します。"
 date: 2026-08-10
-lang: en
-categories: [Flow]
+lang: ja
+order: 2          # 扉の並び順（流動3本 → 化学2本）
+categories: [流動]
 number-sections: false
-toc-title: "On this page"
+toc-title: "目次"
 format:
   html:
     html-math-method: katex
@@ -18,10 +19,10 @@ format:
 ---
 
 ::: {.gw-attest}
-[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
-[SI and US customary units]{.gw-chip}
-[Cooper–Jacob validity check]{.gw-chip}
-[Sources: Theis 1935 · Cooper &amp; Jacob 1946]{.gw-chip}
+[✓ 水文地質学者（Ph.D.）が監修]{.gw-chip .verified}
+[SI単位・米国慣用単位に対応]{.gw-chip}
+[クーパー・ヤコブの適用可否を判定]{.gw-chip}
+[出典：Theis 1935 · Cooper &amp; Jacob 1946]{.gw-chip}
 :::
 
 ```{=html}
@@ -30,8 +31,8 @@ format:
 <template id="calc-figure">
   <figure>
     <svg viewBox="0 0 680 320" role="img" aria-labelledby="figTitle figDesc">
-      <title id="figTitle">Cone of depression around a pumping well</title>
-      <desc id="figDesc">A cross-section through a confined aquifer. Pumping from the central well lowers the potentiometric surface into a cone. An observation well a distance r away records the drawdown s.</desc>
+      <title id="figTitle">揚水井のまわりにできる水位低下円錐</title>
+      <desc id="figDesc">被圧帯水層の断面です。中央の井戸から揚水すると、被圧水頭面がすり鉢状に引き下げられます。距離 r だけ離れた観測井が、水位低下量 s を記録します。</desc>
 
       <defs>
         <pattern id="soil" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -50,12 +51,12 @@ format:
       <!-- 帯水層と上下の遮水層 -->
       <rect x="40" y="40" width="600" height="36" fill="url(#soil)"></rect>
       <rect class="gw-vessel" x="40" y="40" width="600" height="36"></rect>
-      <text class="gw-tx-sm" x="46" y="62">confining bed</text>
+      <text class="gw-tx-sm" x="46" y="62">難透水層</text>
 
       <rect class="gw-water" x="40" y="76" width="600" height="196"></rect>
       <rect x="40" y="272" width="600" height="22" fill="url(#soil)"></rect>
       <rect class="gw-vessel" x="40" y="272" width="600" height="22"></rect>
-      <text class="gw-tx-sm" x="46" y="288">aquiclude</text>
+      <text class="gw-tx-sm" x="46" y="288">不透水層</text>
 
       <!-- 揚水前の水位（基準）と、揚水後のコーン -->
       <g clip-path="url(#aquiferClip)">
@@ -63,7 +64,7 @@ format:
         <path class="gw-cone" id="coneLine" d=""></path>
       </g>
       <line class="gw-dim-aux" x1="40" y1="96" x2="640" y2="96"></line>
-      <text class="gw-tx-sm" x="46" y="92">potentiometric surface before pumping</text>
+      <text class="gw-tx-sm" x="46" y="92">揚水前の被圧水頭面</text>
 
       <!-- 揚水井 -->
       <rect class="gw-glass" x="332" y="20" width="16" height="252"></rect>
@@ -73,7 +74,7 @@ format:
       <!-- 観測井 -->
       <rect class="gw-glass" id="obsWell" x="446" y="30" width="10" height="242"></rect>
       <line class="gw-waterline" id="obsLevel" x1="446" y1="140" x2="456" y2="140"></line>
-      <text class="gw-tx-sm" id="obsLabel" x="462" y="26">observation well</text>
+      <text class="gw-tx-sm" id="obsLabel" x="462" y="26">観測井</text>
 
       <!-- 水位低下量 s -->
       <line class="gw-dim" id="sBar" x1="451" y1="96" x2="451" y2="140"
@@ -86,7 +87,7 @@ format:
             marker-start="url(#arrowDim2)" marker-end="url(#arrowDim2)"></line>
       <text class="gw-tx" id="rLabel" x="396" y="30" text-anchor="middle">r</text>
     </svg>
-    <figcaption>Pumping at rate <em>Q</em> draws the potentiometric surface down into a cone. The drawdown <em>s</em> at an observation well depends on how far away it is (<em>r</em>) and how long the pump has run (<em>t</em>) — the cone deepens and widens without ever reaching steady state. The figure tracks your inputs.</figcaption>
+    <figcaption>揚水量 <em>Q</em> で汲み上げると、被圧水頭面がすり鉢状に引き下げられます。この窪みを <b>水位低下円錐</b> と呼びます。観測井での水位低下量 <em>s</em> は、井戸からの距離（<em>r</em>）と、ポンプを回した時間（<em>t</em>）で決まります。円錐は深く広くなり続け、定常状態には到達しません。図は入力に追従します。</figcaption>
   </figure>
 </template>
 
@@ -99,167 +100,199 @@ format:
 </svg>
 ```
 
-## What to enter for what you want
+## 何を入れると、何が得られるか
 
-Every derived quantity is computed on every keystroke, so **Solve for** does not
-decide what you can see — it only decides which variable is treated as the unknown.
+すべての導出量は、キーを打つたびに計算し直しています。**逆算する量**の切り替えは、
+見られる量を決めるものではありません。**どれを未知数として扱うか**を決めるだけです。
 
-| To find | Enter | Read it in |
+| 求めたいもの | 入力する量 | どこを読むか |
 |---|---|---|
-| **Drawdown at an observation well** | *Q*, *T*, *S*, *r*, *t* | Headline |
-| **Transmissivity from a pumping test** | *Q*, *s*, *S*, *r*, *t* — set *Solve for* to *T* | Headline |
-| **The rate that produces a target drawdown** | *T*, *S*, *r*, *t*, *s* — set *Solve for* to *Q* | Headline |
-| **Whether Cooper–Jacob is usable** | any of the above | *u* and the validity note |
-| **How far the cone reaches** | *Q*, *T*, *S*, *t* | Radius of influence |
+| **観測井での水位低下量** | *Q*, *T*, *S*, *r*, *t* | 見出しの数字 |
+| **揚水試験から透水量係数** | *Q*, *s*, *S*, *r*, *t* ／「逆算する量」を *T* に | 見出しの数字 |
+| **目標の水位低下量を生む揚水量** | *T*, *S*, *r*, *t*, *s* ／「逆算する量」を *Q* に | 見出しの数字 |
+| **クーパー・ヤコブが使えるか** | 上のいずれでも | *u* と判定の欄 |
+| **影響半径（便宜的な目安）** | *T*, *S*, *t* | 影響半径 |
 
-Solving for *T* is the pumping-test case, and it cannot be done algebraically —
-*T* appears both outside the well function and inside its argument. The calculator
-solves it numerically by bisection on a logarithmic scale, which is why the value
-settles rather than appearing instantly.
+*T* を解く場合が揚水試験にあたりますが、**これは代数的に解けません。** *T* が井戸関数の外にも
+中（引数）にも現れるためです。この計算機は対数目盛の上で二分法を使って数値的に解いています。
+値がすっと出ずに落ち着くように見えるのは、そのためです。
 
-## What the equation says
+## 式が言っていること
 
-By 1935 the steady-state well equations of Thiem had a well-known defect: real
-aquifers never reach steady state, because the cone of depression keeps expanding
-for as long as the pump runs. Charles Theis, working with the mathematician Clarence
-Lubin, noticed that this expanding cone is formally the same problem as heat
-conducting away from a line source — a problem already solved. Transplanting that
-solution gave hydrogeology its first transient analysis.
+1935年の時点で、ティームの定常状態の井戸式には、よく知られた弱点がありました。**実際の帯水層は
+定常状態に達しません。** ポンプが回っているあいだ、水位低下円錐は広がり続けるからです。
+
+チャールズ・タイスは、数学者のクラレンス・ルービンとともに、この広がり続ける円錐が
+**線状の熱源から熱が逃げていく問題と、数学的に同じ形をしている**ことに気づきました。すでに
+解かれていた問題です。その解を移し替えたことで、水文地質学は最初の非定常解析を手に入れました。
 
 ::: {.gw-eq}
 $$s \;=\; \frac{Q}{4\pi T}\,W(u), \qquad u \;=\; \frac{r^{2}S}{4Tt}$$
 :::
 
-$W(u)$ is the **well function**, which is the exponential integral $E_1(u)$:
+$W(u)$ は **井戸関数** と呼ばれ、その正体は指数積分 $E_1(u)$ です。
 
 ::: {.gw-eq}
 $$W(u) \;=\; \int_{u}^{\infty}\frac{e^{-y}}{y}\,dy
 \;=\; -\gamma - \ln u + \sum_{n=1}^{\infty}\frac{(-1)^{n+1}u^{n}}{n\cdot n!}$$
 :::
 
-with $\gamma = 0.5772157$ (Euler's constant). This calculator evaluates it with the
-rational approximations of Abramowitz & Stegun (5.1.53 and 5.1.56), which agree with
-published well-function tables to within 0.02 % over the range $10^{-5} \le u \le 5$.
+ここで $\gamma = 0.5772157$（オイラー定数）です。この計算機は Abramowitz & Stegun の有理近似
+（5.1.53 と 5.1.56）で評価しており、$10^{-5} \le u \le 5$ の範囲で公表されている井戸関数表と
+0.02 % 以内で一致することを確認しています。
 
-### The variables
+### 変数
 
-| Symbol | Quantity | SI unit | Note |
+| 記号 | 量 | SI単位 | 注意点 |
 |---|---|---|---|
-| *s* | Drawdown at the observation well | m | Measured **down** from the pre-pumping level |
-| *Q* | Pumping rate | m³/s | Held constant — the solution assumes it never varies |
-| *T* | Transmissivity, *Kb* | m²/s | Conductivity times aquifer thickness |
-| *S* | Storativity (storage coefficient) | – | Dimensionless; typically 10⁻⁵–10⁻³ when confined |
-| *r* | Distance from the pumping well | m | Radial |
-| *t* | Time since pumping began | s | From the instant the pump starts |
-| *u* | Dimensionless time parameter | – | Small *u* means late time or short distance |
+| *s* | 観測井での水位低下量 | m | 揚水前の水位から**下向き**に測ります |
+| *Q* | 揚水量 | m³/s | 一定であることが前提。変動しないものとして解いています |
+| *T* | 透水量係数、*Kb* | m²/s | 透水係数 × 帯水層の厚さ |
+| *S* | 貯留係数 | – | 無次元。被圧帯水層では 10⁻⁵〜10⁻³ が典型 |
+| *r* | 揚水井からの距離 | m | 放射方向 |
+| *t* | 揚水を始めてからの時間 | s | ポンプが回り始めた瞬間から |
+| *u* | 無次元の時間パラメータ | – | *u* が小さい＝時間が経った、または井戸に近い |
 
-### What *u* actually measures
+### *u* は、何を測っているのか
 
-Everything about the shape of the response is carried by the single group
-$u = r^2S/4Tt$. It is small when the test has run a long time or the observation
-well is close, and large early on or far away. This is why *u* — not time alone —
-decides which analysis applies: an observation well at 20 m may already be in the
-late-time regime while one at 300 m is still in the early-time regime at the same
-instant.
+**応答の形は、$u = r^2S/4Tt$ という1つの組み合わせがすべて背負っています。**
 
-## When Cooper–Jacob can replace it
+試験を長く続けたとき、あるいは観測井が近いときに小さくなり、始まったばかりのとき、
+あるいは遠いときに大きくなります。**どの解析法が使えるかを決めるのは、時間そのものではなく
+*u* である**——理由はここにあります。
 
-For small *u* the series for $W(u)$ is dominated by its first two terms, and the
-solution collapses into a straight line on a semi-logarithmic plot:
+同じ瞬間であっても、20 m の観測井はすでに後期の領域に入っているのに、300 m の観測井は
+まだ初期の領域にいる、ということが起こります。
+
+## クーパー・ヤコブに置き換えてよいとき
+
+*u* が小さいところでは $W(u)$ の級数が最初の2項で決まってしまい、解は片対数グラフの上で
+直線に潰れます。
 
 ::: {.gw-eq}
 $$s \;\approx\; \frac{2.303\,Q}{4\pi T}\,\log_{10}\!\left(\frac{2.25\,T t}{r^{2}S}\right)
 \qquad (u \lesssim 0.01)$$
 :::
 
-That is the Cooper–Jacob (1946) approximation, and it is what makes graphical
-pumping-test analysis possible. The threshold matters: at *u* = 0.01 the error is
-about 1 %, but it grows quickly. **The calculator reports the Cooper–Jacob value
-and its error alongside the exact Theis result**, so you can see for yourself
-whether the shortcut is safe at your *r* and *t*.
+これが **クーパー・ヤコブ (1946) の直線近似**で、揚水試験をグラフで解析できるのは、この直線のおかげです。実測の水位低下を片対数グラフに打ち、直線を当てはめて透水量係数を求める解析手順は **直線法**（Cooper–Jacob straight-line method）と呼ばれます。以下では、式そのものを指すときは「直線近似」と書きます。
 
-Above *u* ≈ 1 you are in the earliest moments of the test at that radius. The Theis
-solution is still exact there, but wellbore storage — water drawn from the casing
-rather than the aquifer — distorts real measurements, so early data are usually
-discarded rather than fitted.
+しきい値の意味を、数字で見ておきます。**u = 0.01 での誤差は 0.2 % ほど**にすぎません。
+ところが、そこから先は急に大きくなります。
 
-## Worked example
+| *u* | クーパー・ヤコブの誤差 |
+|---|---|
+| 0.01 | −0.20 % |
+| 0.03 | −0.94 % |
+| 0.05 | −1.93 % |
+| 0.1 | −5.25 % |
+| 0.2 | −15.42 % |
+
+（上の式の慣用の定数 2.25 を使った値です。厳密な $4e^{-\gamma} = 2.2458$ を使うと、*u* = 0.01 での誤差は −0.25 % になります。2 桁で書くと、この丸めが見える大きさになります。）
+
+**誤差が 1 % に達するのは *u* ≈ 0.03 のあたり**です。慣用の目安が *u* < 0.01 と、実際より
+安全側に置かれているのは、直線を当てはめる区間の端で余裕を持たせるためです。
+
+**この計算機は、正確なタイスの値と並べてクーパー・ヤコブの値と誤差を表示します。** ご自分の
+*r* と *t* で、近道が安全かどうかを目で確かめてください。
+
+*u* がおよそ 1 を超えると、その距離における試験のごく初期にあたります。タイス解はそこでも
+厳密ですが、実測のほうが歪みます。**井戸貯留**（wellbore storage）——帯水層ではなくケーシングの中の水が
+汲み上げられる現象——のためで、初期のデータは当てはめずに捨てるのがふつうです。
+
+### 影響半径は、境界ではありません
+
+この計算機は **影響半径** を出力しますが、ここで注意が要ります。**タイス解に、影響半径という量は本来ありません。** 後述のとおり水位低下は止まらず、水位低下円錐は広がり続けるからです。
+
+表示しているのは、**クーパー・ヤコブの直線を延長して、水位低下がゼロになる点**です。
+
+::: {.gw-eq}
+$$R \;=\; 1.5\sqrt{\frac{Tt}{S}}
+\qquad\left(s \to 0,\;\; \frac{2.25\,Tt}{R^{2}S} = 1 \;\text{より}\right)$$
+:::
+
+便宜的な目安の半径であって、「ここから外側は影響を受けていない」という境界ではありません。実際には、その外にも測器で読めないほど小さな水位低下が及んでいます。
+
+式をもう一度見てください。*R* は *T*・*S*・*t* だけで決まり、**揚水量 *Q* を含みません。** 倍の量を汲み上げても、この式の *R* は 1 mm も変わらないのです。影響の「範囲」を表す量として扱えないことが、ここからも分かります。揚水の影響範囲を示す数字として引用されることが多いので、**何を計算した値なのかを添えて使う**ようにしてください。
+
+## 例題
 
 ::: {.gw-worked}
-**Problem.** A confined aquifer has *T* = 1.2×10⁻² m²/s and *S* = 2.0×10⁻⁴. A well
-is pumped at 0.020 m³/s. Find the drawdown (a) after one day at an observation well
-50 m away, and (b) after 30 minutes at one 200 m away. In each case, check whether
-Cooper–Jacob could have been used.
+**問題.** 被圧帯水層の透水量係数が *T* = 1.2×10⁻² m²/s、貯留係数が *S* = 2.0×10⁻⁴ です。
+揚水量 0.020 m³/s で汲み上げるとき、(a) 1日後に 50 m 離れた観測井で、(b) 30分後に 200 m
+離れた観測井で、それぞれ水位低下量はいくらになるでしょうか。あわせて、クーパー・ヤコブが
+使えたかどうかも確かめてください。
 
-**(a) *t* = 86 400 s, *r* = 50 m**
+**(a) *t* = 86,400 s、*r* = 50 m**
 
 1. `u = r²S/(4Tt) = (2500 × 2.0×10⁻⁴) / (4 × 1.2×10⁻² × 86400) = 1.206×10⁻⁴`
 2. `W(u) = 8.446`
 3. `s = Q/(4πT) · W(u) = 0.020/(4π × 1.2×10⁻²) × 8.446 = 0.1326 × 8.446 = 1.120 m`
-4. Cooper–Jacob gives 1.121 m — an error of **0.04 %**. Since *u* ≪ 0.01, the straight-line method is entirely safe here.
+4. クーパー・ヤコブでも 1.120 m。誤差は **+0.02 %**——実寸で **0.2 mm ほど**です。**どんな観測井の水位計でも読み分けられない大きさ**で、*u* が 0.01 をはるかに下回っているので、直線近似をそのまま使って差し支えありません。
 
-**(b) *t* = 1 800 s, *r* = 200 m**
+**(b) *t* = 1,800 s、*r* = 200 m**
 
 1. `u = (40000 × 2.0×10⁻⁴) / (4 × 1.2×10⁻² × 1800) = 9.26×10⁻²`
 2. `W(u) = 1.893`
 3. `s = 0.1326 × 1.893 = 0.251 m`
-4. Cooper–Jacob gives 0.239 m — an error of **−4.7 %**, an underestimate.
+4. クーパー・ヤコブでは 0.239 m。誤差 **−4.7 %** で、**小さめに出ます**。
 
-The difference between the two cases is not the aquifer; it is *u*. At 200 m and
-30 minutes the test has not yet reached the late-time regime, and using the
-straight-line method there would bias the fitted transmissivity. This is the single
-most common error in pumping-test analysis: applying Cooper–Jacob to early data
-because the plot happens to look straight.
+2つの場合を分けているのは、帯水層ではありません。***u* です。** 200 m・30分の時点では、
+まだ後期の領域に入っていません。ここで直線近似を当てはめると、求まる透水量係数が偏ります。
+
+**揚水試験の解析でいちばん多い誤りが、これです。** 片対数プロットがたまたま直線に見えるという
+理由で、初期のデータにクーパー・ヤコブを当ててしまう。
 :::
 
-## Frequently asked
+## よくある質問
 
-### What assumptions am I accepting by using this?
+### この式を使うと、何を前提として受け入れることになりますか
 
-That the aquifer is confined, homogeneous, isotropic, of uniform thickness, and
-infinite in extent; that the well fully penetrates it; that the pumping rate is
-constant; and that water is released from storage instantaneously. Real aquifers
-violate several of these routinely. The Theis curve is nevertheless the reference
-against which departures are diagnosed — leakage, boundaries, and delayed yield are
-all identified by *how* measured drawdown deviates from it.
+帯水層が**被圧**であり、**均質・等方**で、**厚さが一様**、そして**水平方向に無限に広がっている**こと。
+井戸が帯水層を**全部貫いている**こと。**揚水量が一定**であること。そして**水が貯留から瞬時に
+放出される**こと——これらすべてです。
 
-### Can I use this for an unconfined aquifer?
+実際の帯水層は、いくつかを平気で破ります。それでもタイスの曲線が基準であり続けるのは、
+**ずれ方そのものが診断になる**からです。漏水、境界の存在、遅れ排水は、いずれも実測の水位低下が
+この曲線から**どう外れるか**で見分けます。
 
-Not directly. In an unconfined aquifer the saturated thickness itself decreases as
-water is removed, and drainage from the pores is not instantaneous. Use the
-Neuman solution, or apply the Jacob correction *s*′ = *s* − *s*²/2*b* when the
-drawdown is a small fraction of the saturated thickness *b*.
+### 不圧帯水層に使えますか
 
-### Why does drawdown never stabilise?
+そのままでは使えません。不圧帯水層では、水を抜くと**飽和した厚さ自体が減って**いきますし、
+間隙からの排水も瞬時には起こりません。
 
-Because the solution assumes an infinite aquifer with no source of recharge. The
-cone must keep expanding to supply the pumped water. If measured drawdown does level
-off, that is informative: it means a boundary or a source of leakage has been
-reached, and the Theis assumptions no longer hold.
+**ノイマン（Neuman, 1972）解**を使うか、水位低下量が飽和層厚 *b* に対して十分小さい場合には、
+**ヤコブ補正** *s*′ = *s* − *s*²/2*b* を当てます。
 
-### What is a realistic storativity?
+### なぜ水位低下は止まらないのですか
 
-For confined aquifers, 10⁻⁵ to 10⁻³ — the water comes from expansion of water and
-compression of the matrix, so very little is available per unit head. Unconfined
-values are three orders of magnitude larger (0.05–0.30) because the water is
-physically drained from pores. A "confined" test returning *S* = 0.1 is telling you
-the aquifer is not confined.
+**帯水層が無限に広がっていて、涵養が無い**と仮定しているからです。汲み上げた分の水をまかなうには、
+水位低下円錐が広がり続けるほかありません。
 
-## Related calculators
+ですから、実測の水位低下が**頭打ちになったら、それ自体が情報です。** 境界か、漏水の供給源に
+到達したという意味で、タイスの前提はもう成り立っていません。
+
+### 貯留係数は、どのくらいが妥当ですか
+
+被圧帯水層で 10⁻⁵ から 10⁻³ です。水が出てくる源が、水そのものの膨張と**帯水層骨格（マトリックス）の圧縮**なので、**水頭を1 m下げても取り出せる量はごくわずか**になります。
+
+不圧帯水層では 0.05〜0.30 と、おおむね2〜4桁大きくなります。間隙から水が物理的に排水されるためです。**ただし、これは同じ物理量ではありません。** 不圧帯水層で貯留係数と呼んでいるものは、実質的に **比産出率（specific yield, *S*<sub>y</sub>）**——重力で抜ける水の割合——です。ダルシーの法則で使う**有効間隙率とは近い量ですが、同じではありません。** 間隙水の一部は毛管力で保持され、重力では抜けないからです。同じ「貯留係数」という語で 10⁻⁴ と 0.1 が並ぶのは、そのためです。
+**「被圧」として行った試験で *S* = 0.1 が返ってきたら、その帯水層は被圧ではありません。**
+
+## 関連する計算機
 
 ::: {.gw-related}
-- [**Darcy's law**<span>The equation this one is built from</span>](../darcy-law/)
-- [**Charge balance error**<span>Whether a water analysis is internally consistent</span>](../charge-balance/)
+- [**ダルシーの法則**<span>この式が組み立てられた土台</span>](../darcy-law/)
+- [**イオンバランス**<span>水質分析が内部で整合しているかどうか</span>](../charge-balance/)
+- [**基準蒸発散量**<span>この帯水層に入ってくる水の量を決めるもの</span>](../reference-et/)
 :::
 
-## Read further
+## さらに読む
 
-[Pumping Tests & the Theis Equation: Measuring Aquifer Properties in Python](../../posts/groundwater/groundwater-sci04/index-en.qmd)
-works through a full pumping test in the Groundwater Science series — fitting the
-type curve to real drawdown data rather than evaluating the solution at a single
-point, which is what this calculator does.
+[揚水試験とタイス式 — 帯水層の透水性をPythonで求める](../../posts/groundwater/groundwater-sci04/index.qmd)
+（地下水科学入門 #4）では、揚水試験を丸ごと1本たどっています。この計算機が1点で解を評価するのに対し、
+あちらは**標準曲線を実測の水位低下データに当てはめる**ところまで扱っています。
 
-## References
+## 参考文献
 
 ::: {.gw-refs}
 1. Theis, C.V. (1935) The relation between the lowering of the piezometric surface and the rate and duration of discharge of a well using ground-water storage. *Transactions, American Geophysical Union* 16, 519–524.
@@ -273,12 +306,11 @@ point, which is what this calculator does.
 [HY]{.gw-badge}
 
 ::: {}
-**Reviewed by Heejun Yang, Ph.D.**
+**監修：Heejun Yang, Ph.D.**
 
-Hydrogeologist working on groundwater time-series analysis and water–rock
-interaction modelling. The well function implemented here was checked against
-published tables; equations and reference values were verified against the primary
-sources listed above.
+地下水の時系列解析と水–岩石反応のモデリングを専門とする水文地質学者です。ここで実装した井戸関数は
+公表されている数表と照合しました。式と代表値は、上に挙げた文献（原論文と教科書）と突き合わせて
+確認しています。
 :::
 :::
 
@@ -330,25 +362,25 @@ document.addEventListener("DOMContentLoaded", function () {
     solveFor: ["s", "T", "Q"],
 
     inputs: [
-      { id:"Q", sym:"Q", label:"Pumping rate", short:"Rate", value:"0.02",
+      { id:"Q", sym:"Q", label:"揚水量", short:"揚水量", value:"0.02",
         min:0, step:0.001,
-        units:{ "m³/s":1, "m³/day":1.157407e-5, "L/s":1e-3, "US gal/min":6.309020e-5 } },
+        units:{ "m³/s":1, "m³/日":1.157407e-5, "L/s":1e-3, "US gal/min":6.309020e-5 } },
 
-      { id:"T", sym:"T", label:"Transmissivity", short:"Transmiss.", value:"1.2e-2",
-        units:{ "m²/s":1, "m²/day":1.157407e-5, "ft²/day":1.075387e-6 } },
+      { id:"T", sym:"T", label:"透水量係数", short:"透水量係数", value:"1.2e-2",
+        units:{ "m²/s":1, "m²/日":1.157407e-5, "ft²/日":1.075387e-6 } },
 
-      { id:"S", sym:"S", label:"Storativity", hint:"confined: 10⁻⁵–10⁻³", value:"2.0e-4",
+      { id:"S", sym:"S", label:"貯留係数", hint:"被圧：10⁻⁵〜10⁻³", value:"2.0e-4",
         min:1e-7, max:0.5 },
 
-      { id:"r", sym:"r", label:"Distance from well", value:"50",
+      { id:"r", sym:"r", label:"揚水井からの距離", short:"距離", value:"50",
         min:0.05, step:1,
         units:{ "m":1, "ft":0.3048 } },
 
-      { id:"t", sym:"t", label:"Time since pumping began", short:"Time", value:"1",
+      { id:"t", sym:"t", label:"揚水開始からの時間", short:"時間", value:"1",
         min:0, step:0.5,
         units:{ "day":86400, "hour":3600, "min":60, "s":1 } },
 
-      { id:"s", sym:"s", label:"Drawdown", value:"1.12",
+      { id:"s", sym:"s", label:"水位低下量", value:"1.12",
         min:0, step:0.05,
         units:{ "m":1, "ft":0.3048 } }
     ],
@@ -381,7 +413,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Cooper–Jacob の直線近似と、その誤差
       var arg = 2.25 * T * t / (r * r * S);
-      var sCJ = (arg > 1) ? (2.303 * Q) / (4 * Math.PI * T) * Math.log(arg) / Math.LN10 : NaN;
+      // 本文の式は 2.303·log10(x) だが、これは ln(x) と等しい。2.303 をリテラルで
+      // 掛けると ln10 = 2.302585 との差 0.018 % が誤差に混じり、u が小さい領域では
+      // 近似そのものの誤差より大きくなってしまう（2026-09-07 の検証で発覚）。
+      // 自然対数のまま評価する。
+      var sCJ = (arg > 1) ? Q / (4 * Math.PI * T) * Math.log(arg) : NaN;
       var errCJ = (isFinite(sCJ) && s !== 0) ? (sCJ - s) / s * 100 : NaN;
 
       // 影響半径（Cooper–Jacob の直線が s = 0 を切る点）と、u = 0.01 に達する時刻
@@ -393,54 +429,58 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     headline: {
-      s: { key:"s", sym:"s", label:"Drawdown",       unit:"m" },
-      T: { key:"T", sym:"T", label:"Transmissivity", unit:"m²/day", scale:86400 },
-      Q: { key:"Q", sym:"Q", label:"Pumping rate",   unit:"m³/day", scale:86400 }
+      s: { key:"s", sym:"s", label:"水位低下量",   unit:"m" },
+      T: { key:"T", sym:"T", label:"透水量係数",   unit:"m²/日", scale:86400 },
+      Q: { key:"Q", sym:"Q", label:"揚水量",       unit:"m³/日", scale:86400 }
     },
 
     outputs: [
-      { key:"u",     sym:"u",    label:"Time parameter" },
-      { key:"Wu",    sym:"W(u)", label:"Well function" },
-      { key:"sCJ",   sym:"s",    label:"Cooper–Jacob",  unit:"m",     note:"approximation" },
-      { key:"errCJ", sym:"",     label:"Cooper–Jacob error", unit:"%", note:"vs Theis" },
-      { key:"R",     sym:"R",    label:"Radius of influence", unit:"m" },
-      { key:"t001",  sym:"t",    label:"Until u = 0.01", unit:"hours", scale:1/3600 }
+      { key:"u",     sym:"u",    label:"時間パラメータ" },
+      { key:"Wu",    sym:"W(u)", label:"井戸関数" },
+      { key:"sCJ",   sym:"s",    label:"クーパー・ヤコブ",  unit:"m",  note:"直線近似" },
+      { key:"errCJ", sym:"",     label:"クーパー・ヤコブの誤差", unit:"%", note:"タイス解との差" },
+      { key:"R",     sym:"R",    label:"影響半径", unit:"m" },
+      { key:"t001",  sym:"t",    label:"u = 0.01 に達するまで", unit:"h", scale:1/3600 }
     ],
 
     check: function (r) {
-      if (!isFinite(r.u)) return GwCalc.warn("Enter the aquifer properties to evaluate u.");
+      if (!isFinite(r.u)) return GwCalc.warn("帯水層の値を入力すると、u を評価します。");
       var uu = GwCalc.fmt(r.u, 3);
       if (r.u <= 0.01) {
         return GwCalc.ok(
-          "Theis is exact, and Cooper–Jacob may be used: u = " + uu +
-          " is below 0.01, so the straight-line approximation is within about 1 % (here " +
-          GwCalc.fmt(Math.abs(r.errCJ), 2) + " %).");
+          "タイス解は厳密で、クーパー・ヤコブも使えます。u = " + uu +
+          " は 0.01 を下回っているので、直線近似で差し支えありません（ここでの誤差は " +
+          GwCalc.fmt(Math.abs(r.errCJ), 2) + " %）。");
       }
       if (r.u <= 1) {
-        return GwCalc.ok(
-          "Theis is exact, but do not use Cooper–Jacob here: u = " + uu +
-          " exceeds 0.01, and the straight-line approximation is off by " +
-          GwCalc.fmt(r.errCJ, 2) + " %. Fitting early data with it would bias the transmissivity.");
+        // ここは ok ではなく warn。タイス解そのものは厳密だが、この判定行が
+        // 伝えているのは「直線近似は使えない」という禁止であり、ok クラスで
+        // 出すと色と内容が食い違う（2026-09-08 の検証）。
+        return GwCalc.warn(
+          "タイス解は厳密ですが、ここでクーパー・ヤコブを使わないでください。u = " + uu +
+          " は 0.01 を超えており、直線近似は " + GwCalc.fmt(r.errCJ, 2) +
+          " % ずれます。この初期データに直線を当てはめると、求まる透水量係数が偏ります。");
       }
       if (r.u <= 5) {
         return GwCalc.warn(
-          "Very early time or far field: u = " + uu + ". The solution is still exact, but real " +
-          "measurements in this range are distorted by wellbore storage — water drawn from the " +
-          "casing rather than the aquifer — and are normally discarded before fitting.");
+          "きわめて初期、または遠方です：u = " + uu + "。解そのものは厳密ですが、この範囲の実測は" +
+          "井戸貯留（wellbore storage）——帯水層ではなくケーシングの中の水が汲み上げられる現象——で歪むため、" +
+          "当てはめる前に捨てるのがふつうです。");
       }
       return GwCalc.crit(
-        "u = " + uu + " puts W(u) below 10⁻³, so the predicted drawdown is far smaller than " +
-        "field instruments resolve. Either the observation well is too distant to have responded " +
-        "yet, or the inputs are not in the units you intended.");
+        "u = " + uu + " では W(u) が 10⁻³ を下回るので、予測される水位低下量は" +
+        "現場の測器で読み取れる大きさをはるかに下回ります。この範囲は、この計算機が" +
+        "井戸関数を公表数表と照合している区間（10⁻⁵ ≤ u ≤ 5）の外でもあります。" +
+        "観測井が遠すぎてまだ応答していないか、入力した単位が意図どおりでないかの、どちらかです。");
     },
 
     footnote:
-      '<p><span class="gw-key">u</span> carries everything about the shape of the response. ' +
-      'It is small at late time or close range, large early or far away — which is why two ' +
-      'observation wells in the same test can need different analyses at the same instant.</p>' +
-      '<p><span class="gw-key">Cooper–Jacob</span> is shown beside the exact result precisely ' +
-      'so the shortcut can be checked rather than assumed. Applying it to early data because the ' +
-      'semi-log plot looks straight is the most common error in pumping-test analysis.</p>',
+      '<p><span class="gw-key">u</span> が、応答の形をすべて背負っています。' +
+      '時間が経つほど、また井戸に近いほど小さく、初期ほど、また遠いほど大きくなります。' +
+      '同じ試験の2本の観測井が、同じ瞬間に別々の解析を必要とすることがあるのは、このためです。</p>' +
+      '<p><span class="gw-key">クーパー・ヤコブ</span>を厳密解の隣に並べているのは、' +
+      '<b>近道を仮定せずに確かめられるようにする</b>ためです。片対数プロットが直線に見えるという' +
+      '理由で初期データに当てはめてしまうのが、揚水試験の解析でいちばん多い誤りです。</p>',
 
     onUpdate: function (r) { drawCone(r); }
   });

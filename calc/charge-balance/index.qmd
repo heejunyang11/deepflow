@@ -1,12 +1,13 @@
 ---
-title: "Charge Balance Error Calculator"
-subtitle: "Whether a water analysis is internally consistent — and, when it is not, which measurement to suspect."
-description: "Free charge balance error calculator for water analyses. Converts mg/L to meq/L, sums cations and anions, reports the balance error against the ±5% criterion, and computes TDS, hardness, and ionic strength."
+title: "イオンバランス 計算機"
+subtitle: "水質分析値がそれ自体として辻褄が合っているかを確かめます。合っていないときは、どの測定を疑えばよいかも示します。"
+description: "イオンバランス（電荷収支誤差）の無料計算機。mg/L を meq/L に換算して陽イオンと陰イオンを合計し、±5 % の判定基準に照らして誤差を表示します。TDS・全硬度・イオン強度・電気伝導率も同時に計算。"
 date: 2026-08-10
-lang: en
-categories: [Chemistry]
+lang: ja
+order: 5          # 扉の並び順（流動3本 → 化学2本）
+categories: [化学]
 number-sections: false
-toc-title: "On this page"
+toc-title: "目次"
 format:
   html:
     html-math-method: katex
@@ -15,13 +16,15 @@ format:
           <link rel="stylesheet" href="/calc/assets/gwcalc.css" />
           <link rel="stylesheet" href="/calc/assets/gwcalc-page.css" />
           <script src="/calc/assets/gwcalc.js" defer></script>
+          <link rel="alternate" hreflang="ja" href="https://deepflows.net/calc/charge-balance/" />
+          <link rel="alternate" hreflang="en" href="https://deepflows.net/calc/charge-balance/index-en" />
 ---
 
 ::: {.gw-attest}
-[✓ Reviewed by a hydrogeologist (Ph.D.)]{.gw-chip .verified}
-[mg/L and meq/L input]{.gw-chip}
-[±5 % acceptance criterion]{.gw-chip}
-[Sources: Hem 1985 · Freeze &amp; Cherry 1979]{.gw-chip}
+[✓ 水文地質学者（Ph.D.）が監修]{.gw-chip .verified}
+[mg/L と meq/L のどちらでも入力可]{.gw-chip}
+[±5 % の判定基準を実装]{.gw-chip}
+[出典：Hem 1985 · Freeze &amp; Cherry 1979]{.gw-chip}
 :::
 
 ```{=html}
@@ -30,11 +33,11 @@ format:
 <template id="calc-figure">
   <figure>
     <svg viewBox="0 0 680 210" role="img" aria-labelledby="figTitle figDesc">
-      <title id="figTitle">Cation and anion balance</title>
-      <desc id="figDesc">Two horizontal bars of equal expected length. The upper bar is the sum of cations in milliequivalents per litre, the lower the sum of anions. Any difference in length is the charge balance error.</desc>
+      <title id="figTitle">陽イオンと陰イオンの釣り合い</title>
+      <desc id="figDesc">同じ長さになるはずの横棒が2本あります。上の棒は陽イオンの合計、下の棒は陰イオンの合計で、いずれも1リットルあたりのミリ当量です。長さの差が、そのままイオンバランスの誤差です。</desc>
 
-      <text class="gw-tx-sm" x="16" y="42">CATIONS</text>
-      <text class="gw-tx-sm" x="16" y="122">ANIONS</text>
+      <text class="gw-tx-sm" x="16" y="42">陽イオン</text>
+      <text class="gw-tx-sm" x="16" y="122">陰イオン</text>
 
       <g id="catBar"></g>
       <g id="aniBar"></g>
@@ -48,7 +51,7 @@ format:
             marker-start="url(#arrowDim3)" marker-end="url(#arrowDim3)"></line>
       <text class="gw-tx gw-tx-area" id="gapLabel" x="100" y="192" text-anchor="middle"></text>
     </svg>
-    <figcaption>Electroneutrality requires the two bars to be the same length. The marked line is where the shorter bar would have to reach; the gap below it is the missing charge. A gap this diagram makes obvious is one the numbers alone can hide.</figcaption>
+    <figcaption>電気的中性の条件から、2本の棒は同じ長さでなければなりません。縦の線は、短いほうの棒が届くべき位置です。そこまでの隙間が、行方の分からない電荷にあたります。数字だけを眺めていると見落とす差が、図にすると一目で分かります。</figcaption>
   </figure>
 </template>
 
@@ -61,61 +64,61 @@ format:
 </svg>
 ```
 
-## What to enter for what you want
+## 何を入れると、何が得られるか
 
-Enter the analysis as reported — normally mg/L. Each field converts to
-milliequivalents internally, which is the only basis on which charges can be added.
+分析値を、報告されたまま入れてください。ふつうは mg/L です。各欄は内部でミリ当量へ
+換算されます。**電荷を足し合わせられるのは、この単位の上だけ**だからです。
 
-| To find | Enter | Read it in |
+| 求めたいもの | 入力する量 | どこを読むか |
 |---|---|---|
-| **Whether the analysis balances** | all eight ions | Headline (%) and the validity note |
-| **How much charge is missing** | all eight ions | Difference, in meq/L |
-| **Total dissolved solids** | all eight ions | TDS calculated |
-| **Total hardness** | Ca and Mg | Total hardness as CaCO₃ |
-| **Ionic strength for activity corrections** | all eight ions | Ionic strength |
+| **この分析値が釣り合っているか** | 8イオンすべて | 見出しの数字（%）と判定の行 |
+| **どれだけ電荷が足りないか** | 8イオンすべて | 差（meq/L） |
+| **溶存物質総量（TDS）** | 8イオンすべて | TDS 計算値 |
+| **全硬度** | Ca と Mg | 全硬度（CaCO₃ 換算） |
+| **活量補正に使うイオン強度** | 8イオンすべて | イオン強度 |
+| **電気伝導率の見当** | 陽イオン4つ | 電気伝導率（概算） |
 
-Leave a field at zero if the species was not measured — but read the note below
-first, because an unmeasured ion and an absent ion produce the same number here
-and mean entirely different things.
+測っていない化学種は、欄を 0 のままにしてください。ただし、その前に下の注意を読んで
+ください。**測っていないイオンと、存在しないイオンは、この計算のうえでは同じ数字になります。**
+意味はまったく違うのに、です。
 
-## Why the charges must balance
+## なぜ電荷は釣り合わなければならないのか
 
-A solution cannot carry a net charge. Every water sample, however complicated,
-satisfies electroneutrality exactly:
-
-::: {.gw-eq}
-$$\sum_{\text{cations}} m_i z_i \;=\; \sum_{\text{anions}} m_i \lvert z_i \rvert$$
-:::
-
-This is not an approximation or a modelling assumption — it is a property of the
-water itself. So when a laboratory report fails to balance, **the water is not
-wrong; the analysis is**. That makes the charge balance the single most useful
-check available on a water analysis, and it costs nothing but arithmetic.
-
-The convention is to express the imbalance as a percentage of the total:
+溶液が正味の電荷を帯びることはできません。どんなに複雑な水試料でも、電気的中性の条件を
+厳密に満たしています。
 
 ::: {.gw-eq}
-$$\text{CBE} \;=\; \frac{\sum \text{cations} - \sum \text{anions}}
-{\sum \text{cations} + \sum \text{anions}}\times 100\ \%$$
+$$\sum_{\text{陽イオン}} m_i z_i \;=\; \sum_{\text{陰イオン}} m_i \lvert z_i \rvert$$
 :::
 
-with all sums in **milliequivalents per litre**. Note the denominator: some texts
-divide by the mean of the two sums rather than the total, which doubles the
-reported error. Always check which convention a published value used before
-comparing it with this one.
+これは近似でもモデルの仮定でもなく、**水そのものの性質**です。ですから、分析報告書が
+釣り合わないとき、**間違っているのは水ではなく、分析のほうです。** イオンバランスが、水質分析に
+対して使える最も有用な検査であるのはそのためです。しかも、必要なのは足し算だけです。
 
-### From mg/L to meq/L
+不均衡は、合計に対する百分率で表すのが慣例です。この百分率が、実務でいう
+**イオンバランス**の誤差です。教科書では**電荷収支誤差**（charge balance error）と
+書かれることが多く、式の中では **CBE** と略します。
 
-Charges cannot be summed in mg/L, because a milligram of calcium carries twice the
-charge of a milligram-equivalent of sodium and neither has the same molar mass.
-Converting requires dividing by the equivalent weight — the molar mass divided by
-the absolute charge:
+::: {.gw-eq}
+$$\text{CBE} \;=\; \frac{\sum \text{陽イオン} - \sum \text{陰イオン}}
+{\sum \text{陽イオン} + \sum \text{陰イオン}}\times 100\ \%$$
+:::
+
+合計はいずれも **1リットルあたりのミリ当量（meq/L）** です。分母に注意してください。
+**両者の合計ではなく平均で割る流儀の教科書もあり、その場合は誤差が2倍に出ます。**
+公表された値をこのページの値と比べるときは、どちらの流儀かを必ず確かめてください。
+
+### mg/L から meq/L へ
+
+電荷を mg/L のまま足すことはできません。同じ 1 mg でも、Ca²⁺ と Na⁺ が運ぶ電荷は
+違います。**Ca²⁺ は 1 mol あたり Na⁺ の2倍の電荷を運び、そのうえモル質量も違う**からです。
+換算には、当量重量——モル質量を電荷の絶対値で割ったもの——で割る必要があります。
 
 ::: {.gw-eq}
 $$\text{meq/L} \;=\; \frac{\text{mg/L}}{M / \lvert z \rvert}$$
 :::
 
-| Ion | *M* (g/mol) | *z* | Equivalent weight |
+| イオン | *M*（g/mol） | *z* | 当量重量 |
 |---|---|---|---|
 | Ca²⁺ | 40.078 | +2 | 20.039 |
 | Mg²⁺ | 24.305 | +2 | 12.153 |
@@ -126,120 +129,158 @@ $$\text{meq/L} \;=\; \frac{\text{mg/L}}{M / \lvert z \rvert}$$
 | Cl⁻ | 35.453 | −1 | 35.453 |
 | NO₃⁻ | 62.004 | −1 | 62.004 |
 
-## What counts as acceptable
+## どこまでなら許容されるか
 
-The conventional criterion is **±5 %**, and most published analyses of reasonable
-quality fall within ±2 %. Above 5 % something is wrong; above 10 % the analysis
-should not be used for geochemical modelling at all, because speciation codes will
-force a balance by adjusting an ion and thereby propagate the error into every
-result they produce.
+慣例的な基準は **±5 %** で、まともな品質の公表分析値はたいてい ±2 % に収まります。
+5 % を超えていれば、どこかがおかしいということです。**10 % を超えたものは、地球化学
+モデリングに使ってはいけません。** 電荷が釣り合わない水をそのまま計算すれば、イオン強度・
+活量係数・飽和指数のすべてがその誤差を引きずります。さらに電荷を釣り合わせる機能
+（PHREEQC なら `charge`）を使えば、**誤差はまるごと、選んだ1つのイオンに押し付けられます。**
 
-One qualification matters for dilute waters. The percentage form is unstable when
-the total is small: a 0.1 meq/L discrepancy is 1 % in a mineralised groundwater but
-20 % in rainwater. For very dilute samples, judge the absolute difference in meq/L
-rather than the percentage. The calculator reports both.
+なお PHREEQC の `SOLUTION` は、**既定では電荷を釣り合わせません。** 与えられた濃度で
+そのまま化学種計算を行い、不均衡を percent error として報告します。この計算機の値打ちは、
+**その前に、入力する側で確かめられる**ことにあります。
 
-## Diagnosing the imbalance
+希薄な水については、ひとつ但し書きが要ります。**合計が小さいと、百分率という表し方が
+不安定になります。** 0.1 meq/L のずれは、合計 10 meq/L の鉱化した地下水では 1 % ですが、
+合計 0.5 meq/L の雨水では 20 % になります。ごく希薄な試料では、百分率ではなく meq/L の
+絶対差で判断してください。この計算機は両方を表示します。
 
-A charge balance failure tells you *that* something is wrong, and its sign narrows
-down *what*. This is where the check earns its keep.
+### イオンバランスのついでに出している3つの量
 
-**Cations in excess** — most often bicarbonate. HCO₃⁻ is usually not measured
-directly but computed from titrated alkalinity, and it is the ion most frequently
-missing from a partial analysis. If the water is from a carbonate terrain and the
-cation excess is roughly equal to the expected HCO₃⁻, that is almost certainly the
-explanation.
+イオンバランスそのものではありませんが、同じ入力から出せるので並べています。**それぞれ、どう計算しているかを書いておきます。**
 
-**Anions in excess** — check for unmeasured cations. Iron and manganese in reducing
-groundwater, ammonium in contaminated water, or aluminium at low pH can all carry
-significant charge and are routinely omitted from a standard suite.
+**全硬度**は Ca²⁺ と Mg²⁺ の合計を炭酸カルシウム換算にしたものです。1 meq/L が
+50.04 mg/L as CaCO₃ にあたります。
 
-**Either direction, roughly a factor of two** — suspect a valence error in the unit
-conversion, most often on Ca²⁺ or SO₄²⁻, where dividing by the molar mass instead
-of the equivalent weight halves the result.
+::: {.gw-eq}
+$$\text{全硬度} = (c_{\text{Ca}} + c_{\text{Mg}}) \times 50.04\qquad [\text{meq/L} \rightarrow \text{mg/L as CaCO}_3]$$
+:::
 
-**Either direction, roughly a factor of ten** — a decimal place, usually in
-transcription rather than in the laboratory.
+**イオン強度**は活量係数の計算に要る量で、**モル濃度を基準（mol/L）**にしています。
+希薄な地下水では質量モル濃度基準（mol/kg）との差は無視できますが、かん水では違います。
 
-## Worked example
+::: {.gw-eq}
+$$I = \frac{1}{2}\sum_i m_i z_i^{2}$$
+:::
+
+**電気伝導率**は Hem (1985) の目安によるもので、**陽イオンの合計（meq/L）を 100 倍**
+しています。あくまで桁の見当で、実測の代わりにはなりません。イオンごとの当量伝導率を
+積み上げているわけではないので、**イオン組成が偏った水では数十 % ずれます。**
+
+::: {.gw-eq}
+$$EC\ [\mu\text{S/cm}] \;\approx\; 100 \times \sum \text{陽イオン}\ [\text{meq/L}]$$
+:::
+
+**TDS（溶存物質総量）**は、この8イオンを mg/L に戻して足したものです。**シリカが入っていません。** 多くの地下水で 10〜50 mg/L あるので、実測の蒸発残留物と
+比べるときは、その分だけ低く出ることを見込んでください。
+
+## 不均衡から、原因を絞り込む
+
+イオンバランスの破綻は「何かがおかしい」ことを教えてくれます。そして**その符号が「何が」を
+絞り込みます。** この検査が役に立つのは、まさにここです。
+
+**陽イオンが過剰** — 多くの場合、重炭酸イオンです。HCO₃⁻ は直接測定されることが少なく、
+滴定で求めたアルカリ度から計算されるのがふつうで、部分的な分析でいちばん抜けやすい
+イオンでもあります。炭酸塩地帯の水で、陽イオンの過剰分が予想される HCO₃⁻ とおおむね
+等しければ、ほぼ間違いなくこれが答えです。
+
+**陰イオンが過剰** — 測っていない陽イオンを探してください。還元的な地下水中の鉄と
+マンガン、汚染された水のアンモニウム、低 pH でのアルミニウムは、いずれも無視できない
+電荷を運びますが、標準的な分析項目からは日常的に外されています。
+
+**不均衡が、ある2価イオンの寄与のちょうど半分にあたる** — 単位換算での価数の取り違えを
+疑ってください。Ca²⁺ か SO₄²⁻ で起きることが多く、当量重量ではなくモル質量で割ると、
+**そのイオンの寄与だけ**が半分になります。合計が2倍ずれるのは、その2価イオンが片側の
+ほぼ全部を占めるときだけなので、「合計が2倍」を目印にすると見落とします。下の例題の水で
+Ca²⁺ をこう間違えると、CBE は **−22 %** になります。
+
+**どちらの向きであれ、ずれがおよそ10倍** — 小数点です。たいていは実験室ではなく、
+書き写しの段階で起きています。
+
+## 例題
 
 ::: {.gw-worked}
-**Problem.** A spring in a limestone terrain returns the following analysis, in
-mg/L. Does it balance?
+**問題。** 石灰岩地帯のある湧水から、次の分析値が返ってきました。単位は mg/L です。
+釣り合っているでしょうか。
 
-Ca 65, Mg 8.0, Na 12, K 2.0, HCO₃ 210, SO₄ 22, Cl 18, NO₃ 5.0
+Ca 65、Mg 8.0、Na 12、K 2.0、HCO₃ 210、SO₄ 22、Cl 18、NO₃ 5.0
 
-1. Convert the cations: `Ca 65/20.039 = 3.244`, `Mg 8.0/12.153 = 0.658`, `Na 12/22.990 = 0.522`, `K 2.0/39.098 = 0.051` meq/L
-2. Sum: `Σ cations = 4.475 meq/L`
-3. Convert the anions: `HCO₃ 210/61.016 = 3.442`, `SO₄ 22/48.030 = 0.458`, `Cl 18/35.453 = 0.508`, `NO₃ 5.0/62.004 = 0.081` meq/L
-4. Sum: `Σ anions = 4.488 meq/L`
+1. 陽イオンを換算：`Ca 65/20.039 = 3.244`、`Mg 8.0/12.153 = 0.658`、`Na 12/22.990 = 0.522`、`K 2.0/39.098 = 0.051` meq/L
+2. 合計：`Σ陽イオン = 4.475 meq/L`
+3. 陰イオンを換算：`HCO₃ 210/61.016 = 3.442`、`SO₄ 22/48.030 = 0.458`、`Cl 18/35.453 = 0.508`、`NO₃ 5.0/62.004 = 0.081` meq/L
+4. 合計：`Σ陰イオン = 4.488 meq/L`
 5. `CBE = (4.4751 − 4.4881)/(4.4751 + 4.4881) × 100 = −0.15 %`
 
-The analysis balances comfortably. Note also that HCO₃⁻ alone accounts for 77 % of
-the anion charge and Ca²⁺ for 72 % of the cation charge — the signature of water
-that has dissolved calcite, and consistent with the limestone setting.
+余裕をもって釣り合っています。ついでに見ておくと、**HCO₃⁻ だけで陰イオン電荷のおよそ 77 %、
+Ca²⁺ だけで陽イオン電荷のおよそ 72 %** を占めています。方解石が溶けた水に特徴的な組成で
+あり、石灰岩地帯という産状とも整合します。
 
-**Now suppose the calcium had been transcribed as 85 mg/L instead of 65.**
+**では、カルシウムが 65 mg/L ではなく 85 mg/L と書き写されていたとしましょう。**
 
-`Ca 85/20.039 = 4.242`, so `Σ cations = 5.473` and `CBE = +9.9 %`. The imbalance is
-0.985 meq/L, which converts back to **19.7 mg/L of Ca²⁺**.
+`Ca 85/20.039 = 4.242` なので `Σ陽イオン = 5.473`、`CBE = +9.9 %` になります。不均衡は
+0.985 meq/L で、これを mg/L に戻すと **Ca²⁺ の 19.7 mg/L** にあたります。
 
-The transcription error was 20.0 mg/L, so the recovered figure is close but not
-exact — short by 0.3 mg/L, which is precisely the −0.013 meq/L the analysis was
-already out by before anything was mistyped. **The balance recovers the magnitude of
-an error, not its exact value**, because it can only ever see the net of every error
-present. That is still enough to point at the right species, which is what the check
-is for.
+書き写しの誤りは 20.0 mg/L でしたから、取り戻した数字は近いけれども厳密ではありません。
+0.3 mg/L だけ足りません。そしてこの 0.3 mg/L は、**何も打ち間違えていない時点ですでに
+分析値が抱えていた −0.013 meq/L** そのものです。**イオンバランスが取り戻せるのは、誤りの
+大きさであって、その正確な値ではありません。** この検査はいつでも、そこにあるすべての誤りの
+差し引きしか見ていないからです。それでも、疑うべき化学種を指し示すには十分です。
+この検査は、そのためのものです。
 :::
 
-## Frequently asked
+## よくある質問
 
-### Should I enter zero for ions that were not measured?
+### 測っていないイオンには 0 を入れてよいのですか
 
-You have to, but understand what it does. An unmeasured ion and an absent ion are
-indistinguishable to this calculation, so omitting HCO₃⁻ from a carbonate water
-produces a large cation excess that looks like an analytical failure. If a species
-was not measured, treat a one-sided imbalance as a hypothesis about that species
-rather than as evidence of error.
+入れるほかありません。ただし、それが何を意味するかは理解しておいてください。**測って
+いないイオンと、存在しないイオンは、この計算からは区別できません。** ですから炭酸塩地帯の
+水で HCO₃⁻ を抜くと、大きな陽イオン過剰が出て、分析の失敗のように見えます。ある化学種を
+測っていないのであれば、片側に寄った不均衡は「誤りの証拠」ではなく、**その化学種についての
+仮説**として扱ってください。
 
-### Why is my rainwater sample 30 % out when the absolute difference is tiny?
+### 雨水の試料で、絶対差はごくわずかなのに 30 % も外れます。なぜですか
 
-Because the percentage is divided by a very small total. At 0.3 meq/L total, an
-absolute error of 0.05 meq/L — well within analytical precision for dilute samples
-— is 17 %. Judge dilute waters by the absolute difference. Standard Methods gives
-±0.2 meq/L as the criterion when the anion sum is below 3 meq/L.
+とても小さい合計で割っているからです。合計 0.3 meq/L のとき、0.05 meq/L の絶対誤差——
+希薄な試料の分析精度としては十分に許容範囲です——は 17 % になります。希薄な水は絶対差で
+判断してください。Standard Methods（APHA/AWWA/WEF）は、**陰イオンの合計が 3 meq/L を
+下回る場合の基準として ±0.2 meq/L** を挙げています。
 
-### Does a good balance mean the analysis is correct?
+### イオンバランスが良ければ、分析値は正しいということですか
 
-No, and this is worth being clear about. The balance is necessary but not
-sufficient. Two compensating errors of opposite sign will cancel, and an error in a
-species that carries no charge — silica, dissolved organic carbon, pH itself —
-cannot show up at all. A balanced analysis has passed one test, not every test.
+いいえ。ここははっきりさせておく価値があります。**イオンバランスは必要条件であって、
+十分条件ではありません。** 符号が逆で打ち消し合う2つの誤りは相殺されますし、電荷を
+持たないために現れない量——シリカのような中性種や、pH そのもの——の誤りは、この検査では
+見つかりません。イオンバランスの合った分析値は、検査を1つ通過しただけです。すべての検査を通過したわけではありません。
 
-### Should I let PHREEQC adjust an ion to force the balance?
+**溶存有機物は事情が違い、電荷を持っています。** 有機酸の陰イオンとして電荷を運ぶのですが、
+ここで入れる8イオンには含まれません。そのため**見かけの陽イオン過剰**（測った陰イオンが
+足りない）として現れます。泥炭地や有機物に富む地下水で、重炭酸イオンでは説明のつかない
+陽イオン過剰が出たときは、まずこれを疑ってください。
 
-Only when you know which ion is uncertain and why. Speciation codes offer to
-balance on a chosen species, which is legitimate if that species was genuinely
-estimated rather than measured — charge-balancing on pH or on Cl⁻ is common
-practice. Balancing on an ion that was carefully measured hides the error instead of
-resolving it, and every downstream saturation index inherits it.
+### PHREEQC に、あるイオンを調整させて釣り合わせてもよいですか
 
-## Related calculators
+**どのイオンが不確かで、それはなぜかを分かっているときだけ**です。化学種計算（speciation）の
+コードは、選んだ化学種で電荷を釣り合わせる機能を備えています。その化学種が実測ではなく推定だったので
+あれば、これは正当な使い方です。pH や Cl⁻ で釣り合わせるのは、実際によく行われています。
+**丁寧に測定した化学種で釣り合わせるのは、誤りを解決するのではなく隠すこと**であり、
+その先で計算される飽和指数のすべてが、その誤りを受け継ぎます。
+
+## 関連する計算機
 
 ::: {.gw-related}
-- [**Concentration units**<span>mg/L to mmol/L and meq/L, from a mineral formula</span>](../concentration-units/)
-- [**Darcy's law**<span>Groundwater flow through a porous medium</span>](../darcy-law/)
-- [**Theis solution**<span>Transient drawdown from a pumping well</span>](../theis-solution/)
+- [**濃度単位の換算**<span>鉱物の化学式から、mg/L・mmol/L・meq/L を相互に換算</span>](../concentration-units/)
+- [**ダルシーの法則**<span>多孔質媒体を通る地下水の流れ</span>](../darcy-law/)
+- [**タイス式**<span>揚水井のまわりの非定常水位低下</span>](../theis-solution/)
 :::
 
-## Read further
+## さらに読む
 
-An analysis that passes this check is exactly what goes into a speciation run.
-[PHREEQC from Scratch #2: Analyzing Seawater with Speciation](../../posts/phreeqc/phreeqc-part2/index-en.qmd)
-takes a water analysis of the same shape and computes what the ions are actually
-doing in solution.
+この検査を通った分析値が、そのまま化学種計算の入力になります。
+[PHREEQCをゼロから始める #2：Speciationで海水を解析する](../../posts/phreeqc/phreeqc-part2/index.qmd)
+では、同じ形の水質分析値を出発点に、**溶液の中でイオンが実際に何をしているのか**を計算しています。
 
-## References
+## 参考文献
 
 ::: {.gw-refs}
 1. Hem, J.D. (1985) *Study and Interpretation of the Chemical Characteristics of Natural Water*, 3rd ed. U.S. Geological Survey Water-Supply Paper 2254.
@@ -252,11 +293,10 @@ doing in solution.
 [HY]{.gw-badge}
 
 ::: {}
-**Reviewed by Heejun Yang, Ph.D.**
+**監修：Heejun Yang, Ph.D.**
 
-Hydrogeologist working on groundwater time-series analysis and water–rock
-interaction modelling. Equivalent weights and the acceptance criteria on this page
-were checked against the primary sources listed above.
+地下水の時系列解析と水–岩石反応のモデリングを専門とする水文地質学者です。このページの
+当量重量と判定基準は、上に挙げた文献（原論文と教科書）と突き合わせて確認しています。
 :::
 :::
 
@@ -265,7 +305,9 @@ were checked against the primary sources listed above.
 document.addEventListener("DOMContentLoaded", function () {
 
   /* 当量重量 (mg/meq) = モル質量 / |電荷|。mg/L をこれで割ると meq/L になる。
-     モル質量は IUPAC 2021 の標準原子量から。 */
+     モル質量は IUPAC 2021 の標準原子量から。
+     ※ 計算部分（ION・field・compute）は英語版 index-en.qmd と同一に保つこと。
+       _verify/charge-balance.js が両ファイルで同じ数値になるかを照合している。 */
   var ION = {
     Ca:   { eqw: 20.039, z: 2, label: "Ca²⁺",  side: "cat" },
     Mg:   { eqw: 12.153, z: 2, label: "Mg²⁺",  side: "cat" },
@@ -331,61 +373,61 @@ document.addEventListener("DOMContentLoaded", function () {
       };
     },
 
-    headline: { key: "cbe", sym: "", label: "Charge balance error", unit: "%" },
+    headline: { key: "cbe", sym: "", label: "イオンバランス誤差", unit: "%" },
 
     outputs: [
-      { key:"cat",      sym:"Σ⁺", label:"Cations",        unit:"meq/L" },
-      { key:"ani",      sym:"Σ⁻", label:"Anions",         unit:"meq/L" },
-      { key:"diff",     sym:"Δ",  label:"Difference",     unit:"meq/L", note:"cations − anions" },
-      { key:"tds",      sym:"",   label:"TDS calculated", unit:"mg/L",  note:"these ions only" },
-      { key:"hardness", sym:"",   label:"Total hardness", unit:"mg/L",  note:"as CaCO₃" },
-      { key:"ionic",    sym:"I",  label:"Ionic strength", unit:"mol/L" },
-      { key:"ec",       sym:"",   label:"Conductivity",   unit:"µS/cm", note:"rough estimate" }
+      { key:"cat",      sym:"Σ⁺", label:"陽イオン合計",   unit:"meq/L" },
+      { key:"ani",      sym:"Σ⁻", label:"陰イオン合計",   unit:"meq/L" },
+      { key:"diff",     sym:"Δ",  label:"差",             unit:"meq/L", note:"陽イオン − 陰イオン" },
+      { key:"tds",      sym:"",   label:"TDS 計算値",     unit:"mg/L",  note:"この8イオンのみ" },
+      { key:"hardness", sym:"",   label:"全硬度",         unit:"mg/L",  note:"CaCO₃ 換算" },
+      { key:"ionic",    sym:"I",  label:"イオン強度",     unit:"mol/L" },
+      { key:"ec",       sym:"",   label:"電気伝導率",     unit:"µS/cm", note:"概算" }
     ],
 
     check: function (r) {
       if (!isFinite(r.cbe)) {
-        return GwCalc.warn("Enter at least one cation and one anion.");
+        return GwCalc.warn("陽イオンと陰イオンを、それぞれ1つ以上入れてください。");
       }
       var a    = Math.abs(r.cbe);
-      var side = r.diff > 0 ? "cations" : "anions";
-      var lack = r.diff > 0 ? "anion" : "cation";
+      var side = r.diff > 0 ? "陽イオン" : "陰イオン";
+      var lack = r.diff > 0 ? "陰イオン" : "陽イオン";
       var pct  = GwCalc.fmt(a, 3);
       var meq  = GwCalc.fmt(Math.abs(r.diff), 3);
 
       // 希薄な水では百分率が不安定になるので、絶対差で判断する
       if (r.ani < 3 && Math.abs(r.diff) <= 0.2) {
         return GwCalc.ok(
-          "Acceptable for a dilute sample. The difference is " + meq + " meq/L, within the " +
-          "±0.2 meq/L criterion that Standard Methods applies below an anion sum of 3 meq/L. " +
-          "The percentage (" + pct + " %) is unreliable at this dilution — judge the absolute value.");
+          "希薄な試料として許容できます。差は " + meq + " meq/L で、Standard Methods が" +
+          "陰イオン合計 3 meq/L 未満のときに用いる ±0.2 meq/L の基準に収まっています。" +
+          "この希薄さでは百分率（" + pct + " %）は当てになりません。絶対値で判断してください。");
       }
       if (a <= 5) {
         return GwCalc.ok(
-          "The analysis balances. |CBE| = " + pct + " % is within the conventional ±5 % criterion" +
-          (a <= 2 ? ", and within ±2 %, which is typical of careful work." : "."));
+          "この分析値は釣り合っています。|CBE| = " + pct + " % で、慣例的な ±5 % の基準に収まっています" +
+          (a <= 2 ? "。±2 % 以内でもあり、精度の高い分析に典型的な値です。" : "。"));
       }
       if (a <= 10) {
         return GwCalc.warn(
-          "Out of balance: " + pct + " % excess of " + side + ", i.e. " + meq + " meq/L of " +
-          lack + " charge unaccounted for. Before rejecting the analysis, check whether a " +
-          lack + " was simply not measured — bicarbonate on the anion side, iron or ammonium " +
-          "on the cation side.");
+          "釣り合っていません。" + side + "が " + pct + " % 過剰で、" + lack + "の電荷が " +
+          meq + " meq/L 分だけ説明されていません。分析値を捨てる前に、その" + lack +
+          "を単に測っていないだけではないか確かめてください。陰イオン側なら重炭酸イオン、" +
+          "陽イオン側なら鉄やアンモニウムです。");
       }
       return GwCalc.crit(
-        "Do not use this analysis for modelling. |CBE| = " + pct + " % (" + meq + " meq/L excess " +
-        "of " + side + ") is far beyond analytical scatter. A missing major ion, a valence error " +
-        "in the unit conversion, or a misplaced decimal are the usual causes.");
+        "この分析値をモデリングに使わないでください。|CBE| = " + pct + " %（" + side + "が " +
+        meq + " meq/L 過剰）は、分析のばらつきでは説明がつきません。主要イオンの欠落、" +
+        "単位換算での価数の取り違え、小数点の位置の誤りが、よくある原因です。");
     },
 
     footnote:
-      '<p><span class="gw-key">Why it works</span> A solution cannot carry net charge, so the two ' +
-      'sums are equal in the water itself. A failure to balance is a statement about the ' +
-      '<em>analysis</em>, never about the sample.</p>' +
-      '<p><span class="gw-key">Reading the sign</span> An excess of cations usually means an ' +
-      'anion is missing, and the anion most often missing is HCO₃⁻ — it is computed from ' +
-      'titrated alkalinity rather than measured, so partial analyses omit it. An excess of ' +
-      'anions points to unmeasured Fe²⁺, Mn²⁺ or NH₄⁺.</p>',
+      '<p><span class="gw-key">なぜ成り立つのか</span> 溶液は正味の電荷を帯びられないので、' +
+      '2つの合計は水そのものにおいては等しくなります。釣り合わないという事実は' +
+      '<em>分析</em>についての言明であって、試料についての言明ではありません。</p>' +
+      '<p><span class="gw-key">符号の読み方</span> 陽イオンの過剰は、たいてい陰イオンの' +
+      '欠落を意味します。そして最も多く欠けている陰イオンは HCO₃⁻ です。実測ではなく' +
+      '滴定アルカリ度から計算される量なので、部分的な分析では省かれます。陰イオンの' +
+      '過剰は、測っていない Fe²⁺・Mn²⁺・NH₄⁺ を示唆します。</p>',
 
     onUpdate: function (r) { drawBars(r); }
   });
@@ -450,7 +492,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $("gapBar").setAttribute("x2", xEnd);
     $("gapLabel").setAttribute("x", (xShort + xEnd) / 2);
     $("gapLabel").textContent = (Math.abs(res.diff) > 1e-9)
-      ? GwCalc.fmt(Math.abs(res.diff), 2) + " meq/L unaccounted"
+      ? GwCalc.fmt(Math.abs(res.diff), 2) + " meq/L 不足"
       : "";
   }
 });
