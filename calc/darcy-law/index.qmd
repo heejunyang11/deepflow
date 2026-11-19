@@ -321,6 +321,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var RHO = 1000, MU = 1.0e-3;   // 20 °C の水
 
+  /* 図の寸法などの定数は、必ず mount() より前に置く。mount() は呼ばれたその場で
+     1 回目の計算と onUpdate() を走らせるので、後ろに書いた var はまだ undefined で、
+     開いた直後の図が NaN になって描かれない（2026-11-14 に見つけた不具合）。 */
+  var TOP_Y = 70, BOT_Y = 198, MAX_DROP = 116;
+  var rows = document.querySelectorAll("#ktable tbody tr[data-k]");
+
   var api = GwCalc.mount("#calc", {
 
     figure: "#calc-figure",
@@ -468,7 +474,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---- 装置図を入力に追従させる ---- */
 
-  var TOP_Y = 70, BOT_Y = 198, MAX_DROP = 116;
 
   function drawRig(i, dh, L, A) {
     if (!isFinite(i)) return;
@@ -503,7 +508,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---- K 値表：現在の K に最も近い行を強調し、クリックで読み込む ---- */
 
-  var rows = document.querySelectorAll("#ktable tbody tr[data-k]");
 
   function highlightK(K) {
     var best = null, bestDist = Infinity;

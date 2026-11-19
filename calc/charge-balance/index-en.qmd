@@ -359,6 +359,11 @@ document.addEventListener("DOMContentLoaded", function () {
              min: 0, step: 1, units: u };
   }
 
+  /* 図の寸法などの定数は、必ず mount() より前に置く。mount() は呼ばれたその場で
+     1 回目の計算と onUpdate() を走らせるので、後ろに書いた var はまだ undefined で、
+     開いた直後の図が NaN になって描かれない（2026-11-14 に見つけた不具合）。 */
+  var X0 = 100, XMAX = 560, YC = 24, YA = 104, BH = 30;
+
   var api = GwCalc.mount("#calc", {
 
     figure: "#calc-figure",
@@ -465,7 +470,6 @@ document.addEventListener("DOMContentLoaded", function () {
      色でイオンを区別せず、区切り線と直接ラベルで読ませる。長さの差が
      そのまま電荷の不足量になる。 */
 
-  var X0 = 100, XMAX = 560, YC = 24, YA = 104, BH = 30;
 
   function drawBars(res) {
     var $ = function (id) { return document.getElementById(id); };

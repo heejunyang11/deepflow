@@ -355,6 +355,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return Math.sqrt(lo * hi);
   }
 
+  /* 図の寸法などの定数は、必ず mount() より前に置く。mount() は呼ばれたその場で
+     1 回目の計算と onUpdate() を走らせるので、後ろに書いた var はまだ undefined で、
+     開いた直後の図が NaN になって描かれない（2026-11-14 に見つけた不具合）。 */
+  var XW = 340, HALF = 280, Y0 = 96, YBOT = 268, RW = 0.15;
+
   var api = GwCalc.mount("#calc", {
 
     figure: "#calc-figure",
@@ -489,7 +494,6 @@ document.addEventListener("DOMContentLoaded", function () {
      井戸中心 x=340、片側 280 px に半径 rMax を割り当てる。観測点の s が
      70 px になるよう縦方向を伸縮し、井戸近傍は帯水層下端でクリップする。 */
 
-  var XW = 340, HALF = 280, Y0 = 96, YBOT = 268, RW = 0.15;
 
   function drawCone(res) {
     var $ = function (id) { return document.getElementById(id); };

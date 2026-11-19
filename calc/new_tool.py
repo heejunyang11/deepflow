@@ -204,6 +204,11 @@ Calc は日本語のみなので、リンク先は日本語版（`index.qmd`）�
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
+  /* 図の寸法などの定数・DOM の参照は、必ずここ（mount() より前）に置く。
+     mount() は呼ばれたその場で 1 回目の onUpdate() を走らせるので、後ろに書くと
+     開いた直後の図が NaN になって描かれない（CALC.md 2026-11-14 の地雷）。 */
+  // var X0 = 100, W = 560;
+
   var api = GwCalc.mount("#calc", {
 
     figure: "#calc-figure",          // 図を使わないなら削除
@@ -284,8 +289,10 @@ require(path.join(ROOT, "assets/gwcalc.js"));
 /* ---- mount をスタブ化して config を捕まえる ---- */
 
 let cfg = null;
+let firstPaint = null;   // 開いた瞬間の描画の検査（firstpaint.js）
 GwCalc.mount = function (sel, c) {
   cfg = c;
+  firstPaint = require("./firstpaint.js")(c);
   return { fields: {}, setTarget() {}, update() {} };
 };
 
@@ -355,6 +362,10 @@ if (checks === 0) {
   console.log("\\n" + TOOL + ": 検証がまだ 1 件も書かれていない。TODO を埋めること。");
   process.exit(1);
 }
+// 番人より後ろに置く（前に置くと 1 件に数えられ、番人が働かなくなる）
+checks++;
+if (!require("./firstpaint.js").report(firstPaint)) failed++;
+
 console.log("\\n" + (failed === 0
   ? TOOL + ": " + checks + " 件すべて一致した。"
   : TOOL + ": " + checks + " 件中 " + failed + " 件が不一致。"));

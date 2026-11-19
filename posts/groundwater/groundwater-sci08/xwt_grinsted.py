@@ -199,21 +199,40 @@ def plot_xwt(t, period, Wxy, coi, sig95, dt, sigmas, out,
 
 
 # ----------------------------------------------------------------------
-# 記事図の再生成（合成データ。実データなら x,y,dt を差し替えるだけ）
+# 記事図の再生成（観測データ：KC=メコン川上流 → KL=湖、1998-07〜2008-12）
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
     import os
-    from gen_figs import synth_levels
+    from gen_figs import load_observed, interp_gaps, upto_2008
 
-    t, mr, tsl, lag = synth_levels()
+    yrs_all, S = load_observed()
+    yrs, mr, tsl = upto_2008(yrs_all, S["KC"], interp_gaps(S["KL"]))
     dt = 1.0
     Wxy, period, scale, coi, sig95, tt, sigmas = xwt(mr, tsl, dt=dt)
 
     here = os.path.dirname(os.path.abspath(__file__))
-    plot_xwt(tt, period, Wxy, coi, sig95, dt, sigmas,
+    # 横軸を西暦にする（plot_xwt は t / t_scale を描く）
+    plot_xwt(tt + yrs[0] * 365.25, period, Wxy, coi, sig95, dt, sigmas,
              out=os.path.join(here, "cross_wavelet.png"),
-             title="Cross-wavelet transform: Mekong River vs. Tonle Sap Lake")
+             title="Cross-wavelet transform: Mekong River (KC) vs. Tonle Sap Lake (KL)",
+             t_unit="year", t_scale=365.25, cmax=15)
 
-    lag_days, theta, P = phase_to_timelag(Wxy, period, target_period=365)
-    print(f"365-day band: mean phase = {np.degrees(theta):.1f} deg, "
-          f"period = {P:.1f} d, time lag = {lag_days:.1f} days")
+    # 374日帯（353・374・396日）・COI の内側で位相を円周平均 → 時間ラグ
+    r = int(np.argmin(np.abs(period - 374)))
+    inside = coi > period[r]
+    ang = np.angle(Wxy[r, inside])
+    theta = np.angle(np.mean(np.exp(1j * ang)))
+    P = period[r]
+    print(f"{P:.0f}-day band (inside COI): mean phase = {np.degrees(theta):+.1f} deg, "
+          f"time lag = {theta * P / (2 * np.pi):.1f} days, "
+          f"significant in {100 * np.mean(sig95[r, inside] > 1):.0f}% of days")
+    years = np.floor(yrs).astype(int)
+    out = []
+    for Y in np.unique(years):
+        m = (years == Y) & inside
+        if m.sum() >= 180:
+            th = np.angle(np.mean(np.exp(1j * np.angle(Wxy[r, m]))))
+            out.append((Y, th * P / (2 * np.pi)))
+    print("yearly lag (d): " + "  ".join(f"{Y}:{l:.0f}" for Y, l in out))
+    Wr, *_ = xwt(tsl, mr, dt=dt)               # 引数を入れ替えると符号が反転する
+    print(f"xwt(KL, KC): mean phase = {np.degrees(np.angle(np.mean(np.exp(1j*np.angle(Wr[r, inside]))))):+.1f} deg")

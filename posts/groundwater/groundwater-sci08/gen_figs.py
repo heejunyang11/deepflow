@@ -2,8 +2,13 @@
 """
 地下水科学入門 #8（トンレサップ湖・相互相関／クロスウェーブレット）の図生成スクリプト
 - 独立スクリプトでPNGを事前生成し、index.qmd からは静的参照する（CLAUDE.mdルール）
-- 学習用の合成（ダミー）データを使用。図中ラベルは文字化け回避のため英語。
+- 2026-11 から観測データ（MRC の日水位・日降水量。Yang et al., 2022 と同じもの）で描く。
+  データはリポジトリに含めない。環境変数 TONLESAP_XLSX でファイルの場所を指定できる。
+  （旧版は学習用の合成データ。synth_levels() は参考として残している）
+- 図中ラベルは文字化け回避のため英語。
 """
+import os
+import datetime as dtm
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch
@@ -31,7 +36,48 @@ YEAR = 365.0
 
 
 # ----------------------------------------------------------------------
-# 共通：合成水位データ（年周期＋半年周期＋短期変動＋ノイズ）
+# 共通：観測データ（1998-07-01〜2013-12-31 の日データ）
+#   KL=Kampong Luong（湖）, PK=Prek Kdam（トンレサップ川）, PPP=Phnom Penh Port（合流点）,
+#   NL=Neak Luong（下流）, KC=Kampong Cham（メコン川上流）, PR=Pursat（降水）
+#   KC と PR は 2008-12-31 まで。KL は 2009-01〜04 が欠測。
+# ----------------------------------------------------------------------
+DATA_XLSX = os.environ.get(
+    "TONLESAP_XLSX", r"D:\A-Worked-Mterial\ALL_Papers\15.Tonle Sap\WLdata_TSL.xlsx")
+COLS = {"KL": "Kampong Luong", "PK": "Prek Kdam", "PPP": "Phnom Penh Port",
+        "NL": "Neak Luong", "KC": "Kampong Cham", "PR": "Pursat"}
+
+
+def load_observed(path=DATA_XLSX):
+    """観測データを読み込み、(年の小数表記, {略号: 系列(欠測NaN)}) を返す。"""
+    import openpyxl
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    rows = list(wb.worksheets[0].iter_rows(values_only=True))
+    hdr = list(rows[0])
+    data = [r for r in rows[1:] if r[0] is not None]
+    dates = [r[0].date() for r in data]
+    yrs = np.array([d.year + (d - dtm.date(d.year, 1, 1)).days / 365.25 for d in dates])
+    S = {}
+    for key, name in COLS.items():
+        j = hdr.index(name)
+        S[key] = np.array([np.nan if r[j] is None else float(r[j]) for r in data])
+    return yrs, S
+
+
+def interp_gaps(v):
+    """欠測を線形補間で埋める（相関・ウェーブレット用）。"""
+    i = np.arange(len(v))
+    m = ~np.isnan(v)
+    return np.interp(i, i[m], v[m])
+
+
+def upto_2008(yrs, *series):
+    """KC・PR がそろう 2008-12-31 までに切り詰める。"""
+    n = int(np.searchsorted(yrs, 2009.0))
+    return (yrs[:n],) + tuple(s[:n] for s in series)
+
+
+# ----------------------------------------------------------------------
+# 参考：旧版の合成水位データ（年周期＋半年周期＋短期変動＋ノイズ）
 # ----------------------------------------------------------------------
 def synth_levels(n_years=11, dt=1.0, seed=8):
     """上流(MR)を基準に、下流の湖(TSL)が時間ラグして減衰する合成水位。"""
@@ -74,16 +120,16 @@ def synth_levels(n_years=11, dt=1.0, seed=8):
 # Fig 1: 洪水パルス（flood pulse）概念図
 # ----------------------------------------------------------------------
 def fig_flood_pulse(out):
-    t, mr, tsl, lag = synth_levels()
-    yrs = t / YEAR
+    yrs, S = load_observed()
+    mr, tsl = S["PPP"], S["KL"]          # 欠測は NaN のまま（線を描かない）
 
     fig, (ax1, ax2) = plt.subplots(
         2, 1, figsize=(9.2, 6.0), sharex=True,
         gridspec_kw={"height_ratios": [2.0, 1.2], "hspace": 0.12})
 
     # (a) 水位の時系列
-    ax1.plot(yrs, mr, color=NAVY, lw=1.3, label="Mekong River (upstream)")
-    ax1.plot(yrs, tsl, color=RED, lw=1.3, label="Tonle Sap Lake (downstream)")
+    ax1.plot(yrs, mr, color=NAVY, lw=1.0, label="Mekong River (Phnom Penh Port, PPP)")
+    ax1.plot(yrs, tsl, color=RED, lw=1.0, label="Tonle Sap Lake (Kampong Luong, KL)")
     ax1.set_ylabel("Water level (m a.s.l.)", color=INK)
     ax1.set_title("(a)  Seasonal water-level fluctuation — the flood pulse",
                   loc="left", color=INK, fontsize=11, fontweight="bold")
@@ -93,20 +139,27 @@ def fig_flood_pulse(out):
 
     # (b) 差分（湖 − 川）：負の領域が「逆流」
     diff = tsl - mr
+    ok = ~np.isnan(diff)
     ax2.axhline(0, color=INK, lw=0.8)
-    ax2.fill_between(yrs, diff, 0, where=diff < 0, color=CYAN, alpha=0.6,
+    ax2.fill_between(yrs, diff, 0, where=ok & (diff < 0), color=CYAN, alpha=0.6,
                      label="Reverse flow (river → lake)")
-    ax2.fill_between(yrs, diff, 0, where=diff >= 0, color=ORANGE, alpha=0.45,
+    ax2.fill_between(yrs, diff, 0, where=ok & (diff >= 0), color=ORANGE, alpha=0.45,
                      label="Normal flow (lake → river)")
-    ax2.plot(yrs, diff, color=INK, lw=0.7)
+    ax2.plot(yrs, diff, color=INK, lw=0.6)
     ax2.set_ylabel("Lake − River (m)", color=INK)
-    ax2.set_xlabel("Time (years)", color=INK)
+    ax2.set_xlabel("Year", color=INK)
     ax2.set_title("(b)  Water-level difference: sign flips drive the reverse flow",
                   loc="left", color=INK, fontsize=11, fontweight="bold")
-    ax2.legend(loc="upper right", framealpha=0.9, fontsize=9, ncol=2)
+    ax2.legend(loc="lower right", framealpha=0.9, fontsize=9, ncol=2)
     ax2.grid(alpha=0.3, color=GRID)
     ax2.set_facecolor(PANEL)
-    ax2.set_xlim(0, yrs.max())
+    ax2.set_xlim(yrs.min(), yrs.max())
+
+    # 逆流日数（暦年ごと・欠測年を除く）を表示用に出力
+    years = np.floor(yrs).astype(int)
+    days = [int(np.sum((diff[years == y] < 0) & ok[years == y]))
+            for y in range(1999, 2014) if ok[years == y].sum() > 360]
+    print(f"  reverse-flow days/yr (KL<PPP, full years): {min(days)}-{max(days)} {days}")
 
     fig.savefig(out)
     plt.close(fig)
@@ -125,22 +178,21 @@ def acf(x, maxlag):
 
 
 def fig_autocorrelation(out):
-    t, mr, tsl, lag = synth_levels()
-    rng = np.random.default_rng(3)
-    # 降水：季節性はあるが日々はランダム（周期的記憶を持たない）
-    n = len(t)
-    rain = np.maximum(0, rng.standard_normal(n) * 6
-                      + 5 * (np.sin(2 * np.pi * t / YEAR - np.pi / 2) > 0.3))
+    yrs, S = load_observed()
+    lake = interp_gaps(S["KL"])                 # 湖の水位（全期間）
+    _, rain = upto_2008(yrs, S["PR"])           # Pursat の日降水量（2008年末まで）
 
     maxlag = int(2.5 * YEAR)
     lags = np.arange(maxlag + 1)
-    acf_wl = acf(mr, maxlag)
+    acf_wl = acf(lake, maxlag)
     acf_rain = acf(rain, maxlag)
+    k1 = 300 + int(np.argmax(acf_wl[300:450]))
+    print(f"  ACF lake: 1st annual peak at lag {k1} d (r={acf_wl[k1]:.2f})")
 
     fig, ax = plt.subplots(figsize=(9.2, 4.6))
     ax.axhline(0, color=INK, lw=0.8)
-    ax.plot(lags, acf_wl, color=BLUE, lw=1.8, label="Water level (periodic)")
-    ax.plot(lags, acf_rain, color=ORANGE, lw=1.3, label="Rainfall (non-periodic)")
+    ax.plot(lags, acf_wl, color=BLUE, lw=1.8, label="Lake water level, KL (periodic)")
+    ax.plot(lags, acf_rain, color=ORANGE, lw=1.3, label="Daily rainfall, Pursat (non-periodic)")
 
     # 1年・2年のピーク位置
     for m in (1, 2):
@@ -153,7 +205,7 @@ def fig_autocorrelation(out):
     ax.set_ylabel("Auto-correlation coefficient", color=INK)
     ax.set_title("Auto-correlation: detecting periodicity and 'memory'",
                  loc="left", color=INK, fontsize=11, fontweight="bold")
-    ax.legend(loc="upper right", framealpha=0.9, fontsize=9)
+    ax.legend(loc="lower left", framealpha=0.9, fontsize=9)
     ax.grid(alpha=0.3, color=GRID)
     ax.set_facecolor(PANEL)
     ax.set_xlim(0, maxlag)
@@ -178,27 +230,32 @@ def ccf(x, y, maxlag):
 
 
 def fig_crosscorrelation(out):
-    t, mr, tsl, lag = synth_levels()
+    yrs_all, S = load_observed()
+    yrs, mr, tsl = upto_2008(yrs_all, S["KC"], interp_gaps(S["KL"]))   # KC→KL, 1998-07〜2008-12
 
     maxlag = 150
     lags, vals = ccf(mr, tsl, maxlag)
     kmax = lags[np.argmax(vals)]
+    print(f"  CCF KC->KL: peak at lag {kmax} d (r={vals.max():.3f})")
+    _, pr, kl = upto_2008(yrs_all, S["PR"], interp_gaps(S["KL"]))
+    lr, vr = ccf(pr, kl, maxlag)
+    print(f"  CCF PR->KL: peak at lag {lr[np.argmax(vr)]} d (r={vr.max():.3f})")
 
     fig, (ax1, ax2) = plt.subplots(
         2, 1, figsize=(9.2, 6.4),
         gridspec_kw={"height_ratios": [1.2, 1.4], "hspace": 0.32})
 
-    # (a) 2系列（最初の3年）を並べて時間差を視覚化
-    yrs = t / YEAR
-    m = yrs <= 3
+    # (a) 2系列（3年分）を並べて時間差を視覚化
+    m = (yrs >= 1999.0) & (yrs < 2002.0)
     ax1.plot(yrs[m], (mr[m] - mr[m].mean()), color=NAVY, lw=1.3,
-             label="Upstream (Mekong River)")
+             label="Upstream (Mekong River, Kampong Cham)")
     ax1.plot(yrs[m], (tsl[m] - tsl[m].mean()), color=RED, lw=1.3,
-             label="Downstream (Tonle Sap Lake)")
+             label="Downstream (Tonle Sap Lake, Kampong Luong)")
     ax1.set_title("(a)  Two water-level series — the lake peaks later",
                   loc="left", color=INK, fontsize=11, fontweight="bold")
-    ax1.set_xlabel("Time (years)", color=INK)
+    ax1.set_xlabel("Year", color=INK)
     ax1.set_ylabel("Anomaly (m)", color=INK)
+    ax1.set_ylim(top=15)                   # 凡例の置き場所を空ける
     ax1.legend(loc="upper right", framealpha=0.9, fontsize=9)
     ax1.grid(alpha=0.3, color=GRID)
     ax1.set_facecolor(PANEL)
@@ -209,7 +266,7 @@ def fig_crosscorrelation(out):
     ax2.plot(lags, vals, color=PURPLE, lw=1.8)
     ax2.plot([kmax], [vals.max()], "o", color=RED, ms=8, zorder=5)
     ax2.annotate(f"peak at lag = {kmax} days",
-                 xy=(kmax, vals.max()), xytext=(kmax + 18, vals.max() - 0.15),
+                 xy=(kmax, vals.max()), xytext=(-140, vals.max() - 0.12),
                  color=RED, fontsize=10, fontweight="bold",
                  arrowprops=dict(arrowstyle="->", color=RED))
     ax2.set_title("(b)  Cross-correlation function: the lag is where it peaks",

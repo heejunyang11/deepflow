@@ -21,8 +21,10 @@ require(path.join(ROOT, "assets/gwcalc.js"));
 /* ---- mount をスタブ化して config を捕まえる ---- */
 
 let cfg = null;
+let firstPaint = null;   // 開いた瞬間の描画の検査（firstpaint.js）
 GwCalc.mount = function (sel, c) {
   cfg = c;
+  firstPaint = require("./firstpaint.js")(c);
   return { fields: { K: { unit: {}, input: {} } }, setTarget() {}, update() {} };
 };
 
@@ -225,6 +227,10 @@ if (checks === 0) {
   console.log("\n" + TOOL + ": 検証がまだ 1 件も書かれていない。TODO を埋めること。");
   process.exit(1);
 }
+// 番人より後ろに置く（前に置くと 1 件に数えられ、番人が働かなくなる）
+checks++;
+if (!require("./firstpaint.js").report(firstPaint)) failed++;
+
 console.log("\n" + (failed === 0
   ? TOOL + ": " + checks + " 件すべて一致した。"
   : TOOL + ": " + checks + " 件中 " + failed + " 件が不一致。"));

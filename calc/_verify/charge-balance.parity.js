@@ -47,7 +47,7 @@ module.exports = function parity() {
   say("ION・field・compute が日英で同一", calcPart(ja) === calcPart(en));
   const drawPart = (s) => {
     const js = stripComments(script(s));
-    return js.slice(js.indexOf("var X0"), js.indexOf("$(\"gapLabel\").textContent"))
+    return js.slice(js.indexOf("function drawBars"), js.indexOf("$(\"gapLabel\").textContent"))
              .replace(/\s+/g, " ");
   };
   say("図の描画（drawBars）が日英で同一（ラベル文字列を除く）", drawPart(ja) === drawPart(en));
